@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ========================================================================== -->
+    <!-- THIS POM DEFINITIONS -->
+    <!-- ========================================================================== -->
+    <groupId>com.razorpay</groupId>
+    <artifactId>secure-auth-server</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>Secure Auth Server</name>
+    <description>Open Source project for ACS and IAS</description>
+    <packaging>pom</packaging>
+
+    <!-- ========================================================================== -->
+    <!-- MODULES -->
+    <!-- ========================================================================== -->
+    <modules>
+        <module>secure-auth-contract</module>
+        <module>secure-auth-acs-server</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <plugin.compiler.version>3.7.0</plugin.compiler.version>
+        <project.build.targetJdk>11</project.build.targetJdk>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.26</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
