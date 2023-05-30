@@ -17,18 +17,19 @@ public class ConfigProvider {
     public ConfigProvider() {
         Parameters params = new Parameters();
 
-        //todo - handle environment specific properties
+        // todo - handle environment specific properties
         String configFile = "config.properties";
 
         File propertiesFile = new File(configFile);
         try {
             FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
-                    new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                    new FileBasedConfigurationBuilder<FileBasedConfiguration>(
+                                    PropertiesConfiguration.class)
                             .configure(params.fileBased().setFile(propertiesFile));
 
             config = builder.getConfiguration();
         } catch (Exception ex) {
-            //todo - handle exception
+            // todo - handle exception
             ex.printStackTrace();
         }
     }
