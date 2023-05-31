@@ -1,0 +1,15 @@
+package com.razorpay.threeds.validation.impl;
+
+import com.razorpay.threeds.contract.AREQ;
+import com.razorpay.threeds.validation.ValidationService;
+
+import org.springframework.stereotype.Service;
+
+@Service("aReqValidationServiceImpl")
+public class AReqValidationServiceImpl implements ValidationService<AREQ> {
+
+    @Override
+    public void validate(AREQ areq) {
+
+    }
+}
