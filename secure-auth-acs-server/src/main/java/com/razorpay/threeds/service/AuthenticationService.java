@@ -7,7 +7,5 @@ import lombok.NonNull;
 
 public interface AuthenticationService {
 
-    
-
     ARES processAuthenticationRequest(@NonNull final AREQ areq);
 }

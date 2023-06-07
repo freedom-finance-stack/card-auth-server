@@ -8,6 +8,5 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 public class RequestContext implements Serializable {
-
     private String requestId;
 }
