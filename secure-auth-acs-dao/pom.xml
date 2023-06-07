@@ -9,8 +9,8 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Secure Auth Server Contract</name>
-    <artifactId>secure-auth-contract</artifactId>
+    <name>Secure Auth ACS DAO-Models</name>
+    <artifactId>secure-auth-acs-dao</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -28,5 +28,4 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
-
 </project>

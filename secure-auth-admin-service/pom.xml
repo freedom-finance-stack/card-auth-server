@@ -9,8 +9,8 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <name>Secure Auth Server Contract</name>
-    <artifactId>secure-auth-contract</artifactId>
+    <name>Secure Auth ACS Admin Service</name>
+    <artifactId>secure-auth-admin-service</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -23,10 +23,11 @@
     <!-- DEPENDENCIES -->
     <!-- ========================================================================== -->
     <dependencies>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-    </dependencies>
 
+    </dependencies>
 </project>
