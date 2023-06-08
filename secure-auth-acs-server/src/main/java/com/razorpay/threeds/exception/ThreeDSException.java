@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Optional;
 
-public class ThreeDSException extends RuntimeException {
+abstract public class ThreeDSException extends RuntimeException {
 
     private final ThreeDSecureErrorCode errorCode;
 

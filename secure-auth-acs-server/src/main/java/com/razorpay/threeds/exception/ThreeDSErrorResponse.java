@@ -60,6 +60,30 @@ public class ThreeDSErrorResponse {
     @JsonIgnore
     private Instant timestamp = Instant.now();
 
+    public ThreeDSErrorResponse setAcsTransID(String acsTransID) {
+        this.acsTransID = acsTransID;
+        return this;
+    }
+
+    public ThreeDSErrorResponse setDsTransID(String dsTransID) {
+        this.dsTransID = dsTransID;
+        return this;
+    }
+
+    public ThreeDSErrorResponse setErrorMessageType(String errorMessageType) {
+        this.errorMessageType = errorMessageType;
+        return this;
+    }
+
+    public ThreeDSErrorResponse setSdkTransID(String sdkTransID) {
+        this.sdkTransID = sdkTransID;
+        return this;
+    }
+    public ThreeDSErrorResponse setThreeDSServerTransID(String threeDSServerTransID) {
+        this.threeDSServerTransID = threeDSServerTransID;
+        return this;
+    }
+
 
     public ThreeDSErrorResponse(final HttpStatus status, final String errorCode, final String errorDetail, final String errorComponent, final String errorDescription) {
 

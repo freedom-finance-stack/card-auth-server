@@ -3,6 +3,7 @@ package com.razorpay.threeds.service.impl;
 import com.razorpay.threeds.context.RequestContextHolder;
 import com.razorpay.threeds.contract.AREQ;
 import com.razorpay.threeds.contract.ARES;
+import com.razorpay.threeds.exception.ThreeDSException;
 import com.razorpay.threeds.service.AuthenticationService;
 import com.razorpay.threeds.validation.ValidationService;
 
@@ -25,7 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public ARES processAuthenticationRequest(@NonNull AREQ areq) {
 
-        log.info("Starting processing for request: {}", RequestContextHolder.get().getRequestId());
+        log.info("Starting processing for Authentication request: {}", RequestContextHolder.get().getRequestId());
 
         // Validate AREQ
         validationService.validate(areq);

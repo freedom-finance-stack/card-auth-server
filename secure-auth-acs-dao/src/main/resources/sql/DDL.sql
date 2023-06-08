@@ -1,0 +1,257 @@
+CREATE DATABASE `fps_acs`;
+
+USE `fps_acs`;
+CREATE TABLE IF NOT EXISTS `transactions` (
+    `id` varchar(32) PRIMARY KEY,
+    `institution_id` varchar(32) NOT NULL,
+    `message_category` varchar(10) NOT NULL,
+    `message_version` varchar(10),
+    `flow_type` ENUM ('Frictionless', 'Challenge'),
+    `transaction_status` ENUM ('SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLANGE_REQUIRED','CHALLANGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL') NOT NULL,
+    `transaction_status_reason` varchar(80),
+    `phase` ENUM ('AREQ','ARES','CREQ','RETRY_CREQ','CRES','RREQ','REDIRECT','RESEND_OTP','AUTH_INITIATE','GENERATE_OTP','AUTH_RESULT','SEAMLESS_GENERATE_OTP','VERIFY_OTP','RRES','ERROR') NOT NULL,
+    `threeds_session_data` varchar(1024),
+    `auth_value` varchar(200),
+    `device_channel` varchar(10) NOT NULL,
+    `device_name` varchar(20),
+    `interaction_count` int,
+    `error_code` varchar(20),
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp,
+    `deleted_at` timestamp
+    );
+
+CREATE TABLE IF NOT EXISTS `transaction_browser_details` (
+    `id` varchar(32) PRIMARY KEY,
+    `transaction_id` varchar(32) NOT NULL,
+    `javascript_enabled` boolean,
+    `ip` varchar(60),
+    `accept_header` varchar(200)
+    );
+
+CREATE TABLE IF NOT EXISTS `transaction_sdk_details` (
+    `id` varchar(32) PRIMARY KEY,
+    `transaction_id` varchar(32) NOT NULL,
+    `sdk_transaction_id` varchar(32)
+    );
+
+CREATE TABLE IF NOT EXISTS `transaction_merchants` (
+    `id` varchar(32) PRIMARY KEY,
+    `transaction_id` varchar(32) NOT NULL,
+    `acquirer_merchant_id` varchar(100),
+    `merchant_name` varchar(200) NOT NULL,
+    `merchant_country_code` smallint
+    );
+
+CREATE TABLE IF NOT EXISTS `transaction_message_type_details` (
+    `id` varchar(32) PRIMARY KEY,
+    `transaction_id` varchar(32) NOT NULL,
+    `message` json,
+    `recieved_timestamp` timestamp,
+    `sent_timestamp` timestamp,
+    `message_type` ENUM ('AReq', 'Ares', 'CReq', 'CRes', 'RReq', 'RRes'),
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp,
+    `deleted_at` timestamp
+    );
+
+CREATE TABLE IF NOT EXISTS `transaction_reference_details` (
+    `id` varchar(32) PRIMARY KEY,
+    `transaction_id` varchar(32) NOT NULL,
+    `threeds_server_transaction_id` varchar(36),
+    `threeds_server_reference_number` varchar(36),
+    `ds_transaction_id` varchar(36),
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL
+    );
+
+CREATE TABLE IF NOT EXISTS `transaction_purchase_details` (
+    `id` varchar(32) PRIMARY KEY,
+    `transaction_id` varchar(32) NOT NULL,
+    `purchase_amount` varchar(255),
+    `purchase_currency` varchar(255),
+    `purchase_exponent` tinyint,
+    `purchase_timestamp` timestamp,
+    `pay_token_ind` boolean,
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL
+    );
+
+CREATE TABLE IF NOT EXISTS `transaction_card_details` (
+    `id` varchar(32) PRIMARY KEY,
+    `transaction_id` varchar(32) NOT NULL,
+    `card_number` varchar(40) NOT NULL,
+    `cardholder_name` varchar(120),
+    `card_expiry` varchar(10),
+    `network_code` tinyint NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL
+    );
+
+CREATE TABLE IF NOT EXISTS `institutions` (
+    `id` varchar(32) PRIMARY KEY,
+    `name` varchar(100),
+    `short_name` varchar(20),
+    `iso_country_code` smallint,
+    `timezone` varchar(10),
+    `status` ENUM ('Active', 'Inactive') NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `created_by` varchar(40) NOT NULL,
+    `modified_at` timestamp,
+    `modified_by` varchar(40),
+    `deleted_at` timestamp default NULL,
+    `deleted_by` varchar(40)
+    );
+
+CREATE TABLE IF NOT EXISTS `hsm_config` (
+    `institution_id` varchar(32) NOT NULL,
+    `network_id` varchar(32) NOT NULL,
+    `version` varchar(50),
+    `hsm_slot_id` varchar(32),
+    `hsm_usr_pwd` varchar(40),
+    `hsm_root_cert_key` varchar(30),
+    `hsm_inter_cert_key` varchar(30),
+    `hsm_credit_cert_key` varchar(30),
+    `hsm_credit_signer_key` varchar(30),
+    `hsm_credit_cvv_cvc_key` varchar(30),
+    `hsm_debit_cert_key` varchar(30),
+    `hsm_debit_signer_key` varchar(30),
+    `hsm_debit_cvv_cvc_key` varchar(30),
+    `keystore` VARCHAR(150),
+    `keypass` VARCHAR(100),
+    `usr_terminal` varchar(30),
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL,
+    `created_by` varchar(40) NOT NULL,
+    `modified_by` varchar(40),
+    `deleted_by` varchar(40)
+);
+
+CREATE TABLE IF NOT EXISTS `ranges` (
+    `id` varchar(32) PRIMARY KEY,
+    `range_group_id` varchar(32),
+    `start_range` varchar(255),
+    `end_range` varchar(255),
+    `attmept_allowed` tinyint,
+    `block_on_exceed_attempt` tinyint NOT NULL,
+    `status` ENUM ('Active', 'Inactive') NOT NULL,
+    `card_type` ENUM ('Credit', 'Debit', 'Prepaid') NOT NULL,
+    `risk_flag` ENUM ('Frictionless', 'Challenge') NOT NULL,
+    `instrument_desc` varchar(255),
+    `whitelisting_allowed` varchar(255),
+    `card_store_type` tinyint,
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL,
+    `created_by` varchar(40) NOT NULL,
+    `modified_by` varchar(40),
+    `deleted_by` varchar(40)
+    );
+
+CREATE TABLE IF NOT EXISTS `range_groups` (
+    `id` varchar(32) PRIMARY KEY,
+    `institution_id` varchar(32),
+    `name` varchar(50),
+    `description` varchar(150),
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL,
+    `created_by` varchar(40) NOT NULL,
+    `modified_by` varchar(40),
+    `deleted_by` varchar(40)
+    );
+
+CREATE TABLE IF NOT EXISTS `features` (
+    `id` varchar(32) PRIMARY KEY,
+    `entity_type` varchar(20),
+    `entity_id` varchar(32) NOT NULL,
+    `active` bool NOT NULL,
+    `name` varchar(20),
+    `properties` json,
+    `created_at` timestamp NOT NULL,
+    `created_by` varchar(40) NOT NULL,
+    `modified_at` timestamp,
+    `modified_by` varchar(40),
+    `deleted_at` timestamp,
+    `deleted_by` varchar(40)
+    );
+
+CREATE TABLE IF NOT EXISTS `cardholders` (
+    `id` varchar(32) PRIMARY KEY,
+    `mobile_number` varchar(20),
+    `email_id` varchar(100),
+    `dob` varchar(10),
+    `name` varchar(50),
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL,
+    `created_by` varchar(40) NOT NULL,
+    `modified_by` varchar(40),
+    `deleted_by` varchar(40)
+);
+
+CREATE TABLE IF NOT EXISTS `card_details` (
+    `id` varchar(32) PRIMARY KEY,
+    `cardholder_id` varchar(32) NOT NULL,
+    `range_id` varchar(32) NOT NULL,
+    `institution_id` varchar(32) NOT NULL,
+    `card_number` varchar(25),
+    `card_expiry` varchar(4),
+    `blocked` bool,
+    `network_code` varchar(4),
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL,
+    `created_by` varchar(40) NOT NULL,
+    `modified_by` varchar(40),
+    `deleted_by` varchar(40)
+    );
+
+CREATE TABLE IF NOT EXISTS `networks` (
+    `id` varchar(32) PRIMARY KEY,
+    `code` tinyint NOT NULL,
+    `name` varchar(50) NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `created_by` varchar(40) NOT NULL,
+    `modified_at` timestamp,
+    `modified_by` varchar(40),
+    `deleted_at` timestamp default NULL,
+    `deleted_by` varchar(40)
+    );
+
+CREATE TABLE IF NOT EXISTS `otp_information` (
+    `id` varchar(32) PRIMARY KEY,
+    `unique_id` varchar(32),
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL
+    );
+
+CREATE TABLE IF NOT EXISTS `otp` (
+    `id` varchar(32) PRIMARY KEY,
+    `channel` varchar(32),
+    `otp_information_id` varchar(32) NOT NULL,
+    `destination` varchar(32),
+    `otp_status` varchar(32),
+    `response` varchar(32),
+    `provider` varchar(32),
+    `attempts` int,
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL
+    );
+
+CREATE TABLE IF NOT EXISTS `otp_details` (
+    `id` varchar(32),
+    `otp_id` varchar(32) NOT NULL,
+    `transaction_id` varchar(32) NOT NULL,
+    `verification_status` ENUM ('Created', 'Expired', 'Verifed', 'Attemped'),
+    `resend_count` int,
+    `created_at` timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at` timestamp default NULL
+    );
