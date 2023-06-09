@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "transaction_card_details")
+@Table(name = "transaction_card_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -5,16 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.razorpay.acs.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 
 @Entity
-@Table(name = "transaction_reference_details")
+@Table(name = "transaction_reference_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

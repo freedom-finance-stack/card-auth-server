@@ -2,13 +2,11 @@ package com.razorpay.threeds.model;
 
 import javax.persistence.*;
 
-import com.razorpay.acs.model.HSMConfigPK;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
-import org.springframework.context.annotation.Primary;
 
 @Entity
 @Table(name = "hsm_config")

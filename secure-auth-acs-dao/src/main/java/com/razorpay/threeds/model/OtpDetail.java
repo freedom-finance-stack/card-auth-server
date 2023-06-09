@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "otp_details")
+@Table(name = "otp_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -15,7 +15,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 
 @Entity
-@Table(name = "transaction_message_type_details")
+@Table(name = "transaction_message_type_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -17,7 +17,7 @@ import org.hibernate.annotations.SQLDeleteAll;
 
 @Entity
 @Data
-@Table(name = "transactions")
+@Table(name = "transaction")
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE transactions SET deleted_at = now() WHERE id=?")

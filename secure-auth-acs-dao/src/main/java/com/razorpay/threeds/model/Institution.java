@@ -15,7 +15,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 
 @Entity
-@Table(name = "institutions")
+@Table(name = "institution")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

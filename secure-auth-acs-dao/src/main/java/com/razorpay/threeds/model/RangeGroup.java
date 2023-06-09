@@ -12,7 +12,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 
 @Entity
-@Table(name = "range_groups")
+@Table(name = "range_group")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

@@ -12,7 +12,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 
 @Entity
-@Table(name = "cardholders")
+@Table(name = "cardholder")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
