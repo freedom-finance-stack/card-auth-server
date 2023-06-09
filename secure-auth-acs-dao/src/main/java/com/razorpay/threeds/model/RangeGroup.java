@@ -1,4 +1,4 @@
-package com.razorpay.acs.model;
+package com.razorpay.threeds.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +37,12 @@ public class RangeGroup {
 
     @Column(name = "deleted_by")
     private String deletedBy;
+
+    @ManyToMany
+    @JoinTable(name = "tlds_idn_mappings", joinColumns = @JoinColumn(name = ID), inverseJoinColumns =
+    @JoinColumn(name = IDNLanguage.LANGUAGE_ID))
+    private Set<IDNLanguage> idnLanguages;
+
 
 }
 

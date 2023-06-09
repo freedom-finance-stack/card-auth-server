@@ -1,4 +1,4 @@
-package com.razorpay.acs.model;
+package com.razorpay.threeds.model;
 
 import java.sql.Timestamp;
 import javax.persistence.*;

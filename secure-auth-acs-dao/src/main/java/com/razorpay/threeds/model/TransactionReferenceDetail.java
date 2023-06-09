@@ -1,10 +1,11 @@
-package com.razorpay.acs.model;
+package com.razorpay.threeds.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.razorpay.acs.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

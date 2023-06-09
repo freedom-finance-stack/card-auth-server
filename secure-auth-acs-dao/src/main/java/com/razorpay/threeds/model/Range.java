@@ -1,4 +1,4 @@
-package com.razorpay.acs.model;
+package com.razorpay.threeds.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

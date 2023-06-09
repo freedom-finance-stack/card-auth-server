@@ -1,7 +1,8 @@
-package com.razorpay.acs.model;
+package com.razorpay.threeds.model;
 
 import javax.persistence.*;
 
+import com.razorpay.acs.model.HSMConfigPK;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

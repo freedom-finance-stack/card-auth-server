@@ -1,4 +1,4 @@
-package com.razorpay.acs.model;
+package com.razorpay.threeds.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +16,7 @@ import org.hibernate.annotations.SQLDeleteAll;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//@SoftDelatable("cardholders") // todo combiane this annotation in one.. Combine with table as well
 @SQLDelete(sql = "UPDATE cardholders SET deleted_at = now() WHERE id=?")
 @SQLDeleteAll( sql="UPDATE cardholders SET deleted_at = now() ")
 public class Cardholder {

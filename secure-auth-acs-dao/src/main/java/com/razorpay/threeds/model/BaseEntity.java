@@ -1,8 +1,7 @@
-package com.razorpay.acs.model;
+package com.razorpay.threeds.model;
 
 import lombok.Data;
 import org.hibernate.annotations.*;
-import org.springframework.data.annotation.CreatedBy;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -11,7 +10,7 @@ import java.sql.Timestamp;
 
 @Data
 @MappedSuperclass
-@Where(clause = "deleted_at != null") // todo test this
+@Where(clause = "deleted_at is null") // todo test this
 abstract  public class BaseEntity implements Serializable {
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp

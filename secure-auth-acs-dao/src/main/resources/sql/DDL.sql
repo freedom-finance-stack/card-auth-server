@@ -249,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `otp_details` (
     `id` varchar(32),
     `otp_id` varchar(32) NOT NULL,
     `transaction_id` varchar(32) NOT NULL,
-    `verification_status` ENUM ('Created', 'Expired', 'Verifed', 'Attemped'),
+    `verification_status` ENUM ('Created', 'Expired', 'Verified', 'Attempted'),
     `resend_count` int,
     `created_at` timestamp NOT NULL,
     `modified_at` timestamp NOT NULL,

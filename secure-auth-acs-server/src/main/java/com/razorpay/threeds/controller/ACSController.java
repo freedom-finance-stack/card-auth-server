@@ -5,6 +5,7 @@ import com.razorpay.threeds.contract.AREQ;
 import com.razorpay.threeds.contract.ARES;
 import com.razorpay.threeds.service.AuthenticationService;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class ACSController {
             value = "/auth-request",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "acs.auth-request", longTask = true)
     public ARES handleAuthenticationRequest(
             @RequestBody @Valid AREQ areq,
             HttpServletRequest httpServletRequest,
