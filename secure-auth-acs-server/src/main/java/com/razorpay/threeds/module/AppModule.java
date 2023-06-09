@@ -1,6 +1,6 @@
 package com.razorpay.threeds.module;
 
-import com.razorpay.threeds.module.config.ConfigProvider;
+import com.razorpay.threeds.configuration.ApplicationConfiguration;
 
 import io.undertow.conduits.GzipStreamSourceConduit;
 import io.undertow.server.handlers.encoding.RequestEncodingHandler;
@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Primary;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AppModule {
 
-    private final ConfigProvider configProvider;
+    private final ApplicationConfiguration applicationConfiguration;
 
     @Bean
     public UndertowServletWebServerFactory undertowServletWebServerFactory() {
@@ -31,7 +31,7 @@ public class AppModule {
                                     new RequestEncodingHandler(handler)
                                             .addEncoding("gzip", GzipStreamSourceConduit.WRAPPER));
                 });
-        undertowServletWebServerFactory.setPort(configProvider.getServerPort());
+        undertowServletWebServerFactory.setPort(applicationConfiguration.getPort());
         return undertowServletWebServerFactory;
     }
 }
