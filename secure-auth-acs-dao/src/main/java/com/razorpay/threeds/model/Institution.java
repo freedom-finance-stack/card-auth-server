@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.razorpay.threeds.enums.InstitutionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,7 +40,7 @@ public class Institution {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status status;
+    private InstitutionStatus status;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;
@@ -50,9 +51,4 @@ public class Institution {
     @Column(name = "deleted_by")
     private String deletedBy;
 
-    // Enums
-    public enum Status {
-        Active,
-        Inactive
-    }
 }

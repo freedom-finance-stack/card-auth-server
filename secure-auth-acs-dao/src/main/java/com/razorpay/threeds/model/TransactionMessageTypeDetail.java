@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Id;
 
+import com.razorpay.threeds.enums.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,14 +40,4 @@ public class TransactionMessageTypeDetail {
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type")
     private MessageType messageType;
-
-    // Enums
-    public enum MessageType {
-        AReq,
-        Ares,
-        CReq,
-        CRes,
-        RReq,
-        RRes
-    }
 }

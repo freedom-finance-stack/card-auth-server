@@ -3,6 +3,9 @@ package com.razorpay.threeds.model;
 import java.sql.Timestamp;
 import javax.persistence.*;
 
+import com.razorpay.threeds.enums.FlowType;
+import com.razorpay.threeds.enums.Phase;
+import com.razorpay.threeds.enums.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.sql.Timestamp;
@@ -67,38 +70,4 @@ public class Transaction {
     @Column(name = "error_code")
     private String errorCode;
 
-    // Enums
-    public enum FlowType {
-        FRICTIONLESS,
-        CHALLENGE
-    }
-
-    public enum TransactionStatus {
-        SUCCESS,
-        FAILED,
-        UNABLE_TO_AUTHENTICATE,
-        ATTEMPT,
-        CHALLENGE_REQUIRED,
-        CHALLENGE_REQUIRED_DECOUPLED,
-        REJECTED,
-        INFORMATIONAL
-    }
-
-    public enum Phase {
-        AREQ,
-        ARES,
-        CREQ,
-        RETRY_CREQ,
-        CRES,
-        RREQ,
-        REDIRECT,
-        RESEND_OTP,
-        AUTH_INITIATE,
-        GENERATE_OTP,
-        AUTH_RESULT,
-        SEAMLESS_GENERATE_OTP,
-        VERIFY_OTP,
-        RRES,
-        ERROR
-    }
 }

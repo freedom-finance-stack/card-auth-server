@@ -7,6 +7,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.razorpay.threeds.enums.CardRangeStatus;
+import com.razorpay.threeds.enums.CardType;
+import com.razorpay.threeds.enums.RiskFlag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,7 +43,8 @@ public class Range {
     private Byte blockOnExceedAttempt;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    @Column(name = "status")
+    private CardRangeStatus status;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "card_type", nullable = false)
@@ -68,20 +72,4 @@ public class Range {
     @Column(name = "deleted_by")
     private String deletedBy;
 
-    // Enums
-    public enum Status {
-        Active,
-        Inactive
-    }
-
-    public enum CardType {
-        Credit,
-        Debit,
-        Prepaid
-    }
-
-    public enum RiskFlag {
-        Frictionless,
-        Challenge
-    }
 }

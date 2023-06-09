@@ -1,15 +1,13 @@
 package com.razorpay.threeds.model;
 
+import com.razorpay.threeds.enums.OtpVerificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -30,7 +28,8 @@ public class OtpDetail {
     private String transactionId;
 
     @Column(name = "verification_status")
-    private String verificationStatus;
+    @Enumerated(EnumType.STRING)
+    private OtpVerificationStatus verificationStatus;
 
     @Column(name = "resend_count")
     private Integer resendCount;
