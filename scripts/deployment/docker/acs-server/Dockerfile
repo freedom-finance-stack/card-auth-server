@@ -42,11 +42,11 @@ RUN chmod +x -R $ACS_SERVER_BIN_DIRECTORY
 
 # Supervisord Setup
 COPY scripts/deployment/docker/acs-server/supervisor /etc/supervisor/conf.d
-
 COPY scripts/deployment/docker/acs-server/supervisor/supervisord.conf /etc/supervisord.conf
 
 #Docker Container HealthChecks
 ENV HEALTH_CHECK_URI=/actuator/healthcheck
+EXPOSE 7070
 HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:7070/actuator/health || exit 1
 
 # Default execution point
