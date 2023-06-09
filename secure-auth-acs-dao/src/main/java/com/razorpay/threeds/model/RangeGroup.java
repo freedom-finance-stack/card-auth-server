@@ -38,10 +38,10 @@ public class RangeGroup {
     @Column(name = "deleted_by")
     private String deletedBy;
 
-    @ManyToMany
-    @JoinTable(name = "tlds_idn_mappings", joinColumns = @JoinColumn(name = ID), inverseJoinColumns =
-    @JoinColumn(name = IDNLanguage.LANGUAGE_ID))
-    private Set<IDNLanguage> idnLanguages;
+//    @ManyToMany
+//    @JoinTable(name = "tlds_idn_mappings", joinColumns = @JoinColumn(name = ID), inverseJoinColumns =
+//    @JoinColumn(name = IDNLanguage.LANGUAGE_ID))
+//    private Set<IDNLanguage> idnLanguages;
 
 
 }
