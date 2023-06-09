@@ -1,3 +1,9 @@
 # use while deployment -Dspring.profiles.active=local This will load the application.properties and the application-local.properties with the latter overriding properties from the first.
-app.port=7070
-app.hostname=https://fps_acs/
+app:
+  port: 7070
+  hostname: localhost
+
+logging:
+  level:
+    org.springframework: DEBUG
+    com.razorpay.threeds: DEBUG

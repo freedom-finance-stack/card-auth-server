@@ -1,0 +1,53 @@
+# use while deployment -Dspring.profiles.active=local This will load the application.properties and the application-local.properties with the latter overriding properties from the first.
+app:
+  port: 8080
+  hostname: https://fps_acs/
+
+spring:
+  application:
+    name: Secure Auth ACS Server
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/fps_acs
+    username: root
+    password: password
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    showSql: true
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: [ "health","prometheus", "metrics", "info" ]
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true         # needs security review, secure end point
+    prometheus:
+      enabled: true
+
+logging:
+  level:
+    org.springframework: INFO
+    com.razorpay.threeds: INFO
+
+
+swagger:
+  contact-name: Razorpay
+  contact-mail: support@razorpay.com
+  app-name: Secure Auth ACS Server
+  app-description: "Secure Auth ACS Server"
+  app-version: 1.0.0
+  app-license-url: https://www.apache.org/licenses/LICENSE-2.0.html
+  app-license: Apache 2.0
+
+springdoc:
+  show-actuator: true
+  paths-to-match: /**
+  packages-to-scan: com.razorpay.threeds
+
