@@ -36,7 +36,7 @@
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <mysql.version>8.0.32</mysql.version>
         <logback.version>1.4.7</logback.version>
-        <micrometer.version>1.8.1</micrometer.version>
+        <micrometer.version>1.9.10</micrometer.version>
         <spring.cloud.version>3.1.5</spring.cloud.version>
     </properties>
 

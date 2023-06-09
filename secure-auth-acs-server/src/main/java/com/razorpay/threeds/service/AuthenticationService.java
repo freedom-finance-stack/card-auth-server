@@ -1,7 +1,7 @@
 package com.razorpay.threeds.service;
 
-import com.razorpay.threeds.contract.AREQ;
-import com.razorpay.threeds.contract.ARES;
+import com.razorpay.acs.dao.contract.AREQ;
+import com.razorpay.acs.dao.contract.ARES;
 
 import lombok.NonNull;
 

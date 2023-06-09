@@ -1,6 +1,6 @@
 package com.razorpay.threeds.validation.impl;
 
-import com.razorpay.threeds.contract.AREQ;
+import com.razorpay.acs.dao.contract.AREQ;
 import com.razorpay.threeds.validation.ValidationService;
 
 import org.springframework.stereotype.Service;
