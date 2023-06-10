@@ -1,24 +1,24 @@
 package com.razorpay.acs.dao.model;
 
+import com.razorpay.acs.dao.annotation.SoftDeleteRead;
 import com.razorpay.acs.dao.enums.FlowType;
 import com.razorpay.acs.dao.enums.Phase;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLDeleteAll;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
-@Data
 @Table(name = "transaction")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE transactions SET deleted_at = now() WHERE id=?")
-@SQLDeleteAll( sql="UPDATE transactions SET deleted_at = now() ")
-public class Transaction {
+@Where(clause = "deleted_at is null")
+public class Transaction extends BaseEntity<String> {
     @Id
     private String id;
 

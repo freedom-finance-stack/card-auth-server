@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -16,9 +17,8 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE hsm_config SET deleted_at = now() WHERE id=?")
-@SQLDeleteAll( sql="UPDATE hsm_config SET deleted_at = now() ")
-public class HsmConfig {
+@Where(clause = "deleted_at is null")
+public class HsmConfig extends BaseEntity {
 
     @EmbeddedId
     private HSMConfigPK hsmConfigPK;
@@ -74,4 +74,8 @@ public class HsmConfig {
     @Column(name = "deleted_by")
     private String deletedBy;
 
+    @Override
+    public HSMConfigPK getId() {
+        return hsmConfigPK;
+    }
 }

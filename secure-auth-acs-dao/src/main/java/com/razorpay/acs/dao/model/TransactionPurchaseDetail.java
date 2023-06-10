@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,9 +18,8 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE transaction_purchase_details SET deleted_at = now() WHERE id=?")
-@SQLDeleteAll( sql="UPDATE transaction_purchase_details SET deleted_at = now() ")
-public class TransactionPurchaseDetail {
+@Where(clause = "deleted_at is null")
+public class TransactionPurchaseDetail extends BaseEntity {
     @Id
     private String id;
 

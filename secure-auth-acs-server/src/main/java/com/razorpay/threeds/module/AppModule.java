@@ -30,7 +30,7 @@ public class AppModule {
                                     new RequestEncodingHandler(handler)
                                             .addEncoding("gzip", GzipStreamSourceConduit.WRAPPER));
                 });
-        undertowServletWebServerFactory.setPort(appConfiguration.getPort());
+        undertowServletWebServerFactory.setPort(appConfiguration.App().getPort());
         return undertowServletWebServerFactory;
     }
 }

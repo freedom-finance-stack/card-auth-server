@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,10 +17,8 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@SoftDelatable("cardholders") // todo combiane this annotation in one.. Combine with table as well
-@SQLDelete(sql = "UPDATE cardholders SET deleted_at = now() WHERE id=?")
-@SQLDeleteAll( sql="UPDATE cardholders SET deleted_at = now() ")
-public class Cardholder {
+@Where(clause = "deleted_at is null")
+public class Cardholder  extends BaseEntity {
     @Id
     private String id;
 

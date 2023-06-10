@@ -1,5 +1,7 @@
 package com.razorpay.threeds.service.impl;
 
+import com.razorpay.acs.dao.enums.Phase;
+import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.threeds.context.RequestContextHolder;
 import com.razorpay.acs.dao.contract.AREQ;
 import com.razorpay.acs.dao.contract.ARES;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Slf4j
@@ -38,9 +41,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         transactionDto.setInstitutionId("random");
         transactionDto.setMessageCategory("AREQ");
         transactionDto.setDeviceChannel("BRW");
+        transactionDto.setPhase(Phase.AREQ);
+        transactionDto.setTransactionStatus(TransactionStatus.CREATED);
         transactionService.create(transactionDto);
         // Validate AREQ
+        TransactionDto data = transactionService.findById(id);
+        TransactionDto data2 = transactionService.findById("e6413066-97a6-4389-88af-1e8d2485a29e");
         validationService.validate(areq);
+        transactionService.remove(id);
         transactionService.removeAll();
         return null;
     }

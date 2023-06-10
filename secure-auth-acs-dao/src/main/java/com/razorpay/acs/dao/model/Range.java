@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -16,9 +17,8 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE ranges SET deleted_at = now() WHERE id=?")
-@SQLDeleteAll( sql="UPDATE ranges SET deleted_at = now() ")
-public class Range {
+@Where(clause = "deleted_at is null")
+public class Range extends BaseEntity{
     @Id
     private String id;
 

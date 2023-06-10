@@ -5,20 +5,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+@Entity(name = "card_detail")
 @Table(name = "card_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE card_details SET deleted_at = now() WHERE id=?")
-@SQLDeleteAll( sql="UPDATE card_details SET deleted_at = now() ")
-public class CardDetail {
+@Where(clause = "deleted_at is null")
+// need to add this where clause in all the entities to make soft delete work, as Where is non inherited annotation couldn't find easy way
+public class CardDetail extends BaseEntity  {
     @Id
     private String id;
 

@@ -2,12 +2,12 @@ CREATE DATABASE `fps_acs`;
 
 USE `fps_acs`;
 CREATE TABLE IF NOT EXISTS `transaction` (
-    `id` varchar(32) PRIMARY KEY,
-    `institution_id` varchar(32) NOT NULL,
+    `id` varchar(36) PRIMARY KEY,
+    `institution_id` varchar(36) NOT NULL,
     `message_category` varchar(10) NOT NULL,
     `message_version` varchar(10),
     `flow_type` ENUM ('Frictionless', 'Challenge'),
-    `transaction_status` ENUM ('SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLANGE_REQUIRED','CHALLANGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL') NOT NULL,
+    `transaction_status` ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLANGE_REQUIRED','CHALLANGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL') NOT NULL,
     `transaction_status_reason` varchar(80),
     `phase` ENUM ('AREQ','ARES','CREQ','RETRY_CREQ','CRES','RREQ','REDIRECT','RESEND_OTP','AUTH_INITIATE','GENERATE_OTP','AUTH_RESULT','SEAMLESS_GENERATE_OTP','VERIFY_OTP','RRES','ERROR') NOT NULL,
     `threeds_session_data` varchar(1024),
@@ -22,30 +22,30 @@ CREATE TABLE IF NOT EXISTS `transaction` (
     );
 
 CREATE TABLE IF NOT EXISTS `transaction_browser_detail` (
-    `id` varchar(32) PRIMARY KEY,
-    `transaction_id` varchar(32) NOT NULL,
+    `id` varchar(36) PRIMARY KEY,
+    `transaction_id` varchar(36) NOT NULL,
     `javascript_enabled` boolean,
     `ip` varchar(60),
     `accept_header` varchar(200)
     );
 
 CREATE TABLE IF NOT EXISTS `transaction_sdk_detail` (
-    `id` varchar(32) PRIMARY KEY,
-    `transaction_id` varchar(32) NOT NULL,
-    `sdk_transaction_id` varchar(32)
+    `id` varchar(36) PRIMARY KEY,
+    `transaction_id` varchar(36) NOT NULL,
+    `sdk_transaction_id` varchar(36)
     );
 
 CREATE TABLE IF NOT EXISTS `transaction_merchant` (
-    `id` varchar(32) PRIMARY KEY,
-    `transaction_id` varchar(32) NOT NULL,
+    `id` varchar(36) PRIMARY KEY,
+    `transaction_id` varchar(36) NOT NULL,
     `acquirer_merchant_id` varchar(100),
     `merchant_name` varchar(200) NOT NULL,
     `merchant_country_code` smallint
     );
 
 CREATE TABLE IF NOT EXISTS `transaction_message_type_detail` (
-    `id` varchar(32) PRIMARY KEY,
-    `transaction_id` varchar(32) NOT NULL,
+    `id` varchar(36) PRIMARY KEY,
+    `transaction_id` varchar(36) NOT NULL,
     `message` json,
     `recieved_timestamp` timestamp,
     `sent_timestamp` timestamp,
@@ -56,8 +56,8 @@ CREATE TABLE IF NOT EXISTS `transaction_message_type_detail` (
     );
 
 CREATE TABLE IF NOT EXISTS `transaction_reference_detail` (
-    `id` varchar(32) PRIMARY KEY,
-    `transaction_id` varchar(32) NOT NULL,
+    `id` varchar(36) PRIMARY KEY,
+    `transaction_id` varchar(36) NOT NULL,
     `threeds_server_transaction_id` varchar(36),
     `threeds_server_reference_number` varchar(36),
     `ds_transaction_id` varchar(36),
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS `transaction_reference_detail` (
     );
 
 CREATE TABLE IF NOT EXISTS `transaction_purchase_detail` (
-    `id` varchar(32) PRIMARY KEY,
-    `transaction_id` varchar(32) NOT NULL,
+    `id` varchar(36) PRIMARY KEY,
+    `transaction_id` varchar(36) NOT NULL,
     `purchase_amount` varchar(255),
     `purchase_currency` varchar(255),
     `purchase_exponent` tinyint,
@@ -80,8 +80,8 @@ CREATE TABLE IF NOT EXISTS `transaction_purchase_detail` (
     );
 
 CREATE TABLE IF NOT EXISTS `transaction_card_detail` (
-    `id` varchar(32) PRIMARY KEY,
-    `transaction_id` varchar(32) NOT NULL,
+    `id` varchar(36) PRIMARY KEY,
+    `transaction_id` varchar(36) NOT NULL,
     `card_number` varchar(40) NOT NULL,
     `cardholder_name` varchar(120),
     `card_expiry` varchar(10),
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `transaction_card_detail` (
     );
 
 CREATE TABLE IF NOT EXISTS `institution` (
-    `id` varchar(32) PRIMARY KEY,
+    `id` varchar(36) PRIMARY KEY,
     `name` varchar(100),
     `short_name` varchar(20),
     `iso_country_code` smallint,
@@ -107,10 +107,10 @@ CREATE TABLE IF NOT EXISTS `institution` (
     );
 
 CREATE TABLE IF NOT EXISTS `hsm_config` (
-    `institution_id` varchar(32) NOT NULL,
-    `network_id` varchar(32) NOT NULL,
+    `institution_id` varchar(36) NOT NULL,
+    `network_id` varchar(36) NOT NULL,
     `version` varchar(50),
-    `hsm_slot_id` varchar(32),
+    `hsm_slot_id` varchar(36),
     `hsm_usr_pwd` varchar(40),
     `hsm_root_cert_key` varchar(30),
     `hsm_inter_cert_key` varchar(30),
@@ -132,8 +132,8 @@ CREATE TABLE IF NOT EXISTS `hsm_config` (
 );
 
 CREATE TABLE IF NOT EXISTS `range` (
-    `id` varchar(32) PRIMARY KEY,
-    `range_group_id` varchar(32),
+    `id` varchar(36) PRIMARY KEY,
+    `range_group_id` varchar(36),
     `start_range` varchar(255),
     `end_range` varchar(255),
     `attmept_allowed` tinyint,
@@ -153,8 +153,8 @@ CREATE TABLE IF NOT EXISTS `range` (
     );
 
 CREATE TABLE IF NOT EXISTS `range_group` (
-    `id` varchar(32) PRIMARY KEY,
-    `institution_id` varchar(32),
+    `id` varchar(36) PRIMARY KEY,
+    `institution_id` varchar(36),
     `name` varchar(50),
     `description` varchar(150),
     `created_at` timestamp NOT NULL,
@@ -166,9 +166,9 @@ CREATE TABLE IF NOT EXISTS `range_group` (
     );
 
 CREATE TABLE IF NOT EXISTS `feature` (
-    `id` varchar(32) PRIMARY KEY,
+    `id` varchar(36) PRIMARY KEY,
     `entity_type` varchar(20),
-    `entity_id` varchar(32) NOT NULL,
+    `entity_id` varchar(36) NOT NULL,
     `active` bool NOT NULL,
     `name` varchar(20),
     `properties` json,
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `feature` (
     );
 
 CREATE TABLE IF NOT EXISTS `cardholder` (
-    `id` varchar(32) PRIMARY KEY,
+    `id` varchar(36) PRIMARY KEY,
     `mobile_number` varchar(20),
     `email_id` varchar(100),
     `dob` varchar(10),
@@ -195,10 +195,10 @@ CREATE TABLE IF NOT EXISTS `cardholder` (
 );
 
 CREATE TABLE IF NOT EXISTS `card_detail` (
-    `id` varchar(32) PRIMARY KEY,
-    `cardholder_id` varchar(32) NOT NULL,
-    `range_id` varchar(32) NOT NULL,
-    `institution_id` varchar(32) NOT NULL,
+    `id` varchar(36) PRIMARY KEY,
+    `cardholder_id` varchar(36) NOT NULL,
+    `range_id` varchar(36) NOT NULL,
+    `institution_id` varchar(36) NOT NULL,
     `card_number` varchar(25),
     `card_expiry` varchar(4),
     `blocked` bool,
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `card_detail` (
     );
 
 CREATE TABLE IF NOT EXISTS `network` (
-    `id` varchar(32) PRIMARY KEY,
+    `id` varchar(36) PRIMARY KEY,
     `code` tinyint NOT NULL,
     `name` varchar(50) NOT NULL,
     `created_at` timestamp NOT NULL,
@@ -224,21 +224,21 @@ CREATE TABLE IF NOT EXISTS `network` (
     );
 
 CREATE TABLE IF NOT EXISTS `otp_information` (
-    `id` varchar(32) PRIMARY KEY,
-    `unique_id` varchar(32),
+    `id` varchar(36) PRIMARY KEY,
+    `unique_id` varchar(36),
     `created_at` timestamp NOT NULL,
     `modified_at` timestamp NOT NULL,
     `deleted_at` timestamp default NULL
     );
 
 CREATE TABLE IF NOT EXISTS `otp` (
-    `id` varchar(32) PRIMARY KEY,
-    `channel` varchar(32),
-    `otp_information_id` varchar(32) NOT NULL,
-    `destination` varchar(32),
-    `otp_status` varchar(32),
-    `response` varchar(32),
-    `provider` varchar(32),
+    `id` varchar(36) PRIMARY KEY,
+    `channel` varchar(36),
+    `otp_information_id` varchar(36) NOT NULL,
+    `destination` varchar(36),
+    `otp_status` varchar(36),
+    `response` varchar(36),
+    `provider` varchar(36),
     `attempts` int,
     `created_at` timestamp NOT NULL,
     `modified_at` timestamp NOT NULL,
@@ -246,9 +246,9 @@ CREATE TABLE IF NOT EXISTS `otp` (
     );
 
 CREATE TABLE IF NOT EXISTS `otp_detail` (
-    `id` varchar(32),
-    `otp_id` varchar(32) NOT NULL,
-    `transaction_id` varchar(32) NOT NULL,
+    `id` varchar(36),
+    `otp_id` varchar(36) NOT NULL,
+    `transaction_id` varchar(36) NOT NULL,
     `verification_status` ENUM ('Created', 'Expired', 'Verified', 'Attempted'),
     `resend_count` int,
     `created_at` timestamp NOT NULL,

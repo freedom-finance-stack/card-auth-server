@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,4 +29,6 @@ public class TransactionDto {
     private String deviceName;
     private Integer interactionCount;
     private String errorCode;
+    private Timestamp created_at;
+    private Timestamp modified_at;
 }

@@ -1,5 +1,6 @@
 package com.razorpay.acs.dao.model;
 
+import com.razorpay.acs.dao.annotation.SoftDeleteRead;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,8 +13,8 @@ import java.sql.Timestamp;
 
 @Data
 @MappedSuperclass
-@Where(clause = "deleted_at is null") // todo test this
-abstract  public class BaseEntity implements Serializable {
+//@SoftDeleteRead
+abstract public class BaseEntity<T> implements Serializable {
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
     private Timestamp createdAt;
@@ -23,5 +24,7 @@ abstract  public class BaseEntity implements Serializable {
     private Timestamp modifiedAt;
 
     @Column(name = "deleted_at")
-    private Timestamp deletedAt;
+    private Timestamp deleted_at;
+
+    public abstract T getId() ;
 }
