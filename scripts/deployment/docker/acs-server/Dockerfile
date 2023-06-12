@@ -15,7 +15,6 @@ RUN  apk update \
 RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazoncorretto.rsa.pub \
     && echo "https://apk.corretto.aws/" >> /etc/apk/repositories \
     && apk update
-
 RUN apk add --update amazon-corretto-11
 
 #Install Supervisord
@@ -50,4 +49,4 @@ EXPOSE 7070
 HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:7070/actuator/health || exit 1
 
 # Default execution point
-ENTRYPOINT ["sh", "-c", "$ACS_SERVER_BIN_DIRECTORY/validate_environment_and_start.sh"]
+ENTRYPOINT ["sh", "-c", "$ACS_SERVER_BIN_DIRECTORY/entrypoint.sh"]
