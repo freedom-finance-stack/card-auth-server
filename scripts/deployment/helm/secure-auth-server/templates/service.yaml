@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appDetails.name }}
+  namespace: {{ .Values.appDetails.namespace }}
+  labels:
+    app.kubernetes.io/managed-by: razorpay-labs
+    app.kubernetes.io/name: {{ .Values.appDetails.env }}-{{ .Values.appDetails.name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.ports.listenPort }}
+      protocol: TCP
+      name: http
+  selector:
+    name: {{ .Values.appDetails.name }}
