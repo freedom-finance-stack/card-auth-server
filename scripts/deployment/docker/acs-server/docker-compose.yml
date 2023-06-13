@@ -1,8 +1,0 @@
-version: "3"
-
-services:
-  acs-server:
-    build:
-      context: ../../../..
-      dockerfile: ./scripts/deployment/docker/acs-server/Dockerfile
-    image: "acs-server"

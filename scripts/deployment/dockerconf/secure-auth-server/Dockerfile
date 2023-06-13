@@ -3,13 +3,17 @@ FROM alpine:3.14
 
 # Docker Image Maintainer Team
 MAINTAINER labs-team@razorpay.com
+ENV CONTAINER_USER secure-auth
+ENV CONTAINER_USERGROUP secure-auth
+ENV CURRENT_DIR_PATH scripts/deployment/dockerconf/secure-auth-server
 
 #Update repository
 RUN  apk update \
   && apk upgrade \
   && apk add ca-certificates \
   && update-ca-certificates \
-  && apk add --update coreutils && rm -rf /var/cache/apk/*
+  && apk add --update coreutils && rm -rf /var/cache/apk/* \
+  && addgroup -S $CONTAINER_USERGROUP && adduser -S $CONTAINER_USER -G $CONTAINER_USER
 
 #Install Java 11 JDK
 RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazoncorretto.rsa.pub \
@@ -36,17 +40,21 @@ WORKDIR $ACS_SERVER_LOG_DIRECTORY
 COPY secure-auth-acs-server/target/secure-auth-acs-server.jar $ACS_SERVER_BIN_DIRECTORY/jar/secure-auth-acs-server.jar
 
 # Scripts
-COPY scripts/deployment/docker/acs-server/bin $ACS_SERVER_BIN_DIRECTORY
+COPY $CURRENT_DIR_PATH/bin $ACS_SERVER_BIN_DIRECTORY
 RUN chmod +x -R $ACS_SERVER_BIN_DIRECTORY
 
 # Supervisord Setup
-COPY scripts/deployment/docker/acs-server/supervisor /etc/supervisor/conf.d
-COPY scripts/deployment/docker/acs-server/supervisor/supervisord.conf /etc/supervisord.conf
+COPY $CURRENT_DIR_PATH/supervisor /etc/supervisor/conf.d
+COPY $CURRENT_DIR_PATH/supervisor/supervisord.conf /etc/supervisord.conf
 
 #Docker Container HealthChecks
+RUN chown -R $CONTAINER_USER:$CONTAINER_USERGROUP $GLOBAL_LOG_DIRECTORY
+RUN chown -R $CONTAINER_USER:$CONTAINER_USERGROUP $ACS_SERVER_BASE_DIRECTORY
+USER $CONTAINER_USER
 ENV HEALTH_CHECK_URI=/actuator/healthcheck
-EXPOSE 7070
 HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:7070/actuator/health || exit 1
+EXPOSE 7070
+
 
 # Default execution point
 ENTRYPOINT ["sh", "-c", "$ACS_SERVER_BIN_DIRECTORY/entrypoint.sh"]
