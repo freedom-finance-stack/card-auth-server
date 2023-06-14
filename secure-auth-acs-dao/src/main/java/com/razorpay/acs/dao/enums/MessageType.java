@@ -2,7 +2,7 @@ package com.razorpay.acs.dao.enums;
 
 public enum MessageType {
     AReq,
-    Ares,
+    ARes,
     CReq,
     CRes,
     RReq,

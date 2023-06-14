@@ -19,10 +19,8 @@ import java.sql.Timestamp;
 @Where(clause = "deleted_at is null")
 public class TransactionMessageTypeDetail extends BaseEntity {
     @Id
+    @Column(name = "id")
     private String id;
-
-    @Column(name = "transaction_id")
-    private String transactionId;
 
     private String message;
 
@@ -35,4 +33,8 @@ public class TransactionMessageTypeDetail extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type")
     private MessageType messageType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id", referencedColumnName = "id")
+    private Transaction transaction ;
 }

@@ -6,31 +6,39 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import javax.transaction.Transactional;
+
 @NoRepositoryBean
 public interface BaseRepository<T extends BaseEntity, ID> extends CrudRepository<T, ID> {
-    @Override
+
     @Query("update #{#entityName} e set e.deleted_at= now() where e.id = ?1")
     @Modifying
-    void deleteById(ID id);
+    @Transactional
+    void softDeleteById(ID id);
 
     @Override
     default void deleteAllById(Iterable<? extends ID> ids) {
-        ids.forEach(id -> deleteById(id));
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default void deleteById(ID id) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    default void delete(T entity) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     default void deleteAll(Iterable<? extends T> entities) {
-        entities.forEach(entity -> delete(entity));
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    @Query("update #{#entityName} e set e.deleted_at= now()")
-    @Modifying
-    void deleteAll();
-
-    @Override
-    default void delete(T entity) {
-        delete((T) entity.getId());
+    default void deleteAll() {
+        throw new UnsupportedOperationException();
     }
 
 }

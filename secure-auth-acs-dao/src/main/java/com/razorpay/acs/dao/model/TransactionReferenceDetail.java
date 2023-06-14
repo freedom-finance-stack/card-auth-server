@@ -7,10 +7,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "transaction_reference_detail")
@@ -19,11 +16,10 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 public class TransactionReferenceDetail extends BaseEntity {
-    @Id
-    private String id;
 
+    @Id
     @Column(name = "transaction_id")
-    private String transactionId;
+    private String id;
 
     @Column(name = "threeds_server_transaction_id")
     private String threedsServerTransactionId;
@@ -33,5 +29,17 @@ public class TransactionReferenceDetail extends BaseEntity {
 
     @Column(name = "ds_transaction_id")
     private String dsTransactionId;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "transaction_id", referencedColumnName = "id")
+    @MapsId
+    private Transaction transaction;
+
+    public TransactionReferenceDetail(String threedsServerTransactionId, String threedsServerReferenceNumber, String dsTransactionId) {
+        this.threedsServerTransactionId = threedsServerTransactionId;
+        this.threedsServerReferenceNumber = threedsServerReferenceNumber;
+        this.dsTransactionId = dsTransactionId;
+    }
+
 
 }

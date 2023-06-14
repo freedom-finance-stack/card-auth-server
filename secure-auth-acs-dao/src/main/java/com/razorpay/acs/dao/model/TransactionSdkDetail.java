@@ -7,10 +7,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="transaction_sdk_detail")
@@ -20,12 +17,15 @@ import javax.persistence.Table;
 @Where(clause = "deleted_at is null")
 public class TransactionSdkDetail extends BaseEntity {
     @Id
-    private String id;
-
     @Column(name = "transaction_id")
-    private String transactionId;
+    private String id;
 
     @Column(name = "sdk_transaction_id")
     private String sdkTransactionId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id", referencedColumnName = "id")
+    @MapsId
+    private Transaction transaction ;
 }
 

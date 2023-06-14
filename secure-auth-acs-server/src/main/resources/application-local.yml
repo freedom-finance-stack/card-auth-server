@@ -5,5 +5,6 @@ app:
 
 logging:
   level:
-    org.springframework: DEBUG
+    org.springframework: INFO
     com.razorpay.threeds: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

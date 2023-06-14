@@ -1,13 +1,11 @@
 package com.razorpay.threeds.service;
 
-import com.razorpay.threeds.dto.TransactionDto;
+import com.razorpay.acs.dao.model.Transaction;
 
 public interface TransactionService {
-    TransactionDto create(TransactionDto transactionDto);
+    Transaction createOrUpdate(Transaction transactionDto);
 
     void remove(String id);
 
-    void removeAll();
-
-    TransactionDto findById(String id);
+    Transaction findById(String id);
 }

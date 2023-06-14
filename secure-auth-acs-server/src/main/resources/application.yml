@@ -7,7 +7,7 @@ spring:
   application:
     name: Secure Auth ACS Server
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/fps_acs
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/fps_acs
     username: root
     password: password
     driverClassName: com.mysql.cj.jdbc.Driver
@@ -33,6 +33,7 @@ management:
 
 logging:
   level:
+    org.hibernate.SQL: DEBUG
     org.springframework: INFO
     com.razorpay.threeds: INFO
 

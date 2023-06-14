@@ -7,10 +7,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -21,10 +18,8 @@ import java.sql.Timestamp;
 @Where(clause = "deleted_at is null")
 public class TransactionPurchaseDetail extends BaseEntity {
     @Id
-    private String id;
-
     @Column(name = "transaction_id")
-    private String transactionId;
+    private String id;
 
     @Column(name = "purchase_amount")
     private String purchaseAmount;
@@ -40,4 +35,9 @@ public class TransactionPurchaseDetail extends BaseEntity {
 
     @Column(name = "pay_token_ind")
     private Boolean payTokenInd;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id", referencedColumnName = "id")
+    @MapsId
+    private Transaction transaction ;
 }
