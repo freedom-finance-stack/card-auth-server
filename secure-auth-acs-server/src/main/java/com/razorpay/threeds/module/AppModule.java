@@ -1,7 +1,9 @@
 package com.razorpay.threeds.module;
 
+import com.razorpay.acs.monitoring.MicrometerFactory;
 import com.razorpay.threeds.module.config.ConfigProvider;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import io.undertow.conduits.GzipStreamSourceConduit;
 import io.undertow.server.handlers.encoding.RequestEncodingHandler;
 
@@ -33,5 +35,10 @@ public class AppModule {
                 });
         undertowServletWebServerFactory.setPort(configProvider.getServerPort());
         return undertowServletWebServerFactory;
+    }
+
+    @Bean
+    MeterRegistry meterRegistry() {
+        return MicrometerFactory.getMeterRegistry();
     }
 }

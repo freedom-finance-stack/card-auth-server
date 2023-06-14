@@ -1,0 +1,6 @@
+micrometer:
+  supportedSystem:
+    prometheus:
+      enabled: true
+    graphite:
+      enabled: false

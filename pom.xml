@@ -19,6 +19,7 @@
     <modules>
         <module>secure-auth-contract</module>
         <module>secure-auth-acs-dao</module>
+        <module>secure-auth-monitoring</module>
         <module>secure-auth-acs-server</module>
         <module>secure-auth-admin-service</module>
     </modules>
