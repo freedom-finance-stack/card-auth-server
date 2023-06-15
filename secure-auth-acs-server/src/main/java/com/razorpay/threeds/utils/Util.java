@@ -9,6 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 
 public class Util {
+    public static final String PADDED_SYMBOL_X = "X";
+    public static final String PADDED_SYMBOL_0 = "0";
+    public static final String PAD_LEFT = "LEFT";
+    public static final String PAD_RIGHT = "RIGHT";
 
     public static boolean isNull(Object object) {
         return object == null ? true : false;
@@ -57,4 +61,17 @@ public class Util {
         String strJson = gson.toJson(object);
         return strJson;
     }
+
+    public static String maskedCardNumber(String cardNumber) {
+        int totalLength = cardNumber.length();
+        String lastFourDigit = cardNumber.substring(totalLength - 4);
+        String firstSixDigit = cardNumber.substring(0, 6);
+
+        Integer len = totalLength - lastFourDigit.length() - firstSixDigit.length();
+        String maskedDigits = PADDED_SYMBOL_X.repeat(len);
+
+        return  firstSixDigit + maskedDigits + lastFourDigit;
+    }
+
+
 }

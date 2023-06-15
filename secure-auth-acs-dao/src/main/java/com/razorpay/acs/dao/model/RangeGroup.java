@@ -3,14 +3,10 @@ package com.razorpay.acs.dao.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "range_group")
@@ -22,12 +18,16 @@ public class RangeGroup extends BaseEntity {
     @Id
     private String id;
 
-    @Column(name = "institution_id")
-    private String institutionId;
-
     private String name;
 
     private String description;
+
+//    @OneToMany(mappedBy = "rangeGroup")
+//    private List<CardRange> cardRanges;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "institution_id", referencedColumnName = "id")
+    private Institution institution ;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;
@@ -37,12 +37,6 @@ public class RangeGroup extends BaseEntity {
 
     @Column(name = "deleted_by")
     private String deletedBy;
-
-//    @ManyToMany
-//    @JoinTable(name = "tlds_idn_mappings", joinColumns = @JoinColumn(name = ID), inverseJoinColumns =
-//    @JoinColumn(name = IDNLanguage.LANGUAGE_ID))
-//    private Set<IDNLanguage> idnLanguages;
-
 
 }
 

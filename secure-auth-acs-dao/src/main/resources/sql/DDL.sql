@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `transaction_card_detail`
     `card_number`     varchar(40) NOT NULL,
     `cardholder_name` varchar(120),
     `card_expiry`     varchar(10),
-    `network_code`    tinyint     NOT NULL,
+    `network_code`    tinyint,
     `created_at`      timestamp   NOT NULL,
     `modified_at`     timestamp   NOT NULL,
     `deleted_at`      timestamp default NULL
@@ -125,8 +125,8 @@ CREATE TABLE IF NOT EXISTS `institution`
     `name`             varchar(100),
     `short_name`       varchar(20),
     `iso_country_code` smallint,
-    `timezone`         varchar(10),
-    `status`           ENUM ('Active', 'Inactive') NOT NULL,
+    `timezone`         varchar(25),
+    `status`           ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
     `created_at`       timestamp                   NOT NULL,
     `created_by`       varchar(40)                 NOT NULL,
     `modified_at`      timestamp,
@@ -161,20 +161,20 @@ CREATE TABLE IF NOT EXISTS `hsm_config`
     `deleted_by`             varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `range`
+CREATE TABLE IF NOT EXISTS `card_range`
 (
     `id`                      varchar(36) PRIMARY KEY,
     `range_group_id`          varchar(36),
-    `start_range`             varchar(255),
-    `end_range`               varchar(255),
-    `attmept_allowed`         tinyint,
+    `start_range`             decimal(25),
+    `end_range`               decimal(25),
+    `attempt_allowed`         tinyint,
     `block_on_exceed_attempt` tinyint                             NOT NULL,
-    `status`                  ENUM ('Active', 'Inactive')         NOT NULL,
-    `card_type`               ENUM ('Credit', 'Debit', 'Prepaid') NOT NULL,
-    `risk_flag`               ENUM ('Frictionless', 'Challenge')  NOT NULL,
-    `instrument_desc`         varchar(255),
+    `status`                  ENUM ('ACTIVE', 'INACTIVE')         NOT NULL,
+    `card_type`               ENUM ('CREDIT', 'DEBIT', 'PREPAID') NOT NULL,
+    `auth_type`               ENUM ('NOCHALLENGE', 'CHALLENGE', 'RBA')  NOT NULL,
+    `description`             varchar(255),
     `whitelisting_allowed`    varchar(255),
-    `card_store_type`         tinyint,
+    `card_store_type`         enum ('ACS', 'API_1'),
     `created_at`              timestamp                           NOT NULL,
     `modified_at`             timestamp                           NOT NULL,
     `deleted_at`              timestamp default NULL,
@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS `otp_detail`
     `id`                  varchar(36),
     `otp_id`              varchar(36) NOT NULL,
     `transaction_id`      varchar(36) NOT NULL,
-    `verification_status` ENUM ('Created', 'Expired', 'Verified', 'Attempted'),
+    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
     `resend_count`        int,
     `created_at`          timestamp   NOT NULL,
     `modified_at`         timestamp   NOT NULL,

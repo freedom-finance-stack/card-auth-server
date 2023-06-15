@@ -1,37 +1,37 @@
 package com.razorpay.acs.dao.model;
 
+import com.razorpay.acs.dao.enums.CardStoreType;
 import com.razorpay.acs.dao.enums.CardType;
-import com.razorpay.acs.dao.enums.RiskFlag;
+import com.razorpay.acs.dao.enums.AuthType;
 import com.razorpay.acs.dao.enums.CardRangeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "range")
+@Table(name = "card_range")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class Range extends BaseEntity{
+public class CardRange extends BaseEntity{
     @Id
     private String id;
 
-    @Column(name = "range_group_id")
-    private String rangeGroupId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "range_group_id", referencedColumnName = "id")
+    private RangeGroup rangeGroup ;
 
     @Column(name = "start_range")
-    private String startRange;
+    private Long startRange;
 
     @Column(name = "end_range")
-    private String endRange;
+    private Long endRange;
 
-    @Column(name = "attmept_allowed")
+    @Column(name = "attempt_allowed")
     private Byte attemptAllowed;
 
     @Column(name = "block_on_exceed_attempt", nullable = false)
@@ -46,17 +46,18 @@ public class Range extends BaseEntity{
     private CardType cardType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "risk_flag", nullable = false)
-    private RiskFlag riskFlag;
+    @Column(name = "auth_type", nullable = false)
+    private AuthType authType;
 
-    @Column(name = "instrument_desc")
-    private String instrumentDesc;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "whitelisting_allowed")
     private String whitelistingAllowed;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "card_store_type")
-    private Byte cardStoreType;
+    private CardStoreType cardStoreType;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;
@@ -66,5 +67,6 @@ public class Range extends BaseEntity{
 
     @Column(name = "deleted_by")
     private String deletedBy;
+
 
 }

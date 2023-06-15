@@ -9,6 +9,7 @@ import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "institution")
@@ -35,6 +36,9 @@ public class Institution extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private InstitutionStatus status;
+
+//    @OneToMany(mappedBy = "institution")
+//    private List<RangeGroup> rangeGroups;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;

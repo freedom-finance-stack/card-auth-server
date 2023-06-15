@@ -2,12 +2,15 @@ package com.razorpay.threeds.service.impl;
 
 import com.razorpay.acs.dao.contract.AREQ;
 import com.razorpay.acs.dao.contract.ARES;
+import com.razorpay.acs.dao.model.CardRange;
+import com.razorpay.acs.dao.model.Institution;
+import com.razorpay.acs.dao.model.RangeGroup;
 import com.razorpay.acs.dao.model.Transaction;
-import com.razorpay.acs.dao.model.TransactionMessageTypeDetail;
+import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.AuthenticationService;
+import com.razorpay.threeds.service.RangeService;
 import com.razorpay.threeds.service.TransactionMessageTypeService;
 import com.razorpay.threeds.service.TransactionService;
-import com.razorpay.threeds.validation.ValidationService;
 
 import com.razorpay.threeds.validator.ThreeDSValidator;
 import lombok.NonNull;
@@ -18,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
+
+import static com.razorpay.threeds.exception.checked.ErrorCode.DUPLICATE_TRANSACTION_REQUEST;
 
 @Slf4j
 @Service("authenticationServiceImpl")
@@ -29,28 +32,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final TransactionService transactionService;
     private final TransactionMessageTypeService transactionMessageTypeService;
+    private final RangeService rangeService;
+
     @Qualifier(value = "authenticationRequestValidator")
-    private ThreeDSValidator<AREQ> areqValidator;
+    private final ThreeDSValidator<AREQ> areqValidator;
 
     @Override
     public ARES processAuthenticationRequest(@NonNull AREQ areq) {
         Transaction transaction = null;
         try {
             areq.setTransactionId(UUID.randomUUID().toString());
+            // validate areq
             areqValidator.validateRequest(areq);
-
+            // check duplicate transaction
             Transaction oldTransaction = transactionService.findDuplicationTransaction(areq.getThreeDSServerTransID());
             if (oldTransaction != null) {
                 log.error("processAuthRequest - found duplicate transaction : " + areq.getTransactionId());
                 transaction = oldTransaction;
-                throw new ACSException(ExceptionConstant.DUPLICATE_TRANSACTION_REQUEST.getErrorCode(), ExceptionConstant.DUPLICATE_TRANSACTION_REQUEST.getErrorDesc());
+                throw new ACSException(DUPLICATE_TRANSACTION_REQUEST.getCode(), DUPLICATE_TRANSACTION_REQUEST.getDefaultErrorMessage());
             }
-
+            // todo network code in Carddetails
+            // create transaction entity and save
             transaction = transactionService.create(areq);
             transactionService.save(transaction);
-
+            CardRange cardRange = rangeService.findByPan(areq.getAcctNumber());
+            RangeGroup rangeGroup = cardRange.getRangeGroup();
+            Institution institution =  rangeGroup.getInstitution();
+            System.out.println("range : " +  institution.getName());
         } catch (Exception e) {
-
+            // todo handle exception properly
             e.printStackTrace();
 
         } finally {
@@ -59,7 +69,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         }
 
-        // GETall InstitutionInstrumentService.findByPan(pan); with Features
 
         //    validateInstitution(areq);
 
