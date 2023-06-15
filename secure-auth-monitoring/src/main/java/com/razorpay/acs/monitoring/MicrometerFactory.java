@@ -7,6 +7,12 @@ import com.razorpay.acs.monitoring.impl.PrometheusIMicrometerImpl;
 import io.micrometer.core.instrument.MeterRegistry;
 
 public class MicrometerFactory {
+
+    /**
+     * Return enabled meter registry defined in micrometer-config.yaml file
+     *
+     * @return Implementation of MeterRegistry
+     */
     public static MeterRegistry getMeterRegistry() {
         IMicrometer iMicrometer = null;
 
