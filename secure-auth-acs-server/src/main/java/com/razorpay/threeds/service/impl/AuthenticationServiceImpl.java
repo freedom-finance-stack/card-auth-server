@@ -1,148 +1,71 @@
 package com.razorpay.threeds.service.impl;
 
-import com.razorpay.acs.dao.contract.enums.DeviceChannel;
-import com.razorpay.acs.dao.enums.MessageCategory;
-import com.razorpay.acs.dao.enums.MessageType;
-import com.razorpay.acs.dao.enums.Phase;
-import com.razorpay.acs.dao.enums.TransactionStatus;
-import com.razorpay.acs.dao.model.Transaction;
-import com.razorpay.acs.dao.model.TransactionMerchant;
-import com.razorpay.acs.dao.model.TransactionMessageTypeDetail;
-import com.razorpay.acs.dao.model.TransactionReferenceDetail;
-import com.razorpay.threeds.constant.InternalConstants;
-import com.razorpay.threeds.constant.ThreeDSConstant;
-import com.razorpay.threeds.context.RequestContextHolder;
 import com.razorpay.acs.dao.contract.AREQ;
 import com.razorpay.acs.dao.contract.ARES;
-import com.razorpay.threeds.configuration.AppConfiguration;
+import com.razorpay.acs.dao.model.Transaction;
+import com.razorpay.acs.dao.model.TransactionMessageTypeDetail;
 import com.razorpay.threeds.service.AuthenticationService;
+import com.razorpay.threeds.service.TransactionMessageTypeService;
 import com.razorpay.threeds.service.TransactionService;
 import com.razorpay.threeds.validation.ValidationService;
 
+import com.razorpay.threeds.validator.ThreeDSValidator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-
-import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.appDeviceInfoAndroid;
-import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.appDeviceInfoIOS;
 
 @Slf4j
 @Service("authenticationServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    @Qualifier(value = "aReqValidationServiceImpl")
-    private final ValidationService<AREQ> validationService;
     private final TransactionService transactionService;
+    private final TransactionMessageTypeService transactionMessageTypeService;
+    @Qualifier(value = "authenticationRequestValidator")
+    private ThreeDSValidator<AREQ> areqValidator;
+
     @Override
     public ARES processAuthenticationRequest(@NonNull AREQ areq) {
+        Transaction transaction = null;
+        try {
+            areq.setTransactionId(UUID.randomUUID().toString());
+            areqValidator.validateRequest(areq);
 
-        log.info("Starting processing for Authentication request: {}", RequestContextHolder.get().getRequestId());
-        String id = UUID.randomUUID().toString();
-
-
-        // validation 1
-
-        Transaction transaction = new Transaction();
-        transaction.setId(id);
-        transaction.setInteractionCount(0);
-        transaction.setPhase(Phase.AREQ);
-        transaction.setTransactionStatus(TransactionStatus.CREATED);
-
-        //Set default message version
-        String acsMessageVersion = ThreeDSConstant.SUPPORTED_MESSAGE_VERSION[0];
-        for(String availableVersion: ThreeDSConstant.SUPPORTED_MESSAGE_VERSION) {
-            if(availableVersion.equals(areq.getMessageVersion())) {
-                acsMessageVersion = areq.getMessageVersion();
+            Transaction oldTransaction = transactionService.findDuplicationTransaction(areq.getThreeDSServerTransID());
+            if (oldTransaction != null) {
+                log.error("processAuthRequest - found duplicate transaction : " + areq.getTransactionId());
+                transaction = oldTransaction;
+                throw new ACSException(ExceptionConstant.DUPLICATE_TRANSACTION_REQUEST.getErrorCode(), ExceptionConstant.DUPLICATE_TRANSACTION_REQUEST.getErrorDesc());
             }
-        }
-        transaction.setMessageVersion(acsMessageVersion);
 
-        String appDeviceInfo = "";
-        if (areq.getDeviceChannel().equals(DeviceChannel.APP.getChannel())) {
-            try {
-                String deviceInfo = areq.getDeviceInfo();
-                Base64.Decoder decoder = Base64.getDecoder();
-                byte[] decodedByte = decoder.decode(deviceInfo);
-                String decodedString = new String(decodedByte);
-                JSONObject json = new JSONObject(decodedString);
-                JSONObject dd = json.getJSONObject("DD");
-                appDeviceInfo = dd.getString("C001");
-            } catch (Exception e) {
-                log.debug(e.getMessage());
-            }
+            transaction = transactionService.create(areq);
+            transactionService.save(transaction);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            transactionMessageTypeService.createAndSave(areq, transaction);
+
         }
 
-        if(areq.getDeviceChannel().equals(DeviceChannel.APP.getChannel())) {
-            if(appDeviceInfo.equals(appDeviceInfoAndroid)) {
-                transaction.setDeviceName(InternalConstants.ANDROID);
-            }else if(appDeviceInfo.equals(appDeviceInfoIOS)) {
-                transaction.setDeviceName(InternalConstants.IOS);
-            }
-            transaction.setDeviceChannel(DeviceChannel.APP.getChannel());
-        }else if(areq.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())) {
-            transaction.setDeviceName(InternalConstants.BROWSER);
-            transaction.setDeviceChannel(DeviceChannel.BRW.getChannel());
-        }
+        // GETall InstitutionInstrumentService.findByPan(pan); with Features
 
-        transaction.setMessageCategory(MessageCategory.getMessageCategory(areq.getMessageCategory()));
+        //    validateInstitution(areq);
 
-        transaction.setInstitutionId("institutionId");
-     //   TransactionReferenceDetail transactionReferenceDetail = new TransactionReferenceDetail("threedsServerTransactionId", "refNumber",  "dsid");
-       // transactionReferenceDetail.setId(UUID.randomUUID().toString());
-        //transaction.setTransactionReferenceDetail(transactionReferenceDetail);
+//        user = userDetailService.findByUserId(transaction, transaction.getCardNumber());
 
-        TransactionMerchant transactionMerchant = new TransactionMerchant();
-        transactionMerchant.setMerchantName("merchantName");
-        transactionMerchant.setAcquirerMerchantId("merchantId");
-        transaction.setTransactionMerchant(transactionMerchant);
-
-
-        List<TransactionMessageTypeDetail> transactionMessageTypes = new LinkedList<>();
-        TransactionMessageTypeDetail  transactionMessageType = new TransactionMessageTypeDetail();
-        transactionMessageType.setId(UUID.randomUUID().toString());
-        transactionMessageType.setMessageType(MessageType.AReq);
-        Timestamp receivedDateTime = new Timestamp(System.currentTimeMillis());
-        transactionMessageType.setReceivedTimestamp(receivedDateTime);
-        transactionMessageTypes.add(transactionMessageType);
-
-
-        TransactionMessageTypeDetail  transactionMessageType2 = new TransactionMessageTypeDetail();
-        transactionMessageType2.setId(UUID.randomUUID().toString());
-        transactionMessageType2.setMessageType(MessageType.ARes);
-        Timestamp receivedDateTime2 = new Timestamp(System.currentTimeMillis());
-        transactionMessageType2.setReceivedTimestamp(receivedDateTime2);
-        transactionMessageTypes.add(transactionMessageType2);
-        
-        transaction.setTransactionMessageTypeDetail(transactionMessageTypes);
-        transactionService.createOrUpdate(transaction);
-        Transaction dto = transactionService.findById(transaction.getId());
-        List<TransactionMessageTypeDetail> ts = dto.getTransactionMessageTypeDetail();
-      //  dto.getTransactionReferenceDetail().setDsTransactionId("dsTransactionId");
-        transactionService.createOrUpdate(dto);
-        transactionService.remove(transaction.getId());
-
-        // Create other transaction dtos
-        // check populateTransactionDetails
-        // Store details that came under Areq
-
-        // institutionInstrumentService.findByPan(pan); getAll institution entities, error if not found
-        // Get Auth options for institution
-        // Validate institution and range
-
-        // Validate AREQ
-       // validationService.validate(areq, TransectionDto, RangeDto);
+        // auth validation service
         // riskBasedEngineService.determineChallenge(reqAReq, transaction);
 
 //eci = eCommIndicatorService.generateECI(transaction, reqAReq);
@@ -173,10 +96,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 //				}
 //			}
 
-
         // Store transaction details in db and get correct exception with details
         //generateARES
-         // check every error and state being stored in db check for checked and unchecked exception... checked should return 200 with Ares
+        // check every error and state being stored in db check for checked and unchecked exception... checked should return 200 with Ares
         // check transaction status handle
 
         return null;

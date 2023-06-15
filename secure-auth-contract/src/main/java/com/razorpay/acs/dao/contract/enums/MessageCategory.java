@@ -7,7 +7,7 @@
  Created Date 			: Jul 29, 2017 
  ******************************************************************************/
 
-package com.razorpay.acs.dao.enums;
+package com.razorpay.acs.dao.contract.enums;
 
 public enum MessageCategory {
 

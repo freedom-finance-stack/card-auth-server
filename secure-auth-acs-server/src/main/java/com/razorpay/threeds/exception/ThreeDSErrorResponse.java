@@ -85,7 +85,7 @@ public class ThreeDSErrorResponse {
     }
 
 
-    public ThreeDSErrorResponse(final HttpStatus status, final String errorCode, final String errorDetail, final String errorComponent, final String errorDescription) {
+    public ThreeDSErrorResponse(final HttpStatus status, final String errorCode,  final String errorComponent, final String errorDescription, final String errorDetail) {
 
         this.httpStatus = status;
         this.errorCode = errorCode;

@@ -14,13 +14,7 @@ public class AReqValidationServiceImpl implements ValidationService<AREQ> {
         // if (reqAReq.getMessageType().equals(ThreeDSConstant.MESSAGE_TYPE_AREQ)
         // check for duplicate request
         //
-//        Transaction oldTransaction = transactionService.findDuplicationTransaction(transactionId);
-//        if(oldTransaction != null) {
-//            LOGGER.error(Utility.prefixTxnId(transactionId,"processAuthRequest - found duplicate transaction : "+transactionId));
-//            transaction = oldTransaction;
-//            timeoutService.removeTimeoutTransaction(transactionId);
-//            throw new ACSException(ExceptionConstant.DUPLICATE_TRANSACTION_REQUEST.getErrorCode(), ExceptionConstant.DUPLICATE_TRANSACTION_REQUEST.getErrorDesc());
-//        }
+
         // check device channel
 //        DeviceChannel channel = DeviceChannel.getDeviceChannel(reqAReq.getDeviceChannel());
 //        if(null == channel){
@@ -28,6 +22,14 @@ public class AReqValidationServiceImpl implements ValidationService<AREQ> {
 //            transaction.setTransactionStatusReason(TransactionStatusReason.UNSUPPORTED_DEVICE.getCode());
 //            throw new ACSException(TransactionStatusReason.UNSUPPORTED_DEVICE.getCode(),TransactionStatusReason.UNSUPPORTED_DEVICE.getDesc());
 //        }
+//        Transaction oldTransaction = transactionService.findDuplicationTransaction(transactionId);
+//        if(oldTransaction != null) {
+//            LOGGER.error(Utility.prefixTxnId(transactionId,"processAuthRequest - found duplicate transaction : "+transactionId));
+//            transaction = oldTransaction;
+//            timeoutService.removeTimeoutTransaction(transactionId);
+//            throw new ACSException(ExceptionConstant.DUPLICATE_TRANSACTION_REQUEST.getErrorCode(), ExceptionConstant.DUPLICATE_TRANSACTION_REQUEST.getErrorDesc());
+//        }
+
 
 
 

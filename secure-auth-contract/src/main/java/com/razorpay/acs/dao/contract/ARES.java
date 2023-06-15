@@ -3,7 +3,7 @@ package com.razorpay.acs.dao.contract;
 import lombok.Data;
 
 @Data
-public class ARES {
+public class ARES extends ThreeDSObject {
 
     private String threeDSServerTransID;
 }

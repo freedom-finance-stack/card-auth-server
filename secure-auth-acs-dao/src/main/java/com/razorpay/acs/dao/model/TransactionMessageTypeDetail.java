@@ -37,4 +37,9 @@ public class TransactionMessageTypeDetail extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
     private Transaction transaction ;
+
+    public TransactionMessageTypeDetail(String message, MessageType messageType){
+        this.message = message;
+        this.messageType = messageType;
+    }
 }

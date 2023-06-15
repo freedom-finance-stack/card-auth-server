@@ -1,11 +1,13 @@
 package com.razorpay.acs.dao.contract;
 
 import lombok.Data;
+
+import java.beans.Transient;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
-public class AREQ {
+public class AREQ extends ThreeDSObject {
 
     //All Required Fields
     @JsonProperty("threeDSRequestorURL")
@@ -274,7 +276,7 @@ public class AREQ {
     @JsonProperty("threeDSRequestorDecReqInd")
     private String threeDSRequestorDecReqInd;
 
-
+    private transient String transactionId;
     //-------------------------------------------
 
 	/*@JsonProperty("threeDSRequestorNPAInd")

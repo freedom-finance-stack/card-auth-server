@@ -1,17 +1,15 @@
 package com.razorpay.acs.dao.model;
 
-import com.razorpay.acs.dao.annotation.SoftDeleteRead;
-import com.razorpay.acs.dao.enums.FlowType;
-import com.razorpay.acs.dao.enums.MessageCategory;
+import com.razorpay.acs.dao.contract.enums.MessageCategory;
 import com.razorpay.acs.dao.enums.Phase;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -20,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
+@Builder
 public class Transaction extends BaseEntity<String> {
     @Id
     private String id;
@@ -34,9 +33,8 @@ public class Transaction extends BaseEntity<String> {
     @Column(name = "message_category")
     private MessageCategory messageCategory;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "flow_type")
-    private FlowType flowType;
+    @Column(name = "challenge_mandated")
+    private boolean challengeMandated;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_status")
@@ -78,7 +76,7 @@ public class Transaction extends BaseEntity<String> {
     @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private TransactionCardDetail transactionCardDetail;
 
-    @OneToMany(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "transaction", fetch = FetchType.LAZY)
     private List<TransactionMessageTypeDetail> transactionMessageTypeDetail; // todo lazy loading not working
 
     @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

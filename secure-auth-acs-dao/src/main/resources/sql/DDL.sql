@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `transaction`
     `institution_id`            varchar(36)                                                                                                                                                                     NOT NULL,
     `message_category`          ENUM ('PA', 'NPA', 'PVPA', 'PVNPA', 'NW', 'TW', 'IT', 'AT', 'AW', 'DI', 'II' )                                                                                                  NOT NULL,
     `message_version`           varchar(10),
-    `flow_type`                 ENUM ('Frictionless', 'Challenge'),
+    `challenge_mandated`        bool,
     `transaction_status`        ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLANGE_REQUIRED','CHALLANGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL')                           NOT NULL,
     `transaction_status_reason` varchar(80),
     `phase`                     ENUM ('AREQ','ARES','CREQ','RETRY_CREQ','CRES','RREQ','REDIRECT','RESEND_OTP','AUTH_INITIATE','GENERATE_OTP','AUTH_RESULT','SEAMLESS_GENERATE_OTP','VERIFY_OTP','RRES','ERROR') NOT NULL,

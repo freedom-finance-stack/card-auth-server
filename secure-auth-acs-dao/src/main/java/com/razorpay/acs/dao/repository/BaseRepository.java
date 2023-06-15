@@ -1,6 +1,7 @@
 package com.razorpay.acs.dao.repository;
 
 import com.razorpay.acs.dao.model.BaseEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -9,7 +10,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import javax.transaction.Transactional;
 
 @NoRepositoryBean
-public interface BaseRepository<T extends BaseEntity, ID> extends CrudRepository<T, ID> {
+public interface BaseRepository<T extends BaseEntity, ID> extends JpaRepository<T, ID> {
 
     @Query("update #{#entityName} e set e.deleted_at= now() where e.id = ?1")
     @Modifying
