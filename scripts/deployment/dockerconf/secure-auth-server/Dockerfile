@@ -12,7 +12,7 @@ RUN  apk update \
   && apk upgrade \
   && apk add ca-certificates \
   && update-ca-certificates \
-  && apk add --update coreutils && rm -rf /var/cache/apk/* \
+  && apk add --update coreutils && rm -rf /var/cache/apk/*
 
 # Add non-root user which will be used
 RUN addgroup -S $CONTAINER_USERGROUP && adduser -S $CONTAINER_USER -G $CONTAINER_USER
