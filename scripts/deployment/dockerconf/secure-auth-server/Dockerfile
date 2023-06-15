@@ -13,7 +13,9 @@ RUN  apk update \
   && apk add ca-certificates \
   && update-ca-certificates \
   && apk add --update coreutils && rm -rf /var/cache/apk/* \
-  && addgroup -S $CONTAINER_USERGROUP && adduser -S $CONTAINER_USER -G $CONTAINER_USER
+
+# Add non-root user which will be used
+RUN addgroup -S $CONTAINER_USERGROUP && adduser -S $CONTAINER_USER -G $CONTAINER_USER
 
 #Install Java 11 JDK
 RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazoncorretto.rsa.pub \
