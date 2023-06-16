@@ -14,7 +14,7 @@ RUN  apk update \
   && apk upgrade \
   && apk add ca-certificates \
   && update-ca-certificates \
-  && apk add --update coreutils && rm -rf /var/cache/apk/*
+  && apk add --update coreutils
 
 #Install Java 11 JDK
 RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazoncorretto.rsa.pub \
@@ -23,10 +23,10 @@ RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazo
 RUN apk add --update amazon-corretto-11
 
 #Install Supervisord
-RUN apk add --update supervisor && rm  -rf /tmp/* /var/cache/apk/*
+RUN apk add --update supervisor
 
 # Install Other Libraries
-RUN apk add --update curl bash
+RUN apk add --update curl bash && rm  -rf /tmp/* /var/cache/apk/*
 
 # Directories
 ENV GLOBAL_LOG_DIRECTORY /var/log
