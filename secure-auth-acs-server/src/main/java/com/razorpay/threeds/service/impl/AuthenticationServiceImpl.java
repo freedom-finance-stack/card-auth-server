@@ -14,6 +14,7 @@ import com.razorpay.threeds.service.TransactionMessageTypeService;
 import com.razorpay.threeds.service.TransactionService;
 
 import com.razorpay.threeds.service.cardDetail.CardDetailService;
+import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.ThreeDSValidator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public ARES processAuthenticationRequest(@NonNull AREQ areq) {
         Transaction transaction = null;
         try {
-            areq.setTransactionId(UUID.randomUUID().toString());
+            areq.setTransactionId(Util.generateUUID());
+            transactionMessageTypeService.createAndSave(areq, areq.getTransactionId());
             // validate areq
             areqValidator.validateRequest(areq);
             // check duplicate transaction
@@ -64,22 +66,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             rangeService.validateRange(cardRange);
             CardDetailsRequest cardDetailsRequest = new CardDetailsRequest(cardRange.getRangeGroup().getInstitution().getId(), areq.getAcctNumber()) ;
             CardDetailDto cardDetailDto = cardDetailService.getCardDetails(cardDetailsRequest, cardRange.getCardStoreType());
-            cardDetailService.validateCardDetail(cardDetailDto);
-           // feature service.getFeatures(cardRange);
+            //  cardDetailService.validateCardDetail(cardDetailDto);
+            // feature service.getFeatures(cardRange);
             // GetAuthFeature(cardRange)
-            //
-
 
         } catch (Exception e) {
             // todo handle exception properly
             e.printStackTrace();
 
-        } finally {
-
-            transactionMessageTypeService.createAndSave(areq, transaction);
-
         }
-
 
 
 //        user = userDetailService.findByUserId(transaction, transaction.getCardNumber());

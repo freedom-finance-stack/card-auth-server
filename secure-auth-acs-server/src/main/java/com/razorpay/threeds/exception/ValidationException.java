@@ -18,6 +18,7 @@ public class ValidationException extends ThreeDSException {
 
     @Override
     public ThreeDSErrorResponse getErrorResponse() {
+        //todo check Status code to be sent to DS
         return new ThreeDSErrorResponse(HttpStatus.OK, super.getErrorCode().getErrorCode(), super.getMessage(), super.getErrorCode().getErrorComponent(), super.getErrorCode().getErrorDescription());
     }
 }

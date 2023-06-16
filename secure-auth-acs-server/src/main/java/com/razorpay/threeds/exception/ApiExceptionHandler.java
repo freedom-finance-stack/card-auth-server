@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-    // there more method needs to override if we want consistent behaviour across all the errors
+    //todo there more method needs to override if we want consistent behaviour across all the errors
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
                                                                          HttpHeaders headers,
@@ -32,7 +32,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
        // these case should happen ideally
         // todo we need to set alert for this
         log.error(e.getMessage(), e);
-        ThreeDSErrorResponse errorResponse = new ThreeDSErrorResponse(HttpStatus.BAD_REQUEST, ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorCode(),
+        ThreeDSErrorResponse errorResponse = new ThreeDSErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorCode(),
                 e.getMessage() , ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorComponent(),
                 ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorDescription());
         return buildResponseEntity(errorResponse);

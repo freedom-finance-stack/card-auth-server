@@ -1,6 +1,7 @@
 package com.razorpay.threeds.exception;
 
 public enum ThreeDSecureErrorCode {
+    // todo check error handling in 3ds doc page Page 314
     MESSAGE_RECEIVED_INVALID("101", "A", "Invalid Message Type"),
     MESSAGE_VERSION_NUMBER_NOT_SUPPORTED("102", "A" ,"Message version not supported"),
     SENT_MESSAGES_LIMIT_EXCEEDED("103", "A" ,"Exceeded maximum number of PReq messages sent to the DS."),

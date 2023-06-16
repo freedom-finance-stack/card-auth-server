@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CardDetailService {
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+//    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final CardDetailFetcherFactory cardDetailFetcherFactory;
 
     public CardDetailDto getCardDetails(CardDetailsRequest cardDetailsRequest, CardStoreType type) throws ACSException {
@@ -24,14 +24,14 @@ public class CardDetailService {
     }
 
     public void validateCardDetails(CardDetailDto cardDetailDto) throws ACSException {
-        if (!cardDetailDto.isSuccess()) {
-            throw new ACSDataAccessException(ErrorCode.INSTITUTION_NOT_FOUND.getErrorCode(),
-                    "Invalid response from card fetcher");
-        }
-        if (cardDetailDto.isBlocked() || !cardDetailDto.isEnrolled()) {
-            throw new UserBlockedException(ErrorCode.INSTITUTION_NOT_FOUND(),
-                    "Card Number is blocked");
-        }
+//        if (!cardDetailDto.isSuccess()) {
+//            throw new ACSDataAccessException(ErrorCode.INSTITUTION_NOT_FOUND.getErrorCode(),
+//                    "Invalid response from card fetcher");
+//        }
+//        if (cardDetailDto.isBlocked() || !cardDetailDto.isEnrolled()) {
+//            throw new UserBlockedException(ErrorCode.INSTITUTION_NOT_FOUND(),
+//                    "Card Number is blocked");
+//        }
 
     }
 

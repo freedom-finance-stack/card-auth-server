@@ -24,6 +24,9 @@ public class TransactionMessageTypeDetail extends BaseEntity {
 
     private String message;
 
+    @Column(name = "transaction_id")
+    private String transactionId;
+
     @Column(name = "received_timestamp")
     private Timestamp receivedTimestamp;
 
@@ -33,10 +36,6 @@ public class TransactionMessageTypeDetail extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type")
     private MessageType messageType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id", referencedColumnName = "id")
-    private Transaction transaction ;
 
     public TransactionMessageTypeDetail(String message, MessageType messageType){
         this.message = message;

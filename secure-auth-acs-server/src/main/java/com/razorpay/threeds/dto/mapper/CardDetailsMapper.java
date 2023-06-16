@@ -10,6 +10,6 @@ import org.mapstruct.factory.Mappers;
 public interface CardDetailsMapper {
 
     final CardDetailsMapper INSTANCE = Mappers.getMapper(CardDetailsMapper.class);
-    @Mapping(target="transactionReferenceDetail", source="transactionReferenceDetail")
-    CardDetail toTransactionModel(CardDetailDto CardDetailDto);
+    @Mapping(target="cardNumber", source="cardNumber")
+    CardDetail toCardDetailModel(CardDetailDto CardDetailDto);
 }

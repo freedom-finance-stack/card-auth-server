@@ -7,12 +7,10 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.UUID;
 
 public class Util {
     public static final String PADDED_SYMBOL_X = "X";
-    public static final String PADDED_SYMBOL_0 = "0";
-    public static final String PAD_LEFT = "LEFT";
-    public static final String PAD_RIGHT = "RIGHT";
 
     public static boolean isNull(Object object) {
         return object == null ? true : false;
@@ -57,9 +55,14 @@ public class Util {
 
 
     public static String toJson(Object object) {
+        //todo create GSON bean
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         String strJson = gson.toJson(object);
         return strJson;
+    }
+
+    public static String generateUUID() {
+        return UUID.randomUUID().toString();
     }
 
     public static String maskedCardNumber(String cardNumber) {

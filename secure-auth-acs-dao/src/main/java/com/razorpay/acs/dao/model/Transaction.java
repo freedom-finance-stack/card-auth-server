@@ -111,11 +111,6 @@ public class Transaction extends BaseEntity<String> {
         transactionPurchaseDetail.setTransaction(this);
     }
 
-    public void setTransactionMessageTypeDetail( List<TransactionMessageTypeDetail> transactionMessageTypeDetails ){
-        this.transactionMessageTypeDetail = transactionMessageTypeDetails;
-        transactionMessageTypeDetails.forEach(transactionMessageTypeDetail -> transactionMessageTypeDetail.setTransaction(this));
-    }
-
     public void setTransactionBrowserDetail(TransactionBrowserDetail transactionBrowserDetail){
         this.transactionBrowserDetail = transactionBrowserDetail;
         transactionBrowserDetail.setTransaction(this);

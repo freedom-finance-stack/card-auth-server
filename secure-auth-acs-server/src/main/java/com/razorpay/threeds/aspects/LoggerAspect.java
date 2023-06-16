@@ -41,8 +41,9 @@ public class LoggerAspect {
      * This contains all the packages for which we need to generate logs at DEBUG level
      */
     private static final String WHITELISTED_PACKAGES_DEBUG = "(" +
-            "execution(* com.example.demo.repository..*(..))"  + ")";
-
+            "execution(* com.razorpay.acs.dao..*(..))"  + ")";
+    private static final String BLACKLISTED_PACKAGES_DEBUG = "!(" +
+            "execution(* com.razorpay.acs.dao.enums..*(..))" + ")";   // Added repository as example, need change it once we have use case
     /***
      * This contains all the packages which should
      * not be generated at INFO level
@@ -56,8 +57,9 @@ public class LoggerAspect {
             "execution(* com.example.demo.controller.params..*(..))"  + ")";
 
     private static final String INFO_POINTCUTS = WHITELISTED_PACKAGES_INFO + " && " + BLACKLISTED_PACKAGES_INFO;
+    private static final String DEBUG_POINTCUTS = WHITELISTED_PACKAGES_DEBUG + " && " + BLACKLISTED_PACKAGES_DEBUG;
 
-    @Around(value = WHITELISTED_PACKAGES_DEBUG)
+    @Around(value = DEBUG_POINTCUTS)
     public Object logAroundInDebugMode(final ProceedingJoinPoint joinPoint) throws Throwable {
         return around(joinPoint, LogLevel.DEBUG);
     }

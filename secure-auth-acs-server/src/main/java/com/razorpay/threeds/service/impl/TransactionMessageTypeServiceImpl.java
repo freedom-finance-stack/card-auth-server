@@ -36,18 +36,18 @@ import static com.razorpay.threeds.utils.Util.getTimeStampFromString;
 public class TransactionMessageTypeServiceImpl implements TransactionMessageTypeService {
 
     private final TransactionMessageTypeDetailRepository transactionMessageTypeDetailRepository;
-    public TransactionMessageTypeDetail create(AREQ areq, Transaction transaction) {
+    public TransactionMessageTypeDetail create(AREQ areq, String transactionId) {
         TransactionMessageTypeDetail transactionMessageTypeDetail = new TransactionMessageTypeDetail(Util.toJson(areq), MessageType.AReq);
-        transactionMessageTypeDetail.setId(UUID.randomUUID().toString());
-        transactionMessageTypeDetail.setTransaction(transaction);
+        transactionMessageTypeDetail.setId(Util.generateUUID());
+        transactionMessageTypeDetail.setTransactionId(transactionId);
         transactionMessageTypeDetail.setReceivedTimestamp(new Timestamp(System.currentTimeMillis()));
         return transactionMessageTypeDetail;
     }
 
-    public TransactionMessageTypeDetail create(CREQ creq, Transaction transaction) {
+    public TransactionMessageTypeDetail create(CREQ creq, String transactionId) {
         TransactionMessageTypeDetail transactionMessageTypeDetail = new TransactionMessageTypeDetail(Util.toJson(creq), MessageType.CReq);
-        transactionMessageTypeDetail.setId(UUID.randomUUID().toString());
-        transactionMessageTypeDetail.setTransaction(transaction);
+        transactionMessageTypeDetail.setId(Util.generateUUID());
+        transactionMessageTypeDetail.setTransactionId(transactionId);
         transactionMessageTypeDetail.setReceivedTimestamp(new Timestamp(System.currentTimeMillis()));
         return transactionMessageTypeDetail;
     }
@@ -58,12 +58,12 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
             }
     }
 
-    public TransactionMessageTypeDetail createAndSave(ThreeDSObject threeDSObject, Transaction transaction) {
+    public TransactionMessageTypeDetail createAndSave(ThreeDSObject threeDSObject, String transactionId) {
         TransactionMessageTypeDetail transactionMessageTypeDetail = null;
         if (threeDSObject instanceof AREQ) {
-            transactionMessageTypeDetail =  create((AREQ) threeDSObject, transaction);
+            transactionMessageTypeDetail =  create((AREQ) threeDSObject, transactionId);
         } else if (threeDSObject instanceof CREQ) {
-            transactionMessageTypeDetail = create((CREQ) threeDSObject, transaction);
+            transactionMessageTypeDetail = create((CREQ) threeDSObject, transactionId);
         }
         this.save(transactionMessageTypeDetail);
         return transactionMessageTypeDetail;
