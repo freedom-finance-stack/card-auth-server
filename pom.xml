@@ -134,7 +134,7 @@
                     <java>
                         <googleJavaFormat>
                             <version>1.8</version>
-                            <style>AOSP</style>
+                            <style>GOOGLE</style>
                             <reflowLongStrings>true</reflowLongStrings>
                         </googleJavaFormat>
 
