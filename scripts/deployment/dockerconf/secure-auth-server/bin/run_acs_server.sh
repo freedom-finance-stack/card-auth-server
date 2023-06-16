@@ -19,6 +19,7 @@ else
   JAVA_GC_OPTS="$JAVA_GC_OPTS -Xms2G -Xmx2G -XX:+UseG1GC"
 fi
 
+# todo - Add spring.active.profiles environment variable in Java Opts.
 JAVA_OPTS="$JAVA_EXTRA_OPTS $JAVA_GC_OPTS -Djava.net.preferIPv4Stack=true
           -Dsun.jnu.encoding=UTF-8
           -Dfile.encoding=UTF-8
