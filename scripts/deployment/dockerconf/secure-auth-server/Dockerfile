@@ -6,6 +6,8 @@ MAINTAINER labs-team@razorpay.com
 ENV CONTAINER_USER secure-auth
 ENV CONTAINER_USERGROUP secure-auth
 ENV CURRENT_DIR_PATH scripts/deployment/dockerconf/secure-auth-server
+ARG ACS_SERVER_PORT=7070
+ENV SECURE_AUTH_ACS_SERVER_PORT=$ACS_SERVER_PORT
 
 #Update repository
 RUN  apk update \
@@ -27,7 +29,7 @@ RUN apk add --update amazon-corretto-11
 RUN apk add --update supervisor && rm  -rf /tmp/* /var/cache/apk/*
 
 # Install Other Libraries
-RUN apk add --update curl unzip bash
+RUN apk add --update curl bash
 
 # Directories
 ENV GLOBAL_LOG_DIRECTORY /var/log
@@ -53,8 +55,7 @@ COPY $CURRENT_DIR_PATH/supervisor/supervisord.conf /etc/supervisord.conf
 RUN chown -R $CONTAINER_USER:$CONTAINER_USERGROUP $GLOBAL_LOG_DIRECTORY
 RUN chown -R $CONTAINER_USER:$CONTAINER_USERGROUP $ACS_SERVER_BASE_DIRECTORY
 USER $CONTAINER_USER
-ENV HEALTH_CHECK_URI=/actuator/healthcheck
-HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:7070/actuator/health || exit 1
+HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:$SECURE_AUTH_ACS_SERVER_PORT/actuator/health || exit 1
 EXPOSE 7070
 
 
