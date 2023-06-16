@@ -8,27 +8,27 @@ package com.razorpay.threeds.exception.checked;
 
 
 // Checked Exception
-public class DataNotFoundException extends ACSException {
+public class ACSDataAccessException extends ACSException {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public DataNotFoundException(String errorCode, String message, Throwable cause, boolean enableSuppression,
-								 boolean writableStackTrace) {
+	public ACSDataAccessException(String errorCode, String message, Throwable cause, boolean enableSuppression,
+                                  boolean writableStackTrace) {
 		super(errorCode, message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public DataNotFoundException(String errorCode, String message, Throwable cause) {
+	public ACSDataAccessException(String errorCode, String message, Throwable cause) {
 		super(errorCode, message, cause);
 	}
 
-	public DataNotFoundException(String errorCode, String message) {
+	public ACSDataAccessException(String errorCode, String message) {
 		super(errorCode, message);
 	}
 
-	public DataNotFoundException(String errorCode, Throwable cause) {
+	public ACSDataAccessException(String errorCode, Throwable cause) {
 		super(errorCode, cause);
 	}
 

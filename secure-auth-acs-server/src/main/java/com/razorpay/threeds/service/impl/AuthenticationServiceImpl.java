@@ -2,16 +2,18 @@ package com.razorpay.threeds.service.impl;
 
 import com.razorpay.acs.dao.contract.AREQ;
 import com.razorpay.acs.dao.contract.ARES;
+import com.razorpay.acs.dao.contract.CardDetailsRequest;
+import com.razorpay.acs.dao.enums.CardStoreType;
 import com.razorpay.acs.dao.model.CardRange;
-import com.razorpay.acs.dao.model.Institution;
-import com.razorpay.acs.dao.model.RangeGroup;
 import com.razorpay.acs.dao.model.Transaction;
+import com.razorpay.threeds.dto.CardDetailDto;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.AuthenticationService;
 import com.razorpay.threeds.service.RangeService;
 import com.razorpay.threeds.service.TransactionMessageTypeService;
 import com.razorpay.threeds.service.TransactionService;
 
+import com.razorpay.threeds.service.cardDetail.CardDetailService;
 import com.razorpay.threeds.validator.ThreeDSValidator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TransactionService transactionService;
     private final TransactionMessageTypeService transactionMessageTypeService;
     private final RangeService rangeService;
+    private final CardDetailService cardDetailService;
 
     @Qualifier(value = "authenticationRequestValidator")
     private final ThreeDSValidator<AREQ> areqValidator;
@@ -55,10 +58,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // create transaction entity and save
             transaction = transactionService.create(areq);
             transactionService.save(transaction);
+
+            // get range and institution entity and verify
             CardRange cardRange = rangeService.findByPan(areq.getAcctNumber());
-            RangeGroup rangeGroup = cardRange.getRangeGroup();
-            Institution institution =  rangeGroup.getInstitution();
-            System.out.println("range : " +  institution.getName());
+            rangeService.validateRange(cardRange);
+            CardDetailsRequest cardDetailsRequest = new CardDetailsRequest(cardRange.getRangeGroup().getInstitution().getId(), areq.getAcctNumber()) ;
+            CardDetailDto cardDetailDto = cardDetailService.getCardDetails(cardDetailsRequest, cardRange.getCardStoreType());
+            cardDetailService.validateCardDetail(cardDetailDto);
+           // feature service.getFeatures(cardRange);
+            // GetAuthFeature(cardRange)
+            //
+
+
         } catch (Exception e) {
             // todo handle exception properly
             e.printStackTrace();
@@ -70,7 +81,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
 
-        //    validateInstitution(areq);
 
 //        user = userDetailService.findByUserId(transaction, transaction.getCardNumber());
 
@@ -112,4 +122,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return null;
     }
+
+
 }
