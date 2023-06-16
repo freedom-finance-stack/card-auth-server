@@ -5,6 +5,7 @@ import com.razorpay.acs.dao.enums.CardType;
 import com.razorpay.acs.dao.enums.AuthType;
 import com.razorpay.acs.dao.enums.CardRangeStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
@@ -16,8 +17,9 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Where(clause = "deleted_at is null")
-public class CardRange extends BaseEntity{
+public class CardRange extends BaseEntity<String>  {
     @Id
     private String id;
 

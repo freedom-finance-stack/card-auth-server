@@ -2,22 +2,21 @@ package com.razorpay.acs.dao.model;
 
 import com.razorpay.acs.dao.enums.InstitutionStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "institution")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Where(clause = "deleted_at is null")
-public class Institution extends BaseEntity {
+public class Institution extends BaseEntity<String>  {
     @Id
     private String id;
 

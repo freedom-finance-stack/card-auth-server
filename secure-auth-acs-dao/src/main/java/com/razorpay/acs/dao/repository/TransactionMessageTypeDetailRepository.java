@@ -11,9 +11,4 @@ import javax.transaction.Transactional;
 
 @Repository
 public interface TransactionMessageTypeDetailRepository extends BaseRepository<TransactionMessageTypeDetail, String>{
-    @Override
-    @Modifying
-    @Transactional
-    @Query("update TransactionMessageTypeDetail t set t.deleted_at= now() where t.id = ?1") // define query to delete all
-    void softDeleteById(String id);
 }

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "range_group")
@@ -14,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Where(clause = "deleted_at is null")
-public class RangeGroup extends BaseEntity {
+public class RangeGroup extends BaseEntity<String> {
     @Id
     private String id;
 

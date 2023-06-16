@@ -1,9 +1,11 @@
 package com.razorpay.threeds.service.cardDetail;
 
-import com.razorpay.acs.dao.contract.CardDetailsRequest;
-import com.razorpay.threeds.dto.CardDetailDto;
+import com.razorpay.threeds.dto.CardDetailResponse;
+import com.razorpay.threeds.dto.CardDetailsRequest;
+import com.razorpay.threeds.exception.ThreeDSException;
 import com.razorpay.threeds.exception.checked.ACSException;
 
 public interface CardDetailFetcherService {
-   public CardDetailDto getCardDetails(CardDetailsRequest cardDetailsRequest) throws ACSException;
+    CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest) throws ACSException;
+    void validateCardDetails(CardDetailResponse cardDetailResponse)  throws ACSException, ThreeDSException;
 }

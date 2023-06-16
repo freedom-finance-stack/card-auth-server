@@ -2,10 +2,9 @@ package com.razorpay.acs.dao.model;
 
 import com.razorpay.acs.dao.enums.OtpVerificationStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -15,8 +14,9 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Where(clause = "deleted_at is null")
-public class OtpDetail extends BaseEntity {
+public class OtpDetail extends BaseEntity<String> {
     @Id
     private String id;
 

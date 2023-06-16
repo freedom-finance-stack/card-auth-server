@@ -2,29 +2,24 @@ package com.razorpay.threeds.service.impl;
 
 import com.razorpay.acs.dao.contract.AREQ;
 import com.razorpay.acs.dao.contract.ARES;
-import com.razorpay.acs.dao.contract.CardDetailsRequest;
-import com.razorpay.acs.dao.enums.CardStoreType;
 import com.razorpay.acs.dao.model.CardRange;
 import com.razorpay.acs.dao.model.Transaction;
-import com.razorpay.threeds.dto.CardDetailDto;
+import com.razorpay.threeds.dto.CardDetailResponse;
+import com.razorpay.threeds.dto.CardDetailsRequest;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.AuthenticationService;
 import com.razorpay.threeds.service.RangeService;
 import com.razorpay.threeds.service.TransactionMessageTypeService;
 import com.razorpay.threeds.service.TransactionService;
-
 import com.razorpay.threeds.service.cardDetail.CardDetailService;
 import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.ThreeDSValidator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 import static com.razorpay.threeds.exception.checked.ErrorCode.DUPLICATE_TRANSACTION_REQUEST;
 
@@ -46,6 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Transaction transaction = null;
         try {
             areq.setTransactionId(Util.generateUUID());
+            // log incoming request in DB
             transactionMessageTypeService.createAndSave(areq, areq.getTransactionId());
             // validate areq
             areqValidator.validateRequest(areq);
@@ -56,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 transaction = oldTransaction;
                 throw new ACSException(DUPLICATE_TRANSACTION_REQUEST.getCode(), DUPLICATE_TRANSACTION_REQUEST.getDefaultErrorMessage());
             }
-            // todo network code in Carddetails
+            // todo network code in Card details
             // create transaction entity and save
             transaction = transactionService.create(areq);
             transactionService.save(transaction);
@@ -64,9 +60,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // get range and institution entity and verify
             CardRange cardRange = rangeService.findByPan(areq.getAcctNumber());
             rangeService.validateRange(cardRange);
+
             CardDetailsRequest cardDetailsRequest = new CardDetailsRequest(cardRange.getRangeGroup().getInstitution().getId(), areq.getAcctNumber()) ;
-            CardDetailDto cardDetailDto = cardDetailService.getCardDetails(cardDetailsRequest, cardRange.getCardStoreType());
-            //  cardDetailService.validateCardDetail(cardDetailDto);
+            CardDetailResponse cardDetailResponse = cardDetailService.getCardDetails(cardDetailsRequest, cardRange.getCardStoreType());
+            cardDetailService.validateCardDetails(cardDetailResponse, cardRange.getCardStoreType());
+
             // feature service.getFeatures(cardRange);
             // GetAuthFeature(cardRange)
 

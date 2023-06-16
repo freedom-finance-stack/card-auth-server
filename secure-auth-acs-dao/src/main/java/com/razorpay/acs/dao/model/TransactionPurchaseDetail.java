@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -18,7 +16,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 @Builder
-public class TransactionPurchaseDetail extends BaseEntity {
+public class TransactionPurchaseDetail extends BaseEntity<String> {
     @Id
     @Column(name = "transaction_id")
     private String id;

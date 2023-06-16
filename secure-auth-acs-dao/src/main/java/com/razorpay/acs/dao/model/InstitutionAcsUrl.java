@@ -1,20 +1,24 @@
 package com.razorpay.acs.dao.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
-import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "institution_acs_url")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Where(clause = "deleted_at is null")
-public class InstitutionAcsUrl extends BaseEntity {
+public class InstitutionAcsUrl extends BaseEntity<InstitutionAcsUrlPK>  {
 
     @EmbeddedId
     private InstitutionAcsUrlPK institutionAcsUrlPK;
@@ -31,7 +35,7 @@ public class InstitutionAcsUrl extends BaseEntity {
     @Column(name = "deleted_by")
     private String deletedBy;
     @Override
-    public Object getId() {
+    public InstitutionAcsUrlPK getId() {
         return institutionAcsUrlPK;
     }
 

@@ -4,8 +4,6 @@ import com.razorpay.acs.dao.enums.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLDeleteAll;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -17,7 +15,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class TransactionMessageTypeDetail extends BaseEntity {
+public class TransactionMessageTypeDetail extends BaseEntity<String> {
     @Id
     @Column(name = "id")
     private String id;
