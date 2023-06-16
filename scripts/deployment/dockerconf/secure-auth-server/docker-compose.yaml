@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  secure-auth-server:
+    build:
+      context: ../../../..
+      dockerfile: ./scripts/deployment/dockerconf/secure-auth-server/Dockerfile
+    image: "secure-auth-server"
