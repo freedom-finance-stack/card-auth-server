@@ -26,7 +26,7 @@ RUN apk add --update amazon-corretto-11
 RUN apk add --update supervisor
 
 # Install Other Libraries
-RUN apk add --update curl bash && rm  -rf /tmp/* /var/cache/apk/*
+RUN apk add --update curl bash && rm -rf /tmp/* /var/cache/apk/*
 
 # Directories
 ENV GLOBAL_LOG_DIRECTORY /var/log
@@ -50,13 +50,13 @@ COPY $CURRENT_DIR_PATH/supervisor/supervisord.conf /etc/supervisord.conf
 HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:$SECURE_AUTH_ACS_SERVER_PORT/actuator/health || exit 1
 EXPOSE $SECURE_AUTH_ACS_SERVER_PORT
 
+WORKDIR $ACS_SERVER_LOG_DIRECTORY
+
 # Add non-root user which will be used
 RUN addgroup -S $CONTAINER_USERGROUP && adduser -S $CONTAINER_USER -G $CONTAINER_USER
 RUN chown -R $CONTAINER_USER:$CONTAINER_USERGROUP $GLOBAL_LOG_DIRECTORY
 RUN chown -R $CONTAINER_USER:$CONTAINER_USERGROUP $ACS_SERVER_BASE_DIRECTORY
 USER $CONTAINER_USER
-
-WORKDIR $ACS_SERVER_LOG_DIRECTORY
 
 # Default execution point
 ENTRYPOINT ["sh", "-c", "$ACS_SERVER_BIN_DIRECTORY/entrypoint.sh"]
