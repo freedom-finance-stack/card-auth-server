@@ -48,7 +48,7 @@ COPY $CURRENT_DIR_PATH/supervisor/supervisord.conf /etc/supervisord.conf
 
 #Docker Container HealthChecks
 HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:$SECURE_AUTH_ACS_SERVER_PORT/actuator/health || exit 1
-EXPOSE 7070
+EXPOSE $SECURE_AUTH_ACS_SERVER_PORT
 
 # Add non-root user which will be used
 RUN addgroup -S $CONTAINER_USERGROUP && adduser -S $CONTAINER_USER -G $CONTAINER_USER
