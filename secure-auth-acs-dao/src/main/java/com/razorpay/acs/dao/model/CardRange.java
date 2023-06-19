@@ -58,6 +58,9 @@ public class CardRange extends BaseEntity<String>  {
     @Column(name = "whitelisting_allowed")
     private String whitelistingAllowed;
 
+    @Column(name = "network_code")
+    private Byte networkCode;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "card_store_type")
     private CardStoreType cardStoreType;

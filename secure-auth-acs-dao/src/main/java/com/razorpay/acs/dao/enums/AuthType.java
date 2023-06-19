@@ -2,7 +2,7 @@ package com.razorpay.acs.dao.enums;
 
 
 public enum AuthType {
-    NOCHALLENGE,
+    NO_CHALLENGE,
     CHALLENGE,
     RBA
 }

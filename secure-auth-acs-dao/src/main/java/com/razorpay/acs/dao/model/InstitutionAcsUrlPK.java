@@ -17,5 +17,5 @@ public class InstitutionAcsUrlPK implements Serializable {
     private String deviceChannel;
 
     @Column(name = "network_code")
-    private String networkCode;
+    private Byte networkCode;
 }

@@ -34,9 +34,6 @@ public class CardDetail extends BaseEntity<String>  {
 
     private Boolean blocked;
 
-    @Column(name = "network_code")
-    private String networkCode;
-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cardholder_id", referencedColumnName = "id")
     @MapsId
