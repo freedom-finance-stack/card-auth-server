@@ -17,7 +17,6 @@ public class CardDetailDto {
     private String mobileNumber;
     private String emailId;
     private boolean blocked;
-    private boolean enrolled;
     private String dob;
     private String institutionId;
 }

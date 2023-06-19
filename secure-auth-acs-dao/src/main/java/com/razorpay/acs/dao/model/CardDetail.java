@@ -6,12 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Entity(name = "card_detail")
+@Entity
 @Table(name = "card_detail")
 @Data
 @NoArgsConstructor
@@ -23,11 +20,8 @@ public class CardDetail extends BaseEntity<String>  {
     @Id
     private String id;
 
-    @Column(name = "cardholder_id", nullable = false)
-    private String cardholderId;
-
-    @Column(name = "range_id", nullable = false)
-    private String rangeId;
+    @Column(name = "card_range_id", nullable = false)
+    private String cardRangeId;
 
     @Column(name = "institution_id", nullable = false)
     private String institutionId;
@@ -42,6 +36,11 @@ public class CardDetail extends BaseEntity<String>  {
 
     @Column(name = "network_code")
     private String networkCode;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cardholder_id", referencedColumnName = "id")
+    @MapsId
+    private Cardholder cardholder ;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;

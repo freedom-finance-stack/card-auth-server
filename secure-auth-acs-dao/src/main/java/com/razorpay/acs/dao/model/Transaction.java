@@ -3,14 +3,10 @@ package com.razorpay.acs.dao.model;
 import com.razorpay.acs.dao.contract.enums.MessageCategory;
 import com.razorpay.acs.dao.enums.Phase;
 import com.razorpay.acs.dao.enums.TransactionStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "transaction")
@@ -76,10 +72,10 @@ public class Transaction extends BaseEntity<String> {
     @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private TransactionCardDetail transactionCardDetail;
 
-    @OneToMany(mappedBy = "transaction", fetch = FetchType.LAZY)
-    private List<TransactionMessageTypeDetail> transactionMessageTypeDetail; // todo lazy loading not working
+//    @OneToMany(mappedBy = "transaction", fetch = FetchType.LAZY)
+//    private List<TransactionMessageTypeDetail> transactionMessageTypeDetail;
 
-    @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // todo lazy loading not working
     private TransactionPurchaseDetail transactionPurchaseDetail;
 
     @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

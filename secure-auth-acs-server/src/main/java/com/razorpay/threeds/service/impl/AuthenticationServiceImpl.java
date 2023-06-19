@@ -46,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // validate areq
             areqValidator.validateRequest(areq);
             // check duplicate transaction
-            Transaction oldTransaction = transactionService.findDuplicationTransaction(areq.getThreeDSServerTransID());
+            Transaction oldTransaction = transactionService.findDuplicationTransaction(areq.getThreeDSServerTransID()); //TODO CHECK With Team on this condition
             if (oldTransaction != null) {
                 log.error("processAuthRequest - found duplicate transaction : " + areq.getTransactionId());
                 transaction = oldTransaction;
@@ -71,11 +71,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (Exception e) {
             // todo handle exception properly
             e.printStackTrace();
-
         }
 
 
-//        user = userDetailService.findByUserId(transaction, transaction.getCardNumber());
 
         // auth validation service
         // riskBasedEngineService.determineChallenge(reqAReq, transaction);

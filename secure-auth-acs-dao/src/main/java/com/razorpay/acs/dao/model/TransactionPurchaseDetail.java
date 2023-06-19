@@ -1,9 +1,6 @@
 package com.razorpay.acs.dao.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -12,6 +9,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "transaction_purchase_detail")
 @Data
+@ToString(exclude = {"transaction"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")

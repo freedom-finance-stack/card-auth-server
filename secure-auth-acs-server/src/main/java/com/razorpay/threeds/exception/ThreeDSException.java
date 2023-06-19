@@ -1,13 +1,11 @@
 package com.razorpay.threeds.exception;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
-
-import java.util.Optional;
 
 abstract public class ThreeDSException extends RuntimeException {
 
     private final ThreeDSecureErrorCode errorCode;
+
 
     public ThreeDSException(final ThreeDSecureErrorCode errorCode, final String message) {
         super(message);

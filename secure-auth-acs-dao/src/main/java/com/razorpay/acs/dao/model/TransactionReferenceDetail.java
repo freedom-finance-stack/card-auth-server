@@ -1,8 +1,6 @@
 package com.razorpay.acs.dao.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -10,8 +8,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "transaction_reference_detail")
 @Data
+@ToString(exclude = {"transaction"})
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Where(clause = "deleted_at is null")
 public class TransactionReferenceDetail extends BaseEntity<String> {
 
