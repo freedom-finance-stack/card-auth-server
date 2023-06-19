@@ -9,17 +9,17 @@ import io.micrometer.graphite.GraphiteMeterRegistry;
 
 public class GraphiteIMicrometerImpl implements IMicrometer {
 
-    @Override
-    public GraphiteMeterRegistry providesMeterRegistry() {
+  @Override
+  public GraphiteMeterRegistry providesMeterRegistry() {
 
-        GraphiteMeterRegistry graphiteMeterRegistry =
-                new GraphiteMeterRegistry(
-                        GraphiteConfig.DEFAULT,
-                        Clock.SYSTEM,
-                        (id, convention) ->
-                                "prefix."
-                                        + HierarchicalNameMapper.DEFAULT.toHierarchicalName(
-                                                id, convention));
-        return graphiteMeterRegistry;
-    }
+    GraphiteConfig graphiteConfig = GraphiteConfig.DEFAULT;
+
+    GraphiteMeterRegistry graphiteMeterRegistry =
+        new GraphiteMeterRegistry(
+            graphiteConfig,
+            Clock.SYSTEM,
+            (id, convention) ->
+                "prefix." + HierarchicalNameMapper.DEFAULT.toHierarchicalName(id, convention));
+    return graphiteMeterRegistry;
+  }
 }

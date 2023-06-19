@@ -4,3 +4,5 @@ micrometer:
       enabled: true
     graphite:
       enabled: false
+      serverUrl: "localhost"
+      serverPort: 8080

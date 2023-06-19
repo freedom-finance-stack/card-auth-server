@@ -4,5 +4,5 @@ import io.micrometer.core.instrument.MeterRegistry;
 
 public interface IMicrometer {
 
-    MeterRegistry providesMeterRegistry();
+  MeterRegistry providesMeterRegistry();
 }
