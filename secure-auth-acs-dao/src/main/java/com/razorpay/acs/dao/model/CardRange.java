@@ -2,7 +2,7 @@ package com.razorpay.acs.dao.model;
 
 import com.razorpay.acs.dao.enums.CardStoreType;
 import com.razorpay.acs.dao.enums.CardType;
-import com.razorpay.acs.dao.enums.AuthType;
+import com.razorpay.acs.dao.enums.RiskFlag;
 import com.razorpay.acs.dao.enums.CardRangeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,8 +49,8 @@ public class CardRange extends BaseEntity<String>  {
     private CardType cardType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "auth_type", nullable = false)
-    private AuthType authType;
+    @Column(name = "risk_flag", nullable = false)
+    private RiskFlag riskFlag;
 
     @Column(name = "description")
     private String description;
@@ -58,8 +58,9 @@ public class CardRange extends BaseEntity<String>  {
     @Column(name = "whitelisting_allowed")
     private String whitelistingAllowed;
 
-    @Column(name = "network_code")
-    private Byte networkCode;
+    @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true, targetEntity = Network.class)
+    @JoinColumn(name = "network_code", referencedColumnName = "code", insertable = false, updatable = false)
+    private Network network;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "card_store_type")
