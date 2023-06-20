@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import com.razorpay.acs.monitoring.MicrometerFactory;
-import com.razorpay.threeds.module.config.ConfigProvider;
+import com.razorpay.threeds.configuration.AppConfiguration;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.undertow.conduits.GzipStreamSourceConduit;
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AppModule {
 
-  private final ConfigProvider configProvider;
+  private final AppConfiguration appConfiguration;
 
   @Bean
   public UndertowServletWebServerFactory undertowServletWebServerFactory() {
@@ -32,7 +32,7 @@ public class AppModule {
                   new RequestEncodingHandler(handler)
                       .addEncoding("gzip", GzipStreamSourceConduit.WRAPPER));
         });
-    undertowServletWebServerFactory.setPort(configProvider.getServerPort());
+    undertowServletWebServerFactory.setPort(appConfiguration.App().getPort());
     return undertowServletWebServerFactory;
   }
 

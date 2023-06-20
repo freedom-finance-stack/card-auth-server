@@ -32,6 +32,13 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <spring.version>2.7.11</spring.version>
+        <apache-commons.version>3.12.0</apache-commons.version>
+        <openapi-swagger.version>1.6.15</openapi-swagger.version>
+        <mapstruct.version>1.5.3.Final</mapstruct.version>
+        <mysql.version>8.0.32</mysql.version>
+        <logback.version>1.2.12</logback.version>
+        <micrometer.version>1.9.10</micrometer.version>
+        <spring.cloud.version>3.1.5</spring.cloud.version>
         <slf4j.version>2.0.7</slf4j.version>
         <spotless.version>2.37.0</spotless.version>
     </properties>
@@ -103,11 +110,12 @@
             </dependency>
 
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-reload4j</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
             </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>
