@@ -1,97 +1,100 @@
 package com.razorpay.threeds.exception;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.Instant;
+
 import org.springframework.http.HttpStatus;
 
-import java.time.Instant;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import static com.razorpay.threeds.constant.ThreeDSConstant.MESSAGE_TYPE_ERRO;
 import static com.razorpay.threeds.constant.ThreeDSConstant.MESSAGE_TYPE_VERSION;
-
 
 @Getter
 @NoArgsConstructor
 public class ThreeDSErrorResponse {
 
-    //All Required Fields
+  // All Required Fields
 
-    @JsonProperty("errorCode")
-    private String errorCode;
+  @JsonProperty("errorCode")
+  private String errorCode;
 
-    @JsonProperty("errorComponent")
-    private String errorComponent;
+  @JsonProperty("errorComponent")
+  private String errorComponent;
 
-    @JsonProperty("errorDescription")
-    private String errorDescription;
+  @JsonProperty("errorDescription")
+  private String errorDescription;
 
-    @JsonProperty("errorDetail")
-    private String errorDetail;
+  @JsonProperty("errorDetail")
+  private String errorDetail;
 
-    @JsonProperty("messageType")
-    private String messageType = MESSAGE_TYPE_ERRO;
+  @JsonProperty("messageType")
+  private String messageType = MESSAGE_TYPE_ERRO;
 
-    @JsonProperty("messageVersion")
-    private String messageVersion = MESSAGE_TYPE_VERSION;
+  @JsonProperty("messageVersion")
+  private String messageVersion = MESSAGE_TYPE_VERSION;
 
-    //All Conditional Fields
-    @JsonProperty("threeDSServerTransID")
-    private String threeDSServerTransID;
+  // All Conditional Fields
+  @JsonProperty("threeDSServerTransID")
+  private String threeDSServerTransID;
 
-    @JsonProperty("acsTransID")
-    private String acsTransID;
+  @JsonProperty("acsTransID")
+  private String acsTransID;
 
-    @JsonProperty("dsTransID")
-    private String dsTransID;
+  @JsonProperty("dsTransID")
+  private String dsTransID;
 
-    @JsonProperty("errorMessageType")
-    private String errorMessageType;
+  @JsonProperty("errorMessageType")
+  private String errorMessageType;
 
-    @JsonProperty("sdkTransID")
-    private String sdkTransID;
+  @JsonProperty("sdkTransID")
+  private String sdkTransID;
 
-    //-----------------------------
+  // -----------------------------
 
-    @JsonIgnore
-    private HttpStatus httpStatus;
+  @JsonIgnore private HttpStatus httpStatus;
 
-    @JsonIgnore
-    private Instant timestamp = Instant.now();
+  @JsonIgnore private Instant timestamp = Instant.now();
 
-    public ThreeDSErrorResponse setAcsTransID(String acsTransID) {
-        this.acsTransID = acsTransID;
-        return this;
-    }
+  public ThreeDSErrorResponse setAcsTransID(String acsTransID) {
+    this.acsTransID = acsTransID;
+    return this;
+  }
 
-    public ThreeDSErrorResponse setDsTransID(String dsTransID) {
-        this.dsTransID = dsTransID;
-        return this;
-    }
+  public ThreeDSErrorResponse setDsTransID(String dsTransID) {
+    this.dsTransID = dsTransID;
+    return this;
+  }
 
-    public ThreeDSErrorResponse setErrorMessageType(String errorMessageType) {
-        this.errorMessageType = errorMessageType;
-        return this;
-    }
+  public ThreeDSErrorResponse setErrorMessageType(String errorMessageType) {
+    this.errorMessageType = errorMessageType;
+    return this;
+  }
 
-    public ThreeDSErrorResponse setSdkTransID(String sdkTransID) {
-        this.sdkTransID = sdkTransID;
-        return this;
-    }
-    public ThreeDSErrorResponse setThreeDSServerTransID(String threeDSServerTransID) {
-        this.threeDSServerTransID = threeDSServerTransID;
-        return this;
-    }
+  public ThreeDSErrorResponse setSdkTransID(String sdkTransID) {
+    this.sdkTransID = sdkTransID;
+    return this;
+  }
 
+  public ThreeDSErrorResponse setThreeDSServerTransID(String threeDSServerTransID) {
+    this.threeDSServerTransID = threeDSServerTransID;
+    return this;
+  }
 
-    public ThreeDSErrorResponse(final HttpStatus status, final String errorCode,  final String errorComponent, final String errorDescription, final String errorDetail) {
+  public ThreeDSErrorResponse(
+      final HttpStatus status,
+      final String errorCode,
+      final String errorComponent,
+      final String errorDescription,
+      final String errorDetail) {
 
-        this.httpStatus = status;
-        this.errorCode = errorCode;
-        this.errorComponent = errorComponent;
-        this.errorDescription = errorDescription;
-        this.errorDetail = errorDetail;
-    }
-
+    this.httpStatus = status;
+    this.errorCode = errorCode;
+    this.errorComponent = errorComponent;
+    this.errorDescription = errorDescription;
+    this.errorDetail = errorDetail;
+  }
 }

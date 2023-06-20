@@ -1,11 +1,12 @@
 package com.razorpay.acs.dao.model;
 
+import javax.persistence.*;
+
+import org.hibernate.annotations.Where;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "range_group")
@@ -14,28 +15,25 @@ import javax.persistence.*;
 @Data
 @Where(clause = "deleted_at is null")
 public class RangeGroup extends BaseEntity<String> {
-    @Id
-    private String id;
+  @Id private String id;
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 
-//    @OneToMany(mappedBy = "rangeGroup")
-//    private List<CardRange> cardRanges;
+  //    @OneToMany(mappedBy = "rangeGroup")
+  //    private List<CardRange> cardRanges;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "institution_id", referencedColumnName = "id")
-    private Institution institution ;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "institution_id", referencedColumnName = "id")
+  private Institution institution;
 
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
+  @Column(name = "created_by", nullable = false)
+  private String createdBy;
 
-    @Column(name = "modified_by")
-    private String modifiedBy;
+  @Column(name = "modified_by")
+  private String modifiedBy;
 
-    @Column(name = "deleted_by")
-    private String deletedBy;
-
+  @Column(name = "deleted_by")
+  private String deletedBy;
 }
-

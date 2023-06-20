@@ -1,12 +1,13 @@
 package com.razorpay.acs.dao.model;
 
+import javax.persistence.*;
+
+import org.hibernate.annotations.Where;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
 
 @Entity
 @Data
@@ -17,22 +18,21 @@ import javax.persistence.*;
 @Builder
 public class TransactionBrowserDetail extends BaseEntity<String> {
 
-    @Id
-    //@Column(name = "transaction_id")
-    private String id;
+  @Id
+  // @Column(name = "transaction_id")
+  private String id;
 
-    @Column(name = "javascript_enabled")
-    private Boolean javascriptEnabled;
+  @Column(name = "javascript_enabled")
+  private Boolean javascriptEnabled;
 
-    @Column(name = "ip")
-    private String ip;
+  @Column(name = "ip")
+  private String ip;
 
-    @Column(name = "accept_header")
-    private String acceptHeader;
+  @Column(name = "accept_header")
+  private String acceptHeader;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id", referencedColumnName = "id")
-    @MapsId
-    private Transaction transaction ;
-
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "transaction_id", referencedColumnName = "id")
+  @MapsId
+  private Transaction transaction;
 }

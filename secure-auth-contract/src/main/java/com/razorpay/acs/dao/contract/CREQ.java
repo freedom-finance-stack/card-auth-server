@@ -3,7 +3,7 @@ package com.razorpay.acs.dao.contract;
 import lombok.Data;
 
 @Data
-public class CREQ extends ThreeDSObject{
+public class CREQ extends ThreeDSObject {
 
-    private String threeDSServerTransID;
+  private String threeDSServerTransID;
 }

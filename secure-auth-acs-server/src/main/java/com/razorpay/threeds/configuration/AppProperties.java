@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AppProperties {
-    private int port;
-    private String hostName;
+  private int port;
+  private String hostName;
 }

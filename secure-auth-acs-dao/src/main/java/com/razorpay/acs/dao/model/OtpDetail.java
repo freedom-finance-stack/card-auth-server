@@ -1,13 +1,15 @@
 package com.razorpay.acs.dao.model;
 
+import javax.persistence.*;
+
+import org.hibernate.annotations.Where;
+
 import com.razorpay.acs.dao.enums.OtpVerificationStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "otp_detail")
@@ -17,21 +19,18 @@ import javax.persistence.*;
 @Builder
 @Where(clause = "deleted_at is null")
 public class OtpDetail extends BaseEntity<String> {
-    @Id
-    private String id;
+  @Id private String id;
 
-    @Column(name = "otp_id", nullable = false)
-    private String otpId;
+  @Column(name = "otp_id", nullable = false)
+  private String otpId;
 
-    @Column(name = "transaction_id", nullable = false)
-    private String transactionId;
+  @Column(name = "transaction_id", nullable = false)
+  private String transactionId;
 
-    @Column(name = "verification_status")
-    @Enumerated(EnumType.STRING)
-    private OtpVerificationStatus verificationStatus;
+  @Column(name = "verification_status")
+  @Enumerated(EnumType.STRING)
+  private OtpVerificationStatus verificationStatus;
 
-    @Column(name = "resend_count")
-    private Integer resendCount;
-
+  @Column(name = "resend_count")
+  private Integer resendCount;
 }
-

@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class ARES extends ThreeDSObject {
 
-    private String threeDSServerTransID;
+  private String threeDSServerTransID;
 }

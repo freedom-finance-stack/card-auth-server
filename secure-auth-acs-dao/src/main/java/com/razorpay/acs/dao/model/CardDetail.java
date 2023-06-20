@@ -1,15 +1,16 @@
 package com.razorpay.acs.dao.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Where;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "card_detail")
 @Table(name = "card_detail")
@@ -18,38 +19,37 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Builder
 @Where(clause = "deleted_at is null")
-// need to add this where clause in all the entities to make soft delete work, as Where is non inherited annotation couldn't find easy way
-public class CardDetail extends BaseEntity<String>  {
-    @Id
-    private String id;
+// need to add this where clause in all the entities to make soft delete work, as Where is non
+// inherited annotation couldn't find easy way
+public class CardDetail extends BaseEntity<String> {
+  @Id private String id;
 
-    @Column(name = "cardholder_id", nullable = false)
-    private String cardholderId;
+  @Column(name = "cardholder_id", nullable = false)
+  private String cardholderId;
 
-    @Column(name = "range_id", nullable = false)
-    private String rangeId;
+  @Column(name = "range_id", nullable = false)
+  private String rangeId;
 
-    @Column(name = "institution_id", nullable = false)
-    private String institutionId;
+  @Column(name = "institution_id", nullable = false)
+  private String institutionId;
 
-    @Column(name = "card_number")
-    private String cardNumber;
+  @Column(name = "card_number")
+  private String cardNumber;
 
-    @Column(name = "card_expiry")
-    private String cardExpiry;
+  @Column(name = "card_expiry")
+  private String cardExpiry;
 
-    private Boolean blocked;
+  private Boolean blocked;
 
-    @Column(name = "network_code")
-    private String networkCode;
+  @Column(name = "network_code")
+  private String networkCode;
 
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
+  @Column(name = "created_by", nullable = false)
+  private String createdBy;
 
-    @Column(name = "modified_by")
-    private String modifiedBy;
+  @Column(name = "modified_by")
+  private String modifiedBy;
 
-    @Column(name = "deleted_by")
-    private String deletedBy;
-
+  @Column(name = "deleted_by")
+  private String deletedBy;
 }

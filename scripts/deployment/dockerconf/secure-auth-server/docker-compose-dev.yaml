@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  secure-auth-mysql:
+    image: arm64v8/mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'secure-auth-db'
+      MYSQL_USER: 'secure-auth'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '5506:3306'
+    expose:
+      - '5506'
+    container_name: 'secure-auth-mysql'
+  secure-auth-server:
+    build:
+      context: ../../../..
+      dockerfile: ./scripts/deployment/dockerconf/secure-auth-server/Dockerfile
+    image: "secure-auth-server"
+    ports:
+      - '7070:7070'
+    depends_on:
+      - secure-auth-mysql
+    container_name: 'secure-auth-server'

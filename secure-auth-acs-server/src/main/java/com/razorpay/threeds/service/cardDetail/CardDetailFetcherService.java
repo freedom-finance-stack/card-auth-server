@@ -6,6 +6,8 @@ import com.razorpay.threeds.exception.ThreeDSException;
 import com.razorpay.threeds.exception.checked.ACSException;
 
 public interface CardDetailFetcherService {
-    CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest) throws ACSException;
-    void validateCardDetails(CardDetailResponse cardDetailResponse)  throws ACSException, ThreeDSException;
+  CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest) throws ACSException;
+
+  void validateCardDetails(CardDetailResponse cardDetailResponse)
+      throws ACSException, ThreeDSException;
 }
