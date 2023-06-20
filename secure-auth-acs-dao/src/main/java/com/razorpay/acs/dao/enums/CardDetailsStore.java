@@ -1,10 +1,10 @@
 package com.razorpay.acs.dao.enums;
 
-public enum CardStoreType {
+public enum CardDetailsStore {
   ACS(CardStoreTypeConstants.ACS),
   EXTERNAL_API(CardStoreTypeConstants.EXTERNAL_API);
 
-  CardStoreType(String name) {
+  CardDetailsStore(String name) {
     this.name = name;
   }
 

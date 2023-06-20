@@ -5,8 +5,8 @@ import javax.persistence.*;
 import org.hibernate.annotations.Where;
 
 import com.razorpay.acs.dao.enums.AuthType;
+import com.razorpay.acs.dao.enums.CardDetailsStore;
 import com.razorpay.acs.dao.enums.CardRangeStatus;
-import com.razorpay.acs.dao.enums.CardStoreType;
 import com.razorpay.acs.dao.enums.CardType;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ public class CardRange extends BaseEntity<String> {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "range_group_id", referencedColumnName = "id")
   @MapsId
-  private RangeGroup rangeGroup;
+  private CardRangeGroup cardRangeGroup;
 
   @Column(name = "start_range")
   private Long startRange;
@@ -57,11 +57,11 @@ public class CardRange extends BaseEntity<String> {
   private String description;
 
   @Column(name = "whitelisting_allowed")
-  private String whitelistingAllowed;
+  private boolean whitelistingAllowed;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "card_store_type")
-  private CardStoreType cardStoreType;
+  @Column(name = "card_details_store")
+  private CardDetailsStore cardDetailsStore;
 
   @Column(name = "created_by", nullable = false)
   private String createdBy;

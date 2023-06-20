@@ -1,7 +1,7 @@
 package com.razorpay.threeds.service.cardDetail;
 
-import com.razorpay.acs.dao.enums.CardStoreType;
+import com.razorpay.acs.dao.enums.CardDetailsStore;
 
 public interface CardDetailFetcherFactory {
-  CardDetailFetcherService getCardDetailFetcher(CardStoreType cardDetailsFetcherType);
+  CardDetailFetcherService getCardDetailFetcher(CardDetailsStore cardDetailsFetcherType);
 }

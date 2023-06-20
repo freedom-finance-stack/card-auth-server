@@ -19,7 +19,6 @@ import com.razorpay.threeds.service.cardDetail.CardDetailService;
 import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.ThreeDSValidator;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
   @Override
-  public ARES processAuthenticationRequest(@NonNull AREQ areq) {
+  public ARES processAuthenticationRequest(AREQ areq) {
     Transaction transaction = null;
     try {
       areq.setTransactionId(Util.generateUUID());
@@ -67,10 +66,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
       CardDetailsRequest cardDetailsRequest =
           new CardDetailsRequest(
-              cardRange.getRangeGroup().getInstitution().getId(), areq.getAcctNumber());
+              cardRange.getCardRangeGroup().getInstitution().getId(), areq.getAcctNumber());
       CardDetailResponse cardDetailResponse =
-          cardDetailService.getCardDetails(cardDetailsRequest, cardRange.getCardStoreType());
-      cardDetailService.validateCardDetails(cardDetailResponse, cardRange.getCardStoreType());
+          cardDetailService.getCardDetails(cardDetailsRequest, cardRange.getCardDetailsStore());
+      cardDetailService.validateCardDetails(cardDetailResponse, cardRange.getCardDetailsStore());
 
       // feature service.getFeatures(cardRange);
       // GetAuthFeature(cardRange)

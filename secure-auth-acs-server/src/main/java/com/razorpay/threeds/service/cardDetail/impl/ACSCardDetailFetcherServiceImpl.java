@@ -3,7 +3,7 @@ package com.razorpay.threeds.service.cardDetail.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.razorpay.acs.dao.enums.CardStoreType;
+import com.razorpay.acs.dao.enums.CardDetailsStore;
 import com.razorpay.acs.dao.repository.CardRangeRepository;
 import com.razorpay.threeds.dto.CardDetailResponse;
 import com.razorpay.threeds.dto.CardDetailsRequest;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service(CardStoreType.CardStoreTypeConstants.ACS)
+@Service(CardDetailsStore.CardStoreTypeConstants.ACS)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ACSCardDetailFetcherServiceImpl implements CardDetailFetcherService {
   private final CardRangeRepository cardRangeRepository;

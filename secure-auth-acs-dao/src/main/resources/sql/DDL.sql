@@ -173,8 +173,8 @@ CREATE TABLE IF NOT EXISTS `card_range`
     `card_type`               ENUM ('CREDIT', 'DEBIT', 'PREPAID') NOT NULL,
     `auth_type`               ENUM ('NOCHALLENGE', 'CHALLENGE', 'RBA')  NOT NULL,
     `description`             varchar(255),
-    `whitelisting_allowed`    varchar(255),
-    `card_store_type`         enum ('ACS', 'API_1'),
+    `whitelisting_allowed`    tinyint,
+    `card_details_store`      enum ('ACS', 'API_1'),
     `created_at`              timestamp                           NOT NULL,
     `modified_at`             timestamp                           NOT NULL,
     `deleted_at`              timestamp default NULL,
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `card_range`
     `deleted_by`              varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `range_group`
+CREATE TABLE IF NOT EXISTS `card_range_group`
 (
     `id`             varchar(36) PRIMARY KEY,
     `institution_id` varchar(36),

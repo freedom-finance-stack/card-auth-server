@@ -9,20 +9,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "range_group")
+@Table(name = "card_range_group")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Where(clause = "deleted_at is null")
-public class RangeGroup extends BaseEntity<String> {
+public class CardRangeGroup extends BaseEntity<String> {
   @Id private String id;
 
   private String name;
 
   private String description;
-
-  //    @OneToMany(mappedBy = "rangeGroup")
-  //    private List<CardRange> cardRanges;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "institution_id", referencedColumnName = "id")
