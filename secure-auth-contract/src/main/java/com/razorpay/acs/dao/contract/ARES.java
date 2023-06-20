@@ -2,6 +2,8 @@ package com.razorpay.acs.dao.contract;
 
 import java.util.List;
 
+import com.razorpay.acs.dao.contract.enums.ACSRenderingType;
+
 import lombok.Data;
 
 import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.MESSAGE_TYPE_ARES;

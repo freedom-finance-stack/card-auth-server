@@ -30,7 +30,8 @@ public interface AResMapper {
       expression = "java(getOperatorId(transaction, this.helperMapper.appConfiguration))")
   @Mapping(
       target = "acsReferenceNumber",
-      expression = "java(appConfiguration.getApp().getAcs().getReferenceNumber())")
+      expression =
+          "java(this.helperMapper.appConfiguration.getApp().getAcs().getReferenceNumber())")
   @Mapping(target = "acsTransID", source = "transaction.id")
   @Mapping(target = "eci", source = "transaction.eci")
   @Mapping(target = "acsURL", source = "aResMapperParams.acsUrl")
