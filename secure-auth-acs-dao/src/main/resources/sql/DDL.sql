@@ -83,7 +83,7 @@ CREATE TABLE `institution_acs_url`
 (
     `institution_id` varchar(5)  NOT NULL,
     `device_channel` varchar(10) NOT NULL,
-    `network_code`   varchar(2)  NOT NULL,
+    `network_code`   tinyint  NOT NULL,
     `challenge_url`  varchar(400) DEFAULT NULL,
     `created_at`     timestamp   NOT NULL,
     `created_by`     varchar(40) NOT NULL,
@@ -175,6 +175,7 @@ CREATE TABLE IF NOT EXISTS `card_range`
     `description`             varchar(255),
     `whitelisting_allowed`    tinyint,
     `card_details_store`      enum ('ACS', 'API_1'),
+    `network_code`            tinyint,
     `created_at`              timestamp                           NOT NULL,
     `modified_at`             timestamp                           NOT NULL,
     `deleted_at`              timestamp default NULL,

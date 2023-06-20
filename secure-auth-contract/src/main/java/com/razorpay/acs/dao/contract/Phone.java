@@ -1,12 +1,3 @@
-/*******************************************************************************
- * Copyright (C)  IZealiant Technologies 2017  - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- *
- * Author 				: Ashish Kirpan
- * Created Date 			: Aug 1, 2017
- ******************************************************************************/
-
 package com.razorpay.acs.dao.contract;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
