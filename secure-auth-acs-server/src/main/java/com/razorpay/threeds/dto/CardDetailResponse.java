@@ -13,6 +13,7 @@ public class CardDetailResponse {
 
   private CardDetailDto cardDetailDto;
   private boolean isSuccess;
+  // these will be used in case of API fetch
   private String statusCode;
   private String statusDescription;
 }

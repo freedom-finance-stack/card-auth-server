@@ -4,10 +4,7 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.Where;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -16,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 @Builder
+@ToString(exclude = {"transaction"})
 public class TransactionBrowserDetail extends BaseEntity<String> {
 
   @Id
