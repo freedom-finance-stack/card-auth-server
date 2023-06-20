@@ -1,16 +1,18 @@
 package com.razorpay.acs.dao.model;
 
+import javax.persistence.*;
+
+import org.hibernate.annotations.Where;
+
 import com.razorpay.acs.dao.enums.CardDetailsStore;
 import com.razorpay.acs.dao.enums.CardRangeStatus;
 import com.razorpay.acs.dao.enums.CardType;
 import com.razorpay.acs.dao.enums.RiskFlag;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "card_range")
@@ -62,7 +64,11 @@ public class CardRange extends BaseEntity<String> {
   private CardDetailsStore cardDetailsStore;
 
   @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true, targetEntity = Network.class)
-  @JoinColumn(name = "network_code", referencedColumnName = "code", insertable = false, updatable = false)
+  @JoinColumn(
+      name = "network_code",
+      referencedColumnName = "code",
+      insertable = false,
+      updatable = false)
   private Network network;
 
   @Column(name = "created_by", nullable = false)

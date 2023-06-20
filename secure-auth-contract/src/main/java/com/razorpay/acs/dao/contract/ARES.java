@@ -1,8 +1,8 @@
 package com.razorpay.acs.dao.contract;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.MESSAGE_TYPE_ARES;
 import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.MESSAGE_TYPE_VERSION;
@@ -10,7 +10,7 @@ import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.MESSAGE_TYPE
 @Data
 public class ARES extends ThreeDSObject {
 
-  //All Required Fields
+  // All Required Fields
   private String threeDSServerTransID;
 
   private String acsReferenceNumber;
@@ -33,12 +33,10 @@ public class ARES extends ThreeDSObject {
 
   private String acsDecConInd;
 
-  //All Optional Fields
+  // All Optional Fields
   private String cardholderInfo;
 
-
-
-  //All Conditional Fields
+  // All Conditional Fields
   private String acsChallengeMandated;
 
   private String acsOperatorID;
@@ -49,7 +47,7 @@ public class ARES extends ThreeDSObject {
 
   private String acsURL;
 
-  private String authenticationMethod; //todo check expected behaviour and authenticationType
+  private String authenticationMethod; // todo check expected behaviour and authenticationType
 
   private String authenticationValue;
 

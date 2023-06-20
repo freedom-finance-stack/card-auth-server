@@ -1,12 +1,13 @@
 package com.razorpay.acs.dao.model;
 
+import javax.persistence.*;
+
+import org.hibernate.annotations.Where;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "network")
