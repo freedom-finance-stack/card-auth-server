@@ -18,14 +18,14 @@ The simplest way to set up Secure Auth Server is to create a managed deployment 
 
 ### Run Secure Server Auth Locally
 
-##### Prerequiste
+#### Prerequiste
 We need to install below libraries
 * Java
 * Maven
 * Mysql Server
 * Java IDE(Intellij/Eclipse etc)
 
-##### Using Docker Compose Dev
+#### Using Docker Compose Dev
 Docker Compose dev is located [here](https://github.com/razorpay/secure-auth-server/blob/master/scripts/deployment/dockerconf/secure-auth-server/docker-compose-dev.yaml).
 You can start Secure Auth ACS Server following below steps.
 * Checkout Secure Auth Server Repo
