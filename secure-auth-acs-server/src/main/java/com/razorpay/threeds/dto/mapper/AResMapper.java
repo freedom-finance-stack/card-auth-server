@@ -76,7 +76,7 @@ public interface AResMapper {
         ) {
             return "02"; // hard coded to Dynamic
         }
-
+        return "";
     }
 
     default String getOperatorId(Transaction transaction, AppConfiguration appConfiguration) {
