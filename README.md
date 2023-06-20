@@ -20,42 +20,32 @@ The simplest way to set up Secure Auth Server is to create a managed deployment 
 
 #### Prerequiste
 We need to install below libraries
-* Java
-* Maven
-* Mysql Server
+* Java - `version "11.0.16" 2022-07-19 LTS`
+* Maven - `Apache Maven 3.8.6`
+* Mysql Server - `8.0.32`
 * Java IDE(Intellij/Eclipse etc)
 
 #### Using Docker Compose Dev
 Docker Compose dev is located [here](https://github.com/razorpay/secure-auth-server/blob/master/scripts/deployment/dockerconf/secure-auth-server/docker-compose-dev.yaml).
+
 You can start Secure Auth ACS Server following below steps.
 * Checkout Secure Auth Server Repo
-    ```
-    git checkout git@github.com:razorpay/secure-auth-server.git
-    ```
+  `git checkout git@github.com:razorpay/secure-auth-server.git`
 * Go to Secure Auth Server Repo directory
-    ```
-    cd <REPO_DIRECTORY>/secure-auth-server
-    ```
+  `cd <REPO_DIRECTORY>/secure-auth-server`
 * Create java jar binaries via
     ```
     mvn clean compile
     mvn clean install -U
     ```
 * Go to docker compose file directory
-    ```
-    cd <REPO_DIRECTORY>/secure-auth-server/scripts/deployment/dockerconf/secure-auth-server/
-    ```
+  `cd <REPO_DIRECTORY>/secure-auth-server/scripts/deployment/dockerconf/secure-auth-server/`
 * Run below command
-    ```
-    docker-compose -f docker-compose-dev.yaml up
-    ```
+  `docker-compose -f docker-compose-dev.yaml up`
 * Check if server is using
-    ```
-    curl --location 'http://127.0.0.1:7070/actuator/health'
-    ```
+  `curl --location 'http://127.0.0.1:7070/actuator/health'`
 ## Documentation
 For information related to documents of this project, refer to [Docs Readme](docs/README.md)
 
 ## Contribute
 For contribution guidelines, see CONTRIBUTING.
-
