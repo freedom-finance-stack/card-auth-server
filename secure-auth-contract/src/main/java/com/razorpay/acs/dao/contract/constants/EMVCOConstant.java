@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public interface EMVCOConstant {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class EMVCOConstant {
 
   /* All constants are defined in EMVCo specification documents.
    * EMVCo_3DS_Spec_210_1017_0318.pdf

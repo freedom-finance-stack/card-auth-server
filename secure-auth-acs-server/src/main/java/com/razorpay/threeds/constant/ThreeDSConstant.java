@@ -1,5 +1,9 @@
 package com.razorpay.threeds.constant;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ThreeDSConstant {
 
   // public static final String MESSAGE_TYPE_VERSION = "2.1.0";
