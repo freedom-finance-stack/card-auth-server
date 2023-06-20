@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `card_range`
     `block_on_exceed_attempt` tinyint                             NOT NULL,
     `status`                  ENUM ('ACTIVE', 'INACTIVE')         NOT NULL,
     `card_type`               ENUM ('CREDIT', 'DEBIT', 'PREPAID') NOT NULL,
-    `auth_type`               ENUM ('NOCHALLENGE', 'CHALLENGE', 'RBA')  NOT NULL,
+    `risk_flag`               ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA')  NOT NULL,
     `description`             varchar(255),
     `whitelisting_allowed`    tinyint,
     `card_details_store`      enum ('ACS', 'API_1'),

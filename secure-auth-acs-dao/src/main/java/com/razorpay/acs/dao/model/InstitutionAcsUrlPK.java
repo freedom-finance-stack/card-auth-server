@@ -1,13 +1,17 @@
 package com.razorpay.acs.dao.model;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import lombok.Data;
+import java.io.Serializable;
 
 @Data
 @Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class InstitutionAcsUrlPK implements Serializable {
 
   @Column(name = "institution_id")

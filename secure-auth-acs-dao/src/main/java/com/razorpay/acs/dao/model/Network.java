@@ -1,16 +1,12 @@
 package com.razorpay.acs.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.Where;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "network")
@@ -25,8 +21,8 @@ public class Network extends BaseEntity<String> {
   @Column(nullable = false)
   private Byte code;
 
-  @Column(nullable = false)
-  private String name;
+  @Enumerated(EnumType.STRING)
+  private com.razorpay.acs.dao.enums.Network name;
 
   @Column(name = "created_by", nullable = false)
   private String createdBy;
