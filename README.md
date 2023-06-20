@@ -34,7 +34,7 @@ You can start Secure Auth ACS Server following below steps.
     git checkout git@github.com:razorpay/secure-auth-server.git
     ```
 * Go to Secure Auth Server Repo directory
-    ```
+    ``` 
     cd <REPO_DIRECTORY>/secure-auth-server
     ```
 * Create java jar binaries via
@@ -58,4 +58,4 @@ You can start Secure Auth ACS Server following below steps.
 For information related to documents of this project, refer to [Docs Readme](docs/README.md)
 
 ## Contribute
-For contribution guidelines, see CONTRIBUTING.
+For contribution guidelines, see [CONTRIBUTING](CONTRIBUTING.md).
