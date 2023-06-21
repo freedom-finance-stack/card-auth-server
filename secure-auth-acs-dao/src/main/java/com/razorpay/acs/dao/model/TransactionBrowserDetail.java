@@ -17,7 +17,7 @@ import lombok.*;
 public class TransactionBrowserDetail extends BaseEntity<String> {
 
   @Id
-  // @Column(name = "transaction_id")
+  @Column(name = "transaction_id")
   private String id;
 
   @Column(name = "javascript_enabled")
@@ -33,4 +33,9 @@ public class TransactionBrowserDetail extends BaseEntity<String> {
   @JoinColumn(name = "transaction_id", referencedColumnName = "id")
   @MapsId
   private Transaction transaction;
+
+  @Override
+  public String getId() {
+    return this.transaction.getId();
+  }
 }

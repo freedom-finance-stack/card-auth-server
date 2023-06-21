@@ -93,17 +93,14 @@ public interface AResMapper {
   default String getOperatorId(Transaction transaction, AppConfiguration appConfiguration) {
 
     String operatorId = "";
-    if (Network.VISA
-        .getValue()
-        .equals(String.valueOf(transaction.getTransactionCardDetail().getNetworkCode()))) {
+    if (Integer.parseInt(Network.VISA.getValue(), 10)
+        == transaction.getTransactionCardDetail().getNetworkCode()) {
       operatorId = appConfiguration.getApp().getAcs().getOperatorId().getVisa();
-    } else if (Network.MASTERCARD
-        .getValue()
-        .equals(String.valueOf(transaction.getTransactionCardDetail().getNetworkCode()))) {
+    } else if (Integer.parseInt(Network.MASTERCARD.getValue(), 10)
+        == transaction.getTransactionCardDetail().getNetworkCode()) {
       operatorId = appConfiguration.getApp().getAcs().getOperatorId().getMastercard();
-    } else if (Network.AMEX
-        .getValue()
-        .equals(String.valueOf(transaction.getTransactionCardDetail().getNetworkCode()))) {
+    } else if (Integer.parseInt(Network.AMEX.getValue(), 10)
+        == transaction.getTransactionCardDetail().getNetworkCode()) {
       operatorId = appConfiguration.getApp().getAcs().getOperatorId().getAmex();
     }
     return operatorId;

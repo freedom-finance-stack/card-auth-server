@@ -61,7 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
       // create transaction entity and save
       transaction = transactionService.create(areq);
-      transactionService.save(transaction);
+      transaction = transactionService.save(transaction);
 
       // get range and institution entity and verify
       cardRange = rangeService.findByPan(areq.getAcctNumber());
@@ -128,6 +128,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     // check every error and state being stored in db check for checked and unchecked exception...
     // checked should return 200 with Ares
     // check transaction status handle
+    // fix save transaction in finally, check save and flush
     return ares;
   }
 
@@ -136,11 +137,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     if (riskFlag.equals(RiskFlag.NO_CHALLENGE)) {
       transaction.setTransactionStatus(TransactionStatus.SUCCESS);
       transaction.setChallengeMandated(false);
-      return true;
+      return false;
     } else if (riskFlag.equals(RiskFlag.CHALLENGE)) {
       transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
       transaction.setChallengeMandated(true);
-      return false;
+      return true;
     } else { // RBA
       throw new UnsupportedOperationException("RBA is not supported yet");
     }

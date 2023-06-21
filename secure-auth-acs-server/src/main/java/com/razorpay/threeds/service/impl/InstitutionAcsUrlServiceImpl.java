@@ -1,5 +1,7 @@
 package com.razorpay.threeds.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +23,13 @@ public class InstitutionAcsUrlServiceImpl
 
   @Override
   public InstitutionAcsUrl findById(InstitutionAcsUrlPK institutionAcsUrlPK) {
-    if (institutionAcsUrlRepository.findById(institutionAcsUrlPK).isPresent()) {
-      return institutionAcsUrlRepository.findById(institutionAcsUrlPK).get();
+    Optional<InstitutionAcsUrl> acsUrl = institutionAcsUrlRepository.findById(institutionAcsUrlPK);
+    if (acsUrl.isPresent()) {
+      return acsUrl.get();
     }
     throw new DataNotFoundException(
         ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
-        "Institution Instrument Object not found for Institution ID :"
+        "Acs url not found for Institution ID :"
             + institutionAcsUrlPK.getInstitutionId()
             + " and Network: "
             + institutionAcsUrlPK.getNetworkCode()
