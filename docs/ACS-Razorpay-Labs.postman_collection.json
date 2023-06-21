@@ -1,0 +1,43 @@
+{
+	"info": {
+		"_postman_id": "87a4acf0-b827-419b-b8d5-10af59004e8f",
+		"name": "ACS-Razorpay-Labs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "150985"
+	},
+	"item": [
+		{
+			"name": "Dev-AREQ-Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"threeDSRequestorURL\": \"https://izealiant.3DSServer2.com\",\n    \"threeDSCompInd\": \"U\",\n    \"threeDSRequestorAuthenticationInd\": \"01\",\n    \"threeDSRequestorID\": \"1234567891\",\n    \"threeDSRequestorName\": \"Requestor Name\",\n    \"threeDSServerRefNumber\": \"12876548276453738\",\n    \"threeDSServerTransID\": \"cb79b182-5229-4645-851f-54d5971da209\",\n    \"threeDSServerURL\": \"https://izealiant.3DSServer2.net\",\n    \"threeRIInd\": null,\n    \"acquirerBIN\": \"41111111111\",\n    \"acquirerMerchantID\": \"TestMerchant123\",\n    \"browserAcceptHeader\": \"abcd\",\n    \"browserJavaEnabled\": \"true\",\n    \"browserLanguage\": \"en\",\n    \"browserColorDepth\": \"48\",\n    \"browserScreenHeight\": \"478\",\n    \"browserScreenWidth\": \"200\",\n    \"browserTZ\": \"20\",\n    \"browserUserAgent\": \"abcd\",\n    \"acctNumber\": \"4016000000000018\",\n    \"deviceChannel\": \"02\",\n    \"deviceRenderOptions\": {\n        \"sdkInterface\": \"03\",\n        \"sdkUiType\": [\n            \"01\",\n            \"02\",\n            \"03\",\n            \"04\"\n        ],\n        \"mandatoryValueAvailable\": true,\n        \"validValue\": true\n    },\n    \"mcc\": \"4450\",\n    \"merchantCountryCode\": \"356\",\n    \"merchantName\": \"Airtel\",\n    \"messageCategory\": \"01\",\n    \"messageType\": \"AReq\",\n    \"messageVersion\": \"2.2.0\",\n    \"notificationURL\": \"http://10.0.1.39:8080/ZealMac2ACS/mpiRequest/getCRES\",\n    \"purchaseAmount\": \"9829\",\n    \"purchaseCurrency\": \"356\",\n    \"purchaseExponent\": \"2\",\n    \"purchaseDate\": \"20230606175743\",\n    \"sdkAppID\": \"APP00019986775\",\n    \"sdkEphemPubKey\": null,\n    \"sdkMaxTimeout\": null,\n    \"sdkReferenceNumber\": \"adfmqkldsmfasdmf90098752093\",\n    \"sdkTransID\": \"955c9c3e-dd17-431d-bcc5-b38f732c6547\",\n    \"threeDSRequestorAuthenticationInfo\": {\n        \"valid\": true,\n        \"threeDSReqAuthMethod\": \"01\",\n        \"threeDSReqAuthTimestamp\": \"201708160533\",\n        \"threeDSReqAuthData\": \"\"\n    },\n    \"threeDSRequestorChallengeInd\": \"01\",\n    \"threeDSRequestorPriorAuthenticationInfo\": null,\n    \"addrMatch\": \"N\",\n    \"acctInfo\": {\n        \"length\": 16,\n        \"formatValid\": true,\n        \"dataValid\": true,\n        \"empty\": false,\n        \"chAccAgeInd\": \"01\",\n        \"chAccDate\": \"20170801\",\n        \"chAccChangeInd\": \"01\",\n        \"chAccChange\": \"20170801\",\n        \"chAccPwChangeInd\": \"01\",\n        \"chAccPwChange\": \"20170701\",\n        \"shipAddressUsageInd\": \"01\",\n        \"shipAddressUsage\": \"20170801\",\n        \"txnActivityDay\": \"0\",\n        \"txnActivityYear\": \"28\",\n        \"provisionAttemptsDay\": \"1\",\n        \"nbPurchaseAccount\": \"1\",\n        \"suspiciousAccActivity\": \"01\",\n        \"shipNameIndicator\": \"01\",\n        \"paymentAccInd\": \"01\",\n        \"paymentAccAge\": \"20170801\"\n    },\n    \"acctID\": \"111111\",\n    \"merchantRiskIndicator\": {\n        \"length\": 9,\n        \"formatValid\": true,\n        \"shipIndicator\": \"01\",\n        \"deliveryTimeframe\": \"03\",\n        \"deliveryEmailAddress\": \"ashishk@izealiant.com\",\n        \"reorderItemsInd\": \"01\",\n        \"preOrderPurchaseInd\": \"01\",\n        \"preOrderDate\": \"20170403\",\n        \"giftCardAmount\": \"1000\",\n        \"giftCardCurr\": \"356\",\n        \"giftCardCount\": \"01\"\n    },\n    \"threeDSReqAuthMethodInd\": null,\n    \"threeDSServerOperatorID\": null,\n    \"acctType\": \"03\",\n    \"broadInfo\": null,\n    \"browserIP\": \"1.12.123.255\",\n    \"cardExpiryDate\": \"2109\",\n    \"billAddrCity\": \"Pune\",\n    \"billAddrCountry\": \"356\",\n    \"billAddrLine1\": \"Test address 1\",\n    \"billAddrLine2\": \"Test address 2\",\n    \"billAddrLine3\": \"Test address 3\",\n    \"billAddrPostCode\": \"411026\",\n    \"billAddrState\": \"MH\",\n    \"email\": \"ashishk@izealiant.com\",\n    \"homePhone\": {\n        \"formatValid\": true,\n        \"cc\": \"91\",\n        \"subscriber\": \"0204415698546\"\n    },\n    \"mobilePhone\": {\n        \"formatValid\": true,\n        \"cc\": \"91\",\n        \"subscriber\": \"8563215469\"\n    },\n    \"cardholderName\": \"Ashish Anil Kirpan\",\n    \"shipAddrCity\": \"Pune\",\n    \"shipAddrCountry\": \"356\",\n    \"shipAddrLine1\": \"Test address 1\",\n    \"shipAddrLine2\": \"Test address 2\",\n    \"shipAddrLine3\": \"Test address 3\",\n    \"shipAddrPostCode\": \"411025\",\n    \"shipAddrState\": \"MH\",\n    \"workPhone\": {\n        \"formatValid\": true,\n        \"cc\": \"91\",\n        \"subscriber\": \"0204415698667\"\n    },\n    \"deviceInfo\": \"A86JIKDAJS09F8ANDF75938465HVG9A6F97UFOHASD98FSH\",\n    \"dsReferenceNumber\": \"4412549876320161\",\n    \"dsTransID\": \"58c3413c-ea37-4f04-b21a-e3906a41015a\",\n    \"dsURL\": \"http://127.0.0.1:8080/ZealMac2ACS/mpiRequest/processRREQ\",\n    \"payTokenInd\": \"true\",\n    \"purchaseInstalData\": \"2\",\n    \"messageExtension\": [\n        {\n            \"name\": \"emvcomsgext\",\n            \"id\": \" X000000123-001\",\n            \"criticalityIndicator\": false,\n            \"data\": {\n                \"valueOne\": \"messageextensiondata\",\n                \"valueTwo\": \"moremessageextensiondata\"\n            }\n        }\n    ],\n    \"recurringExpiry\": \"20140408\",\n    \"recurringFrequency\": \"0\",\n    \"sdkEncData\": null,\n    \"transType\": \"01\",\n    \"browserJavascriptEnabled\": \"true\",\n    \"whiteListStatus\": null,\n    \"whiteListStatusSource\": null,\n    \"payTokenSource\": \"02\",\n    \"threeDSRequestorDecMaxTime\": null,\n    \"threeDSRequestorDecReqInd\": null\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:7070/v1/transaction/auth-request",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "7070",
+					"path": [
+						"v1",
+						"transaction",
+						"auth-request"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
