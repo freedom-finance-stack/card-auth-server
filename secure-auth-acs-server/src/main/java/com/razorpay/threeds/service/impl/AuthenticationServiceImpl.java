@@ -60,8 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       // todo check duplicate transaction once threeDSmethod is implemented
 
       // create transaction entity and save
-      transaction = transactionService.create(areq);
-      transaction = transactionService.save(transaction);
+      transaction = transactionService.save(transactionService.create(areq));
 
       // get range and institution entity and verify
       cardRange = rangeService.findByPan(areq.getAcctNumber());
@@ -99,7 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       // Update transaction entity
 
       // adding transaction data in exception
-      transactionService.save(transaction);
+      transaction = transactionService.save(transaction);
       throw new ThreeDSException(e.getErrorCode(), e.getMessage(), transaction, e);
     }
 
