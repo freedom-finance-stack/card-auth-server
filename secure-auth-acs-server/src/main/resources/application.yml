@@ -2,6 +2,12 @@
 app:
   port: 8080
   hostname: https://fps_acs/
+  acs:
+    referenceNumber: 12345678901234567890
+    operatorId:
+      visa: 123456789012345
+      mastercard: 123456789012345
+      amex: 123456789012345
 
 spring:
   application:
@@ -30,6 +36,12 @@ management:
       enabled: true         # needs security review, secure end point
     prometheus:
       enabled: true
+
+datasource:
+  url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/db_example
+  username: root
+  password: Mysql@123
+  driverClassName: com.mysql.cj.jdbc.Driver
 
 logging:
   level:

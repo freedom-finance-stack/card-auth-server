@@ -52,6 +52,9 @@ public class Transaction extends BaseEntity<String> {
   @Column(name = "auth_value")
   private String authValue;
 
+  @Column(name = "eci")
+  private String eci;
+
   @Column(name = "device_channel")
   private String deviceChannel;
 

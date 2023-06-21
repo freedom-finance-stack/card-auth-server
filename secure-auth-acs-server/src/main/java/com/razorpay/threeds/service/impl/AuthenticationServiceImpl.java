@@ -6,23 +6,27 @@ import org.springframework.stereotype.Service;
 
 import com.razorpay.acs.dao.contract.AREQ;
 import com.razorpay.acs.dao.contract.ARES;
+import com.razorpay.acs.dao.enums.RiskFlag;
+import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.CardRange;
+import com.razorpay.acs.dao.model.InstitutionAcsUrl;
+import com.razorpay.acs.dao.model.InstitutionAcsUrlPK;
 import com.razorpay.acs.dao.model.Transaction;
+import com.razorpay.threeds.dto.AResMapperParams;
 import com.razorpay.threeds.dto.CardDetailResponse;
 import com.razorpay.threeds.dto.CardDetailsRequest;
+import com.razorpay.threeds.dto.GenerateECIRequest;
+import com.razorpay.threeds.dto.mapper.AResMapper;
+import com.razorpay.threeds.exception.ThreeDSException;
 import com.razorpay.threeds.exception.checked.ACSException;
-import com.razorpay.threeds.service.AuthenticationService;
-import com.razorpay.threeds.service.RangeService;
-import com.razorpay.threeds.service.TransactionMessageTypeService;
-import com.razorpay.threeds.service.TransactionService;
+import com.razorpay.threeds.service.*;
 import com.razorpay.threeds.service.cardDetail.CardDetailService;
 import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.ThreeDSValidator;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import static com.razorpay.threeds.exception.checked.ErrorCode.DUPLICATE_TRANSACTION_REQUEST;
 
 @Slf4j
 @Service("authenticationServiceImpl")
@@ -33,36 +37,43 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private final TransactionMessageTypeService transactionMessageTypeService;
   private final RangeService rangeService;
   private final CardDetailService cardDetailService;
+  private final AuthValueGeneratorService authValueGeneratorService;
+  private final ECommIndicatorService eCommIndicatorService;
+  private final AResMapper aResMapper;
+  private final InstitutionAcsUrlService institutionAcsUrlService;
 
   @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
   @Override
-  public ARES processAuthenticationRequest(AREQ areq) {
+  public ARES processAuthenticationRequest(@NonNull AREQ areq) {
     Transaction transaction = null;
+    InstitutionAcsUrl acsUrl = null;
+    ARES ares = null;
+    CardRange cardRange = null;
     try {
       areq.setTransactionId(Util.generateUUID());
       // log incoming request in DB
       transactionMessageTypeService.createAndSave(areq, areq.getTransactionId());
       // validate areq
       areqValidator.validateRequest(areq);
-      // check duplicate transaction
-      Transaction oldTransaction =
-          transactionService.findDuplicationTransaction(areq.getThreeDSServerTransID());
-      if (oldTransaction != null) {
-        log.error("processAuthRequest - found duplicate transaction : " + areq.getTransactionId());
-        transaction = oldTransaction;
-        throw new ACSException(
-            DUPLICATE_TRANSACTION_REQUEST.getCode(),
-            DUPLICATE_TRANSACTION_REQUEST.getDefaultErrorMessage());
-      }
-      // todo network code in Card details
+
+      // todo check duplicate transaction once threeDSmethod is implemented
+
       // create transaction entity and save
-      transaction = transactionService.create(areq);
-      transactionService.save(transaction);
+      transaction = transactionService.save(transactionService.create(areq));
 
       // get range and institution entity and verify
-      CardRange cardRange = rangeService.findByPan(areq.getAcctNumber());
+      cardRange = rangeService.findByPan(areq.getAcctNumber());
       rangeService.validateRange(cardRange);
+      transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetwork().getCode());
+
+      // get acs url
+      acsUrl =
+          institutionAcsUrlService.findById(
+              new InstitutionAcsUrlPK(
+                  cardRange.getCardRangeGroup().getInstitution().getId(),
+                  areq.getDeviceChannel(),
+                  cardRange.getNetwork().getCode()));
 
       CardDetailsRequest cardDetailsRequest =
           new CardDetailsRequest(
@@ -71,57 +82,67 @@ public class AuthenticationServiceImpl implements AuthenticationService {
           cardDetailService.getCardDetails(cardDetailsRequest, cardRange.getCardDetailsStore());
       cardDetailService.validateCardDetails(cardDetailResponse, cardRange.getCardDetailsStore());
 
-      // feature service.getFeatures(cardRange);
-      // GetAuthFeature(cardRange)
+      // todo handle INFORMATIONAL and ATTEMPT status
+      if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
+        // todo add timer logic for challenge
+      } else {
+        String authValue = authValueGeneratorService.generateCAVV(transaction);
+        transaction.setAuthValue(authValue);
+      }
 
-    } catch (Exception e) {
-      // todo handle exception properly
-      e.printStackTrace();
+    } catch (ACSException e) {
+      // 3
+      // Update transaction entity
+    } catch (ThreeDSException e) {
+      // 3
+      // Update transaction entity
+
+      // adding transaction data in exception
+      transaction = transactionService.save(transaction);
+      throw new ThreeDSException(e.getErrorCode(), e.getMessage(), transaction, e);
     }
 
-    //        user = userDetailService.findByUserId(transaction, transaction.getCardNumber());
+    try {
+      String eci =
+          eCommIndicatorService.generateECI(
+              new GenerateECIRequest(
+                      transaction.getTransactionStatus(),
+                      cardRange.getNetwork(),
+                      transaction.getMessageCategory())
+                  .setThreeRIInd(areq.getThreeRIInd()));
+      transaction.setEci(eci);
+      // Generate and Store Ares
+      ares =
+          aResMapper.toAres(
+              areq,
+              transaction,
+              AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
+      transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
+    } finally {
+      transactionService.save(transaction);
+    }
 
-    // auth validation service
-    // riskBasedEngineService.determineChallenge(reqAReq, transaction);
-
-    // eci = eCommIndicatorService.generateECI(transaction, reqAReq);
-    //
-    //			//String eci = eCommIndicatorService.generateECI(transaction.getTransactionStatus(),
-    // transaction.getBrand().getLable());
-    //			LOGGER.trace(Utility.prefixTxnId(transaction.getTransactionId(),"Generated ECI : "+eci));
-    //			transaction.setEci(eci);
-    //
-    //
-    //			if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())
-    //					|| TransactionStatus.ATTEMPT.equals(transaction.getTransactionStatus())
-    //					|| TransactionStatus.INFORMATIONAL.equals(transaction.getTransactionStatus())) {
-    //				try {
-    //					LOGGER.trace(Utility.prefixTxnId(transaction.getTransactionId(),"Generating CAVV "));
-    //					HSMConfigPK configPK = new HSMConfigPK();
-    //					configPK.setInstitutionId(institution.getInstitutionId());
-    //					configPK.setNetworkId(instrumentDetail.getNetwork().getNetworkId());
-    //					LOGGER.trace(Utility.prefixTxnId(transaction.getTransactionId(),"HSM Config :
-    // "+configPK));
-    //					HSMConfig hsmConfig = hsmConfigService.findById(configPK);
-    //
-    //					String authValue = cavvGeneratorLocator.generateCAVV(reqAReq, hsmConfig, transaction,
-    // "nextval");
-    //
-    //					LOGGER.info(Utility.prefixTxnId(transaction.getTransactionId(), "Generated Auth Value ",
-    // authValue));
-    //					transaction.setAuthenticationValue(authValue);
-    //				} catch (ACSException e) {
-    //					e.printStackTrace();
-    //					LOGGER.error("Unable to generate Auth Value", e);
-    //				}
-    //			}
-
+    // check transaction shouldn't be in created state
     // Store transaction details in db and get correct exception with details
-    // generateARES
     // check every error and state being stored in db check for checked and unchecked exception...
     // checked should return 200 with Ares
     // check transaction status handle
+    // fix save transaction in finally, check save and flush
+    return ares;
+  }
 
-    return null;
+  private boolean isChallengeRequired(RiskFlag riskFlag, Transaction transaction) {
+    // todo honor ThreeDSRequestorChallengeInd once RBA is implemented
+    if (riskFlag.equals(RiskFlag.NO_CHALLENGE)) {
+      transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+      transaction.setChallengeMandated(false);
+      return false;
+    } else if (riskFlag.equals(RiskFlag.CHALLENGE)) {
+      transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
+      transaction.setChallengeMandated(true);
+      return true;
+    } else { // RBA
+      throw new UnsupportedOperationException("RBA is not supported yet");
+    }
   }
 }

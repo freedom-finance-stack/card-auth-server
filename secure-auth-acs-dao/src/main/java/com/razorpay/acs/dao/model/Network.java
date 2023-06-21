@@ -1,9 +1,6 @@
 package com.razorpay.acs.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Where;
 
@@ -25,8 +22,8 @@ public class Network extends BaseEntity<String> {
   @Column(nullable = false)
   private Byte code;
 
-  @Column(nullable = false)
-  private String name;
+  @Enumerated(EnumType.STRING)
+  private com.razorpay.acs.dao.enums.Network name;
 
   @Column(name = "created_by", nullable = false)
   private String createdBy;

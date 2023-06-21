@@ -8,7 +8,7 @@ public interface TransactionService {
 
   Transaction create(AREQ areq);
 
-  void save(Transaction transaction);
+  Transaction save(Transaction transaction);
 
   Transaction findById(String id);
 

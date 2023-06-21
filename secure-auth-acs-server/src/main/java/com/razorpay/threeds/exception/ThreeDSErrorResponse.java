@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static com.razorpay.threeds.constant.ThreeDSConstant.MESSAGE_TYPE_ERRO;
 import static com.razorpay.threeds.constant.ThreeDSConstant.MESSAGE_TYPE_VERSION;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class ThreeDSErrorResponse {
 
@@ -31,6 +33,9 @@ public class ThreeDSErrorResponse {
   @JsonProperty("errorDetail")
   private String errorDetail;
 
+  @JsonProperty("errorMessageType")
+  private String errorMessageType;
+
   @JsonProperty("messageType")
   private String messageType = MESSAGE_TYPE_ERRO;
 
@@ -46,9 +51,6 @@ public class ThreeDSErrorResponse {
 
   @JsonProperty("dsTransID")
   private String dsTransID;
-
-  @JsonProperty("errorMessageType")
-  private String errorMessageType;
 
   @JsonProperty("sdkTransID")
   private String sdkTransID;
@@ -81,6 +83,11 @@ public class ThreeDSErrorResponse {
 
   public ThreeDSErrorResponse setThreeDSServerTransID(String threeDSServerTransID) {
     this.threeDSServerTransID = threeDSServerTransID;
+    return this;
+  }
+
+  public ThreeDSErrorResponse setHttpStatus(HttpStatus httpStatus) {
+    this.httpStatus = httpStatus;
     return this;
   }
 

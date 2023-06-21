@@ -1,6 +1,9 @@
 package com.razorpay.threeds.service.impl;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -53,8 +56,9 @@ public class TransactionServiceImpl implements TransactionService {
     return transaction;
   }
 
-  public void save(Transaction transaction) {
+  public Transaction save(Transaction transaction) {
     transactionRepository.save(transaction);
+    return transactionRepository.findById(transaction.getId()).get();
   }
 
   private static Transaction createTransactionFromAreq(AREQ areq) {

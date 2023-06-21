@@ -3,6 +3,17 @@ app:
   port: 7070
   hostname: localhost
 
+spring:
+  application:
+    name: Secure Auth ACS Server
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/fps_acs
+    username: root
+    password: Mysql@123
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    showSql: true
+
 logging:
   level:
     org.springframework: INFO

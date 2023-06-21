@@ -13,7 +13,8 @@ public class EMVCOConstant {
   /* All constants are defined in EMVCo specification documents.
    * EMVCo_3DS_Spec_210_1017_0318.pdf
    * */
-
+  public static final String MESSAGE_TYPE_ARES = "ARes";
+  public static final String MESSAGE_TYPE_VERSION = "2.2.0";
   public static final String appDeviceInfoAndroid = "Android";
   public static final String appDeviceInfoIOS = "iOS";
 
