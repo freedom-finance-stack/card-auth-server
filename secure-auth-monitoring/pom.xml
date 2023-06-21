@@ -17,7 +17,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <micrometer.version>1.11.1</micrometer.version>
+        <micrometer.version>1.9.10</micrometer.version>
     </properties>
 
     <!-- ========================================================================== -->
@@ -45,12 +45,6 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
             <version>${micrometer.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
-            <version>${spring.cloud.version}</version>
         </dependency>
 
         <dependency>
