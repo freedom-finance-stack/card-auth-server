@@ -232,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `card_detail`
 (
     `id`             varchar(36) PRIMARY KEY,
     `cardholder_id`  varchar(36) NOT NULL,
-    `range_id`       varchar(36) NOT NULL,
+    `card_range_id`       varchar(36) NOT NULL,
     `institution_id` varchar(36) NOT NULL,
     `card_number`    varchar(25),
     `card_expiry`    varchar(4),
