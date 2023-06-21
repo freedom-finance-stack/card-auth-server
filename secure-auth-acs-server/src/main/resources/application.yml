@@ -37,6 +37,12 @@ management:
     prometheus:
       enabled: true
 
+datasource:
+  url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/db_example
+  username: root
+  password: Mysql@123
+  driverClassName: com.mysql.cj.jdbc.Driver
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

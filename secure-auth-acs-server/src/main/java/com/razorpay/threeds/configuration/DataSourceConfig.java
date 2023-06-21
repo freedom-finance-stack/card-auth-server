@@ -2,20 +2,34 @@ package com.razorpay.threeds.configuration;
 
 import javax.sql.DataSource;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
+@ConfigurationProperties(prefix = "spring.datasource")
+@Slf4j
+@Getter
+@Setter
 public class DataSourceConfig {
+
+  private String url;
+  private String username;
+  private String password;
+  private String driverClassName;
 
   @Bean
   public DataSource getDataSource() {
     return DataSourceBuilder.create()
-        .driverClassName("com.mysql.cj.jdbc.Driver")
-        .url("jdbc:mysql://localhost:3306/fps_acs")
-        .username("root")
-        .password("Mysql@123")
+        .driverClassName(driverClassName)
+        .url(url)
+        .username(username)
+        .password(password)
         .build();
   }
 }

@@ -40,11 +40,6 @@ public class CardDetail extends BaseEntity<String> {
   @MapsId
   private Cardholder cardholder;
 
-  @OneToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "cardholder_id", referencedColumnName = "id")
-  @MapsId
-  private Cardholder cardholder;
-
   @Column(name = "created_by", nullable = false)
   private String createdBy;
 
