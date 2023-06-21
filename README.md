@@ -50,7 +50,7 @@ You can start Secure Auth ACS Server following below steps.
     ```
     docker-compose -f docker-compose-dev.yaml up
     ```
-* Check if server is using
+* Check if server is up
     ```
     curl --location 'http://127.0.0.1:7070/actuator/health'
     ```

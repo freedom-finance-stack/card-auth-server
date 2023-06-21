@@ -25,3 +25,32 @@ Following these tips prior to raising a pull request will speed up the review cy
 * Lines that are not part of your change should not be edited (e.g. don't format unchanged lines, don't reorder existing imports)
 * Add the appropriate license headers to any new files
 
+### Submitting your changes
+
+Once your changes and tests are ready to submit for review:
+
+1. Test your changes
+2. Sign the Contributor License Agreement
+3. Rebase your changes
+4. Submit a pull request
+
+### Contributing to the Secure Auth Server codebase
+
+#### Prerequisites
+
+#### Importing the project into IntelliJ IDEA
+
+#### Formatting
+Sevure Auth Server code is automatically formatted with [spotless](https://github.com/diffplug/spotless).
+
+Alternative manual steps for IntelliJ.
+
+1. Install Google-Java-Format Plugin
+
+####  Java Language Formatting Guidelines
+
+Java files in the Secure Auth Server codebase are automatically formatted using the [Spotless Maven plugin](https://github.com/diffplug/spotless/tree/main/plugin-maven). The formatting check is run automatically via the precommit task, but it can be run explicitly with:
+
+```
+mvn spotless:apply
+```
