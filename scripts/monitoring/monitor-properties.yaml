@@ -1,9 +1,0 @@
-management:
-  metrics:
-    tags:
-      application: ${spring.application.name}
-    export:
-      prometheus:
-        enabled: true
-      graphite:
-        enabled: false
