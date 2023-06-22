@@ -20,7 +20,7 @@ spring:
   jpa:
     showSql: true
   config:
-    import: "file:scripts/monitoring/monitor-properties.yaml"
+    import: "file:config/monitoring/monitor-properties.yaml"
 
 management:
   endpoints:
