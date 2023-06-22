@@ -38,12 +38,6 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>secure-auth-monitoring</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
@@ -144,6 +138,21 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
+        <!-- Micrometer Monitoring Dependencies-->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-graphite</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

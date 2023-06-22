@@ -19,6 +19,8 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true
+  config:
+    import: "file:scripts/monitoring/monitor-properties.yaml"
 
 management:
   endpoints:
@@ -26,9 +28,6 @@ management:
       base-path: /actuator
       exposure:
         include: [ "health","prometheus", "metrics", "info" ]
-  metrics:
-    tags:
-      application: ${spring.application.name}
   endpoint:
     health:
       show-details: always

@@ -10,8 +10,8 @@ import com.razorpay.acs.dao.enums.Network;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.enums.TransactionStatusReason;
 import com.razorpay.acs.dao.model.Transaction;
-import com.razorpay.threeds.configuration.AppConfiguration;
 import com.razorpay.threeds.dto.AResMapperParams;
+import com.razorpay.threeds.module.configuration.AppConfiguration;
 
 @Mapper(
     uses = {HelperMapper.class, AppConfiguration.class},
