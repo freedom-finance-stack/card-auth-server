@@ -1,6 +1,6 @@
-package com.razorpay.acs.dao.contract;
+package com.razorpay.acs.contract;
 
-import com.razorpay.acs.dao.contract.constants.EMVCOConstant;
+import com.razorpay.acs.contract.constants.EMVCOConstant;
 
 import lombok.Data;
 

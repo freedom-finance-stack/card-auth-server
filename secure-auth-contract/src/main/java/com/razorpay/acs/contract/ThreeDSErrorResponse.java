@@ -1,18 +1,13 @@
-package com.razorpay.threeds.exception;
-
-import java.time.Instant;
-
-import org.springframework.http.HttpStatus;
+package com.razorpay.acs.contract;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.razorpay.acs.contract.constants.EMVCOConstant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import static com.razorpay.threeds.constant.ThreeDSConstant.MESSAGE_TYPE_ERRO;
-import static com.razorpay.threeds.constant.ThreeDSConstant.MESSAGE_TYPE_VERSION;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -37,10 +32,10 @@ public class ThreeDSErrorResponse {
   private String errorMessageType;
 
   @JsonProperty("messageType")
-  private String messageType = MESSAGE_TYPE_ERRO;
+  private String messageType = EMVCOConstant.MESSAGE_TYPE_ERRO;
 
   @JsonProperty("messageVersion")
-  private String messageVersion = MESSAGE_TYPE_VERSION;
+  private String messageVersion = EMVCOConstant.MESSAGE_TYPE_VERSION;
 
   // All Conditional Fields
   @JsonProperty("threeDSServerTransID")
@@ -57,7 +52,7 @@ public class ThreeDSErrorResponse {
 
   // -----------------------------
 
-  @JsonIgnore private HttpStatus httpStatus;
+  @JsonIgnore private int httpStatus;
 
   @JsonIgnore private Instant timestamp = Instant.now();
 
@@ -86,19 +81,19 @@ public class ThreeDSErrorResponse {
     return this;
   }
 
-  public ThreeDSErrorResponse setHttpStatus(HttpStatus httpStatus) {
+  public ThreeDSErrorResponse setHttpStatus(int httpStatus) {
     this.httpStatus = httpStatus;
     return this;
   }
 
   public ThreeDSErrorResponse(
-      final HttpStatus status,
+      final int httpStatus,
       final String errorCode,
       final String errorComponent,
       final String errorDescription,
       final String errorDetail) {
 
-    this.httpStatus = status;
+    this.httpStatus = httpStatus;
     this.errorCode = errorCode;
     this.errorComponent = errorComponent;
     this.errorDescription = errorDescription;

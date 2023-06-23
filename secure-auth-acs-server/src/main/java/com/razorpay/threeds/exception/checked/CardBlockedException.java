@@ -1,17 +1,18 @@
 package com.razorpay.threeds.exception.checked;
 
-import com.razorpay.threeds.exception.ErrorCode;
+import com.razorpay.threeds.exception.InternalErrorCode;
 
 public class CardBlockedException extends ACSException {
 
   /** */
   private static final long serialVersionUID = 1L;
 
-  public CardBlockedException(ErrorCode errorCode, String message, Throwable cause) {
-    super(errorCode, message, cause);
+  public CardBlockedException(
+      InternalErrorCode internalErrorCode, String message, Throwable cause) {
+    super(internalErrorCode, message, cause);
   }
 
-  public CardBlockedException(ErrorCode errorCode, String message) {
-    super(errorCode, message);
+  public CardBlockedException(InternalErrorCode internalErrorCode, String message) {
+    super(internalErrorCode, message);
   }
 }

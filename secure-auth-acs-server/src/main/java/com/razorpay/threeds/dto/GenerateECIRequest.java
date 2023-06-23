@@ -1,6 +1,6 @@
 package com.razorpay.threeds.dto;
 
-import com.razorpay.acs.dao.contract.enums.MessageCategory;
+import com.razorpay.acs.contract.enums.MessageCategory;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.Network;
 

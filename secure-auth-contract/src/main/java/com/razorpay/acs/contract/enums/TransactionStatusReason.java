@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.contract.enums;
+package com.razorpay.acs.contract.enums;
 
 public enum TransactionStatusReason {
   CARD_AUTHENTICATION_FAILED("01", "Card authentication failed"),

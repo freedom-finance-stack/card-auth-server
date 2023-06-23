@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.razorpay.acs.contract.ThreeDSErrorResponse;
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
+
 import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
@@ -24,7 +27,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
       WebRequest request) {
     ThreeDSErrorResponse errorResponse =
         new ThreeDSErrorResponse(
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.BAD_REQUEST.value(),
             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorCode(),
             "Request method '" + ex.getMethod() + "' not supported",
             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorComponent(),
@@ -39,7 +42,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     log.error(e.getMessage(), e);
     ThreeDSErrorResponse errorResponse =
         new ThreeDSErrorResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR,
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorCode(),
             e.getMessage(),
             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorComponent(),
@@ -53,6 +56,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   private ResponseEntity<ThreeDSErrorResponse> buildResponseEntity(ThreeDSErrorResponse apiError) {
-    return new ResponseEntity<>(apiError, apiError.getHttpStatus());
+    return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.getHttpStatus()));
   }
 }

@@ -3,10 +3,10 @@ package com.razorpay.threeds.dto.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.razorpay.acs.dao.contract.AREQ;
-import com.razorpay.acs.dao.contract.ARES;
-import com.razorpay.acs.dao.contract.enums.MessageCategory;
-import com.razorpay.acs.dao.contract.enums.TransactionStatusReason;
+import com.razorpay.acs.contract.AREQ;
+import com.razorpay.acs.contract.ARES;
+import com.razorpay.acs.contract.enums.MessageCategory;
+import com.razorpay.acs.contract.enums.TransactionStatusReason;
 import com.razorpay.acs.dao.enums.Network;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.Transaction;

@@ -1,13 +1,13 @@
-package com.razorpay.acs.dao.contract;
+package com.razorpay.acs.contract;
 
 import java.util.List;
 
-import com.razorpay.acs.dao.contract.enums.ACSRenderingType;
+import com.razorpay.acs.contract.enums.ACSRenderingType;
 
 import lombok.Data;
 
-import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.MESSAGE_TYPE_ARES;
-import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.MESSAGE_TYPE_VERSION;
+import static com.razorpay.acs.contract.constants.EMVCOConstant.MESSAGE_TYPE_ARES;
+import static com.razorpay.acs.contract.constants.EMVCOConstant.MESSAGE_TYPE_VERSION;
 
 @Data
 public class ARES extends ThreeDSObject {

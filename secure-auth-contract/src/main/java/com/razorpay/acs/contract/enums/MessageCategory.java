@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.contract.enums;
+package com.razorpay.acs.contract.enums;
 
 public enum MessageCategory {
   PA("01", "PAYMENT_AUTHENTICATION"),

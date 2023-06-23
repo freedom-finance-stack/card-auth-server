@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.contract;
+package com.razorpay.acs.contract;
 
 import lombok.Data;
 

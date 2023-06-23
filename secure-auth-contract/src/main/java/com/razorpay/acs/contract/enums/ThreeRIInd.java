@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.contract.enums;
+package com.razorpay.acs.contract.enums;
 
 public enum ThreeRIInd {
   RECURRING_TRANSACTION("01", "Recurring transaction"),

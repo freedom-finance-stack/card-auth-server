@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.acs.dao.model.InstitutionAcsUrl;
 import com.razorpay.acs.dao.model.InstitutionAcsUrlPK;
 import com.razorpay.acs.dao.repository.InstitutionAcsUrlRepository;
 import com.razorpay.threeds.exception.DataNotFoundException;
-import com.razorpay.threeds.exception.ErrorCode;
-import com.razorpay.threeds.exception.ThreeDSecureErrorCode;
+import com.razorpay.threeds.exception.InternalErrorCode;
 import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class InstitutionAcsUrlServiceImpl
               + institutionAcsUrlPK.getNetworkCode()
               + " and Channel: "
               + institutionAcsUrlPK.getDeviceChannel());
-      throw new ACSDataAccessException(ErrorCode.INSTITUTION_FETCH_EXCEPTION, e);
+      throw new ACSDataAccessException(InternalErrorCode.INSTITUTION_FETCH_EXCEPTION, e);
     }
 
     log.error(
@@ -53,6 +53,6 @@ public class InstitutionAcsUrlServiceImpl
             + " and Channel: "
             + institutionAcsUrlPK.getDeviceChannel());
     throw new DataNotFoundException(
-        ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, ErrorCode.ACS_URL_NOT_FOUND);
+        ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, InternalErrorCode.ACS_URL_NOT_FOUND);
   }
 }

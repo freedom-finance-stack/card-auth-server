@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.razorpay.acs.dao.contract.AREQ;
+import com.razorpay.acs.contract.AREQ;
 import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.enums.ThreeDSDataElement;
 import com.razorpay.threeds.validator.enums.ThreeDSDataElementValidationStrategy;

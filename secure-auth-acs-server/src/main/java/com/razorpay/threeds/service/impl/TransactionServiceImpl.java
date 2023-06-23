@@ -10,9 +10,9 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.razorpay.acs.dao.contract.AREQ;
-import com.razorpay.acs.dao.contract.enums.DeviceChannel;
-import com.razorpay.acs.dao.contract.enums.MessageCategory;
+import com.razorpay.acs.contract.AREQ;
+import com.razorpay.acs.contract.enums.DeviceChannel;
+import com.razorpay.acs.contract.enums.MessageCategory;
 import com.razorpay.acs.dao.enums.Phase;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.*;
@@ -20,16 +20,16 @@ import com.razorpay.acs.dao.repository.TransactionReferenceDetailRepository;
 import com.razorpay.acs.dao.repository.TransactionRepository;
 import com.razorpay.threeds.constant.InternalConstants;
 import com.razorpay.threeds.constant.ThreeDSConstant;
-import com.razorpay.threeds.exception.ErrorCode;
+import com.razorpay.threeds.exception.InternalErrorCode;
 import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.service.TransactionService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.appDeviceInfoAndroid;
-import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.appDeviceInfoIOS;
-import static com.razorpay.acs.dao.contract.utils.Util.DATE_FORMAT_YYYYMMDDHHMMSS;
+import static com.razorpay.acs.contract.constants.EMVCOConstant.appDeviceInfoAndroid;
+import static com.razorpay.acs.contract.constants.EMVCOConstant.appDeviceInfoIOS;
+import static com.razorpay.acs.contract.utils.Util.DATE_FORMAT_YYYYMMDDHHMMSS;
 import static com.razorpay.threeds.utils.Util.getTimeStampFromString;
 
 @Service
@@ -46,7 +46,7 @@ public class TransactionServiceImpl implements TransactionService {
       return transactionRepository.findById(transaction.getId()).get();
     } catch (DataAccessException ex) {
       log.error("Error while saving transaction", ex);
-      throw new ACSDataAccessException(ErrorCode.TRANSACTION_SAVE_EXCEPTION, ex);
+      throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_SAVE_EXCEPTION, ex);
     }
   }
 
@@ -57,7 +57,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transaction.get();
       }
     } catch (DataAccessException ex) {
-      throw new ACSDataAccessException(ErrorCode.TRANSACTION_FIND_EXCEPTION, ex);
+      throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_FIND_EXCEPTION, ex);
     }
 
     return null;
