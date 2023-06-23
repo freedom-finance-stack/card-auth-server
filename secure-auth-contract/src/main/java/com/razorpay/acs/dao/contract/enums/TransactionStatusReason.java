@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.enums;
+package com.razorpay.acs.dao.contract.enums;
 
 public enum TransactionStatusReason {
   CARD_AUTHENTICATION_FAILED("01", "Card authentication failed"),
@@ -8,7 +8,7 @@ public enum TransactionStatusReason {
   EXPIRED_CARD("05", "Expired card"),
   INVALID_CARD_NUMBER("06", "Invalid Card Number"),
   INVALID_TRANSACTION("07", "Invalid Transaction"),
-  NO_CARD_RECORD("08", "No Card Record"),
+  NO_CARD_RECORD("08", "Data Not Found"),
   SECURITY_FAILURE("09", "Security failure"),
   STOLEN_CARD("10", "Stolen card"),
   SUSPECTED_FRAUD("11", "Suspected fraud"),

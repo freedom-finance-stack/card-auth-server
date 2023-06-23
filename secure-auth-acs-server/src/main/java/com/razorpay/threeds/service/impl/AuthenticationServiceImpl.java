@@ -1,5 +1,6 @@
 package com.razorpay.threeds.service.impl;
 
+import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,9 @@ import com.razorpay.threeds.dto.CardDetailResponse;
 import com.razorpay.threeds.dto.CardDetailsRequest;
 import com.razorpay.threeds.dto.GenerateECIRequest;
 import com.razorpay.threeds.dto.mapper.AResMapper;
+import com.razorpay.threeds.exception.ErrorCode;
 import com.razorpay.threeds.exception.ThreeDSException;
+import com.razorpay.threeds.exception.ThreeDSecureErrorCode;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.*;
 import com.razorpay.threeds.service.cardDetail.CardDetailService;
@@ -45,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
   @Override
-  public ARES processAuthenticationRequest(@NonNull AREQ areq) {
+  public ARES processAuthenticationRequest(@NonNull AREQ areq) throws ThreeDSException, ACSDataAccessException {
     Transaction transaction = null;
     InstitutionAcsUrl acsUrl = null;
     ARES ares = null;
@@ -60,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       // todo check duplicate transaction once threeDSmethod is implemented
 
       // create transaction entity and save
-      transaction = transactionService.save(transactionService.create(areq));
+      transaction = transactionService.saveOrUpdate(transactionService.create(areq));
 
       // get range and institution entity and verify
       cardRange = rangeService.findByPan(areq.getAcctNumber());
@@ -90,16 +93,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         transaction.setAuthValue(authValue);
       }
 
-    } catch (ACSException e) {
-      // 3
-      // Update transaction entity
-    } catch (ThreeDSException e) {
-      // 3
-      // Update transaction entity
-
-      // adding transaction data in exception
-      transaction = transactionService.save(transaction);
-      throw new ThreeDSException(e.getErrorCode(), e.getMessage(), transaction, e);
+    } catch (ThreeDSException ex) {
+      transaction =
+          updateErrorAndSaveTransaction(
+              ex.getThreeDSecureErrorCode(), ex.getInternalErrorCode(), transaction, ex);
+      throw new ThreeDSException(ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
+    } catch (ACSException ex) {
+      transaction = updateErrorAndSaveTransaction(ex.getErrorCode(), transaction, ex);
     }
 
     try {
@@ -119,20 +119,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
               AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
       transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
     } finally {
-      transactionService.save(transaction);
+      transactionService.saveOrUpdate(transaction);
     }
 
-    // check transaction shouldn't be in created state
-    // Store transaction details in db and get correct exception with details
-    // check every error and state being stored in db check for checked and unchecked exception...
-    // checked should return 200 with Ares
-    // check transaction status handle
-    // fix save transaction in finally, check save and flush
     return ares;
   }
 
+  private Transaction updateErrorAndSaveTransaction(
+      ThreeDSecureErrorCode threeDSecureErrorCode,
+      ErrorCode internalErrorCode,
+      Transaction transaction,
+      Exception ex) throws ACSDataAccessException {
+    // transaction.setInstitutionId(InternalConstants.DEFAULT_INSTITUTION);
+    transaction.setErrorCode(threeDSecureErrorCode.getErrorCode());
+    transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+    transaction.setTransactionStatusReason(internalErrorCode.getTransactionStatusReason().getCode());
+    return transactionService.saveOrUpdate(transaction);
+  }
+
+  private Transaction updateErrorAndSaveTransaction(
+      ErrorCode internalErrorCode, Transaction transaction, Exception ex) throws ACSDataAccessException {
+    // transaction.setInstitutionId(InternalConstants.DEFAULT_INSTITUTION);
+    transaction.setErrorCode(internalErrorCode.getCode());
+    transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+    transaction.setTransactionStatusReason(internalErrorCode.getTransactionStatusReason().getCode());
+    return transactionService.saveOrUpdate(transaction);
+  }
+
   private boolean isChallengeRequired(RiskFlag riskFlag, Transaction transaction) {
-    // todo honor ThreeDSRequestorChallengeInd once RBA is implemented
+    // todo honor ThreeDSRequestorChallsengeInd once RBA is implemented
     if (riskFlag.equals(RiskFlag.NO_CHALLENGE)) {
       transaction.setTransactionStatus(TransactionStatus.SUCCESS);
       transaction.setChallengeMandated(false);

@@ -5,15 +5,11 @@ import org.springframework.http.HttpStatus;
 public class ValidationException extends ThreeDSException {
 
   public ValidationException(ThreeDSecureErrorCode errorCode, String message) {
-    super(errorCode, message);
+    super(errorCode, ErrorCode.INVALID_REQUEST, message);
   }
 
   protected ValidationException(ThreeDSecureErrorCode errorCode, String message, Throwable cause) {
-    super(errorCode, message, cause);
-  }
-
-  public ValidationException(ThreeDSecureErrorCode errorCode) {
-    super(errorCode);
+    super(errorCode, ErrorCode.INVALID_REQUEST, message, cause);
   }
 
   @Override
@@ -21,9 +17,9 @@ public class ValidationException extends ThreeDSException {
     // todo check Status code to be sent to DS
     return new ThreeDSErrorResponse(
         HttpStatus.OK,
-        super.getErrorCode().getErrorCode(),
+        super.getThreeDSecureErrorCode().getErrorCode(),
         super.getMessage(),
-        super.getErrorCode().getErrorComponent(),
-        super.getErrorCode().getErrorDescription());
+        super.getThreeDSecureErrorCode().getErrorComponent(),
+        super.getThreeDSecureErrorCode().getErrorDescription());
   }
 }
