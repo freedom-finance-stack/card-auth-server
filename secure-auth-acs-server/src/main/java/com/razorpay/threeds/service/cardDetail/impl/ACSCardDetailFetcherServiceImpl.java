@@ -24,35 +24,35 @@ import lombok.extern.slf4j.Slf4j;
 @Service(CardDetailsStore.CardStoreTypeConstants.ACS)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ACSCardDetailFetcherServiceImpl implements CardDetailFetcherService {
-    private final CardDetailRepository cardDetailRepository;
+  private final CardDetailRepository cardDetailRepository;
 
-    public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
-            throws ACSDataAccessException {
-        log.info("Fetching card details from ACS");
-        try {
-            CardDetail cardDetail =
-                    cardDetailRepository.findByCardNumber(cardDetailsRequest.getCardNumber());
-            if (cardDetail != null) {
-                return CardDetailResponse.builder()
-                        .cardDetailDto(CardDetailsMapper.INSTANCE.toCardDetailDto(cardDetail))
-                        .isSuccess(true)
-                        .build();
-            }
-        } catch (DataAccessException ex) {
-            throw new ACSDataAccessException(ErrorCode.CARD_USER_FETCH_EXCEPTION, ex);
-        }
-
-        return CardDetailResponse.builder().isSuccess(false).build();
+  public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
+      throws ACSDataAccessException {
+    log.info("Fetching card details from ACS");
+    try {
+      CardDetail cardDetail =
+          cardDetailRepository.findByCardNumber(cardDetailsRequest.getCardNumber());
+      if (cardDetail != null) {
+        return CardDetailResponse.builder()
+            .cardDetailDto(CardDetailsMapper.INSTANCE.toCardDetailDto(cardDetail))
+            .isSuccess(true)
+            .build();
+      }
+    } catch (DataAccessException ex) {
+      throw new ACSDataAccessException(ErrorCode.CARD_USER_FETCH_EXCEPTION, ex);
     }
 
-    public void validateCardDetails(CardDetailResponse cardDetailResponse)
-            throws DataNotFoundException, CardBlockedException {
-        if (!cardDetailResponse.isSuccess() || cardDetailResponse.getCardDetailDto() == null) {
-            log.error("Card Number not found");
-            throw new DataNotFoundException(
-                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, ErrorCode.CARD_USER_NOT_FOUND);
-        } else if (cardDetailResponse.getCardDetailDto().isBlocked()) {
-            throw new CardBlockedException(ErrorCode.CARD_USER_BLOCKED, "Card Number is blocked");
-        }
+    return CardDetailResponse.builder().isSuccess(false).build();
+  }
+
+  public void validateCardDetails(CardDetailResponse cardDetailResponse)
+      throws DataNotFoundException, CardBlockedException {
+    if (!cardDetailResponse.isSuccess() || cardDetailResponse.getCardDetailDto() == null) {
+      log.error("Card Number not found");
+      throw new DataNotFoundException(
+          ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, ErrorCode.CARD_USER_NOT_FOUND);
+    } else if (cardDetailResponse.getCardDetailDto().isBlocked()) {
+      throw new CardBlockedException(ErrorCode.CARD_USER_BLOCKED, "Card Number is blocked");
     }
+  }
 }

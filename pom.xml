@@ -19,7 +19,6 @@
     <modules>
         <module>secure-auth-contract</module>
         <module>secure-auth-acs-dao</module>
-        <module>secure-auth-monitoring</module>
         <module>secure-auth-acs-server</module>
         <module>secure-auth-admin-service</module>
     </modules>
@@ -40,6 +39,7 @@
         <spring.cloud.version>3.1.5</spring.cloud.version>
         <slf4j.version>1.7.36</slf4j.version>
         <spotless.version>2.37.0</spotless.version>
+        <micrometer.version>1.9.10</micrometer.version>
     </properties>
 
     <dependencyManagement>
@@ -112,6 +112,24 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
                 <version>${logback.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-core</artifactId>
+                <version>${micrometer.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-graphite</artifactId>
+                <version>${micrometer.version}</version>
             </dependency>
         </dependencies>
 

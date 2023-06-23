@@ -68,5 +68,10 @@ public class RangeServiceImpl implements RangeService {
       throw new DataNotFoundException(
           ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, ErrorCode.INVALID_NETWORK);
     }
+    if (cardRange.getNetwork() == null) {
+      throw new DataNotFoundException(
+          ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
+          ErrorCode.RANGE_GROUP_NOT_FOUND); // todo change error code
+    }
   }
 }

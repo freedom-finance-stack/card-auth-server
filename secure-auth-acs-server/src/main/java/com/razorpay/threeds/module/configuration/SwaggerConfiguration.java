@@ -1,4 +1,4 @@
-package com.razorpay.threeds.configuration;
+package com.razorpay.threeds.module.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;

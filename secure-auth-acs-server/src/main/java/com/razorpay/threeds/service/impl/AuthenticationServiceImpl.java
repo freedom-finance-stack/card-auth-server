@@ -1,6 +1,5 @@
 package com.razorpay.threeds.service.impl;
 
-import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,7 @@ import com.razorpay.threeds.dto.mapper.AResMapper;
 import com.razorpay.threeds.exception.ErrorCode;
 import com.razorpay.threeds.exception.ThreeDSException;
 import com.razorpay.threeds.exception.ThreeDSecureErrorCode;
+import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.*;
 import com.razorpay.threeds.service.cardDetail.CardDetailService;
@@ -48,7 +48,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
   @Override
-  public ARES processAuthenticationRequest(@NonNull AREQ areq) throws ThreeDSException, ACSDataAccessException {
+  public ARES processAuthenticationRequest(@NonNull AREQ areq)
+      throws ThreeDSException, ACSDataAccessException {
     Transaction transaction = null;
     InstitutionAcsUrl acsUrl = null;
     ARES ares = null;
@@ -129,20 +130,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       ThreeDSecureErrorCode threeDSecureErrorCode,
       ErrorCode internalErrorCode,
       Transaction transaction,
-      Exception ex) throws ACSDataAccessException {
+      Exception ex)
+      throws ACSDataAccessException {
     // transaction.setInstitutionId(InternalConstants.DEFAULT_INSTITUTION);
     transaction.setErrorCode(threeDSecureErrorCode.getErrorCode());
     transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
-    transaction.setTransactionStatusReason(internalErrorCode.getTransactionStatusReason().getCode());
+    transaction.setTransactionStatusReason(
+        internalErrorCode.getTransactionStatusReason().getCode());
     return transactionService.saveOrUpdate(transaction);
   }
 
   private Transaction updateErrorAndSaveTransaction(
-      ErrorCode internalErrorCode, Transaction transaction, Exception ex) throws ACSDataAccessException {
+      ErrorCode internalErrorCode, Transaction transaction, Exception ex)
+      throws ACSDataAccessException {
     // transaction.setInstitutionId(InternalConstants.DEFAULT_INSTITUTION);
     transaction.setErrorCode(internalErrorCode.getCode());
     transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
-    transaction.setTransactionStatusReason(internalErrorCode.getTransactionStatusReason().getCode());
+    transaction.setTransactionStatusReason(
+        internalErrorCode.getTransactionStatusReason().getCode());
     return transactionService.saveOrUpdate(transaction);
   }
 

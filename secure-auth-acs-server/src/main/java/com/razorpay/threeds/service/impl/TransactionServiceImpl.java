@@ -1,5 +1,15 @@
 package com.razorpay.threeds.service.impl;
 
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+
 import com.razorpay.acs.dao.contract.AREQ;
 import com.razorpay.acs.dao.contract.enums.DeviceChannel;
 import com.razorpay.acs.dao.contract.enums.MessageCategory;
@@ -13,17 +23,9 @@ import com.razorpay.threeds.constant.ThreeDSConstant;
 import com.razorpay.threeds.exception.ErrorCode;
 import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.service.TransactionService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
 
 import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.appDeviceInfoAndroid;
 import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.appDeviceInfoIOS;
@@ -54,13 +56,12 @@ public class TransactionServiceImpl implements TransactionService {
       if (transaction.isPresent()) {
         return transaction.get();
       }
-    } catch (DataAccessException ex ){
+    } catch (DataAccessException ex) {
       throw new ACSDataAccessException(ErrorCode.TRANSACTION_FIND_EXCEPTION, ex);
     }
 
     return null;
   }
-
 
   public void remove(String id) {
     transactionRepository.softDeleteById(id);
@@ -75,7 +76,6 @@ public class TransactionServiceImpl implements TransactionService {
     transaction.setTransactionPurchaseDetail(buildTransactionPurchaseDetail(areq));
     return transaction;
   }
-
 
   private static Transaction createTransactionFromAreq(AREQ areq) {
     Transaction.TransactionBuilder transactionBuilder = Transaction.builder();
@@ -162,7 +162,6 @@ public class TransactionServiceImpl implements TransactionService {
     return new TransactionReferenceDetail(
         areq.getThreeDSServerTransID(), areq.getThreeDSServerRefNumber(), areq.getDsTransID());
   }
-
 
   public Transaction findDuplicationTransaction(String threedsServerTransactionId) {
     List<TransactionReferenceDetail> transactionReferenceDetails =

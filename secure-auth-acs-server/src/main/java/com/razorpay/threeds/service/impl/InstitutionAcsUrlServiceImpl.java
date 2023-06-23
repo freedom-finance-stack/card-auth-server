@@ -1,5 +1,11 @@
 package com.razorpay.threeds.service.impl;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+
 import com.razorpay.acs.dao.model.InstitutionAcsUrl;
 import com.razorpay.acs.dao.model.InstitutionAcsUrlPK;
 import com.razorpay.acs.dao.repository.InstitutionAcsUrlRepository;
@@ -7,13 +13,9 @@ import com.razorpay.threeds.exception.DataNotFoundException;
 import com.razorpay.threeds.exception.ErrorCode;
 import com.razorpay.threeds.exception.ThreeDSecureErrorCode;
 import com.razorpay.threeds.exception.checked.ACSDataAccessException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -40,8 +42,7 @@ public class InstitutionAcsUrlServiceImpl
               + institutionAcsUrlPK.getNetworkCode()
               + " and Channel: "
               + institutionAcsUrlPK.getDeviceChannel());
-      throw new ACSDataAccessException(
-          ErrorCode.INSTITUTION_FETCH_EXCEPTION,e);
+      throw new ACSDataAccessException(ErrorCode.INSTITUTION_FETCH_EXCEPTION, e);
     }
 
     log.error(
