@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.razorpay.threeds.configuration.AppConfiguration;
+import com.razorpay.threeds.module.configuration.AppConfiguration;
 
 @Mapper
 @Component

@@ -1,4 +1,4 @@
-package com.razorpay.threeds.module;
+package com.razorpay.threeds.module.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
@@ -6,10 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.razorpay.acs.monitoring.MicrometerFactory;
-import com.razorpay.threeds.configuration.AppConfiguration;
-
-import io.micrometer.core.instrument.MeterRegistry;
 import io.undertow.conduits.GzipStreamSourceConduit;
 import io.undertow.server.handlers.encoding.RequestEncodingHandler;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +30,5 @@ public class AppModule {
         });
     undertowServletWebServerFactory.setPort(appConfiguration.getApp().getPort());
     return undertowServletWebServerFactory;
-  }
-
-  @Bean
-  MeterRegistry meterRegistry() {
-    return MicrometerFactory.getMeterRegistry();
   }
 }

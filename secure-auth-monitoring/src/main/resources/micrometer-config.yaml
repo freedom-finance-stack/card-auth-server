@@ -1,8 +1,0 @@
-micrometer:
-  supportedSystem:
-    prometheus:
-      enabled: true
-    graphite:
-      enabled: false
-      serverUrl: "localhost"
-      serverPort: 8080
