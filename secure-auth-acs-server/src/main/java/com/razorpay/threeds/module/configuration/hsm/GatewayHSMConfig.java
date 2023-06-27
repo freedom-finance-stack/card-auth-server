@@ -1,7 +1,7 @@
 package com.razorpay.threeds.module.configuration.hsm;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -32,13 +32,18 @@ import static com.razorpay.threeds.hsm.luna.service.impl.HSMGatewayFacade.LUNA_E
 @Configuration
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@ConfigurationProperties(prefix = "hsm.gateway.luna")
 @Getter
 @Setter
 public class GatewayHSMConfig {
 
+  @Value("${hsm.gateway.luna.ip}")
   private String ip;
+
+  @Value("${hsm.gateway.luna.port}")
   private int port;
+
+  @Value("${hsm.enabled_gateway}")
+  private String enabledHSM;
 
   private final Environment environment;
 
@@ -49,7 +54,7 @@ public class GatewayHSMConfig {
 
     GatewayHSM gatewayHSM = new GatewayHSM();
 
-    if (LUNA_HSM.equals(environment.getProperty("hsm.enabled_gateway"))) {
+    if (LUNA_HSM.equals(enabledHSM)) {
       try {
         // 1. Fetch HSM IP and Port
         String strIP = ip;

@@ -1,11 +1,9 @@
 package com.razorpay.threeds.module.configuration.hsm;
 
-import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -37,7 +35,8 @@ public class HSMInitialisationConfig {
 
   private final HSMGatewayCorrelationStrategy hsmCorrelationStrategy;
 
-  private final Environment environment;
+  @Value("${hsm.gateway.luna.timeout}")
+  private long timeout;
 
   @MessagingGateway(defaultRequestChannel = "hsmsend")
   public interface HSMGateway {
@@ -53,9 +52,7 @@ public class HSMInitialisationConfig {
   @Bean
   @ServiceActivator(inputChannel = "hsmsend")
   public HSMBarrierMessageHandlerWithLateGoodResponse hsmbarrier() {
-    long hsmTimeout =
-        Long.parseLong(Objects.requireNonNull(environment.getProperty("hsm.gateway.luna.timeout")))
-            * 1000;
+    long hsmTimeout = timeout * 1000;
     HSMBarrierMessageHandlerWithLateGoodResponse hsmbarrier =
         new HSMBarrierMessageHandlerWithLateGoodResponse(hsmTimeout, this.hsmCorrelationStrategy);
     hsmbarrier.setAsync(true);

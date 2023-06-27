@@ -1,8 +1,8 @@
 package com.razorpay.threeds.service.authvalue.hsm;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.razorpay.acs.dao.model.Transaction;
@@ -25,11 +25,12 @@ public class CAVVGenerationService {
 
   private final ApplicationContext applicationContext;
 
-  private final Environment environment;
+  @Value("${hsm.enabled_gateway}")
+  private String enabledHSMGateway;
 
   public String generateCavv(@NonNull final Transaction transaction, @NonNull final String data)
       throws ACSException {
-    CavvHSM cavvHSM = getCAVVHSMImpl(environment.getProperty("hsm.enabled_gateway"));
+    CavvHSM cavvHSM = getCAVVHSMImpl(enabledHSMGateway);
     return cavvHSM.generateCavv(transaction, data);
   }
 
