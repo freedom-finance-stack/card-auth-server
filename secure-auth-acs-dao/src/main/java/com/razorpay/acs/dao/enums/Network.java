@@ -1,21 +1,21 @@
 package com.razorpay.acs.dao.enums;
 
 public enum Network {
-  VISA("01", "VISA"),
-  MASTERCARD("02", "MASTERCARD"),
-  AMEX("03", "AMEX"),
-  DISCOVER("04", "DISCOVER"),
-  RUPAY("05", "RUPAY");
+  VISA(1, "VISA"),
+  MASTERCARD(2, "MASTERCARD"),
+  AMEX(3, "AMEX"),
+  DISCOVER(4, "DISCOVER"),
+  RUPAY(5, "RUPAY");
 
-  private String value;
-  private String description;
+  private final int value;
+  private final String description;
 
-  private Network(String value, String description) {
+  Network(int value, String description) {
     this.value = value;
     this.description = description;
   }
 
-  public String getValue() {
+  public int getValue() {
     return value;
   }
 
@@ -23,9 +23,9 @@ public enum Network {
     return description;
   }
 
-  public static Network getNetwork(String id) {
+  public static Network getNetwork(int id) {
     for (Network value : Network.values()) {
-      if (value.getValue().equals(id)) {
+      if (value.getValue() == id) {
         return value;
       }
     }

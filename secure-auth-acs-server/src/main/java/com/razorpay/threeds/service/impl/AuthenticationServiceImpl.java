@@ -20,6 +20,7 @@ import com.razorpay.threeds.dto.mapper.AResMapper;
 import com.razorpay.threeds.exception.ThreeDSException;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.*;
+import com.razorpay.threeds.service.authvalue.AuthValueGeneratorService;
 import com.razorpay.threeds.service.cardDetail.CardDetailService;
 import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.ThreeDSValidator;
@@ -86,7 +87,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
         // todo add timer logic for challenge
       } else {
-        String authValue = authValueGeneratorService.generateCAVV(transaction);
+        String authValue = authValueGeneratorService.getCAVV(transaction);
         transaction.setAuthValue(authValue);
       }
 
@@ -124,7 +125,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     // check transaction shouldn't be in created state
     // Store transaction details in db and get correct exception with details
-    // check every error and state being stored in db check for checked and unchecked exception...
+    // check every error and state being stored in db check for checked and unchecked
+    // exception...
     // checked should return 200 with Ares
     // check transaction status handle
     // fix save transaction in finally, check save and flush
