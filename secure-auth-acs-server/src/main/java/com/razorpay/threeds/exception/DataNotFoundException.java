@@ -5,26 +5,22 @@ import org.springframework.http.HttpStatus;
 // Checked Exception
 public class DataNotFoundException extends ThreeDSException {
 
-  public DataNotFoundException(ThreeDSecureErrorCode errorCode, String message) {
-    super(errorCode, message);
+  public DataNotFoundException(ThreeDSecureErrorCode errorCode, ErrorCode internalErrorCode) {
+    super(errorCode, internalErrorCode, internalErrorCode.getCode());
   }
 
-  protected DataNotFoundException(
-      ThreeDSecureErrorCode errorCode, String message, Throwable cause) {
-    super(errorCode, message, cause);
-  }
-
-  public DataNotFoundException(ThreeDSecureErrorCode errorCode) {
-    super(errorCode);
+  public DataNotFoundException(
+      ThreeDSecureErrorCode errorCode, ErrorCode internalErrorCode, Throwable cause) {
+    super(errorCode, internalErrorCode, internalErrorCode.getCode(), cause);
   }
 
   @Override
   public ThreeDSErrorResponse getErrorResponse() {
     return new ThreeDSErrorResponse(
         HttpStatus.OK,
-        super.getErrorCode().getErrorCode(),
+        super.getThreeDSecureErrorCode().getErrorCode(),
         super.getMessage(),
-        super.getErrorCode().getErrorComponent(),
-        super.getErrorCode().getErrorDescription());
+        super.getThreeDSecureErrorCode().getErrorComponent(),
+        super.getThreeDSecureErrorCode().getErrorDescription());
   }
 }

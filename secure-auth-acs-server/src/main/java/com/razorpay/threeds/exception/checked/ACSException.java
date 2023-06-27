@@ -1,50 +1,36 @@
 package com.razorpay.threeds.exception.checked;
 
+import com.razorpay.threeds.exception.ErrorCode;
+
 // Checked Exception
 public class ACSException extends Exception {
 
   /** */
   private static final long serialVersionUID = -3009383961775806469L;
 
-  private String errorCode;
-  private String statusReason;
+  private ErrorCode errorCode;
 
-  public ACSException(
-      String errorCode,
-      String message,
-      Throwable cause,
-      boolean enableSuppression,
-      boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
-    this.errorCode = errorCode;
-  }
-
-  public ACSException(String errorCode, String message, Throwable cause) {
+  public ACSException(ErrorCode errorCode, String message, Throwable cause) {
     super(message, cause);
     this.errorCode = errorCode;
   }
 
-  public ACSException(String errorCode, String message) {
+  public ACSException(ErrorCode errorCode, String message) {
     super(message);
     this.errorCode = errorCode;
   }
 
-  public ACSException(String errorCode, String statusReason, String message) {
-    super(message);
-    this.errorCode = errorCode;
-    this.statusReason = statusReason;
-  }
-
-  public ACSException(String errorCode, Throwable cause) {
-    super(cause);
+  public ACSException(ErrorCode errorCode, Throwable cause) {
+    super(errorCode.getDefaultErrorMessage(), cause);
     this.errorCode = errorCode;
   }
 
-  public String getErrorCode() {
+  public ACSException(ErrorCode errorCode) {
+    super(errorCode.getDefaultErrorMessage());
+    this.errorCode = errorCode;
+  }
+
+  public ErrorCode getErrorCode() {
     return errorCode;
-  }
-
-  public String getStatusReason() {
-    return statusReason;
   }
 }

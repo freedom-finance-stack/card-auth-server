@@ -1,29 +1,26 @@
 package com.razorpay.threeds.exception.checked;
 
+import com.razorpay.threeds.exception.ErrorCode;
+
 // Checked Exception
 public class ACSDataAccessException extends ACSException {
 
   /** */
   private static final long serialVersionUID = 1L;
 
-  public ACSDataAccessException(
-      String errorCode,
-      String message,
-      Throwable cause,
-      boolean enableSuppression,
-      boolean writableStackTrace) {
-    super(errorCode, message, cause, enableSuppression, writableStackTrace);
-  }
-
-  public ACSDataAccessException(String errorCode, String message, Throwable cause) {
+  public ACSDataAccessException(ErrorCode errorCode, String message, Throwable cause) {
     super(errorCode, message, cause);
   }
 
-  public ACSDataAccessException(String errorCode, String message) {
-    super(errorCode, message);
+  public ACSDataAccessException(ErrorCode errorCode, Throwable cause) {
+    super(errorCode, cause);
   }
 
-  public ACSDataAccessException(String errorCode, Throwable cause) {
-    super(errorCode, cause);
+  public ACSDataAccessException(ErrorCode errorCode) {
+    super(errorCode);
+  }
+
+  public ACSDataAccessException(ErrorCode errorCode, String message) {
+    super(errorCode, message);
   }
 }

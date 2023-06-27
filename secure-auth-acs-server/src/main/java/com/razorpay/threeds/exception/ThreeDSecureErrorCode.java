@@ -2,6 +2,7 @@ package com.razorpay.threeds.exception;
 
 public enum ThreeDSecureErrorCode {
   // todo check error handling in 3ds doc page Page 314
+
   MESSAGE_RECEIVED_INVALID("101", "A", "Invalid Message Type"),
   MESSAGE_VERSION_NUMBER_NOT_SUPPORTED("102", "A", "Message version not supported"),
   SENT_MESSAGES_LIMIT_EXCEEDED(
@@ -17,17 +18,19 @@ public enum ThreeDSecureErrorCode {
   INVALID_FORMAT_VALUE("203", "A", "Invalid Format - Value"),
 
   DUPLICATE_DATA_ELEMENT("204", "A", "Duplicate Data Element"),
-  TRANSACTION_ID_NOT_RECOGNISED("301", "A", "Transaction not Recognised"),
+  TRANSACTION_ID_NOT_RECOGNISED("301", "A", "Transaction not Recognised"), // todo
   DATA_DECRYPTION_FAILURE("302", "A", "Data could not be decrypted"),
   INVALID_ENDPOINT("303", "A", "Access denied, invalid endpoint"),
   ISO_CODE_INVALID("304", "A", "ISO Code invalid"),
-  TRANSACTION_DATA_NOT_VALID("305", "A", "Transaction data not valid"),
+  TRANSACTION_DATA_NOT_VALID("305", "A", "Transaction data not valid"), // todo
   MCC_NOT_VALID_FOR_PAYMENT_SYSTEM("306", "A", "MCC not Valid for Payment System"),
   SERIAL_NUMBER_NOT_VALID("307", "A", "Serial Number not valid"),
   TRANSACTION_TIMED_OUT("402", "A", "Transaction timed out"),
   TRANSACTION_TIMEOUT("4010", "TRANSACTION TIMEOUT"),
-  TRANSIENT_SYSTEM_FAILURE("403", "A", "Transient system failure"),
-  PERMANENT_SYSTEM_FAILURE("404", "A", "Permanent system failure"),
+  TRANSIENT_SYSTEM_FAILURE(
+      "403", "A", "Transient system failure"), // todo  a slowly processing back-end system.
+  PERMANENT_SYSTEM_FAILURE(
+      "404", "A", "Permanent system failure"), // todo  a critical database cannot be accessed
   SYSTEM_CONNECTION_FAILURE("405", "A", "System Connection failure"),
   ACS_TECHNICAL_ERROR("406", "A", "ACS Technical failure"),
   ACS_REFRESH_FAILURE("1000", "A", "Refresh Failure"),
@@ -43,7 +46,11 @@ public enum ThreeDSecureErrorCode {
   TRANSACTION_TIMEOUT("08","Transaction timed out"),
   INVALID_ENDPOINT("50","Access denied, invalid endpoint"),
   TRANSIENT_SYSTEM_FAILURE("98", "Transient system failure"),
-  PERMANENT_SYSTEM_FAILURE("99","Permanent system failure")*/ ;
+  PERMANENT_SYSTEM_FAILURE("99","Permanent system failure")
+
+  check below error code, if it needs to be handled
+  CARD_RANGE_OVERLAP("205","Card Range Overlap"),
+  DUPLICATE_MESSAGE */
 
   private String errorCode;
   private String errorComponent;
