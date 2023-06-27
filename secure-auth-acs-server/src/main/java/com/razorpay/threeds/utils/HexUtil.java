@@ -17,16 +17,14 @@ public class HexUtil {
   }
 
   public static byte[] hexStringToByteArray(String s) {
-    byte[] b = new byte[s.length() / 2];
-    int j = 0;
-    for (int i = 0; i < b.length; i++) {
+    byte[] byteArray = new byte[s.length() / 2];
+    for (int i = 0; i < byteArray.length; i++) {
       int index = i * 2;
       int v = Integer.parseInt(s.substring(index, index + 2), 16);
-      b[j] = ((byte) v);
-      j++;
+      byteArray[i] = ((byte) v);
     }
 
-    return b;
+    return byteArray;
   }
 
   public static byte[] intToByteArray(int len) {

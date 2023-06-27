@@ -87,6 +87,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
         // todo add timer logic for challenge
       } else {
+        // todo check if ECI is correctly placed.
+        String eci =
+            eCommIndicatorService.generateECI(
+                new GenerateECIRequest(
+                        transaction.getTransactionStatus(),
+                        cardRange.getNetwork(),
+                        transaction.getMessageCategory())
+                    .setThreeRIInd(areq.getThreeRIInd()));
+        transaction.setEci(eci);
         String authValue = authValueGeneratorService.getCAVV(transaction);
         transaction.setAuthValue(authValue);
       }
@@ -99,6 +108,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       // Update transaction entity
 
       // adding transaction data in exception
+      // todo check eci value in case of exception
       transaction = transactionService.save(transaction);
       throw new ThreeDSException(e.getErrorCode(), e.getMessage(), transaction, e);
     }

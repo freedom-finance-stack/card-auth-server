@@ -133,9 +133,13 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         && transaction.getTransactionBrowserDetail() != null
         && StringUtils.isNotBlank(transaction.getTransactionBrowserDetail().getIp())) {
       informationalData =
-          transaction.getTransactionMerchant().getMerchantName()
+          transaction.getTransactionMerchant().getMerchantName().toUpperCase()
               + transaction.getTransactionBrowserDetail().getIp();
     }
+    // todo check informational Data logic as merchant name is causing issue as
+    // Hexadecimal strings can only contain characters from the range 0-9 and A-F (or a-f) to
+    // represent the values 0-15.
+    informationalData = "00000000";
     return informationalData;
   }
 
