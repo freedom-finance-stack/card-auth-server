@@ -1,6 +1,6 @@
 package com.razorpay.threeds.service;
 
-import com.razorpay.acs.dao.contract.ThreeDSObject;
+import com.razorpay.acs.contract.ThreeDSObject;
 import com.razorpay.acs.dao.model.TransactionMessageTypeDetail;
 
 public interface TransactionMessageTypeService {

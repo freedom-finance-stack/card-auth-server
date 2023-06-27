@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.contract.enums;
+package com.razorpay.acs.contract.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.contract.enums;
+package com.razorpay.acs.contract.enums;
 
 public enum DeviceInterface {
   NATIVE("01"),

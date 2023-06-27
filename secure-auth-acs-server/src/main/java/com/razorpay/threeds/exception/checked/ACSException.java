@@ -1,6 +1,6 @@
 package com.razorpay.threeds.exception.checked;
 
-import com.razorpay.threeds.exception.ErrorCode;
+import com.razorpay.threeds.exception.InternalErrorCode;
 
 // Checked Exception
 public class ACSException extends Exception {
@@ -8,29 +8,29 @@ public class ACSException extends Exception {
   /** */
   private static final long serialVersionUID = -3009383961775806469L;
 
-  private ErrorCode errorCode;
+  private InternalErrorCode internalErrorCode;
 
-  public ACSException(ErrorCode errorCode, String message, Throwable cause) {
+  public ACSException(InternalErrorCode internalErrorCode, String message, Throwable cause) {
     super(message, cause);
-    this.errorCode = errorCode;
+    this.internalErrorCode = internalErrorCode;
   }
 
-  public ACSException(ErrorCode errorCode, String message) {
+  public ACSException(InternalErrorCode internalErrorCode, String message) {
     super(message);
-    this.errorCode = errorCode;
+    this.internalErrorCode = internalErrorCode;
   }
 
-  public ACSException(ErrorCode errorCode, Throwable cause) {
-    super(errorCode.getDefaultErrorMessage(), cause);
-    this.errorCode = errorCode;
+  public ACSException(InternalErrorCode internalErrorCode, Throwable cause) {
+    super(internalErrorCode.getDefaultErrorMessage(), cause);
+    this.internalErrorCode = internalErrorCode;
   }
 
-  public ACSException(ErrorCode errorCode) {
-    super(errorCode.getDefaultErrorMessage());
-    this.errorCode = errorCode;
+  public ACSException(InternalErrorCode internalErrorCode) {
+    super(internalErrorCode.getDefaultErrorMessage());
+    this.internalErrorCode = internalErrorCode;
   }
 
-  public ErrorCode getErrorCode() {
-    return errorCode;
+  public InternalErrorCode getErrorCode() {
+    return internalErrorCode;
   }
 }

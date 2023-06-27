@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.razorpay.acs.dao.contract.AREQ;
-import com.razorpay.acs.dao.contract.ARES;
+import com.razorpay.acs.contract.AREQ;
+import com.razorpay.acs.contract.ARES;
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.acs.dao.enums.RiskFlag;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.CardRange;
@@ -17,9 +18,8 @@ import com.razorpay.threeds.dto.CardDetailResponse;
 import com.razorpay.threeds.dto.CardDetailsRequest;
 import com.razorpay.threeds.dto.GenerateECIRequest;
 import com.razorpay.threeds.dto.mapper.AResMapper;
-import com.razorpay.threeds.exception.ErrorCode;
+import com.razorpay.threeds.exception.InternalErrorCode;
 import com.razorpay.threeds.exception.ThreeDSException;
-import com.razorpay.threeds.exception.ThreeDSecureErrorCode;
 import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.*;
@@ -128,7 +128,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   private Transaction updateErrorAndSaveTransaction(
       ThreeDSecureErrorCode threeDSecureErrorCode,
-      ErrorCode internalErrorCode,
+      InternalErrorCode internalErrorCode,
       Transaction transaction,
       Exception ex)
       throws ACSDataAccessException {
@@ -141,7 +141,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   private Transaction updateErrorAndSaveTransaction(
-      ErrorCode internalErrorCode, Transaction transaction, Exception ex)
+      InternalErrorCode internalErrorCode, Transaction transaction, Exception ex)
       throws ACSDataAccessException {
     // transaction.setInstitutionId(InternalConstants.DEFAULT_INSTITUTION);
     transaction.setErrorCode(internalErrorCode.getCode());

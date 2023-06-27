@@ -1,4 +1,4 @@
-package com.razorpay.threeds.exception;
+package com.razorpay.acs.contract;
 
 public enum ThreeDSecureErrorCode {
   // todo check error handling in 3ds doc page Page 314

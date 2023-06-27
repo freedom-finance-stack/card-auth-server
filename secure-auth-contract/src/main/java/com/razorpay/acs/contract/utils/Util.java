@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.contract.utils;
+package com.razorpay.acs.contract.utils;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;

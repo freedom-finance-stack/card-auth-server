@@ -1,8 +1,8 @@
-package com.razorpay.acs.dao.contract;
+package com.razorpay.acs.contract;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.razorpay.acs.dao.contract.constants.EMVCOConstant;
-import com.razorpay.acs.dao.contract.utils.Util;
+import com.razorpay.acs.contract.constants.EMVCOConstant;
+import com.razorpay.acs.contract.utils.Util;
 
 public class CardholderAccountInformation {
 

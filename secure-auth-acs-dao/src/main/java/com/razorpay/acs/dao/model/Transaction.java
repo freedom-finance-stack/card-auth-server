@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.Where;
 
-import com.razorpay.acs.dao.contract.enums.MessageCategory;
+import com.razorpay.acs.contract.enums.MessageCategory;
 import com.razorpay.acs.dao.enums.Phase;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 

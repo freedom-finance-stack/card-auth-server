@@ -2,6 +2,8 @@ package com.razorpay.threeds.exception;
 
 import org.springframework.http.HttpStatus;
 
+import com.razorpay.acs.contract.ThreeDSErrorResponse;
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.acs.dao.model.Transaction;
 
 import lombok.Getter;
@@ -9,12 +11,12 @@ import lombok.Getter;
 public class ThreeDSException extends Exception {
 
   @Getter private final ThreeDSecureErrorCode threeDSecureErrorCode;
-  @Getter private ErrorCode internalErrorCode;
+  @Getter private InternalErrorCode internalErrorCode;
   private final ThreeDSErrorResponse threeDSErrorResponse = new ThreeDSErrorResponse();
 
   public ThreeDSException(
       final ThreeDSecureErrorCode threeDSecureErrorCode,
-      final ErrorCode internalErrorCode,
+      final InternalErrorCode internalErrorCode,
       final String message) {
     super(message);
     addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode, message);
@@ -24,7 +26,7 @@ public class ThreeDSException extends Exception {
 
   public ThreeDSException(
       final ThreeDSecureErrorCode threeDSecureErrorCode,
-      final ErrorCode internalErrorCode,
+      final InternalErrorCode internalErrorCode,
       final String message,
       final Throwable cause) {
     super(message, cause);
@@ -45,7 +47,7 @@ public class ThreeDSException extends Exception {
   }
 
   public ThreeDSErrorResponse getErrorResponse() {
-    return this.threeDSErrorResponse.setHttpStatus(HttpStatus.OK);
+    return this.threeDSErrorResponse.setHttpStatus(HttpStatus.OK.value());
   }
 
   private void addMetaInThreeDSecureErrorCode(

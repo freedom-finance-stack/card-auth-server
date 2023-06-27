@@ -2,7 +2,7 @@ package com.razorpay.threeds.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.razorpay.acs.dao.contract.enums.ThreeRIInd;
+import com.razorpay.acs.contract.enums.ThreeRIInd;
 import com.razorpay.acs.dao.enums.ECI;
 import com.razorpay.acs.dao.enums.Network;
 import com.razorpay.acs.dao.enums.TransactionStatus;

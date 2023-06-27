@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.razorpay.acs.dao.contract.AREQ;
+import com.razorpay.acs.contract.AREQ;
 import com.razorpay.threeds.exception.ValidationException;
 import com.razorpay.threeds.validator.enums.ThreeDSDataElementValidationStrategy;
 

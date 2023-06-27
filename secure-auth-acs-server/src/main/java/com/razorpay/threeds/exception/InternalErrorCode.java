@@ -1,12 +1,12 @@
 package com.razorpay.threeds.exception;
 
-import com.razorpay.acs.dao.contract.enums.TransactionStatusReason;
+import com.razorpay.acs.contract.enums.TransactionStatusReason;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 
 import lombok.Getter;
 
 @Getter
-public enum ErrorCode { // todo get this file reviewed by Ashish and Piyush
+public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piyush
 
   // Error code for card USER
   CARD_USER_NOT_FOUND(
@@ -101,12 +101,12 @@ public enum ErrorCode { // todo get this file reviewed by Ashish and Piyush
 
   private TransactionStatusReason transactionStatusReason;
 
-  ErrorCode(final String errorCode, final String defaultErrorMessage) {
+  InternalErrorCode(final String errorCode, final String defaultErrorMessage) {
     this.code = errorCode;
     this.defaultErrorMessage = defaultErrorMessage;
   }
 
-  ErrorCode(
+  InternalErrorCode(
       final String errorCode,
       final String defaultErrorMessage,
       final TransactionStatus transactionStatus,

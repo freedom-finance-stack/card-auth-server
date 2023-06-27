@@ -1,14 +1,13 @@
 package com.razorpay.threeds.service.impl;
 
 import java.sql.Timestamp;
-import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.razorpay.acs.dao.contract.AREQ;
-import com.razorpay.acs.dao.contract.CREQ;
-import com.razorpay.acs.dao.contract.ThreeDSObject;
+import com.razorpay.acs.contract.AREQ;
+import com.razorpay.acs.contract.CREQ;
+import com.razorpay.acs.contract.ThreeDSObject;
 import com.razorpay.acs.dao.enums.MessageType;
 import com.razorpay.acs.dao.model.*;
 import com.razorpay.acs.dao.repository.TransactionMessageTypeDetailRepository;

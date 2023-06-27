@@ -1,11 +1,11 @@
 package com.razorpay.threeds.validator.enums;
 
-import com.razorpay.acs.dao.contract.AREQ;
-import com.razorpay.acs.dao.contract.ThreeDSObject;
-import com.razorpay.acs.dao.contract.ThreeDSRequestorAuthenticationInfo;
-import com.razorpay.acs.dao.contract.enums.DeviceChannel;
-import com.razorpay.acs.dao.contract.enums.MessageCategory;
-import com.razorpay.threeds.exception.ThreeDSecureErrorCode;
+import com.razorpay.acs.contract.AREQ;
+import com.razorpay.acs.contract.ThreeDSObject;
+import com.razorpay.acs.contract.ThreeDSRequestorAuthenticationInfo;
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
+import com.razorpay.acs.contract.enums.DeviceChannel;
+import com.razorpay.acs.contract.enums.MessageCategory;
 import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.ValidationResponse;
 import com.razorpay.threeds.validator.ValidationStrategy;
