@@ -4,8 +4,8 @@ USE `fps_acs`;
 CREATE TABLE IF NOT EXISTS `transaction`
 (
     `id`                        varchar(36) PRIMARY KEY,
-    `institution_id`            varchar(36)                                                                                                                                                                     NOT NULL,
-    `message_category`          ENUM ('PA', 'NPA', 'PVPA', 'PVNPA', 'NW', 'TW', 'IT', 'AT', 'AW', 'DI', 'II' )                                                                                                  NOT NULL,
+    `institution_id`            varchar(36),
+    `message_category`          ENUM ('PA', 'NPA', 'PVPA', 'PVNPA', 'NW', 'TW', 'IT', 'AT', 'AW', 'DI', 'II' ),
     `message_version`           varchar(10),
     `challenge_mandated`        bool,
     `transaction_status`        ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLANGE_REQUIRED','CHALLANGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL')                           NOT NULL,
@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS `transaction`
     `phase`                     ENUM ('AREQ','ARES','CREQ','RETRY_CREQ','CRES','RREQ','REDIRECT','RESEND_OTP','AUTH_INITIATE','GENERATE_OTP','AUTH_RESULT','SEAMLESS_GENERATE_OTP','VERIFY_OTP','RRES','ERROR') NOT NULL,
     `threeds_session_data`      varchar(1024),
     `auth_value`                varchar(200),
-    `device_channel`            varchar(10)                                                                                                                                                                     NOT NULL,
+    `eci`                       varchar(3),
+    `device_channel`            varchar(10),
     `device_name`               varchar(20),
     `interaction_count`         int,
     `error_code`                varchar(20),

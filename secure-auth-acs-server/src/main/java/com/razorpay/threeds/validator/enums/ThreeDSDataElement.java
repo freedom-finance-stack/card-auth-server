@@ -6,6 +6,15 @@ import com.razorpay.threeds.constant.ThreeDSConstant;
 import com.razorpay.threeds.validator.DataLength;
 
 public enum ThreeDSDataElement {
+
+
+  DEVICE_CHANNEL(
+          ThreeDSConstant.ELEMENT_DEVICE_CHANNEL,
+          DeviceChannel.getChannelValues()),
+
+  MESSAGE_CATEGORY(
+          ThreeDSConstant.ELEMENT_MESSAGE_CATEGORY,
+          MessageCategory.getCategoryValues()),
   THREEDS_COMPIND(
       ThreeDSConstant.ELEMENT_THREEDS_COMPIND,
       MessageInclusion.REQUIRED,
@@ -375,13 +384,6 @@ public enum ThreeDSDataElement {
       new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
       new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
 
-  DEVICE_CHANNEL(
-      ThreeDSConstant.ELEMENT_DEVICE_CHANNEL,
-      MessageInclusion.REQUIRED,
-      new DataLength(2, DataLengthType.FIXED),
-      new String[] {"01", "02", "03"},
-      new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
-      new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
 
   DEVICE_INFO(
       ThreeDSConstant.ELEMENT_DEVICE_INFO,
@@ -458,14 +460,6 @@ public enum ThreeDSDataElement {
       ThreeDSConstant.ELEMENT_MERCHANT_RISKINDICATOR,
       MessageInclusion.OPTIONAL,
       new DataLength(DataLengthType.JSON),
-      new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
-      new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
-
-  MESSAGE_CATEGORY(
-      ThreeDSConstant.ELEMENT_MESSAGE_CATEGORY,
-      MessageInclusion.REQUIRED,
-      new DataLength(2, DataLengthType.FIXED),
-      new String[] {"01", "02", "85", "86"},
       new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
       new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
 
@@ -854,7 +848,6 @@ public enum ThreeDSDataElement {
       new DeviceChannel[] {DeviceChannel.APP},
       new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
 
-  // ELEMENT_MESSAGE_CATEGORY(),
   UNSUPPORTED(null, null);
 
   // ----------------------------------------------------------
@@ -871,10 +864,7 @@ public enum ThreeDSDataElement {
   DeviceChannel[] supportedChannel; // e.g APP / BRW / TRI
   MessageCategory[] supportedCategory; // e.g PA / NPA
 
-  private ThreeDSDataElement(String desc, MessageInclusion inclusion) {
-    this.fieldName = desc;
-    this.inclusion = inclusion;
-  }
+
 
   private ThreeDSDataElement(
       String desc,
@@ -891,13 +881,20 @@ public enum ThreeDSDataElement {
     this.supportedCategory = supportedCategory;
   }
 
-  private ThreeDSDataElement(
-      String desc, MessageInclusion inclusion, DataLength length, String[] acceptedValues) {
+
+
+  private ThreeDSDataElement( String desc, String[] acceptedValues,  DeviceChannel[] supportedChannel, MessageCategory[] supportedCategory) {
     this.fieldName = desc;
-    this.inclusion = inclusion;
-    this.length = length;
+    this.acceptedValues = acceptedValues;
+    this.supportedChannel = supportedChannel;
+    this.supportedCategory = supportedCategory;
+  }
+
+  private ThreeDSDataElement( String desc, String[] acceptedValues) {
+    this.fieldName = desc;
     this.acceptedValues = acceptedValues;
   }
+
 
   private ThreeDSDataElement(
       String desc,

@@ -38,7 +38,7 @@ public class Transaction extends BaseEntity<String> {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "transaction_status")
-  private TransactionStatus transactionStatus;
+  private TransactionStatus transactionStatus = TransactionStatus.CREATED;
 
   @Column(name = "transaction_status_reason")
   private String transactionStatusReason;

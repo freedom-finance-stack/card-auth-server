@@ -92,7 +92,14 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
       "4001",
       "INVALID REQUEST",
       TransactionStatus.UNABLE_TO_AUTHENTICATE,
-      TransactionStatusReason.INVALID_TRANSACTION);
+      TransactionStatusReason.INVALID_TRANSACTION),
+
+  INTERNAL_SERVER_ERROR(
+      "501",
+      "INTERNAL SERVER ERROR",
+      TransactionStatus.FAILED,
+      TransactionStatusReason.ACS_TECHNICAL_ISSUE);
+
   private final String code;
 
   private final String defaultErrorMessage;

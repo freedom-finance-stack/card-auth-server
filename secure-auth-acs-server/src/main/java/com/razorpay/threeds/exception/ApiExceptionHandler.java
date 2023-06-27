@@ -25,13 +25,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
       HttpHeaders headers,
       HttpStatus status,
       WebRequest request) {
+    log.error(ex.getMessage(), ex);
     ThreeDSErrorResponse errorResponse =
         new ThreeDSErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
-            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorCode(),
+            ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
             "Request method '" + ex.getMethod() + "' not supported",
-            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorComponent(),
-            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorDescription());
+            ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
+            ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
     return handleExceptionInternal(ex, errorResponse, headers, status, request);
   }
 
@@ -52,6 +53,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(ThreeDSException.class)
   public ResponseEntity<ThreeDSErrorResponse> handleACSException(ThreeDSException exception) {
+    log.error(exception.getMessage(), exception);
     return buildResponseEntity(exception.getErrorResponse());
   }
 

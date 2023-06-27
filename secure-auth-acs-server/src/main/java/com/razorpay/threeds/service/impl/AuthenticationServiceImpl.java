@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.razorpay.acs.contract.AREQ;
 import com.razorpay.acs.contract.ARES;
 import com.razorpay.acs.contract.ThreeDSecureErrorCode;
+import com.razorpay.acs.dao.enums.Phase;
 import com.razorpay.acs.dao.enums.RiskFlag;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.CardRange;
@@ -50,12 +51,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Override
   public ARES processAuthenticationRequest(@NonNull AREQ areq)
       throws ThreeDSException, ACSDataAccessException {
-    Transaction transaction = null;
+    Transaction transaction = new Transaction();
     InstitutionAcsUrl acsUrl = null;
     ARES ares = null;
     CardRange cardRange = null;
     try {
       areq.setTransactionId(Util.generateUUID());
+      transaction.setId(areq.getTransactionId());
       // log incoming request in DB
       transactionMessageTypeService.createAndSave(areq, areq.getTransactionId());
       // validate areq
@@ -88,10 +90,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
       // todo handle INFORMATIONAL and ATTEMPT status
       if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
+        transaction.setChallengeMandated(true);
         // todo add timer logic for challenge
+        transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
       } else {
+        transaction.setChallengeMandated(false);
         String authValue = authValueGeneratorService.generateCAVV(transaction);
         transaction.setAuthValue(authValue);
+        transaction.setTransactionStatus(TransactionStatus.SUCCESS);
       }
 
     } catch (ThreeDSException ex) {
@@ -101,6 +107,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       throw new ThreeDSException(ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
     } catch (ACSException ex) {
       transaction = updateErrorAndSaveTransaction(ex.getErrorCode(), transaction, ex);
+    } catch (Exception ex) {
+      transaction =
+          updateErrorAndSaveTransaction(
+              ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+              InternalErrorCode.INTERNAL_SERVER_ERROR,
+              transaction,
+              ex);
+      throw new ThreeDSException(
+          ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
     }
 
     try {
@@ -119,10 +134,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
               transaction,
               AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
       transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
+      transaction.setPhase(Phase.ARES);
+    } catch (Exception ex) {
+      transaction =
+          updateErrorAndSaveTransaction(
+              ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+              InternalErrorCode.INTERNAL_SERVER_ERROR,
+              transaction,
+              ex);
+      throw new ThreeDSException(
+          ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
     } finally {
       transactionService.saveOrUpdate(transaction);
     }
-
     return ares;
   }
 
@@ -132,9 +156,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       Transaction transaction,
       Exception ex)
       throws ACSDataAccessException {
-    // transaction.setInstitutionId(InternalConstants.DEFAULT_INSTITUTION);
     transaction.setErrorCode(threeDSecureErrorCode.getErrorCode());
     transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+    transaction.setPhase(Phase.ERROR);
     transaction.setTransactionStatusReason(
         internalErrorCode.getTransactionStatusReason().getCode());
     return transactionService.saveOrUpdate(transaction);
@@ -143,7 +167,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private Transaction updateErrorAndSaveTransaction(
       InternalErrorCode internalErrorCode, Transaction transaction, Exception ex)
       throws ACSDataAccessException {
-    // transaction.setInstitutionId(InternalConstants.DEFAULT_INSTITUTION);
     transaction.setErrorCode(internalErrorCode.getCode());
     transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
     transaction.setTransactionStatusReason(
@@ -154,12 +177,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private boolean isChallengeRequired(RiskFlag riskFlag, Transaction transaction) {
     // todo honor ThreeDSRequestorChallsengeInd once RBA is implemented
     if (riskFlag.equals(RiskFlag.NO_CHALLENGE)) {
-      transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-      transaction.setChallengeMandated(false);
       return false;
     } else if (riskFlag.equals(RiskFlag.CHALLENGE)) {
-      transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
-      transaction.setChallengeMandated(true);
       return true;
     } else { // RBA
       throw new UnsupportedOperationException("RBA is not supported yet");

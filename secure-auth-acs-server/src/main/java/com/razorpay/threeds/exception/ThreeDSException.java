@@ -62,10 +62,12 @@ public class ThreeDSException extends Exception {
 
   private void addMetaInThreeDSecureErrorCode(
       final ThreeDSErrorResponse threeDSErrorResponse, final Transaction transaction) {
-    threeDSErrorResponse.setThreeDSServerTransID(
-        transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
-    threeDSErrorResponse.setDsTransID(
-        transaction.getTransactionReferenceDetail().getDsTransactionId());
+    if (transaction.getTransactionReferenceDetail() != null) {
+      threeDSErrorResponse.setThreeDSServerTransID(
+          transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+      threeDSErrorResponse.setDsTransID(
+          transaction.getTransactionReferenceDetail().getDsTransactionId());
+    }
     threeDSErrorResponse.setAcsTransID(transaction.getId());
     threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
   }
