@@ -19,8 +19,6 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true
-  config:
-    import: "file:config/monitoring/monitor-properties.yaml"
 
 management:
   endpoints:
