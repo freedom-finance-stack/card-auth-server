@@ -1,6 +1,6 @@
 package com.razorpay.acs.dao.enums;
 
-import com.razorpay.acs.dao.contract.enums.MessageCategory;
+import com.razorpay.acs.contract.enums.MessageCategory;
 
 public enum ECI {
   VISA_SUCCESS("05", TransactionStatus.SUCCESS, Network.VISA),

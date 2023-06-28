@@ -1,7 +1,7 @@
 package com.razorpay.threeds.validator.enums;
 
-import com.razorpay.acs.dao.contract.enums.DeviceChannel;
-import com.razorpay.acs.dao.contract.enums.MessageCategory;
+import com.razorpay.acs.contract.enums.DeviceChannel;
+import com.razorpay.acs.contract.enums.MessageCategory;
 import com.razorpay.threeds.constant.ThreeDSConstant;
 import com.razorpay.threeds.validator.DataLength;
 

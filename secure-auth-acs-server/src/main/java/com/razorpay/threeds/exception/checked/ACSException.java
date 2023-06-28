@@ -1,50 +1,36 @@
 package com.razorpay.threeds.exception.checked;
 
+import com.razorpay.threeds.exception.InternalErrorCode;
+
 // Checked Exception
 public class ACSException extends Exception {
 
   /** */
   private static final long serialVersionUID = -3009383961775806469L;
 
-  private String errorCode;
-  private String statusReason;
+  private InternalErrorCode internalErrorCode;
 
-  public ACSException(
-      String errorCode,
-      String message,
-      Throwable cause,
-      boolean enableSuppression,
-      boolean writableStackTrace) {
-    super(message, cause, enableSuppression, writableStackTrace);
-    this.errorCode = errorCode;
-  }
-
-  public ACSException(String errorCode, String message, Throwable cause) {
+  public ACSException(InternalErrorCode internalErrorCode, String message, Throwable cause) {
     super(message, cause);
-    this.errorCode = errorCode;
+    this.internalErrorCode = internalErrorCode;
   }
 
-  public ACSException(String errorCode, String message) {
+  public ACSException(InternalErrorCode internalErrorCode, String message) {
     super(message);
-    this.errorCode = errorCode;
+    this.internalErrorCode = internalErrorCode;
   }
 
-  public ACSException(String errorCode, String statusReason, String message) {
-    super(message);
-    this.errorCode = errorCode;
-    this.statusReason = statusReason;
+  public ACSException(InternalErrorCode internalErrorCode, Throwable cause) {
+    super(internalErrorCode.getDefaultErrorMessage(), cause);
+    this.internalErrorCode = internalErrorCode;
   }
 
-  public ACSException(String errorCode, Throwable cause) {
-    super(cause);
-    this.errorCode = errorCode;
+  public ACSException(InternalErrorCode internalErrorCode) {
+    super(internalErrorCode.getDefaultErrorMessage());
+    this.internalErrorCode = internalErrorCode;
   }
 
-  public String getErrorCode() {
-    return errorCode;
-  }
-
-  public String getStatusReason() {
-    return statusReason;
+  public InternalErrorCode getErrorCode() {
+    return internalErrorCode;
   }
 }

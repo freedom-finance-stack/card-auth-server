@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.razorpay.acs.dao.enums.Network;
 import com.razorpay.acs.dao.model.Transaction;
+import com.razorpay.threeds.exception.InternalErrorCode;
 import com.razorpay.threeds.exception.checked.ACSException;
-import com.razorpay.threeds.exception.checked.ErrorCode;
 import com.razorpay.threeds.service.authvalue.impl.MasterCardAuthValueGeneratorImpl;
 import com.razorpay.threeds.service.authvalue.impl.VisaAuthValueGeneratorImpl;
 
@@ -29,9 +29,7 @@ public class AuthValueGeneratorService {
 
     if (authValueGenerator == null) {
       log.error("getCAVV() Error occurred as auth value generator is empty or null");
-      throw new ACSException(
-          ErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND.getCode(),
-          ErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND.getDefaultErrorMessage());
+      throw new ACSException(InternalErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND);
     }
     return authValueGenerator.createCAVV(transaction);
   }
@@ -42,9 +40,7 @@ public class AuthValueGeneratorService {
         || transaction.getTransactionCardDetail().getNetworkCode() == null) {
       log.error(
           "getAuthValueGenerator() Error occurred while fetching correct auth value generator");
-      throw new ACSException(
-          ErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND.getCode(),
-          ErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND.getDefaultErrorMessage());
+      throw new ACSException(InternalErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND);
     }
 
     switch (Objects.requireNonNull(

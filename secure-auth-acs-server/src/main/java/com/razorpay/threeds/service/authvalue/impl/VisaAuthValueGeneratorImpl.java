@@ -25,7 +25,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.razorpay.acs.dao.contract.utils.Util.DATE_FORMAT_YYDDD;
+import static com.razorpay.acs.contract.utils.Util.DATE_FORMAT_YYDDD;
 import static com.razorpay.threeds.constant.InternalConstants.PADDED_SYMBOL_0;
 import static com.razorpay.threeds.constant.InternalConstants.PAD_LEFT;
 import static com.razorpay.threeds.constant.InternalConstants.PAD_RIGHT;

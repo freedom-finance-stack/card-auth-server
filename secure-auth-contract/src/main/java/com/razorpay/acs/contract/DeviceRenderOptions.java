@@ -1,7 +1,7 @@
-package com.razorpay.acs.dao.contract;
+package com.razorpay.acs.contract;
 
-import com.razorpay.acs.dao.contract.enums.DeviceInterface;
-import com.razorpay.acs.dao.contract.enums.UIType;
+import com.razorpay.acs.contract.enums.DeviceInterface;
+import com.razorpay.acs.contract.enums.UIType;
 
 import lombok.Data;
 

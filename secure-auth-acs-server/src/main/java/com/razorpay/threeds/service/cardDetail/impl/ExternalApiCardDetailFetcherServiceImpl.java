@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 import com.razorpay.acs.dao.enums.CardDetailsStore;
 import com.razorpay.threeds.dto.CardDetailResponse;
 import com.razorpay.threeds.dto.CardDetailsRequest;
-import com.razorpay.threeds.exception.ThreeDSException;
-import com.razorpay.threeds.exception.checked.ACSException;
+import com.razorpay.threeds.exception.DataNotFoundException;
+import com.razorpay.threeds.exception.checked.ACSDataAccessException;
+import com.razorpay.threeds.exception.checked.CardBlockedException;
 import com.razorpay.threeds.service.cardDetail.CardDetailFetcherService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ExternalApiCardDetailFetcherServiceImpl implements CardDetailFetcherService {
   @Override
   public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
-      throws ACSException {
+      throws ACSDataAccessException {
     log.info("Fetching card details from External API");
     return null;
   }
 
   public void validateCardDetails(CardDetailResponse cardDetailDto)
-      throws ACSException, ThreeDSException {
+      throws CardBlockedException, DataNotFoundException {
     log.info("Validating card details from ACS");
   }
 }

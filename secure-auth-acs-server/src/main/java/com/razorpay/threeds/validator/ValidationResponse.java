@@ -1,6 +1,6 @@
 package com.razorpay.threeds.validator;
 
-import com.razorpay.threeds.exception.ThreeDSecureErrorCode;
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.threeds.validator.enums.ThreeDSDataElement;
 
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.razorpay.threeds.validator;
 
-import com.razorpay.acs.dao.contract.ThreeDSObject;
+import com.razorpay.acs.contract.ThreeDSObject;
 import com.razorpay.threeds.validator.enums.ThreeDSDataElement;
 
 public interface ValidationStrategy {

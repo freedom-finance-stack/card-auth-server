@@ -5,8 +5,8 @@ import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import com.razorpay.threeds.exception.InternalErrorCode;
 import com.razorpay.threeds.exception.checked.ACSException;
-import com.razorpay.threeds.exception.checked.ErrorCode;
 import com.razorpay.threeds.hsm.luna.domain.GatewayHSM;
 import com.razorpay.threeds.hsm.luna.domain.HSMTransactionMessage;
 import com.razorpay.threeds.hsm.luna.service.HSMGatewayAsyncReply;
@@ -32,7 +32,6 @@ public class HSMGatewayServiceImpl implements HSMGatewayService<GatewayHSM, HSMT
       TcpSendingMessageHandler sendHandler = handler.getTcpSendingMessageHandler();
 
       if (null != sendHandler) {
-        // logger.debug( "Sending Message");
         sendHandler.handleMessage(message);
         setHSMEchoTime();
       } else {
@@ -41,9 +40,7 @@ public class HSMGatewayServiceImpl implements HSMGatewayService<GatewayHSM, HSMT
 
     } catch (Exception e) {
       log.error("Exception in sending transaction to HSM", e);
-      throw new ACSException(
-          ErrorCode.HSM_CONNECTOR_CONNECTION_CLOSE.getCode(),
-          ErrorCode.HSM_CONNECTOR_CONNECTION_CLOSE.getDefaultErrorMessage());
+      throw new ACSException(InternalErrorCode.HSM_CONNECTOR_CONNECTION_CLOSE);
     }
   }
 
@@ -60,15 +57,11 @@ public class HSMGatewayServiceImpl implements HSMGatewayService<GatewayHSM, HSMT
         byteArray = (byte[]) message.getPayload();
       } else {
         log.error("Exception in receiving transaction ");
-        throw new ACSException(
-            ErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT.getCode(),
-            ErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT.getDefaultErrorMessage());
+        throw new ACSException(InternalErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT);
       }
 
     } catch (ACSException e) {
-      throw new ACSException(
-          ErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT.getCode(),
-          ErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT.getDefaultErrorMessage());
+      throw new ACSException(InternalErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT);
     }
     return byteArray;
   }

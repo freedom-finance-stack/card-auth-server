@@ -7,11 +7,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.razorpay.acs.dao.contract.AREQ;
-import com.razorpay.acs.dao.contract.enums.DeviceChannel;
-import com.razorpay.acs.dao.contract.enums.MessageCategory;
+import com.razorpay.acs.contract.AREQ;
+import com.razorpay.acs.contract.enums.DeviceChannel;
+import com.razorpay.acs.contract.enums.MessageCategory;
 import com.razorpay.acs.dao.enums.Phase;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.*;
@@ -19,14 +20,16 @@ import com.razorpay.acs.dao.repository.TransactionReferenceDetailRepository;
 import com.razorpay.acs.dao.repository.TransactionRepository;
 import com.razorpay.threeds.constant.InternalConstants;
 import com.razorpay.threeds.constant.ThreeDSConstant;
+import com.razorpay.threeds.exception.InternalErrorCode;
+import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.service.TransactionService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.appDeviceInfoAndroid;
-import static com.razorpay.acs.dao.contract.constants.EMVCOConstant.appDeviceInfoIOS;
-import static com.razorpay.acs.dao.contract.utils.Util.DATE_FORMAT_YYYYMMDDHHMMSS;
+import static com.razorpay.acs.contract.constants.EMVCOConstant.appDeviceInfoAndroid;
+import static com.razorpay.acs.contract.constants.EMVCOConstant.appDeviceInfoIOS;
+import static com.razorpay.acs.contract.utils.Util.DATE_FORMAT_YYYYMMDDHHMMSS;
 import static com.razorpay.threeds.utils.Util.getTimeStampFromString;
 
 @Service
@@ -37,9 +40,27 @@ public class TransactionServiceImpl implements TransactionService {
   private final TransactionRepository transactionRepository;
   private final TransactionReferenceDetailRepository transactionReferenceDetailRepository;
 
-  public Transaction createOrUpdate(Transaction transaction) {
-    Transaction transactionModel = transactionRepository.save(transaction);
-    return transactionModel;
+  public Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException {
+    try {
+      transactionRepository.save(transaction);
+      return transactionRepository.findById(transaction.getId()).get();
+    } catch (DataAccessException ex) {
+      log.error("Error while saving transaction", ex);
+      throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_SAVE_EXCEPTION, ex);
+    }
+  }
+
+  public Transaction findById(String id) throws ACSDataAccessException {
+    try {
+      Optional<Transaction> transaction = transactionRepository.findById(id);
+      if (transaction.isPresent()) {
+        return transaction.get();
+      }
+    } catch (DataAccessException ex) {
+      throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_FIND_EXCEPTION, ex);
+    }
+
+    return null;
   }
 
   public void remove(String id) {
@@ -54,11 +75,6 @@ public class TransactionServiceImpl implements TransactionService {
     transaction.setTransactionMerchant(buildTransactionMerchant(areq));
     transaction.setTransactionPurchaseDetail(buildTransactionPurchaseDetail(areq));
     return transaction;
-  }
-
-  public Transaction save(Transaction transaction) {
-    transactionRepository.save(transaction);
-    return transactionRepository.findById(transaction.getId()).get();
   }
 
   private static Transaction createTransactionFromAreq(AREQ areq) {
@@ -145,14 +161,6 @@ public class TransactionServiceImpl implements TransactionService {
   private TransactionReferenceDetail buildTransactionReferenceDetail(AREQ areq) {
     return new TransactionReferenceDetail(
         areq.getThreeDSServerTransID(), areq.getThreeDSServerRefNumber(), areq.getDsTransID());
-  }
-
-  public Transaction findById(String id) {
-    Optional<Transaction> transaction = transactionRepository.findById(id);
-    if (transaction.isPresent()) {
-      return transaction.get();
-    }
-    return null;
   }
 
   public Transaction findDuplicationTransaction(String threedsServerTransactionId) {

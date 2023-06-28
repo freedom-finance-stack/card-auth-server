@@ -1,4 +1,4 @@
-package com.razorpay.acs.dao.contract.constants;
+package com.razorpay.acs.contract.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +14,8 @@ public class EMVCOConstant {
    * EMVCo_3DS_Spec_210_1017_0318.pdf
    * */
   public static final String MESSAGE_TYPE_ARES = "ARes";
+  public static final String MESSAGE_TYPE_CREQ = "CReq";
+  public static final String MESSAGE_TYPE_ERRO = "Erro";
   public static final String MESSAGE_TYPE_VERSION = "2.2.0";
   public static final String appDeviceInfoAndroid = "Android";
   public static final String appDeviceInfoIOS = "iOS";

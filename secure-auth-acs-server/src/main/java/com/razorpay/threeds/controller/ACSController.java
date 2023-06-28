@@ -9,8 +9,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import com.razorpay.acs.dao.contract.AREQ;
-import com.razorpay.acs.dao.contract.ARES;
+import com.razorpay.acs.contract.AREQ;
+import com.razorpay.acs.contract.ARES;
+import com.razorpay.threeds.exception.ThreeDSException;
+import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.service.AuthenticationService;
 
 import io.micrometer.core.annotation.Timed;
@@ -32,7 +34,8 @@ public class ACSController {
       @RequestBody @Valid AREQ areq,
       HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse,
-      @RequestHeader HttpHeaders headers) {
+      @RequestHeader HttpHeaders headers)
+      throws ThreeDSException, ACSDataAccessException {
     return authenticationService.processAuthenticationRequest(areq);
   }
 }

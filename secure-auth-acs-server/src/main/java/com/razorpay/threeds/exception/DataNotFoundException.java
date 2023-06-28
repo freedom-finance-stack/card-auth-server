@@ -2,29 +2,29 @@ package com.razorpay.threeds.exception;
 
 import org.springframework.http.HttpStatus;
 
+import com.razorpay.acs.contract.ThreeDSErrorResponse;
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
+
 // Checked Exception
 public class DataNotFoundException extends ThreeDSException {
 
-  public DataNotFoundException(ThreeDSecureErrorCode errorCode, String message) {
-    super(errorCode, message);
+  public DataNotFoundException(
+      ThreeDSecureErrorCode errorCode, InternalErrorCode internalErrorCode) {
+    super(errorCode, internalErrorCode, internalErrorCode.getCode());
   }
 
-  protected DataNotFoundException(
-      ThreeDSecureErrorCode errorCode, String message, Throwable cause) {
-    super(errorCode, message, cause);
-  }
-
-  public DataNotFoundException(ThreeDSecureErrorCode errorCode) {
-    super(errorCode);
+  public DataNotFoundException(
+      ThreeDSecureErrorCode errorCode, InternalErrorCode internalErrorCode, Throwable cause) {
+    super(errorCode, internalErrorCode, internalErrorCode.getCode(), cause);
   }
 
   @Override
   public ThreeDSErrorResponse getErrorResponse() {
     return new ThreeDSErrorResponse(
-        HttpStatus.OK,
-        super.getErrorCode().getErrorCode(),
+        HttpStatus.OK.value(),
+        super.getThreeDSecureErrorCode().getErrorCode(),
         super.getMessage(),
-        super.getErrorCode().getErrorComponent(),
-        super.getErrorCode().getErrorDescription());
+        super.getThreeDSecureErrorCode().getErrorComponent(),
+        super.getThreeDSecureErrorCode().getErrorDescription());
   }
 }
