@@ -16,7 +16,6 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 
-import com.razorpay.threeds.exception.GatewayLateGoodMessageException;
 import com.razorpay.threeds.hsm.luna.domain.HSMBarrierMessageHandlerWithLateGoodResponse;
 import com.razorpay.threeds.hsm.luna.domain.HSMTransactionMessage;
 import com.razorpay.threeds.hsm.luna.service.HSMGatewayAsyncReply;
@@ -92,7 +91,7 @@ public class HSMInitialisationConfig {
         try {
           hsmgatewayAsyncReply.put(message);
           hsmbarrier().trigger(message);
-        } catch (GatewayLateGoodMessageException exception) {
+        } catch (Exception exception) {
           log.error("Late good response..! and exception is: ", exception);
           hsmgatewayAsyncReply.get(message);
           hsmLateGoodresponseChannel().send(message);

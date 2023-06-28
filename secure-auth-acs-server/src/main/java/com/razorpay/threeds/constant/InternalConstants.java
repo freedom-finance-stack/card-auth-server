@@ -14,7 +14,7 @@ public class InternalConstants {
   public static final String COMMA = ",";
   public static final String SEMICOLON = ";";
   public static final String PADDED_SYMBOL_X = "X";
-  public static final String PADDED_SYMBOL_0 = "0";
+  public static final Character PADDED_SYMBOL_0 = '0';
   public static final String HYPEN_WITH_SPACE = " - ";
   public static final String AMPERSAND = "&";
   public static final String DOT = ".";

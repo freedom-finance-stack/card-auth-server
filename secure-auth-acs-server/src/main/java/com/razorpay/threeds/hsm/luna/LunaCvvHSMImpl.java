@@ -7,7 +7,7 @@ import com.razorpay.acs.dao.model.HSMConfigPK;
 import com.razorpay.acs.dao.model.HsmConfig;
 import com.razorpay.acs.dao.model.Transaction;
 import com.razorpay.acs.dao.repository.HSMConfigRepository;
-import com.razorpay.threeds.exception.checked.ACSException;
+import com.razorpay.threeds.exception.HSMConnectionException;
 import com.razorpay.threeds.hsm.CvvHSM;
 import com.razorpay.threeds.hsm.luna.command.HsmCommand;
 import com.razorpay.threeds.hsm.luna.command.LunaHsmUtility;
@@ -31,7 +31,7 @@ public class LunaCvvHSMImpl implements CvvHSM {
 
   @Override
   public String generateCVV(@NonNull final Transaction transaction, @NonNull final String data)
-      throws ACSException {
+      throws HSMConnectionException {
     String strCVVIndex = getHSMConfig(transaction).getHsmDebitCvvCvcKey();
     if (strCVVIndex.length() == 1) {
       strCVVIndex = String.format("%02d", strCVVIndex);

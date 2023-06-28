@@ -77,7 +77,7 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
     // zeros.
     String cvv =
         sixteenDigitNumericValue + seedATN + strAuthenticationResultCode + secondFactorAuthCode;
-    String data = Util.extendString(cvv, PADDED_SYMBOL_0, 32, PAD_RIGHT);
+    String data = Util.padString(cvv, 32, PADDED_SYMBOL_0, PAD_RIGHT);
 
     String cvvOutput = cvvGenerationService.generateCVV(transaction, data);
 
@@ -88,17 +88,17 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
 
     String purchaseDate = String.valueOf(objPurchaseDate.getDayOfYear());
     if (purchaseDate.length() < 3) {
-      purchaseDate = Util.extendString(purchaseDate, PADDED_SYMBOL_0, 3, PAD_LEFT);
+      purchaseDate = Util.padString(purchaseDate, 3, PADDED_SYMBOL_0, PAD_LEFT);
     }
 
     long purchaseAmountLong =
         Long.parseLong(transaction.getTransactionPurchaseDetail().getPurchaseAmount());
     String purchaseAmountHexString = Long.toHexString(purchaseAmountLong).toUpperCase();
     purchaseAmountHexString =
-        Util.extendString(
+        Util.padString(
             purchaseAmountHexString,
-            PADDED_SYMBOL_0,
             10,
+            PADDED_SYMBOL_0,
             PAD_LEFT); // HexDump.zeropad(hexString, 10);
 
     String strSupplementalData =
@@ -164,10 +164,10 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
   }
 
   private String getAuthenticationAmount(Transaction transaction) {
-    return Util.extendString(
+    return Util.padString(
         transaction.getTransactionPurchaseDetail().getPurchaseAmount(),
-        PADDED_SYMBOL_0,
         12,
+        PADDED_SYMBOL_0,
         PAD_LEFT);
   }
 
@@ -178,8 +178,11 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
    * @return String: Authentication Result Code
    */
   private String getAuthenticationResultCode(@NonNull final TransactionStatus transactionStatus) {
-    return VISAConstant.VISATransactionStatusInfo.getInstance(transactionStatus)
-        .getAuthenticationResultCode();
+    VISAConstant.VISATransactionStatusInfo instance =
+        VISAConstant.VISATransactionStatusInfo.getInstance(transactionStatus);
+
+    // todo handle NPE if instance is null
+    return instance.getAuthenticationResultCode();
   }
 
   /**

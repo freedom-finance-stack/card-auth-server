@@ -6,6 +6,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.razorpay.acs.dao.model.Transaction;
+import com.razorpay.threeds.exception.HSMConnectionException;
+import com.razorpay.threeds.exception.InternalErrorCode;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.hsm.CvvHSM;
 import com.razorpay.threeds.hsm.luna.LunaCvvHSMImpl;
@@ -31,7 +33,11 @@ public class CVVGenerationService {
   public String generateCVV(@NonNull final Transaction transaction, @NonNull final String data)
       throws ACSException {
     CvvHSM cvvHSM = getCvvHSMImpl(enabledHSMGateway);
-    return cvvHSM.generateCVV(transaction, data);
+    try {
+      return cvvHSM.generateCVV(transaction, data);
+    } catch (HSMConnectionException hsmConnectionException) {
+      throw new ACSException(InternalErrorCode.HSM_INTERNAL_EXCEPTION);
+    }
   }
 
   /**

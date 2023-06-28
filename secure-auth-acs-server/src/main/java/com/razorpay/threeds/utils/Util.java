@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static com.razorpay.threeds.constant.InternalConstants.PADDED_SYMBOL_X;
 import static com.razorpay.threeds.constant.InternalConstants.PAD_LEFT;
+import static com.razorpay.threeds.constant.InternalConstants.PAD_RIGHT;
 
 @Slf4j
 public class Util {
@@ -81,22 +82,22 @@ public class Util {
     return firstSixDigit + maskedDigits + lastFourDigit;
   }
 
-  public static String extendString(String text, String symbol, Integer len, String padOn) {
-    if (PAD_LEFT.equals(padOn)) {
-      StringBuilder stringBuilder = new StringBuilder();
-      int paddingCharLength = len - text.length();
-      stringBuilder.append(String.valueOf(symbol).repeat(Math.max(0, paddingCharLength)));
-      stringBuilder.append(text);
-      text = stringBuilder.toString();
-    } else {
-      StringBuilder textBuilder = new StringBuilder(text);
-      while (textBuilder.length() < len) {
-        textBuilder.append(symbol);
-      }
-      text = textBuilder.toString();
+  public static String padString(String input, int desiredLength, char paddingChar, String padOn) {
+    if (input.length() >= desiredLength) {
+      return input;
     }
 
-    return text;
+    StringBuilder paddedString = new StringBuilder(input);
+    while (paddedString.length() < desiredLength) {
+      if (PAD_LEFT.equals(padOn)) {
+        paddedString.insert(0, paddingChar);
+      } else if (PAD_RIGHT.equals(padOn)) {
+        paddedString.append(paddingChar);
+      } else {
+        break;
+      }
+    }
+    return paddedString.toString();
   }
 
   public static String getHashValue(String hashData) {

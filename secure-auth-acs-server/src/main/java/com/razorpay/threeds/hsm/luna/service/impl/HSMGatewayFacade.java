@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import com.razorpay.threeds.exception.checked.ACSException;
+import com.razorpay.threeds.exception.HSMConnectionException;
 import com.razorpay.threeds.hsm.luna.command.HsmCommand;
 import com.razorpay.threeds.hsm.luna.domain.GatewayHSM;
 import com.razorpay.threeds.hsm.luna.domain.HSMTransactionMessage;
@@ -36,7 +36,7 @@ public class HSMGatewayFacade {
 
   private final GatewayHSM gatewayHSM;
 
-  public HsmCommand sendMessage(HsmCommand hsmCommand) throws ACSException {
+  public HsmCommand sendMessage(HsmCommand hsmCommand) throws HSMConnectionException {
 
     byte[] hsmRequest = null;
     byte[] hsmResponse = null;
