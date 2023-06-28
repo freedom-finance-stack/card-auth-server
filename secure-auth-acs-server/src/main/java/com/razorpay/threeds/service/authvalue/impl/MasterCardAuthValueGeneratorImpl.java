@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
 
   @Override
-  public String createCAVV(Transaction transaction) throws ACSException {
+  public String createAuthValue(Transaction transaction) throws ACSException {
     return null;
   }
 }

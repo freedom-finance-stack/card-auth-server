@@ -100,7 +100,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         transaction.getMessageCategory())
                     .setThreeRIInd(areq.getThreeRIInd()));
         transaction.setEci(eci);
-        String authValue = authValueGeneratorService.getCAVV(transaction);
+        String authValue = authValueGeneratorService.getAuthValue(transaction);
         transaction.setAuthValue(authValue);
       }
 

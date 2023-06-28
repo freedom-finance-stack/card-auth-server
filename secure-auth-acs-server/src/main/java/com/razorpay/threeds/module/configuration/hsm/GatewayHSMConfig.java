@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.env.Environment;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
@@ -16,7 +15,6 @@ import org.springframework.integration.scheduling.PollerMetadata;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.razorpay.threeds.hsm.luna.domain.GatewayHSM;
 import com.razorpay.threeds.hsm.luna.domain.HSMByteArraySerializer;
@@ -45,11 +43,8 @@ public class GatewayHSMConfig {
   @Value("${hsm.enabled_gateway}")
   private String enabledHSM;
 
-  private final Environment environment;
-
   // Creates a connection factory for LUNA HSM
   @Bean
-  @Transactional
   public GatewayHSM gatewayHSM() {
 
     GatewayHSM gatewayHSM = new GatewayHSM();

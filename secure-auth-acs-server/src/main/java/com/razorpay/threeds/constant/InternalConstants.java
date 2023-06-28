@@ -10,7 +10,7 @@ public class InternalConstants {
   public static final String ANDROID = "Android";
   public static final String IOS = "iOS";
   public static final String SPACE = " ";
-  public static final String COLON_SEPERATOR = " : ";
+  public static final String COLON_SEPARATOR = " : ";
   public static final String COMMA = ",";
   public static final String SEMICOLON = ";";
   public static final String PADDED_SYMBOL_X = "X";

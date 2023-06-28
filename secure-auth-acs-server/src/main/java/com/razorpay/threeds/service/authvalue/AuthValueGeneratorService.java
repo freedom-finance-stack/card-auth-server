@@ -24,27 +24,35 @@ public class AuthValueGeneratorService {
 
   private final ApplicationContext applicationContext;
 
-  public String getCAVV(@NonNull final Transaction transaction) throws ACSException {
-    AuthValueGenerator authValueGenerator = getAuthValueGenerator(transaction);
-
-    if (authValueGenerator == null) {
-      log.error("getCAVV() Error occurred as auth value generator is empty or null");
-      throw new ACSException(InternalErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND);
-    }
-    return authValueGenerator.createCAVV(transaction);
-  }
-
-  private AuthValueGenerator getAuthValueGenerator(@NonNull final Transaction transaction)
-      throws ACSException {
+  public String getAuthValue(@NonNull final Transaction transaction) throws ACSException {
     if (transaction.getTransactionCardDetail() == null
         || transaction.getTransactionCardDetail().getNetworkCode() == null) {
       log.error(
           "getAuthValueGenerator() Error occurred while fetching correct auth value generator");
       throw new ACSException(InternalErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND);
     }
+    AuthValueGenerator authValueGenerator =
+        getAuthValueGenerator(
+            Objects.requireNonNull(
+                Network.getNetwork(
+                    transaction.getTransactionCardDetail().getNetworkCode().intValue())));
 
-    switch (Objects.requireNonNull(
-        Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode().intValue()))) {
+    if (authValueGenerator == null) {
+      log.error("getAuthValue() Error occurred as auth value generator is empty or null");
+      throw new ACSException(InternalErrorCode.AUTH_VALUE_GENERATOR_NOT_FOUND);
+    }
+    return authValueGenerator.createAuthValue(transaction);
+  }
+
+  /**
+   * Factory Method to fetch correct Auth Value generator corresponding to network
+   *
+   * @param network which is {@link com.razorpay.acs.dao.model.Network}
+   * @return {@link AuthValueGenerator}
+   */
+  private AuthValueGenerator getAuthValueGenerator(@NonNull final Network network) {
+
+    switch (network) {
       case VISA:
         return applicationContext.getBean(VisaAuthValueGeneratorImpl.class);
       case MASTERCARD:

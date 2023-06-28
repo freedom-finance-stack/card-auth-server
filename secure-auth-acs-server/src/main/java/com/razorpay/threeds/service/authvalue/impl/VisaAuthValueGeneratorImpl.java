@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.Transaction;
-import com.razorpay.threeds.constant.ThreeDSConstant;
+import com.razorpay.threeds.constant.AuthenticationMethod;
 import com.razorpay.threeds.constant.VISAConstant;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.authvalue.AuthValueGenerator;
-import com.razorpay.threeds.service.authvalue.hsm.CAVVGenerationService;
+import com.razorpay.threeds.service.authvalue.CVVGenerationService;
 import com.razorpay.threeds.utils.HexUtil;
 import com.razorpay.threeds.utils.Util;
 
@@ -38,10 +38,12 @@ import static com.razorpay.threeds.constant.VISAConstant.PROTOCOL_VERSION_EMV_2_
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
 
-  private final CAVVGenerationService cavvGenerationService;
+  private static final int ATN_SEED_VALUE_DIGITS = 4;
+
+  private final CVVGenerationService cvvGenerationService;
 
   @Override
-  public String createCAVV(Transaction transaction) throws ACSException {
+  public String createAuthValue(Transaction transaction) throws ACSException {
 
     String pan = transaction.getTransactionCardDetail().getCardNumber();
 
@@ -50,8 +52,8 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
 
     String secondFactorAuthCode = getAuthenticationMethodCode(transaction);
 
-    String seedATN = String.valueOf(Util.generateRandomNumber());
-    log.debug("generateCAVV() atn: {}", seedATN);
+    String seedATN = String.valueOf(Util.generateRandomNumber(ATN_SEED_VALUE_DIGITS));
+    log.debug("createAuthValue() atn: {}", seedATN);
 
     String eci = transaction.getEci();
 
@@ -77,7 +79,7 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         sixteenDigitNumericValue + seedATN + strAuthenticationResultCode + secondFactorAuthCode;
     String data = Util.extendString(cvv, PADDED_SYMBOL_0, 32, PAD_RIGHT);
 
-    String cvvOutput = cavvGenerationService.generateCavv(transaction, data);
+    String cvvOutput = cvvGenerationService.generateCVV(transaction, data);
 
     String authMethod = getAuthenticationMethodCode(transaction);
 
@@ -189,7 +191,7 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
   private String getAuthenticationMethodCode(@NonNull final Transaction transaction) {
 
     return transaction.isChallengeMandated()
-        ? ThreeDSConstant.AuthenticationMethod.CHALLENGE_FLOW_USING_OTP_VIA_SMS.getCode()
-        : ThreeDSConstant.AuthenticationMethod.FRICTIONLESS_RBA.getCode();
+        ? AuthenticationMethod.CHALLENGE_FLOW_USING_OTP_VIA_SMS.getCode()
+        : AuthenticationMethod.FRICTIONLESS_RBA.getCode();
   }
 }

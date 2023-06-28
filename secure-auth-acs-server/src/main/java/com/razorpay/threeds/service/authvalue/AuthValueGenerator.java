@@ -5,5 +5,5 @@ import com.razorpay.threeds.exception.checked.ACSException;
 
 public interface AuthValueGenerator {
 
-  String createCAVV(Transaction transaction) throws ACSException;
+  String createAuthValue(Transaction transaction) throws ACSException;
 }

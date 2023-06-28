@@ -139,10 +139,10 @@ public class Util {
     return sixteenDigitNumericValue;
   }
 
-  public static long generateRandomNumber() {
+  public static int generateRandomNumber(int digits) {
     Random random = new Random();
-    long min = 1000L; // Minimum value (inclusive)
-    long max = 9999L; // Maximum value (inclusive)
-    return min + (long) (random.nextDouble() * (max - min + 1));
+    int min = (int) Math.pow(10, digits - 1);
+    int max = (int) Math.pow(10, digits) - 1;
+    return random.nextInt(max - min + 1) + min;
   }
 }

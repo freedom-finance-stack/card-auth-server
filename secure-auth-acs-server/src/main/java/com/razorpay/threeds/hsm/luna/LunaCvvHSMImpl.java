@@ -8,7 +8,7 @@ import com.razorpay.acs.dao.model.HsmConfig;
 import com.razorpay.acs.dao.model.Transaction;
 import com.razorpay.acs.dao.repository.HSMConfigRepository;
 import com.razorpay.threeds.exception.checked.ACSException;
-import com.razorpay.threeds.hsm.CavvHSM;
+import com.razorpay.threeds.hsm.CvvHSM;
 import com.razorpay.threeds.hsm.luna.command.HsmCommand;
 import com.razorpay.threeds.hsm.luna.command.LunaHsmUtility;
 import com.razorpay.threeds.hsm.luna.domain.InternalHsmMsg;
@@ -19,9 +19,9 @@ import lombok.RequiredArgsConstructor;
 
 import static com.razorpay.threeds.constant.LunaHSMConstants.INTERNAL_CVV_GENERATE_CMD;
 
-@Service("lunaCavvHSM")
+@Service("lunaCvvHSMImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class LunaCavvHSMImpl implements CavvHSM {
+public class LunaCvvHSMImpl implements CvvHSM {
 
   private final LunaHsmUtility lunaHsmUtility;
 
@@ -30,7 +30,7 @@ public class LunaCavvHSMImpl implements CavvHSM {
   private final HSMGatewayFacade hsmGatewayFacade;
 
   @Override
-  public String generateCavv(@NonNull final Transaction transaction, @NonNull final String data)
+  public String generateCVV(@NonNull final Transaction transaction, @NonNull final String data)
       throws ACSException {
     String strCVVIndex = getHSMConfig(transaction).getHsmDebitCvvCvcKey();
     if (strCVVIndex.length() == 1) {
