@@ -11,10 +11,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.acs.dao.enums.TransactionStatus;
 import com.razorpay.acs.dao.model.Transaction;
 import com.razorpay.threeds.constant.AuthenticationMethod;
 import com.razorpay.threeds.constant.VISAConstant;
+import com.razorpay.threeds.exception.ValidationException;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.authvalue.AuthValueGenerator;
 import com.razorpay.threeds.service.authvalue.CVVGenerationService;
@@ -43,7 +45,7 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
   private final CVVGenerationService cvvGenerationService;
 
   @Override
-  public String createAuthValue(Transaction transaction) throws ACSException {
+  public String createAuthValue(Transaction transaction) throws ACSException, ValidationException {
 
     String pan = transaction.getTransactionCardDetail().getCardNumber();
 
@@ -177,11 +179,15 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
    * @param transactionStatus
    * @return String: Authentication Result Code
    */
-  private String getAuthenticationResultCode(@NonNull final TransactionStatus transactionStatus) {
+  private String getAuthenticationResultCode(@NonNull final TransactionStatus transactionStatus)
+      throws ValidationException {
     VISAConstant.VISATransactionStatusInfo instance =
         VISAConstant.VISATransactionStatusInfo.getInstance(transactionStatus);
 
-    // todo handle NPE if instance is null
+    if (instance == null) {
+      throw new ValidationException(
+          ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Valid transaction status not found");
+    }
     return instance.getAuthenticationResultCode();
   }
 
