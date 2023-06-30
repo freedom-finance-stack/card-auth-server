@@ -6,7 +6,7 @@ import com.razorpay.acs.contract.constants.EMVCOConstant;
 import lombok.Data;
 
 @Data
-public class ThreeDSRequestorAuthenticationInfo {
+public class ThreeDSRequestorAuthenticationInfo implements Validatable {
 
   @JsonProperty("threeDSReqAuthMethod")
   private String threeDSReqAuthMethod;

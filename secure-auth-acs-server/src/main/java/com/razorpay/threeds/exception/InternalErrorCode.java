@@ -100,7 +100,6 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
       TransactionStatus.FAILED,
       TransactionStatusReason.ACS_TECHNICAL_ISSUE);
 
-
   private final String code;
 
   private final String defaultErrorMessage;

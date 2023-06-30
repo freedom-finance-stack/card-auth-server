@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.razorpay.acs.contract.constants.EMVCOConstant;
 import com.razorpay.acs.contract.utils.Util;
 
-public class CardholderAccountInformation {
+public class CardholderAccountInformation implements Validatable {
 
   @JsonProperty("chAccAgeInd")
   private String chAccAgeInd;
@@ -109,7 +109,15 @@ public class CardholderAccountInformation {
     return counter;
   }
 
-  public boolean isFormatValid() {
+  public boolean isValid() {
+
+    if (this.getLength() == 0) {
+      return false;
+    }
+
+    if (!this.isDataValid()) {
+      return false;
+    }
     if (this.chAccDate != null) {
       if (!Util.isValidDate(chAccDate, Util.DATE_FORMAT_YYYYMMDD)) {
         return false;

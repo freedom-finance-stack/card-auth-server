@@ -5,7 +5,7 @@ import com.razorpay.acs.contract.constants.EMVCOConstant;
 import lombok.Data;
 
 @Data
-public class ThreeDSRequestorPriorAuthenticationInfo {
+public class ThreeDSRequestorPriorAuthenticationInfo implements Validatable {
 
   private String threeDSReqPriorAuthData;
   private String threeDSReqPriorAuthMethod;

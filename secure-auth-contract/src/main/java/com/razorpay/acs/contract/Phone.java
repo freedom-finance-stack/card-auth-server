@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class Phone {
+public class Phone implements Validatable {
 
   @JsonProperty("cc")
   private String cc;

@@ -10,4 +10,5 @@ public class InternalConstants {
   public static final String ANDROID = "Android";
   public static final String IOS = "iOS";
   public static final String DEFAULT_INSTITUTION = "I0000";
+  public static final String YES = "Y";
 }

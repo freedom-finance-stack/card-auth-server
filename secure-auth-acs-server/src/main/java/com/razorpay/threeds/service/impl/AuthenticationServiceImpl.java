@@ -116,7 +116,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
               ex);
       throw new ThreeDSException(
           ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
-
     }
 
     try {

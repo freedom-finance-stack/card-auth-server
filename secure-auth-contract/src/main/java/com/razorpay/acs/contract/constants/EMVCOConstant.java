@@ -20,7 +20,7 @@ public class EMVCOConstant {
   public static final String appDeviceInfoAndroid = "Android";
   public static final String appDeviceInfoIOS = "iOS";
 
-  public static final List<String> excludedCurrency =
+  public static final List<String> excludedCountry =
       new ArrayList<String>(
           Arrays.asList(
               "955", "956", "957", "958", "959", "960", "961", "962", "963", "964", "999", "901"));

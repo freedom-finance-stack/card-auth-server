@@ -21,15 +21,17 @@ public enum DeviceChannel {
     }
     return null;
   }
+
   public static String[] getChannelValues() {
-      String[] channelValues = new String[DeviceChannel.values().length];
-      int i = 0;
-      for (DeviceChannel deviceChannel : DeviceChannel.values()) {
+    String[] channelValues = new String[DeviceChannel.values().length];
+    int i = 0;
+    for (DeviceChannel deviceChannel : DeviceChannel.values()) {
       channelValues[i] = deviceChannel.getChannel();
       i++;
-      }
-      return channelValues;
+    }
+    return channelValues;
   }
+
   public static boolean contains(DeviceChannel[] channels, String channel) {
     for (DeviceChannel deviceChannel : channels) {
       if (deviceChannel.getChannel().equals(channel)) {
