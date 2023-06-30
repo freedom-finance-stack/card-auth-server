@@ -42,7 +42,8 @@ public interface AResMapper {
       target = "transStatusReason",
       expression = "java(getTransStatusReason(areq, transaction))")
 
-  // todo   @Mapping(target = "authenticationMethod", expression = "java(getAuthType(transaction))")
+  // todo   @Mapping(target = "authenticationMethod", expression =
+  // "java(getAuthType(transaction))")
   @Mapping(target = "authenticationValue", source = "transaction.authValue")
   @Mapping(target = "threeDSServerTransID", source = "areq.threeDSServerTransID")
   @Mapping(target = "dsReferenceNumber", source = "areq.dsReferenceNumber")
@@ -65,9 +66,7 @@ public interface AResMapper {
       transStatusReason = transaction.getTransactionStatusReason();
     } else {
       // For 02-NPA, Conditional as defined by the DS.
-      if (Network.AMEX
-          .getValue()
-          .equals(String.valueOf(transaction.getTransactionCardDetail().getNetworkCode()))) {
+      if (Network.AMEX.getValue() == transaction.getTransactionCardDetail().getNetworkCode()) {
         if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
           transaction.setTransactionStatusReason(
               TransactionStatusReason.MEDIUM_CONFIDENCE.getCode());
@@ -93,14 +92,14 @@ public interface AResMapper {
   default String getOperatorId(Transaction transaction, AppConfiguration appConfiguration) {
 
     String operatorId = "";
-    if (Integer.parseInt(Network.VISA.getValue(), 10)
-        == transaction.getTransactionCardDetail().getNetworkCode()) {
+    if (Network.VISA.getValue()
+        == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
       operatorId = appConfiguration.getApp().getAcs().getOperatorId().getVisa();
-    } else if (Integer.parseInt(Network.MASTERCARD.getValue(), 10)
-        == transaction.getTransactionCardDetail().getNetworkCode()) {
+    } else if (Network.MASTERCARD.getValue()
+        == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
       operatorId = appConfiguration.getApp().getAcs().getOperatorId().getMastercard();
-    } else if (Integer.parseInt(Network.AMEX.getValue(), 10)
-        == transaction.getTransactionCardDetail().getNetworkCode()) {
+    } else if (Network.AMEX.getValue()
+        == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
       operatorId = appConfiguration.getApp().getAcs().getOperatorId().getAmex();
     }
     return operatorId;
