@@ -11,7 +11,7 @@ public enum ThreeDSDataElement {
   DEVICE_CHANNEL(ThreeDSConstant.ELEMENT_DEVICE_CHANNEL, DeviceChannel.getChannelValues()),
 
   MESSAGE_CATEGORY(ThreeDSConstant.ELEMENT_MESSAGE_CATEGORY, MessageCategory.getCategoryValues()),
-  
+
   THREEDS_COMPIND(
       ThreeDSConstant.ELEMENT_THREEDS_COMPIND,
       new String[] {"Y", "N", "U"},
@@ -91,13 +91,13 @@ public enum ThreeDSDataElement {
   ACQUIRER_BIN(
       ThreeDSConstant.ELEMENT_ACQUIRER_BIN,
       new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
-      new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
+      new MessageCategory[] {MessageCategory.PA}),
 
   // Special Case:-PA-Required NPA-Optional
   ACQUIRER_MERCHANT_ID(
       ThreeDSConstant.ELEMENT_ACQUIRER_MERCHANT_ID,
       new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
-      new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
+      new MessageCategory[] {MessageCategory.PA}),
 
   ADDRESS_MATCH(
       ThreeDSConstant.ELEMENT_ADDRESS_MATCH,
@@ -626,7 +626,7 @@ public enum ThreeDSDataElement {
 
   // ----------------------------------------------------------
 
-  String fieldName; // e.g deviceChannel
+  final String fieldName; // e.g deviceChannel
   String acceptedFormat; // e.g YYYYMMDDHHMMSS
   String[] acceptedValues; // e.g { "Y", "N", "U" }
   DeviceChannel[] supportedChannel; // e.g APP / BRW / TRI

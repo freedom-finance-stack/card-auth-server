@@ -67,25 +67,25 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         new WhenRule<>(
             Validation.validateDeviceChannelAndMessageCategory(
                 ThreeDSDataElement.THREEDS_COMPIND, request),
-            new NotNullRule<>(),
-            new LengthRule(DataLengthType.FIXED, 1),
-            new IsInRule(ThreeDSDataElement.THREEDS_COMPIND.getAcceptedValues())));
+            new NotNullRule<>()),
+        new LengthRule(DataLengthType.FIXED, 1),
+        new IsInRule(ThreeDSDataElement.THREEDS_COMPIND.getAcceptedValues()));
     Validation.validate(
         ThreeDSDataElement.THREEDS_REQUESTOR_URL.getFieldName(),
         request.getThreeDSRequestorURL(),
         new WhenRule<>(
             Validation.validateDeviceChannelAndMessageCategory(
                 ThreeDSDataElement.THREEDS_REQUESTOR_URL, request),
-            new NotNullRule<>(),
-            new LengthRule(DataLengthType.VARIABLE, 2048)));
+            new NotNullRule<>()),
+        new LengthRule(DataLengthType.VARIABLE, 2048));
     Validation.validate(
         ThreeDSDataElement.THREEDS_REQUESTOR_ID.getFieldName(),
         request.getThreeDSRequestorID(),
         new WhenRule<>(
             Validation.validateDeviceChannelAndMessageCategory(
                 ThreeDSDataElement.THREEDS_REQUESTOR_ID, request),
-            new NotNullRule<>(),
-            new LengthRule(DataLengthType.VARIABLE, 35)));
+            new NotNullRule<>()),
+        new LengthRule(DataLengthType.VARIABLE, 35));
     Validation.validate(
         ThreeDSDataElement.THREEDS_REQUESTOR_AUTHENTICATION_IND.getFieldName(),
         request.getThreeDSRequestorAuthenticationInd(),
@@ -140,14 +140,16 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         ThreeDSDataElement.ACQUIRER_BIN.getFieldName(),
         request.getAcquirerBIN(),
         new WhenRule<>(
-            MessageCategory.PA.getCategory().equals(request.getMessageCategory()),
+            Validation.validateDeviceChannelAndMessageCategory(
+                ThreeDSDataElement.ACQUIRER_BIN, request),
             new NotNullRule<>()),
         new LengthRule(DataLengthType.VARIABLE, 11));
     Validation.validate(
         ThreeDSDataElement.ACQUIRER_MERCHANT_ID.getFieldName(),
         request.getAcquirerMerchantID(),
         new WhenRule<>(
-            MessageCategory.PA.getCategory().equals(request.getMessageCategory()),
+            Validation.validateDeviceChannelAndMessageCategory(
+                ThreeDSDataElement.ACQUIRER_MERCHANT_ID, request),
             new NotNullRule<>()),
         new LengthRule(DataLengthType.VARIABLE, 15));
 
@@ -385,6 +387,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         new IsInRule(ThreeDSDataElement.WHITE_LIST_STATUS_SOURCE.getAcceptedValues()));
     Validation.validate(
         ThreeDSDataElement.THREEDS_REQUESTOR_DEC_MAX_TIME.getFieldName(),
+        request.getThreeDSRequestorDecMaxTime(),
         new WhenRule<>(
             Validation.validateDeviceChannelAndMessageCategory(
                     ThreeDSDataElement.THREEDS_REQUESTOR_DEC_MAX_TIME, request)
@@ -415,6 +418,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSecureErrorCode.INVALID_FORMAT, "Invalid message extension data");
           }
         };
+
     Validation.validate(
         ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
         request.getMessageExtension(),
