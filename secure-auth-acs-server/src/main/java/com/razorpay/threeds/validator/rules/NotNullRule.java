@@ -10,10 +10,10 @@ public class NotNullRule<T> implements Rule<T> {
 
     if (null == value) {
       throw new ValidationException(
-          ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING, String.format("Invalid value"));
+          ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING, "Invalid value");
     } else if ("".equals(value.toString())) {
       throw new ValidationException(
-          ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING, String.format("Invalid value"));
+          ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING, "Invalid value");
     }
   }
 }

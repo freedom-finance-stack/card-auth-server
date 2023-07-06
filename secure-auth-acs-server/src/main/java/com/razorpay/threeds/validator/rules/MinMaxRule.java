@@ -4,8 +4,8 @@ import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.threeds.exception.ValidationException;
 
 public class MinMaxRule<T> implements Rule<T> {
-  private int min;
-  private int max;
+  private final int min;
+  private final int max;
 
   public MinMaxRule(int min, int max) {
     this.min = min;
