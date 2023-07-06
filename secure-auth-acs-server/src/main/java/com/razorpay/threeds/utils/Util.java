@@ -1,9 +1,9 @@
 package com.razorpay.threeds.utils;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import com.google.gson.Gson;
@@ -30,27 +30,11 @@ public class Util {
     return false;
   }
 
-  public static boolean isValidDate(String strDate, String dateFormat) {
-    try {
-      TemporalAccessor ta = DateTimeFormatter.ofPattern(dateFormat).parse(strDate);
-    } catch (Exception e) {
-      return false;
-    }
-    return true;
-  }
-
-  public static boolean containsAllSpaces(String value) {
-    return value.trim().length() == 0;
-  }
-
-  public static boolean isStringContainsWhiteSpace(String value) {
-    return value.contains(" ");
-  }
-
-  public static Timestamp getTimeStampFromString(String strDate, String dateFormat) {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dateFormat);
-    LocalDateTime objPurchaseDate = LocalDateTime.parse(strDate, dtf);
-    return Timestamp.valueOf(objPurchaseDate);
+  public static Timestamp getTimeStampFromString(String strDate, String dateFormat)
+      throws ParseException {
+    SimpleDateFormat fmt = new SimpleDateFormat(dateFormat);
+    Date parsedDate = fmt.parse(strDate);
+    return new java.sql.Timestamp(parsedDate.getTime());
   }
 
   public static String toJson(Object object) {

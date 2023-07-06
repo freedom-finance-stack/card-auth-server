@@ -27,6 +27,12 @@ public class RangeServiceImpl implements RangeService {
   private final CardRangeRepository cardRangeRepository;
 
   public CardRange findByPan(String pan) throws DataNotFoundException, ACSDataAccessException {
+    if (pan == null || pan.isEmpty()) {
+      log.error("PAN is null or empty");
+      throw new DataNotFoundException(
+          ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, InternalErrorCode.CARD_RANGE_NOT_FOUND);
+    }
+
     CardRange cardRange = null;
     try {
       cardRange = cardRangeRepository.findByPan(Long.valueOf(pan));
@@ -40,21 +46,23 @@ public class RangeServiceImpl implements RangeService {
       throw new DataNotFoundException(
           ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, InternalErrorCode.CARD_RANGE_NOT_FOUND);
     }
+
     return cardRange;
   }
 
   public void validateRange(CardRange cardRange) throws ACSException, DataNotFoundException {
-    CardRangeGroup cardRangeGroup = cardRange.getCardRangeGroup();
-    Institution institution = cardRangeGroup.getInstitution();
-
     if (cardRange.getStatus() != CardRangeStatus.ACTIVE) {
       throw new ACSException(InternalErrorCode.CARD_RANGE_NOT_ACTIVE);
     }
+
+    CardRangeGroup cardRangeGroup = cardRange.getCardRangeGroup();
     if (cardRangeGroup == null) {
       log.error("Card range group not found for card range: " + cardRange.getId());
       throw new DataNotFoundException(
           ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, InternalErrorCode.RANGE_GROUP_NOT_FOUND);
     }
+
+    Institution institution = cardRangeGroup.getInstitution();
     if (institution == null) {
       log.error("Institution not found for card range group: " + cardRangeGroup.getId());
       throw new DataNotFoundException(
@@ -63,15 +71,11 @@ public class RangeServiceImpl implements RangeService {
     if (institution.getStatus() != InstitutionStatus.ACTIVE) {
       throw new ACSException(InternalErrorCode.INSTITUTION_INACTIVE);
     }
+
     if (cardRange.getNetwork() == null) {
       log.error("Network not found for card range: " + cardRange.getId());
       throw new DataNotFoundException(
           ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, InternalErrorCode.INVALID_NETWORK);
-    }
-    if (cardRange.getNetwork() == null) {
-      throw new DataNotFoundException(
-          ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
-          InternalErrorCode.RANGE_GROUP_NOT_FOUND); // todo change error code
     }
   }
 }
