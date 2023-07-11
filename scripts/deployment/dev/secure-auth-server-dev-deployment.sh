@@ -14,4 +14,16 @@ echo "Creating docker images for Secure Auth Server & Mysql Server(used by Secur
 docker-compose -f docker-compose-dev.yaml up -d
 
 echo "Check if Secure Auth Server is UP and running.."
-curl --location 'http://127.0.0.1:8080/actuator/health'
+
+TIMEOUT=20
+ENDTIME=$(($(date +%s) + TIMEOUT))
+SERVER_URL="http://127.0.0.1:8080/actuator/health"
+
+while [ $(date +%s) -lt $ENDTIME ]; do
+    STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SERVER_URL)
+    if [ $STATUS -eq 200 ]; then
+        echo "Server is up!!"
+        break
+    fi
+    sleep 1
+done
