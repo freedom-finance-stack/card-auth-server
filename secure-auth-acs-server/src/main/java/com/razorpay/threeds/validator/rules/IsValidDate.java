@@ -2,7 +2,6 @@ package com.razorpay.threeds.validator.rules;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.threeds.exception.ValidationException;
@@ -20,7 +19,7 @@ public class IsValidDate implements Rule<String> {
     SimpleDateFormat sdf = new SimpleDateFormat(acceptedFormat);
     sdf.setLenient(false);
     try {
-      Date d = sdf.parse(value);
+      sdf.parse(value);
     } catch (ParseException ex) {
       throw new ValidationException(
           ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid date format");

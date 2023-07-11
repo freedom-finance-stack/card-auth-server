@@ -5,7 +5,7 @@ import com.razorpay.threeds.exception.ValidationException;
 
 public class IsInRule implements Rule<String> {
 
-  private String[] acceptedValues;
+  private final String[] acceptedValues;
 
   public IsInRule(String[] acceptedValues) {
     this.acceptedValues = acceptedValues;
@@ -21,7 +21,6 @@ public class IsInRule implements Rule<String> {
         return;
       }
     }
-    throw new ValidationException(
-        ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, String.format("IsInRule failed"));
+    throw new ValidationException(ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "IsInRule failed");
   }
 }

@@ -1,5 +1,6 @@
 package com.razorpay.acs.dao.model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -7,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Embeddable
-public class HSMConfigPK implements java.io.Serializable {
+public class HSMConfigPK implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -15,5 +16,5 @@ public class HSMConfigPK implements java.io.Serializable {
   private String institutionId;
 
   @Column(name = "network", length = 2)
-  private String networkId;
+  private byte networkId;
 }

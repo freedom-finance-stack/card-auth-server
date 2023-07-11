@@ -98,6 +98,24 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
       "501",
       "INTERNAL SERVER ERROR",
       TransactionStatus.FAILED,
+      TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+  /** LUNA HSM Related Error Codes */
+  HSM_CONNECTOR_REQUEST_TIMEOUT(
+      "7001",
+      "LUNA HSM CONNECTOR REQUEST TIMEOUT",
+      TransactionStatus.UNABLE_TO_AUTHENTICATE,
+      TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+  HSM_CONNECTOR_CONNECTION_CLOSE(
+      "7002",
+      "LUNA HSM CONNECTOR CONNECTION IS CLOSED",
+      TransactionStatus.UNABLE_TO_AUTHENTICATE,
+      TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+  HSM_INTERNAL_EXCEPTION(
+      "7000",
+      "Internal Error occurred in HSM",
+      TransactionStatus.UNABLE_TO_AUTHENTICATE,
       TransactionStatusReason.ACS_TECHNICAL_ISSUE);
 
   private final String code;

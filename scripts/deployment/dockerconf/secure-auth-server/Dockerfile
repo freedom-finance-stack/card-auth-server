@@ -6,8 +6,9 @@ MAINTAINER labs-team@razorpay.com
 ENV CONTAINER_USER secure-auth
 ENV CONTAINER_USERGROUP secure-auth
 ENV CURRENT_DIR_PATH scripts/deployment/dockerconf/secure-auth-server
-ARG ACS_SERVER_PORT=7070
+ARG ACS_SERVER_PORT=8080
 ENV SECURE_AUTH_ACS_SERVER_PORT=$ACS_SERVER_PORT
+ENV MONITORING_DIR_PATH config/monitoring
 
 #Update repository
 RUN  apk update \
@@ -45,6 +46,9 @@ RUN chmod +x -R $ACS_SERVER_BIN_DIRECTORY
 # Supervisord Setup
 COPY $CURRENT_DIR_PATH/supervisor /etc/supervisor/conf.d
 COPY $CURRENT_DIR_PATH/supervisor/supervisord.conf /etc/supervisord.conf
+
+#Copying monitoring config file in Docker
+COPY $MONITORING_DIR_PATH ${ACS_SERVER_BIN_DIRECTORY}/monitoring
 
 #Docker Container HealthChecks
 HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:$SECURE_AUTH_ACS_SERVER_PORT/actuator/health || exit 1

@@ -7,7 +7,7 @@ import com.razorpay.threeds.exception.ValidationException;
 
 public class NotInRule implements Rule<String> {
 
-  private List<String> excludedValues;
+  private final List<String> excludedValues;
 
   public NotInRule(List<String> excludedValues) {
     this.excludedValues = excludedValues;
@@ -19,8 +19,7 @@ public class NotInRule implements Rule<String> {
       return;
     }
     if (excludedValues.contains(value)) {
-      throw new ValidationException(
-          ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, String.format("IsInRule failed"));
+      throw new ValidationException(ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "IsInRule failed");
     }
   }
 }

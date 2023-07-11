@@ -19,8 +19,16 @@ services:
       context: ../../../..
       dockerfile: ./scripts/deployment/dockerconf/secure-auth-server/Dockerfile
     image: "secure-auth-server"
+    network_mode: "host"
+    environment:
+      ACS_MYSQL_HOST: localhost
+      ACS_MYSQL_PORT: 5506
+      ACS_MYSQL_DATABASE: 'secure-auth-db'
+      ACS_MYSQL_USER: 'secure-auth'
+      ACS_MYSQL_PASSWORD: 'password'
+      ENVIRONMENT: 'prod'
     ports:
-      - '7070:7070'
+      - '8080:8080'
     depends_on:
       - secure-auth-mysql
     container_name: 'secure-auth-server'

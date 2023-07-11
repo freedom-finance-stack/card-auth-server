@@ -19,6 +19,11 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  config:
+    import: "optional:file:config/monitoring/monitor-properties.yaml"
 
 management:
   endpoints:
@@ -55,4 +60,12 @@ springdoc:
   show-actuator: true
   paths-to-match: /**
   packages-to-scan: com.razorpay.threeds
+
+hsm:
+  enabled_gateway: "NoOpHSM"
+  gateway:
+    luna:
+      ip: "127.0.0.1"
+      port: 8080
+      timeout: 1
 

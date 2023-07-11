@@ -24,6 +24,7 @@ import com.razorpay.threeds.exception.ThreeDSException;
 import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.exception.checked.ACSException;
 import com.razorpay.threeds.service.*;
+import com.razorpay.threeds.service.authvalue.AuthValueGeneratorService;
 import com.razorpay.threeds.service.cardDetail.CardDetailService;
 import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.ThreeDSValidator;
@@ -95,7 +96,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
       } else {
         transaction.setChallengeMandated(false);
-        String authValue = authValueGeneratorService.generateCAVV(transaction);
+        String eci =
+            eCommIndicatorService.generateECI(
+                new GenerateECIRequest(
+                        transaction.getTransactionStatus(),
+                        cardRange.getNetwork(),
+                        transaction.getMessageCategory())
+                    .setThreeRIInd(areq.getThreeRIInd()));
+        transaction.setEci(eci);
+        String authValue = authValueGeneratorService.getAuthValue(transaction);
         transaction.setAuthValue(authValue);
         transaction.setTransactionStatus(TransactionStatus.SUCCESS);
       }

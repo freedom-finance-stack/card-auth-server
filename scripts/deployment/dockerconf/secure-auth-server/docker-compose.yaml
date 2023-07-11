@@ -6,3 +6,9 @@ services:
       context: ../../../..
       dockerfile: ./scripts/deployment/dockerconf/secure-auth-server/Dockerfile
     image: "secure-auth-server"
+    environment:
+      ENVIRONMENT: 'prod'
+    ports:
+      - '8080:8080'
+      - '7081:7081'
+    container_name: 'secure-auth-server'

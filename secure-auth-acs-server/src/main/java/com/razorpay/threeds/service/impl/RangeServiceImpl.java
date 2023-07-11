@@ -1,5 +1,6 @@
 package com.razorpay.threeds.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class RangeServiceImpl implements RangeService {
   private final CardRangeRepository cardRangeRepository;
 
   public CardRange findByPan(String pan) throws DataNotFoundException, ACSDataAccessException {
-    if (pan == null || pan.isEmpty()) {
+    if (StringUtils.isBlank(pan)) {
       log.error("PAN is null or empty");
       throw new DataNotFoundException(
           ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, InternalErrorCode.CARD_RANGE_NOT_FOUND);
