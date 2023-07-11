@@ -10,7 +10,7 @@ JAVA_GC_OPTS=""
 REMOTE_DEBUGGING_PORT=7081
 
 if [ "$ENVIRONMENT" = "prod" ]; then
-  JAVA_GC_OPTS="$JAVA_GC_OPTS -Xms10G -Xmx10G -XX:+UseG1GC"
+  JAVA_GC_OPTS="$JAVA_GC_OPTS -Xms2G -Xmx2G -XX:+UseG1GC"
 else
   # Enabling remote debugging only in non-prod environment
   echo "Enabling remote debugging."
@@ -19,11 +19,11 @@ else
   JAVA_GC_OPTS="$JAVA_GC_OPTS -Xms2G -Xmx2G -XX:+UseG1GC"
 fi
 
-# todo - Add spring.active.profiles environment variable in Java Opts.
 JAVA_OPTS="$JAVA_EXTRA_OPTS $JAVA_GC_OPTS -Djava.net.preferIPv4Stack=true
           -Dsun.jnu.encoding=UTF-8
           -Dfile.encoding=UTF-8
           -Duser.timezone=UTC
+          -Dspring.profiles.active=$ENVIRONMENT
           --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
 
 # Starting Secure Auth ACS Server Service
