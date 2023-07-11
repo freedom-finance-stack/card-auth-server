@@ -94,6 +94,12 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
       TransactionStatus.UNABLE_TO_AUTHENTICATE,
       TransactionStatusReason.INVALID_TRANSACTION),
 
+  INTERNAL_SERVER_ERROR(
+      "501",
+      "INTERNAL SERVER ERROR",
+      TransactionStatus.FAILED,
+      TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
   /** LUNA HSM Related Error Codes */
   HSM_CONNECTOR_REQUEST_TIMEOUT(
       "7001",

@@ -7,7 +7,7 @@ import com.razorpay.acs.contract.utils.Util;
 import lombok.Data;
 
 @Data
-public class ThreeDSMerchantFeilds {
+public class ThreeDSMerchantFeilds implements Validatable {
 
   @JsonProperty("shipIndicator")
   private String shipIndicator;
@@ -70,6 +70,11 @@ public class ThreeDSMerchantFeilds {
   }
 
   public boolean isValid() {
+
+    if (this.getLength() == 0) {
+      return false;
+    }
+
     if (this.deliveryEmailAddress != null) {
       if (deliveryEmailAddress.length() < 1 && deliveryEmailAddress.length() > 254) {
         return false;
@@ -97,7 +102,7 @@ public class ThreeDSMerchantFeilds {
     if (this.giftCardCurr != null) {
       if (giftCardCurr.length() < 1 && giftCardCurr.length() > 3) {
         return false;
-      } else if (EMVCOConstant.excludedCurrency.contains(this.giftCardCurr)) {
+      } else if (EMVCOConstant.excludedCountry.contains(this.giftCardCurr)) {
         return false;
       } else if (!giftCardCurr.matches("[0-9]{3}")) {
         return false;

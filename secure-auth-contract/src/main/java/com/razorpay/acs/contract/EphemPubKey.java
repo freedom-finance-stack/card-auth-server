@@ -3,7 +3,7 @@ package com.razorpay.acs.contract;
 import lombok.Data;
 
 @Data
-public class EphemPubKey {
+public class EphemPubKey implements Validatable {
 
   private String alg;
   private String kid;
@@ -24,7 +24,7 @@ public class EphemPubKey {
     return toString();
   }
 
-  public boolean isMandatoryValueAvailable() {
+  public boolean isValid() {
     if (this.kty == null) {
       return false;
     }

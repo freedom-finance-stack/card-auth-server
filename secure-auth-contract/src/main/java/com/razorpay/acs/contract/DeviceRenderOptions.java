@@ -6,7 +6,7 @@ import com.razorpay.acs.contract.enums.UIType;
 import lombok.Data;
 
 @Data
-public class DeviceRenderOptions {
+public class DeviceRenderOptions implements Validatable {
 
   private String sdkInterface;
   private String[] sdkUiType;
@@ -28,6 +28,9 @@ public class DeviceRenderOptions {
   }
 
   public boolean isValid() {
+    if (!this.isMandatoryValueAvailable()) {
+      return false;
+    }
     if (this.sdkInterface != null) {
       DeviceInterface deviceIntr = DeviceInterface.getDeviceInterface(sdkInterface);
       if (deviceIntr == null) {

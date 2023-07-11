@@ -33,6 +33,16 @@ public enum MessageCategory {
     return desc;
   }
 
+  public static String[] getCategoryValues() {
+    String[] categoryValues = new String[MessageCategory.values().length];
+    int i = 0;
+    for (MessageCategory messageCategory : MessageCategory.values()) {
+      categoryValues[i] = messageCategory.getCategory();
+      i++;
+    }
+    return categoryValues;
+  }
+
   public static MessageCategory getMessageCategory(String category) {
     for (MessageCategory messageCategory : MessageCategory.values()) {
       if (messageCategory.getCategory().equals(category)) {

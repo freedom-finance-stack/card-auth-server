@@ -16,4 +16,12 @@ public class ACSDataAccessException extends ACSException {
   public ACSDataAccessException(InternalErrorCode internalErrorCode, Throwable cause) {
     super(internalErrorCode, cause);
   }
+
+  public ACSDataAccessException(InternalErrorCode internalErrorCode) {
+    super(internalErrorCode);
+  }
+
+  public ACSDataAccessException(InternalErrorCode internalErrorCode, String message) {
+    super(internalErrorCode, message);
+  }
 }
