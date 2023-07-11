@@ -1,3 +1,16 @@
-# use while deployment -Dspring.profiles.active=local This will load the application.properties and the application-local.properties with the latter overriding properties from the first.
 app:
   port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:secure-auth-db}
+    username: ${ACS_MYSQL_USER:secure-auth}
+    password: ${ACS_MYSQL_PASSWORD:password}
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    showSql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  config:
+    import: "file:/opt/secure-auth/acs-server/bin/monitoring/monitor-properties.yaml"
