@@ -12,28 +12,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConfigProvider {
 
-  private Configuration config;
+    private Configuration config;
 
-  public ConfigProvider() {
-    Parameters params = new Parameters();
+    public ConfigProvider() {
+        Parameters params = new Parameters();
 
-    // todo - handle environment specific properties
-    String configFile = "config.properties";
+        // todo - handle environment specific properties
+        String configFile = "config.properties";
 
-    File propertiesFile = new File(configFile);
-    try {
-      FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
-          new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
-              .configure(params.fileBased().setFile(propertiesFile));
+        File propertiesFile = new File(configFile);
+        try {
+            FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
+                    new FileBasedConfigurationBuilder<FileBasedConfiguration>(
+                                    PropertiesConfiguration.class)
+                            .configure(params.fileBased().setFile(propertiesFile));
 
-      config = builder.getConfiguration();
-    } catch (Exception ex) {
-      // todo - handle exception
-      ex.printStackTrace();
+            config = builder.getConfiguration();
+        } catch (Exception ex) {
+            // todo - handle exception
+            ex.printStackTrace();
+        }
     }
-  }
 
-  public int getServerPort() {
-    return config.getInt("server.port");
-  }
+    public int getServerPort() {
+        return config.getInt("server.port");
+    }
 }

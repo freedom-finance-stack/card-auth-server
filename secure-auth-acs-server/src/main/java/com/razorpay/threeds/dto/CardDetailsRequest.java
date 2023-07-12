@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CardDetailsRequest {
-  String institutionId;
-  String cardNumber;
+    String institutionId;
+    String cardNumber;
 }

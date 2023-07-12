@@ -15,24 +15,24 @@ import lombok.*;
 @Builder
 @ToString(exclude = {"transaction"})
 public class TransactionCardDetail extends BaseEntity<String> {
-  @Id
-  @Column(name = "transaction_id")
-  private String id;
+    @Id
+    @Column(name = "transaction_id")
+    private String id;
 
-  @Column(name = "card_number", nullable = false)
-  private String cardNumber;
+    @Column(name = "card_number", nullable = false)
+    private String cardNumber;
 
-  @Column(name = "cardholder_name")
-  private String cardholderName;
+    @Column(name = "cardholder_name")
+    private String cardholderName;
 
-  @Column(name = "card_expiry")
-  private String cardExpiry;
+    @Column(name = "card_expiry")
+    private String cardExpiry;
 
-  @Column(name = "network_code", nullable = false)
-  private Byte networkCode;
+    @Column(name = "network_code", nullable = false)
+    private Byte networkCode;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "transaction_id", referencedColumnName = "id")
-  @MapsId
-  private Transaction transaction;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id", referencedColumnName = "id")
+    @MapsId
+    private Transaction transaction;
 }

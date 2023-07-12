@@ -23,48 +23,48 @@ import static com.razorpay.threeds.constant.LunaHSMConstants.setHSMEchoTime;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class HSMGatewayServiceImpl implements HSMGatewayService<GatewayHSM, HSMTransactionMessage> {
 
-  private final HSMGatewayAsyncReply<Object, Message<?>> hsmgatewayAsyncReply;
+    private final HSMGatewayAsyncReply<Object, Message<?>> hsmgatewayAsyncReply;
 
-  @Override
-  public void sendRequest(GatewayHSM handler, HSMTransactionMessage message)
-      throws HSMConnectionException {
+    @Override
+    public void sendRequest(GatewayHSM handler, HSMTransactionMessage message)
+            throws HSMConnectionException {
 
-    try {
+        try {
 
-      TcpSendingMessageHandler sendHandler = handler.getTcpSendingMessageHandler();
+            TcpSendingMessageHandler sendHandler = handler.getTcpSendingMessageHandler();
 
-      if (null != sendHandler) {
-        sendHandler.handleMessage(message);
-        setHSMEchoTime();
-      } else {
-        log.debug("Send Message Handler is Null");
-      }
+            if (null != sendHandler) {
+                sendHandler.handleMessage(message);
+                setHSMEchoTime();
+            } else {
+                log.debug("Send Message Handler is Null");
+            }
 
-    } catch (Exception e) {
-      log.error("Exception in sending transaction to HSM", e);
-      throw new HSMConnectionException(
-          ThreeDSecureErrorCode.SYSTEM_CONNECTION_FAILURE,
-          InternalErrorCode.HSM_CONNECTOR_CONNECTION_CLOSE,
-          InternalErrorCode.HSM_CONNECTOR_CONNECTION_CLOSE.getDefaultErrorMessage());
+        } catch (Exception e) {
+            log.error("Exception in sending transaction to HSM", e);
+            throw new HSMConnectionException(
+                    ThreeDSecureErrorCode.SYSTEM_CONNECTION_FAILURE,
+                    InternalErrorCode.HSM_CONNECTOR_CONNECTION_CLOSE,
+                    InternalErrorCode.HSM_CONNECTOR_CONNECTION_CLOSE.getDefaultErrorMessage());
+        }
     }
-  }
 
-  @Override
-  public byte[] getResponse(Object correlationKey) throws HSMConnectionException {
+    @Override
+    public byte[] getResponse(Object correlationKey) throws HSMConnectionException {
 
-    String str;
-    byte byteArray[] = null;
+        String str;
+        byte byteArray[] = null;
 
-    Message<?> message = hsmgatewayAsyncReply.get(correlationKey);
-    if (null != message) {
-      byteArray = (byte[]) message.getPayload();
-    } else {
-      log.error("Exception in receiving transaction ");
-      throw new HSMConnectionException(
-          ThreeDSecureErrorCode.SYSTEM_CONNECTION_FAILURE,
-          InternalErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT,
-          InternalErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT.getDefaultErrorMessage());
+        Message<?> message = hsmgatewayAsyncReply.get(correlationKey);
+        if (null != message) {
+            byteArray = (byte[]) message.getPayload();
+        } else {
+            log.error("Exception in receiving transaction ");
+            throw new HSMConnectionException(
+                    ThreeDSecureErrorCode.SYSTEM_CONNECTION_FAILURE,
+                    InternalErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT,
+                    InternalErrorCode.HSM_CONNECTOR_REQUEST_TIMEOUT.getDefaultErrorMessage());
+        }
+        return byteArray;
     }
-    return byteArray;
-  }
 }

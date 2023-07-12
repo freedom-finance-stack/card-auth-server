@@ -8,6 +8,6 @@ import com.razorpay.acs.dao.model.CardRange;
 @Repository
 public interface CardRangeRepository extends BaseRepository<CardRange, String> {
 
-  @Query("select r from CardRange r where r.startRange < ?1 and r.endRange > ?1")
-  CardRange findByPan(Long pan);
+    @Query("select r from CardRange r where r.startRange < ?1 and r.endRange > ?1")
+    CardRange findByPan(Long pan);
 }

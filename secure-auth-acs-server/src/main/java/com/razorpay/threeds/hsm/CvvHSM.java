@@ -5,5 +5,5 @@ import com.razorpay.threeds.exception.HSMConnectionException;
 
 public interface CvvHSM {
 
-  String generateCVV(Transaction transaction, String data) throws HSMConnectionException;
+    String generateCVV(Transaction transaction, String data) throws HSMConnectionException;
 }

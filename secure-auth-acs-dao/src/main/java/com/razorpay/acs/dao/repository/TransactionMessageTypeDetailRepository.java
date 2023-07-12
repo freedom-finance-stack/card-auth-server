@@ -6,4 +6,4 @@ import com.razorpay.acs.dao.model.TransactionMessageTypeDetail;
 
 @Repository
 public interface TransactionMessageTypeDetailRepository
-    extends BaseRepository<TransactionMessageTypeDetail, String> {}
+        extends BaseRepository<TransactionMessageTypeDetail, String> {}

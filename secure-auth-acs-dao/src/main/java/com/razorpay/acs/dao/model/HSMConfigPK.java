@@ -10,11 +10,11 @@ import lombok.Data;
 @Embeddable
 public class HSMConfigPK implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Column(name = "institution_id", length = 4)
-  private String institutionId;
+    @Column(name = "institution_id", length = 4)
+    private String institutionId;
 
-  @Column(name = "network", length = 2)
-  private byte networkId;
+    @Column(name = "network", length = 2)
+    private byte networkId;
 }

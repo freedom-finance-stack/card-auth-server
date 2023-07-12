@@ -15,16 +15,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class HSMGatewayAsyncReplyImpl implements HSMGatewayAsyncReply<Object, Message<?>> {
 
-  private final ConcurrentHashMap<Object, Message<?>> map = new ConcurrentHashMap<>();
-  private final HSMGatewayCorrelationStrategy hsmCorrelationStrategy;
+    private final ConcurrentHashMap<Object, Message<?>> map = new ConcurrentHashMap<>();
+    private final HSMGatewayCorrelationStrategy hsmCorrelationStrategy;
 
-  @Override
-  public Message<?> get(Object key) {
-    return map.remove(key);
-  }
+    @Override
+    public Message<?> get(Object key) {
+        return map.remove(key);
+    }
 
-  @Override
-  public void put(Message<?> message) {
-    this.map.putIfAbsent(hsmCorrelationStrategy.getCorrelationKey(message), message);
-  }
+    @Override
+    public void put(Message<?> message) {
+        this.map.putIfAbsent(hsmCorrelationStrategy.getCorrelationKey(message), message);
+    }
 }

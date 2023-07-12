@@ -15,22 +15,22 @@ import lombok.NoArgsConstructor;
 @Data
 @Where(clause = "deleted_at is null")
 public class CardRangeGroup extends BaseEntity<String> {
-  @Id private String id;
+    @Id private String id;
 
-  private String name;
+    private String name;
 
-  private String description;
+    private String description;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "institution_id", referencedColumnName = "id")
-  private Institution institution;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "institution_id", referencedColumnName = "id")
+    private Institution institution;
 
-  @Column(name = "created_by", nullable = false)
-  private String createdBy;
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
 
-  @Column(name = "modified_by")
-  private String modifiedBy;
+    @Column(name = "modified_by")
+    private String modifiedBy;
 
-  @Column(name = "deleted_by")
-  private String deletedBy;
+    @Column(name = "deleted_by")
+    private String deletedBy;
 }

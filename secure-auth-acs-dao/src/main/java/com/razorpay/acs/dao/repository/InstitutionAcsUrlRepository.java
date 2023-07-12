@@ -7,4 +7,4 @@ import com.razorpay.acs.dao.model.InstitutionAcsUrlPK;
 
 @Repository
 public interface InstitutionAcsUrlRepository
-    extends BaseRepository<InstitutionAcsUrl, InstitutionAcsUrlPK> {}
+        extends BaseRepository<InstitutionAcsUrl, InstitutionAcsUrlPK> {}

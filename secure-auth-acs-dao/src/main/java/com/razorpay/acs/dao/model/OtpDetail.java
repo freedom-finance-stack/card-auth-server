@@ -19,18 +19,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @Where(clause = "deleted_at is null")
 public class OtpDetail extends BaseEntity<String> {
-  @Id private String id;
+    @Id private String id;
 
-  @Column(name = "otp_id", nullable = false)
-  private String otpId;
+    @Column(name = "otp_id", nullable = false)
+    private String otpId;
 
-  @Column(name = "transaction_id", nullable = false)
-  private String transactionId;
+    @Column(name = "transaction_id", nullable = false)
+    private String transactionId;
 
-  @Column(name = "verification_status")
-  @Enumerated(EnumType.STRING)
-  private OtpVerificationStatus verificationStatus;
+    @Column(name = "verification_status")
+    @Enumerated(EnumType.STRING)
+    private OtpVerificationStatus verificationStatus;
 
-  @Column(name = "resend_count")
-  private Integer resendCount;
+    @Column(name = "resend_count")
+    private Integer resendCount;
 }

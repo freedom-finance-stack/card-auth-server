@@ -17,20 +17,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @Where(clause = "deleted_at is null")
 public class Network extends BaseEntity<String> {
-  @Id private String id;
+    @Id private String id;
 
-  @Column(nullable = false)
-  private Byte code;
+    @Column(nullable = false)
+    private Byte code;
 
-  @Enumerated(EnumType.STRING)
-  private com.razorpay.acs.dao.enums.Network name;
+    @Enumerated(EnumType.STRING)
+    private com.razorpay.acs.dao.enums.Network name;
 
-  @Column(name = "created_by", nullable = false)
-  private String createdBy;
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
 
-  @Column(name = "modified_by")
-  private String modifiedBy;
+    @Column(name = "modified_by")
+    private String modifiedBy;
 
-  @Column(name = "deleted_by")
-  private String deletedBy;
+    @Column(name = "deleted_by")
+    private String deletedBy;
 }

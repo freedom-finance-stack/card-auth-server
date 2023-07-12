@@ -13,16 +13,16 @@ import lombok.Data;
 @Data
 @MappedSuperclass
 public abstract class BaseEntity<T> implements Serializable {
-  @Column(name = "created_at", updatable = false, nullable = false)
-  @CreationTimestamp
-  private Timestamp createdAt;
+    @Column(name = "created_at", updatable = false, nullable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
 
-  @Column(name = "modified_at", nullable = false)
-  @UpdateTimestamp
-  private Timestamp modifiedAt;
+    @Column(name = "modified_at", nullable = false)
+    @UpdateTimestamp
+    private Timestamp modifiedAt;
 
-  @Column(name = "deleted_at")
-  private Timestamp deleted_at;
+    @Column(name = "deleted_at")
+    private Timestamp deleted_at;
 
-  public abstract T getId();
+    public abstract T getId();
 }

@@ -17,20 +17,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AppModule {
 
-  private final ConfigProvider configProvider;
+    private final ConfigProvider configProvider;
 
-  @Bean
-  public UndertowServletWebServerFactory undertowServletWebServerFactory() {
-    UndertowServletWebServerFactory undertowServletWebServerFactory =
-        new UndertowServletWebServerFactory();
-    undertowServletWebServerFactory.addDeploymentInfoCustomizers(
-        (deploymentInfo) -> {
-          deploymentInfo.addInitialHandlerChainWrapper(
-              handler ->
-                  new RequestEncodingHandler(handler)
-                      .addEncoding("gzip", GzipStreamSourceConduit.WRAPPER));
-        });
-    undertowServletWebServerFactory.setPort(configProvider.getServerPort());
-    return undertowServletWebServerFactory;
-  }
+    @Bean
+    public UndertowServletWebServerFactory undertowServletWebServerFactory() {
+        UndertowServletWebServerFactory undertowServletWebServerFactory =
+                new UndertowServletWebServerFactory();
+        undertowServletWebServerFactory.addDeploymentInfoCustomizers(
+                (deploymentInfo) -> {
+                    deploymentInfo.addInitialHandlerChainWrapper(
+                            handler ->
+                                    new RequestEncodingHandler(handler)
+                                            .addEncoding("gzip", GzipStreamSourceConduit.WRAPPER));
+                });
+        undertowServletWebServerFactory.setPort(configProvider.getServerPort());
+        return undertowServletWebServerFactory;
+    }
 }

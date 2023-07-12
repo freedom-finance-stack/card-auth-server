@@ -4,21 +4,21 @@ import java.io.Serializable;
 
 public class HSMTransaction implements Serializable, Cloneable {
 
-  /** */
-  private static final long serialVersionUID = 1L;
+    /** */
+    private static final long serialVersionUID = 1L;
 
-  private String data;
+    private String data;
 
-  public String getData() {
-    return data;
-  }
+    public String getData() {
+        return data;
+    }
 
-  public void setData(String data) {
-    this.data = data;
-  }
+    public void setData(String data) {
+        this.data = data;
+    }
 
-  @Override
-  public String toString() {
-    return "Data: " + data;
-  }
+    @Override
+    public String toString() {
+        return "Data: " + data;
+    }
 }

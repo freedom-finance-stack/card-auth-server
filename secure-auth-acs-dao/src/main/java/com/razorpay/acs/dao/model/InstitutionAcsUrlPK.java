@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InstitutionAcsUrlPK implements Serializable {
 
-  @Column(name = "institution_id")
-  private String institutionId;
+    @Column(name = "institution_id")
+    private String institutionId;
 
-  @Column(name = "device_channel")
-  private String deviceChannel;
+    @Column(name = "device_channel")
+    private String deviceChannel;
 
-  @Column(name = "network_code")
-  private Byte networkCode;
+    @Column(name = "network_code")
+    private Byte networkCode;
 }

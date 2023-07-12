@@ -11,28 +11,28 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AppConfiguration {
-  private AppProperties app;
+    private AppProperties app;
 
-  @Getter
-  @Setter
-  public static class AppProperties {
-    private int port;
-    private String hostName;
-    private AcsProperties acs;
-  }
+    @Getter
+    @Setter
+    public static class AppProperties {
+        private int port;
+        private String hostName;
+        private AcsProperties acs;
+    }
 
-  @Getter
-  @Setter
-  public static class AcsProperties {
-    private String referenceNumber;
-    private OperatorId operatorId;
-  }
+    @Getter
+    @Setter
+    public static class AcsProperties {
+        private String referenceNumber;
+        private OperatorId operatorId;
+    }
 
-  @Getter
-  @Setter
-  public static class OperatorId {
-    private String visa;
-    private String mastercard;
-    private String amex;
-  }
+    @Getter
+    @Setter
+    public static class OperatorId {
+        private String visa;
+        private String mastercard;
+        private String amex;
+    }
 }

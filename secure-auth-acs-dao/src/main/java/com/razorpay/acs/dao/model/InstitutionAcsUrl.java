@@ -21,22 +21,22 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted_at is null")
 public class InstitutionAcsUrl extends BaseEntity<InstitutionAcsUrlPK> {
 
-  @EmbeddedId private InstitutionAcsUrlPK institutionAcsUrlPK;
+    @EmbeddedId private InstitutionAcsUrlPK institutionAcsUrlPK;
 
-  @Column(name = "challenge_url", length = 400)
-  private String challengeUrl;
+    @Column(name = "challenge_url", length = 400)
+    private String challengeUrl;
 
-  @Column(name = "created_by", nullable = false)
-  private String createdBy;
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
 
-  @Column(name = "modified_by")
-  private String modifiedBy;
+    @Column(name = "modified_by")
+    private String modifiedBy;
 
-  @Column(name = "deleted_by")
-  private String deletedBy;
+    @Column(name = "deleted_by")
+    private String deletedBy;
 
-  @Override
-  public InstitutionAcsUrlPK getId() {
-    return institutionAcsUrlPK;
-  }
+    @Override
+    public InstitutionAcsUrlPK getId() {
+        return institutionAcsUrlPK;
+    }
 }

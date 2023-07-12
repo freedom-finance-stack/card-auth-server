@@ -10,13 +10,13 @@ import com.razorpay.threeds.hsm.luna.service.HSMGatewayCorrelationStrategy;
 @Component
 public class HSMGatewayCorrelationStrategyImpl implements HSMGatewayCorrelationStrategy {
 
-  @CorrelationStrategy
-  @Override
-  public Object getCorrelationKey(Message<?> message) {
-    if (message instanceof HSMTransactionMessage) {
-      return ((HSMTransactionMessage) message).getMsgSerialNo();
-    } else {
-      return ((HSMTransactionMessage) message).getMsgSerialNo();
+    @CorrelationStrategy
+    @Override
+    public Object getCorrelationKey(Message<?> message) {
+        if (message instanceof HSMTransactionMessage) {
+            return ((HSMTransactionMessage) message).getMsgSerialNo();
+        } else {
+            return ((HSMTransactionMessage) message).getMsgSerialNo();
+        }
     }
-  }
 }

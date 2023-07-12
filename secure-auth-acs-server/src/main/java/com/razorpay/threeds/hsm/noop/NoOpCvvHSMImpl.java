@@ -11,11 +11,11 @@ import lombok.NonNull;
 @Service("noOpCvvHSMImpl")
 public class NoOpCvvHSMImpl implements CvvHSM {
 
-  public static final String NO_OP_CVV_OUTPUT = "123";
+    public static final String NO_OP_CVV_OUTPUT = "123";
 
-  @Override
-  public String generateCVV(@NonNull final Transaction transaction, @NonNull final String data)
-      throws HSMConnectionException {
-    return NO_OP_CVV_OUTPUT;
-  }
+    @Override
+    public String generateCVV(@NonNull final Transaction transaction, @NonNull final String data)
+            throws HSMConnectionException {
+        return NO_OP_CVV_OUTPUT;
+    }
 }

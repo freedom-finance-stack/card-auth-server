@@ -7,9 +7,9 @@ import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.exception.checked.CardBlockedException;
 
 public interface CardDetailFetcherService {
-  CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
-      throws ACSDataAccessException;
+    CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
+            throws ACSDataAccessException;
 
-  void validateCardDetails(CardDetailResponse cardDetailResponse)
-      throws CardBlockedException, DataNotFoundException;
+    void validateCardDetails(CardDetailResponse cardDetailResponse)
+            throws CardBlockedException, DataNotFoundException;
 }

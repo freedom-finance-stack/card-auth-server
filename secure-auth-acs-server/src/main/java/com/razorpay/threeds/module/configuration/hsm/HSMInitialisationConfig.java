@@ -30,83 +30,84 @@ import lombok.extern.slf4j.Slf4j;
 @IntegrationComponentScan(basePackageClasses = {GatewayHSMConfig.class})
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class HSMInitialisationConfig {
-  private final HSMGatewayAsyncReply<Object, Message<?>> hsmgatewayAsyncReply;
+    private final HSMGatewayAsyncReply<Object, Message<?>> hsmgatewayAsyncReply;
 
-  private final HSMGatewayCorrelationStrategy hsmCorrelationStrategy;
+    private final HSMGatewayCorrelationStrategy hsmCorrelationStrategy;
 
-  @Value("${hsm.gateway.luna.timeout}")
-  private long timeout;
+    @Value("${hsm.gateway.luna.timeout}")
+    private long timeout;
 
-  @MessagingGateway(defaultRequestChannel = "hsmsend")
-  public interface HSMGateway {
-    void waitForResponse(HSMTransactionMessage transaction);
-  }
+    @MessagingGateway(defaultRequestChannel = "hsmsend")
+    public interface HSMGateway {
+        void waitForResponse(HSMTransactionMessage transaction);
+    }
 
-  @Bean
-  public MessageChannel hsmsend() {
-    DirectChannel channel = new DirectChannel();
-    return channel;
-  }
+    @Bean
+    public MessageChannel hsmsend() {
+        DirectChannel channel = new DirectChannel();
+        return channel;
+    }
 
-  @Bean
-  @ServiceActivator(inputChannel = "hsmsend")
-  public HSMBarrierMessageHandlerWithLateGoodResponse hsmbarrier() {
-    long hsmTimeout = timeout * 1000;
-    HSMBarrierMessageHandlerWithLateGoodResponse hsmbarrier =
-        new HSMBarrierMessageHandlerWithLateGoodResponse(hsmTimeout, this.hsmCorrelationStrategy);
-    hsmbarrier.setAsync(true);
-    hsmbarrier.setOutputChannel(hsmout());
-    hsmbarrier.setDiscardChannel(hsmLateGoodresponseChannel());
-    return hsmbarrier;
-  }
+    @Bean
+    @ServiceActivator(inputChannel = "hsmsend")
+    public HSMBarrierMessageHandlerWithLateGoodResponse hsmbarrier() {
+        long hsmTimeout = timeout * 1000;
+        HSMBarrierMessageHandlerWithLateGoodResponse hsmbarrier =
+                new HSMBarrierMessageHandlerWithLateGoodResponse(
+                        hsmTimeout, this.hsmCorrelationStrategy);
+        hsmbarrier.setAsync(true);
+        hsmbarrier.setOutputChannel(hsmout());
+        hsmbarrier.setDiscardChannel(hsmLateGoodresponseChannel());
+        return hsmbarrier;
+    }
 
-  @Bean
-  public MessageChannel hsmprocess() {
-    QueueChannel channel = new QueueChannel();
-    return channel;
-  }
+    @Bean
+    public MessageChannel hsmprocess() {
+        QueueChannel channel = new QueueChannel();
+        return channel;
+    }
 
-  @Bean
-  public MessageChannel hsmout() {
-    DirectChannel channel = new DirectChannel();
-    return channel;
-  }
+    @Bean
+    public MessageChannel hsmout() {
+        DirectChannel channel = new DirectChannel();
+        return channel;
+    }
 
-  @ServiceActivator(inputChannel = "hsmout")
-  public void printMessage(Message<?> message) {}
+    @ServiceActivator(inputChannel = "hsmout")
+    public void printMessage(Message<?> message) {}
 
-  @Transformer(inputChannel = "hsmreceive", outputChannel = "hsmprocess")
-  public HSMTransactionMessage convert(byte[] response) {
-    HSMTransactionMessage transactionMessage = new HSMTransactionMessage();
-    transactionMessage.setHSMResponse(response);
-    return transactionMessage;
-  }
+    @Transformer(inputChannel = "hsmreceive", outputChannel = "hsmprocess")
+    public HSMTransactionMessage convert(byte[] response) {
+        HSMTransactionMessage transactionMessage = new HSMTransactionMessage();
+        transactionMessage.setHSMResponse(response);
+        return transactionMessage;
+    }
 
-  @ServiceActivator(inputChannel = "hsmprocess")
-  @Bean
-  public MessageHandler hsmreleaser() {
-    return new MessageHandler() {
-      @Override
-      public void handleMessage(Message<?> message) throws MessagingException {
-        try {
-          hsmgatewayAsyncReply.put(message);
-          hsmbarrier().trigger(message);
-        } catch (Exception exception) {
-          log.error("Late good response..! and exception is: ", exception);
-          hsmgatewayAsyncReply.get(message);
-          hsmLateGoodresponseChannel().send(message);
-        }
-      }
-    };
-  }
+    @ServiceActivator(inputChannel = "hsmprocess")
+    @Bean
+    public MessageHandler hsmreleaser() {
+        return new MessageHandler() {
+            @Override
+            public void handleMessage(Message<?> message) throws MessagingException {
+                try {
+                    hsmgatewayAsyncReply.put(message);
+                    hsmbarrier().trigger(message);
+                } catch (Exception exception) {
+                    log.error("Late good response..! and exception is: ", exception);
+                    hsmgatewayAsyncReply.get(message);
+                    hsmLateGoodresponseChannel().send(message);
+                }
+            }
+        };
+    }
 
-  @Bean
-  public MessageChannel hsmLateGoodresponseChannel() {
-    return new QueueChannel();
-  }
+    @Bean
+    public MessageChannel hsmLateGoodresponseChannel() {
+        return new QueueChannel();
+    }
 
-  @ServiceActivator(inputChannel = "hsmLateGoodresponseChannel")
-  public void handleLateGoodResponse(Message<?> message) {
-    log.info("HSM Late good Response Handler...!");
-  }
+    @ServiceActivator(inputChannel = "hsmLateGoodresponseChannel")
+    public void handleLateGoodResponse(Message<?> message) {
+        log.info("HSM Late good Response Handler...!");
+    }
 }

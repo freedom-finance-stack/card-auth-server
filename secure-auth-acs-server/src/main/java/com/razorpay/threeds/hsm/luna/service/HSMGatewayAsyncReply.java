@@ -2,7 +2,7 @@ package com.razorpay.threeds.hsm.luna.service;
 
 public interface HSMGatewayAsyncReply<K, V> {
 
-  V get(K k);
+    V get(K k);
 
-  void put(V v);
+    void put(V v);
 }

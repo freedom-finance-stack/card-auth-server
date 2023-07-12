@@ -8,5 +8,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RequestContext implements Serializable {
-  private String requestId;
+    private String requestId;
 }

@@ -20,27 +20,27 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted_at is null")
 @Builder
 public class TransactionMessageTypeDetail extends BaseEntity<String> {
-  @Id
-  @Column(name = "id")
-  private String id;
+    @Id
+    @Column(name = "id")
+    private String id;
 
-  private String message;
+    private String message;
 
-  @Column(name = "transaction_id")
-  private String transactionId;
+    @Column(name = "transaction_id")
+    private String transactionId;
 
-  @Column(name = "received_timestamp")
-  private Timestamp receivedTimestamp;
+    @Column(name = "received_timestamp")
+    private Timestamp receivedTimestamp;
 
-  @Column(name = "sent_timestamp")
-  private Timestamp sentTimestamp;
+    @Column(name = "sent_timestamp")
+    private Timestamp sentTimestamp;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "message_type")
-  private MessageType messageType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "message_type")
+    private MessageType messageType;
 
-  public TransactionMessageTypeDetail(String message, MessageType messageType) {
-    this.message = message;
-    this.messageType = messageType;
-  }
+    public TransactionMessageTypeDetail(String message, MessageType messageType) {
+        this.message = message;
+        this.messageType = messageType;
+    }
 }

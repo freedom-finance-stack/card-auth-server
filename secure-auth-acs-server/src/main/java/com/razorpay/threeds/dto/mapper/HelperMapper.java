@@ -10,11 +10,11 @@ import com.razorpay.threeds.module.configuration.AppConfiguration;
 @Component
 public class HelperMapper {
 
-  @Autowired AppConfiguration appConfiguration;
-  public static final String YES = "Y";
-  public static final String NO = "N";
+    @Autowired AppConfiguration appConfiguration;
+    public static final String YES = "Y";
+    public static final String NO = "N";
 
-  public String asString(Boolean bool) {
-    return null == bool ? null : (bool ? YES : NO);
-  }
+    public String asString(Boolean bool) {
+        return null == bool ? null : (bool ? YES : NO);
+    }
 }
