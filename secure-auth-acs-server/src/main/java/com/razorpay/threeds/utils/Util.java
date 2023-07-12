@@ -3,9 +3,9 @@ package com.razorpay.threeds.utils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -22,42 +22,19 @@ import static com.razorpay.threeds.constant.InternalConstants.PAD_RIGHT;
 
 @Slf4j
 public class Util {
-
-  public static boolean isNull(Object object) {
-    return object == null;
-  }
-
-  public static boolean isNotNull(Object object) {
-    return object != null;
-  }
+  public static final String PADDED_SYMBOL_X = "X";
 
   public static boolean isNullorBlank(Object object) {
-    if (isNull(object)) {
+    if (null == object) {
       return true;
     } else return "".equals(object.toString());
   }
 
-  public static boolean isValidDate(String strDate, String dateFormat) {
-    try {
-      TemporalAccessor ta = DateTimeFormatter.ofPattern(dateFormat).parse(strDate);
-    } catch (Exception e) {
-      return false;
-    }
-    return true;
-  }
-
-  public static boolean containsAllSpaces(String value) {
-    return value.trim().length() == 0;
-  }
-
-  public static boolean isStringContainsWhiteSpace(String value) {
-    return value.contains(" ");
-  }
-
-  public static Timestamp getTimeStampFromString(String strDate, String dateFormat) {
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dateFormat);
-    LocalDateTime objPurchaseDate = LocalDateTime.parse(strDate, dtf);
-    return Timestamp.valueOf(objPurchaseDate);
+  public static Timestamp getTimeStampFromString(String strDate, String dateFormat)
+      throws ParseException {
+    SimpleDateFormat fmt = new SimpleDateFormat(dateFormat);
+    Date parsedDate = fmt.parse(strDate);
+    return new java.sql.Timestamp(parsedDate.getTime());
   }
 
   public static String toJson(Object object) {

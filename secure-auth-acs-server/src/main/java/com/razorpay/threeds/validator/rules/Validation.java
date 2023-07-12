@@ -1,6 +1,7 @@
 package com.razorpay.threeds.validator.rules;
 
 import com.razorpay.threeds.exception.ValidationException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,5 +22,4 @@ public class Validation {
       }
     }
   }
-
 }

@@ -21,7 +21,6 @@ public class IsInRule implements Rule<String> {
         return;
       }
     }
-    throw new ValidationException(
-        ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "IsInRule failed");
+    throw new ValidationException(ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "IsInRule failed");
   }
 }

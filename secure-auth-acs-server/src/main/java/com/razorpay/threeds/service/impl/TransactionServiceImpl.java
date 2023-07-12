@@ -1,5 +1,7 @@
 package com.razorpay.threeds.service.impl;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -11,6 +13,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.razorpay.acs.contract.AREQ;
+import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.acs.contract.enums.DeviceChannel;
 import com.razorpay.acs.contract.enums.MessageCategory;
 import com.razorpay.acs.dao.enums.Phase;
@@ -21,6 +24,7 @@ import com.razorpay.acs.dao.repository.TransactionRepository;
 import com.razorpay.threeds.constant.InternalConstants;
 import com.razorpay.threeds.constant.ThreeDSConstant;
 import com.razorpay.threeds.exception.InternalErrorCode;
+import com.razorpay.threeds.exception.ValidationException;
 import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.service.TransactionService;
 
@@ -67,7 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
     transactionRepository.softDeleteById(id);
   }
 
-  public Transaction create(AREQ areq) {
+  public Transaction create(AREQ areq) throws ValidationException {
     Transaction transaction = createTransactionFromAreq(areq);
     transaction.setTransactionCardDetail(buildTransactionCardDetail(areq));
     transaction.setTransactionBrowserDetail(buildTransactionBrowserDetail(areq));
@@ -123,13 +127,20 @@ public class TransactionServiceImpl implements TransactionService {
     return transactionBuilder.build();
   }
 
-  private TransactionPurchaseDetail buildTransactionPurchaseDetail(AREQ areq) {
+  private TransactionPurchaseDetail buildTransactionPurchaseDetail(AREQ areq)
+      throws ValidationException {
+    Timestamp time = null;
+    try {
+      time = getTimeStampFromString(areq.getPurchaseDate(), DATE_FORMAT_YYYYMMDDHHMMSS);
+    } catch (ParseException e) {
+      throw new ValidationException(
+          ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, String.format("Invalid PurchaseDate"));
+    }
     return TransactionPurchaseDetail.builder()
         .purchaseAmount(areq.getPurchaseAmount())
         .purchaseCurrency(areq.getPurchaseCurrency())
         .purchaseExponent(Byte.valueOf(areq.getPurchaseExponent()))
-        .purchaseTimestamp(
-            getTimeStampFromString(areq.getPurchaseDate(), DATE_FORMAT_YYYYMMDDHHMMSS))
+        .purchaseTimestamp(time)
         .payTokenInd(Boolean.valueOf(areq.getPayTokenInd()))
         .build();
   }
