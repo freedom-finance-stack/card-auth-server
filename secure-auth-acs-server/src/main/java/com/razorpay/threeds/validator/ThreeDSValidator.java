@@ -4,5 +4,5 @@ import com.razorpay.acs.contract.ThreeDSObject;
 import com.razorpay.threeds.exception.ThreeDSException;
 
 public interface ThreeDSValidator<T extends ThreeDSObject> {
-  public abstract void validateRequest(T request) throws ThreeDSException;
+  void validateRequest(T request) throws ThreeDSException;
 }

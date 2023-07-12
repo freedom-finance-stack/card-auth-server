@@ -8,17 +8,17 @@ import com.razorpay.threeds.dto.CardDetailDto;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UtilTests {
+class UtilTest {
 
   @Test
-  public void testIsNullorBlankTrue() {
+  public void testIsNullOrBlankTrue() {
     // write junit test cases for isNullorBlank method
     assertTrue(Util.isNullorBlank(null));
     assertTrue(Util.isNullorBlank(""));
   }
 
   @Test
-  public void testIsNullorBlankFalse() {
+  public void testIsNullOrBlankFalse() {
     assertFalse(Util.isNullorBlank("test"));
     assertFalse(Util.isNullorBlank(new CardDetailDto()));
   }
