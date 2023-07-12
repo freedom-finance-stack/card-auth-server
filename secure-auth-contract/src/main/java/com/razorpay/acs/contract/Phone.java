@@ -7,26 +7,26 @@ import lombok.Data;
 @Data
 public class Phone implements Validatable {
 
-  @JsonProperty("cc")
-  private String cc;
+    @JsonProperty("cc")
+    private String cc;
 
-  @JsonProperty("subscriber")
-  private String subscriber;
+    @JsonProperty("subscriber")
+    private String subscriber;
 
-  public boolean isValid() {
+    public boolean isValid() {
 
-    if (this.cc != null) {
-      if (this.cc.length() < 1 && this.cc.length() > 3) {
-        return false;
-      }
+        if (this.cc != null) {
+            if (this.cc.length() < 1 && this.cc.length() > 3) {
+                return false;
+            }
+        }
+
+        if (this.subscriber != null) {
+            if (this.subscriber.length() > 15) {
+                return false;
+            }
+        }
+
+        return true;
     }
-
-    if (this.subscriber != null) {
-      if (this.subscriber.length() > 15) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 }

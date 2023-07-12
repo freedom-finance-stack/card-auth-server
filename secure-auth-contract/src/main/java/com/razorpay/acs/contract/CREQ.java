@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class CREQ extends ThreeDSObject {
 
-  private String threeDSServerTransID;
+    private String threeDSServerTransID;
 }

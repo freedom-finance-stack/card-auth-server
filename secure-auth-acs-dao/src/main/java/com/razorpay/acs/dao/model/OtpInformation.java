@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Where(clause = "deleted_at is null")
 public class OtpInformation extends BaseEntity<String> {
-  @Id private String id;
+    @Id private String id;
 
-  @Column(name = "unique_id")
-  private String uniqueId;
+    @Column(name = "unique_id")
+    private String uniqueId;
 }

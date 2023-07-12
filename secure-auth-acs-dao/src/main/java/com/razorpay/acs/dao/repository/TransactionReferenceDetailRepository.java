@@ -8,8 +8,8 @@ import com.razorpay.acs.dao.model.TransactionReferenceDetail;
 
 @Repository
 public interface TransactionReferenceDetailRepository
-    extends BaseRepository<TransactionReferenceDetail, String> {
+        extends BaseRepository<TransactionReferenceDetail, String> {
 
-  List<TransactionReferenceDetail> findByThreedsServerTransactionId(
-      String threedsServerTransactionId);
+    List<TransactionReferenceDetail> findByThreedsServerTransactionId(
+            String threedsServerTransactionId);
 }

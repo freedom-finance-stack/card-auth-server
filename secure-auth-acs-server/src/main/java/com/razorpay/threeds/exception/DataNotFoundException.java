@@ -8,23 +8,23 @@ import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 // Checked Exception
 public class DataNotFoundException extends ThreeDSException {
 
-  public DataNotFoundException(
-      ThreeDSecureErrorCode errorCode, InternalErrorCode internalErrorCode) {
-    super(errorCode, internalErrorCode, internalErrorCode.getCode());
-  }
+    public DataNotFoundException(
+            ThreeDSecureErrorCode errorCode, InternalErrorCode internalErrorCode) {
+        super(errorCode, internalErrorCode, internalErrorCode.getCode());
+    }
 
-  public DataNotFoundException(
-      ThreeDSecureErrorCode errorCode, InternalErrorCode internalErrorCode, Throwable cause) {
-    super(errorCode, internalErrorCode, internalErrorCode.getCode(), cause);
-  }
+    public DataNotFoundException(
+            ThreeDSecureErrorCode errorCode, InternalErrorCode internalErrorCode, Throwable cause) {
+        super(errorCode, internalErrorCode, internalErrorCode.getCode(), cause);
+    }
 
-  @Override
-  public ThreeDSErrorResponse getErrorResponse() {
-    return new ThreeDSErrorResponse(
-        HttpStatus.OK.value(),
-        super.getThreeDSecureErrorCode().getErrorCode(),
-        super.getMessage(),
-        super.getThreeDSecureErrorCode().getErrorComponent(),
-        super.getThreeDSecureErrorCode().getErrorDescription());
-  }
+    @Override
+    public ThreeDSErrorResponse getErrorResponse() {
+        return new ThreeDSErrorResponse(
+                HttpStatus.OK.value(),
+                super.getThreeDSecureErrorCode().getErrorCode(),
+                super.getMessage(),
+                super.getThreeDSecureErrorCode().getErrorComponent(),
+                super.getThreeDSecureErrorCode().getErrorDescription());
+    }
 }

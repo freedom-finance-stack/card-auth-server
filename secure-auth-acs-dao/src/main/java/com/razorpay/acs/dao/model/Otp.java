@@ -20,21 +20,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @Where(clause = "deleted_at is null")
 public class Otp extends BaseEntity<String> {
-  @Id private String id;
+    @Id private String id;
 
-  private String channel;
+    private String channel;
 
-  @Column(name = "otp_information_id", nullable = false)
-  private String otpInformationId;
+    @Column(name = "otp_information_id", nullable = false)
+    private String otpInformationId;
 
-  private String destination;
+    private String destination;
 
-  @Column(name = "otp_status")
-  private String otpStatus;
+    @Column(name = "otp_status")
+    private String otpStatus;
 
-  private String response;
+    private String response;
 
-  private String provider;
+    private String provider;
 
-  private Integer attempts;
+    private Integer attempts;
 }

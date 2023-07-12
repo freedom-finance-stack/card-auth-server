@@ -6,6 +6,6 @@ import com.razorpay.threeds.exception.DataNotFoundException;
 import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 
 public interface InstitutionAcsUrlService {
-  public InstitutionAcsUrl findById(InstitutionAcsUrlPK institutionAcsUrlPK)
-      throws ACSDataAccessException, DataNotFoundException;
+    public InstitutionAcsUrl findById(InstitutionAcsUrlPK institutionAcsUrlPK)
+            throws ACSDataAccessException, DataNotFoundException;
 }

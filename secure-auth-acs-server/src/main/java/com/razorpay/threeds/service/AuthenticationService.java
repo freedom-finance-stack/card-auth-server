@@ -7,6 +7,6 @@ import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 
 public interface AuthenticationService {
 
-  ARES processAuthenticationRequest(final AREQ areq)
-      throws ThreeDSException, ACSDataAccessException;
+    ARES processAuthenticationRequest(final AREQ areq)
+            throws ThreeDSException, ACSDataAccessException;
 }

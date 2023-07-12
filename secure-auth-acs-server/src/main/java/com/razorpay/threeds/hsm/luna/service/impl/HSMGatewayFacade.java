@@ -22,63 +22,63 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class HSMGatewayFacade {
-  private static final AtomicInteger hsmCounter = new AtomicInteger(251);
+    private static final AtomicInteger hsmCounter = new AtomicInteger(251);
 
-  public static final int HSM_HEADER_LENGTH = 4;
+    public static final int HSM_HEADER_LENGTH = 4;
 
-  public static final String LUNA_EFT_HSM = "LunaEFT";
+    public static final String LUNA_EFT_HSM = "LunaEFT";
 
-  private final HSMGateway hsmGateway;
+    private final HSMGateway hsmGateway;
 
-  private final HSMGatewayService<GatewayHSM, HSMTransactionMessage> hsmGatewayService;
+    private final HSMGatewayService<GatewayHSM, HSMTransactionMessage> hsmGatewayService;
 
-  private final HSMGatewayCorrelationStrategy hsmGatewayCorrelationStrategy;
+    private final HSMGatewayCorrelationStrategy hsmGatewayCorrelationStrategy;
 
-  private final GatewayHSM gatewayHSM;
+    private final GatewayHSM gatewayHSM;
 
-  public HsmCommand sendMessage(HsmCommand hsmCommand) throws HSMConnectionException {
+    public HsmCommand sendMessage(HsmCommand hsmCommand) throws HSMConnectionException {
 
-    byte[] hsmRequest = null;
-    byte[] hsmResponse = null;
-    HSMTransactionMessage hsmTranasctionMessage = null;
-    int hsmCmdLength;
+        byte[] hsmRequest = null;
+        byte[] hsmResponse = null;
+        HSMTransactionMessage hsmTranasctionMessage = null;
+        int hsmCmdLength;
 
-    hsmRequest = hsmCommand.serialize();
+        hsmRequest = hsmCommand.serialize();
 
-    // Step 2 - Get HSM Request Counter
-    Integer hsmCounter = getHSMNextCounter();
+        // Step 2 - Get HSM Request Counter
+        Integer hsmCounter = getHSMNextCounter();
 
-    // Step 3 - Get HSM Command Length
-    hsmCmdLength = hsmCommand.getCmdLength();
+        // Step 3 - Get HSM Command Length
+        hsmCmdLength = hsmCommand.getCmdLength();
 
-    // Step 4 - Create TransactionMessage Object with HSMRequest and Counter
-    hsmTranasctionMessage =
-        new HSMTransactionMessage(
-            hsmRequest, hsmCmdLength, hsmCounter, LUNA_EFT_HSM, HSM_HEADER_LENGTH);
+        // Step 4 - Create TransactionMessage Object with HSMRequest and Counter
+        hsmTranasctionMessage =
+                new HSMTransactionMessage(
+                        hsmRequest, hsmCmdLength, hsmCounter, LUNA_EFT_HSM, HSM_HEADER_LENGTH);
 
-    // Step 6 - Send HSMCommand Request
-    hsmGatewayService.sendRequest(gatewayHSM, hsmTranasctionMessage);
+        // Step 6 - Send HSMCommand Request
+        hsmGatewayService.sendRequest(gatewayHSM, hsmTranasctionMessage);
 
-    hsmGateway.waitForResponse(hsmTranasctionMessage);
+        hsmGateway.waitForResponse(hsmTranasctionMessage);
 
-    // Step 7 - Fetch HSM Response byte[]
-    hsmResponse =
-        hsmGatewayService.getResponse(
-            hsmGatewayCorrelationStrategy.getCorrelationKey(hsmTranasctionMessage));
+        // Step 7 - Fetch HSM Response byte[]
+        hsmResponse =
+                hsmGatewayService.getResponse(
+                        hsmGatewayCorrelationStrategy.getCorrelationKey(hsmTranasctionMessage));
 
-    // Step 8 - Remove Header and set the Response to HSMCommand
-    byte[] bytarrMsg = new byte[hsmResponse.length - 6];
-    System.arraycopy(hsmResponse, 6, bytarrMsg, 0, bytarrMsg.length);
+        // Step 8 - Remove Header and set the Response to HSMCommand
+        byte[] bytarrMsg = new byte[hsmResponse.length - 6];
+        System.arraycopy(hsmResponse, 6, bytarrMsg, 0, bytarrMsg.length);
 
-    hsmCommand.processResponse(bytarrMsg);
+        hsmCommand.processResponse(bytarrMsg);
 
-    return hsmCommand;
-  }
-
-  public static Integer getHSMNextCounter() {
-    if (hsmCounter.get() == 254) {
-      hsmCounter.set(0);
+        return hsmCommand;
     }
-    return hsmCounter.incrementAndGet();
-  }
+
+    public static Integer getHSMNextCounter() {
+        if (hsmCounter.get() == 254) {
+            hsmCounter.set(0);
+        }
+        return hsmCounter.incrementAndGet();
+    }
 }

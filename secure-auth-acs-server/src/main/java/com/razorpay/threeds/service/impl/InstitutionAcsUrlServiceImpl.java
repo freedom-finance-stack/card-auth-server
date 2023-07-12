@@ -21,38 +21,40 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InstitutionAcsUrlServiceImpl
-    implements com.razorpay.threeds.service.InstitutionAcsUrlService {
-  private final InstitutionAcsUrlRepository institutionAcsUrlRepository;
+        implements com.razorpay.threeds.service.InstitutionAcsUrlService {
+    private final InstitutionAcsUrlRepository institutionAcsUrlRepository;
 
-  @Override
-  public InstitutionAcsUrl findById(InstitutionAcsUrlPK institutionAcsUrlPK)
-      throws ACSDataAccessException, DataNotFoundException {
-    try {
-      Optional<InstitutionAcsUrl> acsUrl =
-          institutionAcsUrlRepository.findById(
-              institutionAcsUrlPK); // DB connection, DB query, DB contraint, DB transaction
-      if (acsUrl.isPresent()) {
-        return acsUrl.get();
-      }
-    } catch (DataAccessException e) {
-      log.error(
-          "Error while fetching acs url for Institution ID :"
-              + institutionAcsUrlPK.getInstitutionId()
-              + " and Network: "
-              + institutionAcsUrlPK.getNetworkCode()
-              + " and Channel: "
-              + institutionAcsUrlPK.getDeviceChannel());
-      throw new ACSDataAccessException(InternalErrorCode.INSTITUTION_FETCH_EXCEPTION, e);
+    @Override
+    public InstitutionAcsUrl findById(InstitutionAcsUrlPK institutionAcsUrlPK)
+            throws ACSDataAccessException, DataNotFoundException {
+        try {
+            Optional<InstitutionAcsUrl> acsUrl =
+                    institutionAcsUrlRepository.findById(
+                            institutionAcsUrlPK); // DB connection, DB query, DB contraint, DB
+            // transaction
+            if (acsUrl.isPresent()) {
+                return acsUrl.get();
+            }
+        } catch (DataAccessException e) {
+            log.error(
+                    "Error while fetching acs url for Institution ID :"
+                            + institutionAcsUrlPK.getInstitutionId()
+                            + " and Network: "
+                            + institutionAcsUrlPK.getNetworkCode()
+                            + " and Channel: "
+                            + institutionAcsUrlPK.getDeviceChannel());
+            throw new ACSDataAccessException(InternalErrorCode.INSTITUTION_FETCH_EXCEPTION, e);
+        }
+
+        log.error(
+                "Acs url not found for Institution ID :"
+                        + institutionAcsUrlPK.getInstitutionId()
+                        + " and Network: "
+                        + institutionAcsUrlPK.getNetworkCode()
+                        + " and Channel: "
+                        + institutionAcsUrlPK.getDeviceChannel());
+        throw new DataNotFoundException(
+                ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
+                InternalErrorCode.ACS_URL_NOT_FOUND);
     }
-
-    log.error(
-        "Acs url not found for Institution ID :"
-            + institutionAcsUrlPK.getInstitutionId()
-            + " and Network: "
-            + institutionAcsUrlPK.getNetworkCode()
-            + " and Channel: "
-            + institutionAcsUrlPK.getDeviceChannel());
-    throw new DataNotFoundException(
-        ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, InternalErrorCode.ACS_URL_NOT_FOUND);
-  }
 }

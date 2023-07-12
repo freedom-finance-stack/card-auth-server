@@ -6,7 +6,7 @@ import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.exception.checked.ACSException;
 
 public interface RangeService {
-  CardRange findByPan(String pan) throws DataNotFoundException, ACSDataAccessException;
+    CardRange findByPan(String pan) throws DataNotFoundException, ACSDataAccessException;
 
-  void validateRange(CardRange cardRange) throws ACSException, DataNotFoundException;
+    void validateRange(CardRange cardRange) throws ACSException, DataNotFoundException;
 }

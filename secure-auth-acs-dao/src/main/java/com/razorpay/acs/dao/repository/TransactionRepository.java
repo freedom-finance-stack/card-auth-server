@@ -6,5 +6,5 @@ import com.razorpay.acs.dao.model.Transaction;
 
 @Repository
 public interface TransactionRepository extends BaseRepository<Transaction, String> {
-  // todo handle soft delete of all the child table entries
+    // todo handle soft delete of all the child table entries
 }

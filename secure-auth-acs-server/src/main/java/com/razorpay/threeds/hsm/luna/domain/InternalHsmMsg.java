@@ -6,17 +6,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class InternalHsmMsg {
-  private String cmdCode;
+    private String cmdCode;
 
-  private String cvvKey;
+    private String cvvKey;
 
-  private String cvvData;
+    private String cvvData;
 
-  private String cvv;
+    private String cvv;
 
-  private String privateDataKey;
+    private String privateDataKey;
 
-  private String dataTobeSigned;
+    private String dataTobeSigned;
 
-  private String signature;
+    private String signature;
 }

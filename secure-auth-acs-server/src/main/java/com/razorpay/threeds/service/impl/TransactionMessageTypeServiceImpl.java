@@ -22,41 +22,43 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TransactionMessageTypeServiceImpl implements TransactionMessageTypeService {
 
-  private final TransactionMessageTypeDetailRepository transactionMessageTypeDetailRepository;
+    private final TransactionMessageTypeDetailRepository transactionMessageTypeDetailRepository;
 
-  public TransactionMessageTypeDetail create(AREQ areq, String transactionId) {
-    TransactionMessageTypeDetail transactionMessageTypeDetail =
-        new TransactionMessageTypeDetail(Util.toJson(areq), MessageType.AReq);
-    transactionMessageTypeDetail.setId(Util.generateUUID());
-    transactionMessageTypeDetail.setTransactionId(transactionId);
-    transactionMessageTypeDetail.setReceivedTimestamp(new Timestamp(System.currentTimeMillis()));
-    return transactionMessageTypeDetail;
-  }
-
-  public TransactionMessageTypeDetail create(CREQ creq, String transactionId) {
-    TransactionMessageTypeDetail transactionMessageTypeDetail =
-        new TransactionMessageTypeDetail(Util.toJson(creq), MessageType.CReq);
-    transactionMessageTypeDetail.setId(Util.generateUUID());
-    transactionMessageTypeDetail.setTransactionId(transactionId);
-    transactionMessageTypeDetail.setReceivedTimestamp(new Timestamp(System.currentTimeMillis()));
-    return transactionMessageTypeDetail;
-  }
-
-  public void save(TransactionMessageTypeDetail transactionMessageTypeDetail) {
-    if (transactionMessageTypeDetail != null) {
-      transactionMessageTypeDetailRepository.save(transactionMessageTypeDetail);
+    public TransactionMessageTypeDetail create(AREQ areq, String transactionId) {
+        TransactionMessageTypeDetail transactionMessageTypeDetail =
+                new TransactionMessageTypeDetail(Util.toJson(areq), MessageType.AReq);
+        transactionMessageTypeDetail.setId(Util.generateUUID());
+        transactionMessageTypeDetail.setTransactionId(transactionId);
+        transactionMessageTypeDetail.setReceivedTimestamp(
+                new Timestamp(System.currentTimeMillis()));
+        return transactionMessageTypeDetail;
     }
-  }
 
-  public TransactionMessageTypeDetail createAndSave(
-      ThreeDSObject threeDSObject, String transactionId) {
-    TransactionMessageTypeDetail transactionMessageTypeDetail = null;
-    if (threeDSObject instanceof AREQ) {
-      transactionMessageTypeDetail = create((AREQ) threeDSObject, transactionId);
-    } else if (threeDSObject instanceof CREQ) {
-      transactionMessageTypeDetail = create((CREQ) threeDSObject, transactionId);
+    public TransactionMessageTypeDetail create(CREQ creq, String transactionId) {
+        TransactionMessageTypeDetail transactionMessageTypeDetail =
+                new TransactionMessageTypeDetail(Util.toJson(creq), MessageType.CReq);
+        transactionMessageTypeDetail.setId(Util.generateUUID());
+        transactionMessageTypeDetail.setTransactionId(transactionId);
+        transactionMessageTypeDetail.setReceivedTimestamp(
+                new Timestamp(System.currentTimeMillis()));
+        return transactionMessageTypeDetail;
     }
-    this.save(transactionMessageTypeDetail);
-    return transactionMessageTypeDetail;
-  }
+
+    public void save(TransactionMessageTypeDetail transactionMessageTypeDetail) {
+        if (transactionMessageTypeDetail != null) {
+            transactionMessageTypeDetailRepository.save(transactionMessageTypeDetail);
+        }
+    }
+
+    public TransactionMessageTypeDetail createAndSave(
+            ThreeDSObject threeDSObject, String transactionId) {
+        TransactionMessageTypeDetail transactionMessageTypeDetail = null;
+        if (threeDSObject instanceof AREQ) {
+            transactionMessageTypeDetail = create((AREQ) threeDSObject, transactionId);
+        } else if (threeDSObject instanceof CREQ) {
+            transactionMessageTypeDetail = create((CREQ) threeDSObject, transactionId);
+        }
+        this.save(transactionMessageTypeDetail);
+        return transactionMessageTypeDetail;
+    }
 }

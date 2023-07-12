@@ -7,10 +7,11 @@ import com.razorpay.threeds.utils.Util;
 
 public class IsValidRule<T extends Validatable> implements Rule<T> {
 
-  @Override
-  public void validate(Validatable value) throws ValidationException {
-    if (!Util.isNullorBlank(value) && !value.isValid()) {
-      throw new ValidationException(ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
+    @Override
+    public void validate(Validatable value) throws ValidationException {
+        if (!Util.isNullorBlank(value) && !value.isValid()) {
+            throw new ValidationException(
+                    ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
+        }
     }
-  }
 }

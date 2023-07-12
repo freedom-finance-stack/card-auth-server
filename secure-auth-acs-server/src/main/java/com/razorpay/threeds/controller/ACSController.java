@@ -23,19 +23,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ACSController {
 
-  private final AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
-  @PostMapping(
-      value = "/auth-request",
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  @Timed(value = "acs.auth-request", longTask = true)
-  public ARES handleAuthenticationRequest(
-      @RequestBody @Valid AREQ areq,
-      HttpServletRequest httpServletRequest,
-      HttpServletResponse httpServletResponse,
-      @RequestHeader HttpHeaders headers)
-      throws ThreeDSException, ACSDataAccessException {
-    return authenticationService.processAuthenticationRequest(areq);
-  }
+    @PostMapping(
+            value = "/auth-request",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed(value = "acs.auth-request", longTask = true)
+    public ARES handleAuthenticationRequest(
+            @RequestBody @Valid AREQ areq,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            @RequestHeader HttpHeaders headers)
+            throws ThreeDSException, ACSDataAccessException {
+        return authenticationService.processAuthenticationRequest(areq);
+    }
 }

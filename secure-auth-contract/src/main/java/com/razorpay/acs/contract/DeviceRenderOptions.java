@@ -8,45 +8,45 @@ import lombok.Data;
 @Data
 public class DeviceRenderOptions implements Validatable {
 
-  private String sdkInterface;
-  private String[] sdkUiType;
+    private String sdkInterface;
+    private String[] sdkUiType;
 
-  public boolean isMandatoryValueAvailable() {
-    if (this.sdkInterface == null) {
-      return false;
-    }
-
-    if (this.sdkUiType == null) {
-      return false;
-    }
-
-    if (this.sdkUiType != null && this.sdkUiType.length == 0) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public boolean isValid() {
-    if (!this.isMandatoryValueAvailable()) {
-      return false;
-    }
-    if (this.sdkInterface != null) {
-      DeviceInterface deviceIntr = DeviceInterface.getDeviceInterface(sdkInterface);
-      if (deviceIntr == null) {
-        return false;
-      }
-    }
-
-    if (this.sdkUiType != null) {
-      for (String strUiType : sdkUiType) {
-        UIType uiType = UIType.getUIType(strUiType);
-        if (uiType == null) {
-          return false;
+    public boolean isMandatoryValueAvailable() {
+        if (this.sdkInterface == null) {
+            return false;
         }
-      }
+
+        if (this.sdkUiType == null) {
+            return false;
+        }
+
+        if (this.sdkUiType != null && this.sdkUiType.length == 0) {
+            return false;
+        }
+
+        return true;
     }
 
-    return true;
-  }
+    public boolean isValid() {
+        if (!this.isMandatoryValueAvailable()) {
+            return false;
+        }
+        if (this.sdkInterface != null) {
+            DeviceInterface deviceIntr = DeviceInterface.getDeviceInterface(sdkInterface);
+            if (deviceIntr == null) {
+                return false;
+            }
+        }
+
+        if (this.sdkUiType != null) {
+            for (String strUiType : sdkUiType) {
+                UIType uiType = UIType.getUIType(strUiType);
+                if (uiType == null) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }

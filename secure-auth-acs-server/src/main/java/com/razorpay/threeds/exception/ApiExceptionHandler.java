@@ -18,46 +18,48 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-  // todo there more method needs to override if we want consistent behaviour across all the errors
-  @Override
-  protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-      HttpRequestMethodNotSupportedException ex,
-      HttpHeaders headers,
-      HttpStatus status,
-      WebRequest request) {
-    log.error(ex.getMessage(), ex);
-    ThreeDSErrorResponse errorResponse =
-        new ThreeDSErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
-            "Request method '" + ex.getMethod() + "' not supported",
-            ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
-            ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-    return handleExceptionInternal(ex, errorResponse, headers, status, request);
-  }
+    // todo there more method needs to override if we want consistent behaviour across all the
+    // errors
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        log.error(ex.getMessage(), ex);
+        ThreeDSErrorResponse errorResponse =
+                new ThreeDSErrorResponse(
+                        HttpStatus.BAD_REQUEST.value(),
+                        ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
+                        "Request method '" + ex.getMethod() + "' not supported",
+                        ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
+                        ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
+        return handleExceptionInternal(ex, errorResponse, headers, status, request);
+    }
 
-  @ExceptionHandler(Throwable.class)
-  public ResponseEntity<ThreeDSErrorResponse> handleThrowable(Throwable e) {
-    // these case should happen ideally
-    // todo we need to set alert for this
-    log.error(e.getMessage(), e);
-    ThreeDSErrorResponse errorResponse =
-        new ThreeDSErrorResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorCode(),
-            e.getMessage(),
-            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorComponent(),
-            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorDescription());
-    return buildResponseEntity(errorResponse);
-  }
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<ThreeDSErrorResponse> handleThrowable(Throwable e) {
+        // these case should happen ideally
+        // todo we need to set alert for this
+        log.error(e.getMessage(), e);
+        ThreeDSErrorResponse errorResponse =
+                new ThreeDSErrorResponse(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorCode(),
+                        e.getMessage(),
+                        ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorComponent(),
+                        ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR.getErrorDescription());
+        return buildResponseEntity(errorResponse);
+    }
 
-  @ExceptionHandler(ThreeDSException.class)
-  public ResponseEntity<ThreeDSErrorResponse> handleACSException(ThreeDSException exception) {
-    log.error(exception.getMessage(), exception);
-    return buildResponseEntity(exception.getErrorResponse());
-  }
+    @ExceptionHandler(ThreeDSException.class)
+    public ResponseEntity<ThreeDSErrorResponse> handleACSException(ThreeDSException exception) {
+        log.error(exception.getMessage(), exception);
+        return buildResponseEntity(exception.getErrorResponse());
+    }
 
-  private ResponseEntity<ThreeDSErrorResponse> buildResponseEntity(ThreeDSErrorResponse apiError) {
-    return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.getHttpStatus()));
-  }
+    private ResponseEntity<ThreeDSErrorResponse> buildResponseEntity(
+            ThreeDSErrorResponse apiError) {
+        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.getHttpStatus()));
+    }
 }

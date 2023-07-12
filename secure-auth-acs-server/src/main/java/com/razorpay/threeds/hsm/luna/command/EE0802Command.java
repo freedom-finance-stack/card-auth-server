@@ -16,82 +16,86 @@ import static com.razorpay.threeds.constant.LunaHSMConstants.HSM_SUCCESSFUL_RESP
 @Setter
 public class EE0802Command extends HsmCommand {
 
-  private String cvvKey;
-  private String cvvData;
+    private String cvvKey;
+    private String cvvData;
 
-  public EE0802Command() {
-    this.cmdCode = EE0802_CMD;
-    this.functionModifier = FUNC_MODIFIER_00;
-  }
-
-  @Override
-  public void initialize(InternalHsmMsg internalMsg) {
-    this.internalMsg = internalMsg;
-
-    String cvvIndex = internalMsg.getCvvKey();
-    int index = Integer.parseInt(cvvIndex);
-    if (index < 99) {
-      if (index > 9) {
-        setCvvKey("0200" + index);
-      } else {
-        setCvvKey("02000" + index);
-      }
+    public EE0802Command() {
+        this.cmdCode = EE0802_CMD;
+        this.functionModifier = FUNC_MODIFIER_00;
     }
-    int len = internalMsg.getCvvData().length();
-    setCvvData(internalMsg.getCvvData() + "0".repeat(Math.max(0, 32 - len)));
-  }
 
-  @Override
-  public byte[] encode() {
-    return null;
-  }
+    @Override
+    public void initialize(InternalHsmMsg internalMsg) {
+        this.internalMsg = internalMsg;
 
-  @Override
-  public byte[] decode() {
-    return null;
-  }
-
-  @Override
-  public int processResponse(byte[] respMsg) {
-    String outputData = HexUtil.hexValue(respMsg, 0, respMsg.length);
-    String cvv = null;
-    try {
-      String respCode = outputData.substring(6, 8);
-      if (respCode.equals(HSM_SUCCESSFUL_RESPONSE)) {
-        cvv = outputData.substring(8, 11); // HexUtility.hexToAscii(outputData.substring(26));
-        internalMsg.setCvv(cvv);
-        log.debug("processResponse() Cvv generation is successful");
-      } else {
-        internalMsg.setCvv(cvv);
-        log.error("processResponse() Cvv generation is failed with response code: {} ", respCode);
-        return -1;
-      }
-    } catch (Exception exp) {
-      internalMsg.setCvv(cvv);
-      log.error(
-          "processResponse() Cvv generation is failed with exception "
-              + HexUtil.getStackTrace(exp));
-      return -1;
+        String cvvIndex = internalMsg.getCvvKey();
+        int index = Integer.parseInt(cvvIndex);
+        if (index < 99) {
+            if (index > 9) {
+                setCvvKey("0200" + index);
+            } else {
+                setCvvKey("02000" + index);
+            }
+        }
+        int len = internalMsg.getCvvData().length();
+        setCvvData(internalMsg.getCvvData() + "0".repeat(Math.max(0, 32 - len)));
     }
-    return 0;
-  }
 
-  @Override
-  public byte[] serialize() {
+    @Override
+    public byte[] encode() {
+        return null;
+    }
 
-    String cmdBuffer;
-    cmdBuffer = cmdCode + functionModifier;
-    cmdBuffer = cmdBuffer + getCvvKey() + getCvvData();
+    @Override
+    public byte[] decode() {
+        return null;
+    }
 
-    byte[] cmdByte = HexUtil.hexStringToByteArray(cmdBuffer);
+    @Override
+    public int processResponse(byte[] respMsg) {
+        String outputData = HexUtil.hexValue(respMsg, 0, respMsg.length);
+        String cvv = null;
+        try {
+            String respCode = outputData.substring(6, 8);
+            if (respCode.equals(HSM_SUCCESSFUL_RESPONSE)) {
+                cvv =
+                        outputData.substring(
+                                8, 11); // HexUtility.hexToAscii(outputData.substring(26));
+                internalMsg.setCvv(cvv);
+                log.debug("processResponse() Cvv generation is successful");
+            } else {
+                internalMsg.setCvv(cvv);
+                log.error(
+                        "processResponse() Cvv generation is failed with response code: {} ",
+                        respCode);
+                return -1;
+            }
+        } catch (Exception exp) {
+            internalMsg.setCvv(cvv);
+            log.error(
+                    "processResponse() Cvv generation is failed with exception "
+                            + HexUtil.getStackTrace(exp));
+            return -1;
+        }
+        return 0;
+    }
 
-    cmdLength = cmdByte.length;
+    @Override
+    public byte[] serialize() {
 
-    return cmdByte;
-  }
+        String cmdBuffer;
+        cmdBuffer = cmdCode + functionModifier;
+        cmdBuffer = cmdBuffer + getCvvKey() + getCvvData();
 
-  @Override
-  public int getCmdLength() {
-    return cmdLength;
-  }
+        byte[] cmdByte = HexUtil.hexStringToByteArray(cmdBuffer);
+
+        cmdLength = cmdByte.length;
+
+        return cmdByte;
+    }
+
+    @Override
+    public int getCmdLength() {
+        return cmdLength;
+    }
 }

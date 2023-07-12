@@ -15,15 +15,15 @@ import lombok.*;
 @ToString(exclude = {"transaction"})
 @Builder
 public class TransactionSdkDetail extends BaseEntity<String> {
-  @Id
-  @Column(name = "transaction_id")
-  private String id;
+    @Id
+    @Column(name = "transaction_id")
+    private String id;
 
-  @Column(name = "sdk_transaction_id")
-  private String sdkTransactionId;
+    @Column(name = "sdk_transaction_id")
+    private String sdkTransactionId;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "transaction_id", referencedColumnName = "id")
-  @MapsId
-  private Transaction transaction;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id", referencedColumnName = "id")
+    @MapsId
+    private Transaction transaction;
 }
