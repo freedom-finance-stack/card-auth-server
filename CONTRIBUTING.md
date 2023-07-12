@@ -1,8 +1,11 @@
 # Contributing to Secure Auth Server
 
-Secure Auth Server(ACS Server & Admin Server) is a free and open project and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into Secure Auth Server itself.
+Secure Auth Server(ACS Server & Admin Server) is a free and open project, and we love to receive contributions from our community — you!
+There are many ways to contribute, from writing tutorials, improving the documentation, submitting bug reports 
+and feature requests or writing code which can be incorporated into Secure Auth Server itself.
 
-If you are excited and want to make contributions, sign up for the [Freedom Finance Stack Contributor Program](https://razorpay.com/).
+If you are excited and want to make contributions, sign up for the 
+[Freedom Finance Stack Contributor Program](https://razorpay.com/).
 
 ## Bug Reports
 
@@ -14,7 +17,8 @@ If you would like to contribute a new feature or a bug fix to Secure Auth Server
 The process for contributing to Secure Auth Server can be found below.
 
 ### Fork and clone the repository
-You will need to fork the main Secure Auth Server code repository and clone it to your local machine. See [github help page](https://docs.github.com/en/get-started/quickstart/fork-a-repo) for help.
+You will need to fork the main Secure Auth Server code repository and clone it to your local machine. 
+See [github help page](https://docs.github.com/en/get-started/quickstart/fork-a-repo) for help.
 
 ### Tips for code changes
 Following these tips prior to raising a pull request will speed up the review cycle.
