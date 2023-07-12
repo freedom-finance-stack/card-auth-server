@@ -39,12 +39,11 @@ You can start Secure Auth ACS Server following below steps.
     ```
 * Create java jar binaries via
     ```
-    mvn clean compile
     mvn clean install -U
     ```
 * Go to docker compose file directory
     ```
-    cd secure-auth-server/scripts/deployment/dockerconf/secure-auth-server/
+    cd ./scripts/deployment/dockerconf/secure-auth-server/
     ```
 * Run below command
     ```
@@ -62,7 +61,7 @@ You can start Secure Auth ACS Server following below steps.
     ```
 * Run below command
     ```
-    sh secure-auth-server/scripts/deployment/dev/secure-auth-server-dev-deployment.sh
+    sh ./scripts/deployment/dev/secure-auth-server-dev-deployment.sh
     ```
 
 ## Documentation
