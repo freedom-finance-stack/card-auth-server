@@ -56,9 +56,15 @@ You can start Secure Auth ACS Server following below steps.
     ```
 
 #### Using Built-In Automated Shell Script
-
+* Go to Secure Auth Server Repo directory
+    ``` 
+    cd secure-auth-server
+    ```
+* Run below command
+    ```
     sh secure-auth-server/scripts/deployment/dev/secure-auth-server-dev-deployment.sh
-  
+    ```
+
 ## Documentation
 For information related to documents of this project, refer to [Docs Readme](docs/README.md)
 
