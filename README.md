@@ -35,7 +35,7 @@ You can start Secure Auth ACS Server following below steps.
     ```
 * Go to Secure Auth Server Repo directory
     ``` 
-    cd <REPO_DIRECTORY>/secure-auth-server
+    cd secure-auth-server
     ```
 * Create java jar binaries via
     ```
@@ -44,7 +44,7 @@ You can start Secure Auth ACS Server following below steps.
     ```
 * Go to docker compose file directory
     ```
-    cd <REPO_DIRECTORY>/scripts/deployment/dockerconf/secure-auth-server/
+    cd secure-auth-server/scripts/deployment/dockerconf/secure-auth-server/
     ```
 * Run below command
     ```
@@ -54,6 +54,12 @@ You can start Secure Auth ACS Server following below steps.
     ```
     curl --location 'http://127.0.0.1:8080/actuator/health'
     ```
+
+#### Using Built-In Automated Shell Script
+    ```
+    sh secure-auth-server/scripts/deployment/dev/secure-auth-server-dev-deployment.sh
+    ```
+  
 ## Documentation
 For information related to documents of this project, refer to [Docs Readme](docs/README.md)
 

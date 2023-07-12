@@ -22,7 +22,7 @@ SERVER_URL="http://127.0.0.1:8080/actuator/health"
 while [ $(date +%s) -lt $ENDTIME ]; do
     STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SERVER_URL)
     if [ $STATUS -eq 200 ]; then
-        echo "Server is up!!"
+        echo "Server is up at http://127.0.0.1:8080 !!"
         break
     fi
     sleep 1
