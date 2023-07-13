@@ -117,8 +117,6 @@ public class ThreeDSConstant {
     public static final String ELEMENT_DS_TRANS_ID = "dsTransID";
     public static final String ELEMENT_PAYTOKEN_IND = "payTokenInd";
     public static final String ELEMENT_PURCHASE_INSTALL_DATA = "purchaseInstalData";
-    public static final String ELEMENT_RECURRING_EXPIRY = "recurringExpiry";
-    public static final String ELEMENT_RECURRING_FREQUENCY = "recurringFrequency";
     public static final String ELEMENT_SDK_ENC_DATA = "sdkEncData";
     public static final String ELEMENT_TRANSACTION_TYPE = "transType";
     public static final String ELEMENT_ACCTINFO_CHACCAGE_IND = "chAccAgeInd";
