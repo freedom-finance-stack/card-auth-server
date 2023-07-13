@@ -1,10 +1,12 @@
 package com.razorpay.threeds.validator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.google.gson.JsonParser;
 import com.google.gson.internal.LinkedTreeMap;
 import com.razorpay.acs.contract.AREQ;
 import com.razorpay.acs.contract.ThreeDSecureErrorCode;
@@ -399,38 +401,51 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                         request.getThreeDSRequestorDecReqInd()),
                         new NotNullRule<>()));
 
-        Rule<LinkedTreeMap> MessageExtensionRule =
-                messageExtensionValue -> {
-                    // todo use GSON parser test this
-                    LinkedTreeMap<Object, Object> meMap = (LinkedTreeMap) messageExtensionValue;
-                    Object name = meMap.get("name");
-                    Object id = meMap.get("id");
+        Rule<ArrayList<LinkedTreeMap<String, Object>>> messageExtensionRule =
+                messageExtensionValueList -> {
+                    for (LinkedTreeMap<String, Object> messageExtensionValue :
+                            messageExtensionValueList) {
+                        // According to documentation 'name' will also be string with max 64
+                        // characters
+                        String name = (String) messageExtensionValue.get("name");
 
-                    if (name != null && name.toString().length() > 64) {
-                        throw new ValidationException(
-                                ThreeDSecureErrorCode.INVALID_FORMAT,
-                                "Invalid message extension name");
-                    } else if (id != null && id.toString().length() > 64) {
-                        throw new ValidationException(
-                                ThreeDSecureErrorCode.INVALID_FORMAT,
-                                "Invalid message extension id");
-                    }
+                        // According to documentation 'id' will also be string with max 64
+                        // characters
+                        String id = (String) messageExtensionValue.get("id");
 
-                    LinkedTreeMap<Object, Object> dataMap =
-                            (LinkedTreeMap<Object, Object>) meMap.get("data");
-                    Object text = dataMap.get("text");
+                        if (name != null && name.length() > 64) {
+                            throw new ValidationException(
+                                    ThreeDSecureErrorCode.INVALID_FORMAT,
+                                    "Invalid message extension name");
+                        } else if (id != null && id.length() > 64) {
+                            throw new ValidationException(
+                                    ThreeDSecureErrorCode.INVALID_FORMAT,
+                                    "Invalid message extension id");
+                        }
 
-                    if (text != null && text.toString().length() > 8059) {
-                        throw new ValidationException(
-                                ThreeDSecureErrorCode.INVALID_FORMAT,
-                                "Invalid message extension data");
+                        // According to documentation 'data' will also be a Json Object with length
+                        // less than 8059
+                        Object dataValue = messageExtensionValue.get("data");
+                        try {
+                            JsonParser.parseString(dataValue.toString());
+                        } catch (Exception e) {
+                            throw new ValidationException(
+                                    ThreeDSecureErrorCode.INVALID_FORMAT,
+                                    "Invalid message extension data");
+                        }
+
+                        if (dataValue.toString().length() > 8059) {
+                            throw new ValidationException(
+                                    ThreeDSecureErrorCode.INVALID_FORMAT,
+                                    "Invalid message extension data");
+                        }
                     }
                 };
 
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 request.getMessageExtension(),
-                new ListValidRule(List.of(MessageExtensionRule)));
+                new ListValidRule(List.of(messageExtensionRule)));
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())
@@ -468,7 +483,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.PURCHASE_DATE.getFieldName(),
                 request.getPurchaseDate(),
                 new WhenRule<>(purchaseElementsWhenRule, new NotNullRule<>()),
-                new LengthRule(DataLengthType.FIXED, 8),
+                new LengthRule(DataLengthType.FIXED, 14),
                 new IsValidDate(ThreeDSDataElement.PURCHASE_DATE.getAcceptedFormat()));
         Validation.validate(
                 ThreeDSDataElement.PURCHASE_INSTAL_DATA.getFieldName(),
@@ -479,31 +494,9 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 && Util.isNullorBlank(
                                         request.getThreeDSRequestorAuthenticationInd())
                                 && "03".equals(request.getThreeDSRequestorAuthenticationInd()),
-                        new NotNullRule<>()),
+                        List.of(new NotNullRule<>()),
+                        List.of(new NotNullRule<>())),
                 new LengthRule(DataLengthType.VARIABLE, 3));
-
-        boolean recurringElementCondition =
-                validateDeviceChannel(ThreeDSDataElement.RECURRING_FREQUENCY, request)
-                        && ((!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())
-                                        && (request.getThreeDSRequestorAuthenticationInd()
-                                                        .equals("02")
-                                                || request.getThreeDSRequestorAuthenticationInd()
-                                                        .equals("03")))
-                                || (!Util.isNullorBlank(request.getThreeRIInd())
-                                        && "2.2.0".equals(request.getMessageVersion())
-                                        && (request.getThreeRIInd().equals("02")
-                                                || request.getThreeRIInd().equals("01"))));
-        Validation.validate(
-                ThreeDSDataElement.RECURRING_EXPIRY.getFieldName(),
-                request.getRecurringExpiry(),
-                new WhenRule<>(recurringElementCondition, new NotNullRule<>()),
-                new LengthRule(DataLengthType.FIXED, 8),
-                new IsValidDate("YYYYMMDD")); // todo
-        Validation.validate(
-                ThreeDSDataElement.RECURRING_FREQUENCY.getFieldName(),
-                request.getRecurringFrequency(),
-                new LengthRule(DataLengthType.VARIABLE, 4),
-                new IsNumericRule()); // todo
     }
 
     protected void validateOptionalFields(AREQ request) throws ValidationException {
@@ -657,13 +650,19 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         return validateDeviceChannel(element, areq) && validateMessageCategory(element, areq);
     }
 
+    // todo - check with Jaydeep but think this function is not required.
     public static boolean validateDeviceChannel(ThreeDSDataElement element, AREQ areq) {
-        return Arrays.stream(element.getSupportedChannel())
-                .anyMatch(sc -> sc.getChannel().equals(areq.getDeviceChannel()));
+        return true;
+
+        // return Arrays.stream(element.getSupportedChannel())
+        //         .anyMatch(sc -> sc.getChannel().equals(areq.getDeviceChannel()));
     }
 
+    // todo - check with Jaydeep but think this function is not required.
     public static boolean validateMessageCategory(ThreeDSDataElement element, AREQ areq) {
-        return Arrays.stream(element.getSupportedCategory())
-                .anyMatch(sc -> sc.getCategory().equals(areq.getMessageCategory()));
+        return true;
+
+        // return Arrays.stream(element.getSupportedCategory())
+        //        .anyMatch(sc -> sc.getCategory().equals(areq.getMessageCategory()));
     }
 }

@@ -107,9 +107,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                                 transaction.getMessageCategory())
                                         .setThreeRIInd(areq.getThreeRIInd()));
                 transaction.setEci(eci);
+                transaction.setTransactionStatus(TransactionStatus.SUCCESS);
                 String authValue = authValueGeneratorService.getAuthValue(transaction);
                 transaction.setAuthValue(authValue);
-                transaction.setTransactionStatus(TransactionStatus.SUCCESS);
             }
 
         } catch (ThreeDSException ex) {
