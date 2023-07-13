@@ -1,7 +1,9 @@
-CREATE DATABASE `fps_acs`;
+CREATE DATABASE IF NOT EXISTS `fps_acs`;
 
 USE `fps_acs`;
-CREATE TABLE IF NOT EXISTS `transaction`
+
+DROP TABLE IF EXISTS `transaction`;
+CREATE TABLE `transaction`
 (
     `id`                        varchar(36) PRIMARY KEY,
     `institution_id`            varchar(36),
@@ -23,7 +25,8 @@ CREATE TABLE IF NOT EXISTS `transaction`
     `deleted_at`                timestamp
 );
 
-CREATE TABLE IF NOT EXISTS `transaction_browser_detail`
+DROP TABLE IF EXISTS `transaction_browser_detail`;
+CREATE TABLE `transaction_browser_detail`
 (
     `transaction_id`     varchar(36) PRIMARY KEY,
     `javascript_enabled` boolean,
@@ -34,7 +37,8 @@ CREATE TABLE IF NOT EXISTS `transaction_browser_detail`
     `deleted_at`         timestamp
 );
 
-CREATE TABLE IF NOT EXISTS `transaction_sdk_detail`
+DROP TABLE IF EXISTS `transaction_sdk_detail`;
+CREATE TABLE `transaction_sdk_detail`
 (
     `transaction_id`     varchar(36) PRIMARY KEY,
     `sdk_transaction_id` varchar(36),
@@ -43,7 +47,8 @@ CREATE TABLE IF NOT EXISTS `transaction_sdk_detail`
     `deleted_at`         timestamp
 );
 
-CREATE TABLE IF NOT EXISTS `transaction_merchant`
+DROP TABLE IF EXISTS `transaction_merchant`;
+CREATE TABLE `transaction_merchant`
 (
     `transaction_id`        varchar(36) PRIMARY KEY,
     `acquirer_merchant_id`  varchar(100),
@@ -54,7 +59,8 @@ CREATE TABLE IF NOT EXISTS `transaction_merchant`
     `deleted_at`            timestamp
 );
 
-CREATE TABLE IF NOT EXISTS `transaction_message_type_detail`
+DROP TABLE IF EXISTS `transaction_message_type_detail`;
+CREATE TABLE `transaction_message_type_detail`
 (
     `id`                 varchar(36) PRIMARY KEY,
     `transaction_id`     varchar(36) NOT NULL,
@@ -66,10 +72,12 @@ CREATE TABLE IF NOT EXISTS `transaction_message_type_detail`
     `modified_at`        timestamp,
     `deleted_at`         timestamp
 );
-# Create Index on transaction_id
+
+/* Create Index on transaction_id */
 CREATE INDEX `transaction_message_type_detail_transaction_id_idx` ON `transaction_message_type_detail` (`transaction_id`);
 
-CREATE TABLE IF NOT EXISTS `transaction_reference_detail`
+DROP TABLE IF EXISTS `transaction_reference_detail`;
+CREATE TABLE `transaction_reference_detail`
 (
     `transaction_id`                  varchar(36) PRIMARY KEY ,
     `threeds_server_transaction_id`   varchar(36),
@@ -80,6 +88,7 @@ CREATE TABLE IF NOT EXISTS `transaction_reference_detail`
     `deleted_at`                      timestamp default NULL
 );
 
+DROP TABLE IF EXISTS `institution_acs_url`;
 CREATE TABLE `institution_acs_url`
 (
     `institution_id` varchar(5)  NOT NULL,
@@ -95,7 +104,8 @@ CREATE TABLE `institution_acs_url`
     PRIMARY KEY (`institution_id`, `device_channel`, `network_code`)
 );
 
-CREATE TABLE IF NOT EXISTS `transaction_purchase_detail`
+DROP TABLE IF EXISTS `transaction_purchase_detail`;
+CREATE TABLE `transaction_purchase_detail`
 (
     `transaction_id`     varchar(36) PRIMARY KEY,
     `purchase_amount`    varchar(255),
@@ -108,7 +118,8 @@ CREATE TABLE IF NOT EXISTS `transaction_purchase_detail`
     `deleted_at`         timestamp default NULL
 );
 
-CREATE TABLE IF NOT EXISTS `transaction_card_detail`
+DROP TABLE IF EXISTS `transaction_card_detail`;
+CREATE TABLE `transaction_card_detail`
 (
     `transaction_id`  varchar(36) PRIMARY KEY,
     `card_number`     varchar(40) NOT NULL,
@@ -120,7 +131,8 @@ CREATE TABLE IF NOT EXISTS `transaction_card_detail`
     `deleted_at`      timestamp default NULL
 );
 
-CREATE TABLE IF NOT EXISTS `institution`
+DROP TABLE IF EXISTS `institution`;
+CREATE TABLE `institution`
 (
     `id`               varchar(36) PRIMARY KEY,
     `name`             varchar(100),
@@ -136,7 +148,8 @@ CREATE TABLE IF NOT EXISTS `institution`
     `deleted_by`       varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `hsm_config`
+DROP TABLE IF EXISTS `hsm_config`;
+CREATE TABLE `hsm_config`
 (
     `institution_id`         varchar(36) NOT NULL,
     `network_id`             varchar(36) NOT NULL,
@@ -162,7 +175,8 @@ CREATE TABLE IF NOT EXISTS `hsm_config`
     `deleted_by`             varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `card_range`
+DROP TABLE IF EXISTS `card_range`;
+CREATE TABLE `card_range`
 (
     `id`                      varchar(36) PRIMARY KEY,
     `range_group_id`          varchar(36),
@@ -185,7 +199,8 @@ CREATE TABLE IF NOT EXISTS `card_range`
     `deleted_by`              varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `card_range_group`
+DROP TABLE IF EXISTS `card_range_group`;
+CREATE TABLE `card_range_group`
 (
     `id`             varchar(36) PRIMARY KEY,
     `institution_id` varchar(36),
@@ -199,7 +214,8 @@ CREATE TABLE IF NOT EXISTS `card_range_group`
     `deleted_by`     varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `feature`
+DROP TABLE IF EXISTS `feature`;
+CREATE TABLE `feature`
 (
     `id`          varchar(36) PRIMARY KEY,
     `entity_type` varchar(20),
@@ -215,7 +231,8 @@ CREATE TABLE IF NOT EXISTS `feature`
     `deleted_by`  varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `cardholder`
+DROP TABLE IF EXISTS `cardholder`;
+CREATE TABLE `cardholder`
 (
     `id`            varchar(36) PRIMARY KEY,
     `mobile_number` varchar(20),
@@ -230,7 +247,8 @@ CREATE TABLE IF NOT EXISTS `cardholder`
     `deleted_by`    varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `card_detail`
+DROP TABLE IF EXISTS `card_detail`;
+CREATE TABLE `card_detail`
 (
     `id`             varchar(36) PRIMARY KEY,
     `cardholder_id`  varchar(36) NOT NULL,
@@ -248,7 +266,8 @@ CREATE TABLE IF NOT EXISTS `card_detail`
     `deleted_by`     varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `network`
+DROP TABLE IF EXISTS `network`;
+CREATE TABLE `network`
 (
     `id`          varchar(36) PRIMARY KEY,
     `code`        tinyint     NOT NULL,
@@ -261,7 +280,8 @@ CREATE TABLE IF NOT EXISTS `network`
     `deleted_by`  varchar(40)
 );
 
-CREATE TABLE IF NOT EXISTS `otp_information`
+DROP TABLE IF EXISTS `otp_information`;
+CREATE TABLE `otp_information`
 (
     `id`          varchar(36) PRIMARY KEY,
     `unique_id`   varchar(36),
@@ -270,7 +290,8 @@ CREATE TABLE IF NOT EXISTS `otp_information`
     `deleted_at`  timestamp default NULL
 );
 
-CREATE TABLE IF NOT EXISTS `otp`
+DROP TABLE IF EXISTS `otp`;
+CREATE TABLE `otp`
 (
     `id`                 varchar(36) PRIMARY KEY,
     `channel`            varchar(36),
@@ -285,7 +306,8 @@ CREATE TABLE IF NOT EXISTS `otp`
     `deleted_at`         timestamp default NULL
 );
 
-CREATE TABLE IF NOT EXISTS `otp_detail`
+DROP TABLE IF EXISTS `otp_detail`;
+CREATE TABLE `otp_detail`
 (
     `id`                  varchar(36),
     `otp_id`              varchar(36) NOT NULL,
