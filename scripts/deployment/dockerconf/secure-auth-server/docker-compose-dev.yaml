@@ -5,7 +5,7 @@ services:
     image: arm64v8/mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: 'secure-auth-db'
+      MYSQL_DATABASE: 'fps_acs'
       MYSQL_USER: 'secure-auth'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
@@ -21,9 +21,9 @@ services:
     image: "secure-auth-server"
     network_mode: "host"
     environment:
-      ACS_MYSQL_HOST: localhost
+      ACS_MYSQL_HOST: 127.0.0.1
       ACS_MYSQL_PORT: 5506
-      ACS_MYSQL_DATABASE: 'secure-auth-db'
+      ACS_MYSQL_DATABASE: 'fps_acs'
       ACS_MYSQL_USER: 'secure-auth'
       ACS_MYSQL_PASSWORD: 'password'
       ENVIRONMENT: 'prod'

@@ -1,6 +1,6 @@
 # use while deployment -Dspring.profiles.active=local This will load the application.properties and the application-local.properties with the latter overriding properties from the first.
 app:
-  port: 7070
+  port: 8080
   hostname: localhost
 
 spring:
@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/fps_acs
     username: root
-    password: Mysql@123
+    password: password
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true
