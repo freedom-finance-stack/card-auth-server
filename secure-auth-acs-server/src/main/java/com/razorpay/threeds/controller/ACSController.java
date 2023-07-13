@@ -16,6 +16,9 @@ import com.razorpay.threeds.exception.checked.ACSDataAccessException;
 import com.razorpay.threeds.service.AuthenticationService;
 
 import io.micrometer.core.annotation.Timed;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController("acsController")
@@ -25,6 +28,19 @@ public class ACSController {
 
     private final AuthenticationService authenticationService;
 
+    @Operation(summary = "Handles Authentication Request generating from 3DS Server")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     @PostMapping(
             value = "/auth-request",
             consumes = MediaType.APPLICATION_JSON_VALUE,
