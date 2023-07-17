@@ -1,7 +1,7 @@
 # Secure Auth Server Documentation
 
-Open API and Swagger is integrated for smooth testing of APIs
-Below are two ways, APIs can be tested. Both of them require ACS Server should be up and running.
+Open API and Swagger is integrated for smooth testing of APIs.
+Below are two ways to test APIs and requires ACS Server should be up and running.
 
 
 ### ACS Secure Auth Server Open API
