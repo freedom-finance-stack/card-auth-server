@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.threeds.exception.ValidationException;
+import com.razorpay.threeds.utils.Util;
 
 public class NotInRule implements Rule<String> {
 
@@ -15,7 +16,7 @@ public class NotInRule implements Rule<String> {
 
     @Override
     public void validate(String value) throws ValidationException {
-        if (value == null || value.isEmpty()) {
+        if (Util.isNullorBlank(value)) {
             return;
         }
         if (excludedValues.contains(value)) {
