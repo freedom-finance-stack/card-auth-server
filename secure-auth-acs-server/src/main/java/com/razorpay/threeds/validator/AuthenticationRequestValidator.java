@@ -650,13 +650,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         return validateDeviceChannel(element, areq) && validateMessageCategory(element, areq);
     }
 
-    // todo - check with Jaydeep but think this function is not required.
     public static boolean validateDeviceChannel(ThreeDSDataElement element, AREQ areq) {
         return Arrays.stream(element.getSupportedChannel())
                 .anyMatch(sc -> sc.getChannel().equals(areq.getDeviceChannel()));
     }
 
-    // todo - check with Jaydeep but think this function is not required.
     public static boolean validateMessageCategory(ThreeDSDataElement element, AREQ areq) {
         return Arrays.stream(element.getSupportedCategory())
                 .anyMatch(sc -> sc.getCategory().equals(areq.getMessageCategory()));
