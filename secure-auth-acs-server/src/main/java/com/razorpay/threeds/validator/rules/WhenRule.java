@@ -35,7 +35,7 @@ public class WhenRule<T> implements Rule<T> {
             for (Rule<T> rule : rules) {
                 rule.validate(value);
             }
-        } else {
+        } else if (elseRules != null) {
             for (Rule<T> rule : elseRules) {
                 rule.validate(value);
             }

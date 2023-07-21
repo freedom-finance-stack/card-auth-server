@@ -9,7 +9,10 @@ public class IsValidRule<T extends Validatable> implements Rule<T> {
 
     @Override
     public void validate(Validatable value) throws ValidationException {
-        if (!Util.isNullorBlank(value) && !value.isValid()) {
+        if (Util.isNullorBlank(value)) {
+            return;
+        }
+        if (!value.isValid()) {
             throw new ValidationException(
                     ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
         }

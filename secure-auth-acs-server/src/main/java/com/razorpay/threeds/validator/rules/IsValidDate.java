@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 
 import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.threeds.exception.ValidationException;
+import com.razorpay.threeds.utils.Util;
 
 public class IsValidDate implements Rule<String> {
 
@@ -16,6 +17,9 @@ public class IsValidDate implements Rule<String> {
 
     @Override
     public void validate(String value) throws ValidationException {
+        if (Util.isNullorBlank(value)) {
+            return;
+        }
         SimpleDateFormat sdf = new SimpleDateFormat(acceptedFormat);
         sdf.setLenient(false);
         try {

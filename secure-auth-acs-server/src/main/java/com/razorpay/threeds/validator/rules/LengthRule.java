@@ -2,6 +2,7 @@ package com.razorpay.threeds.validator.rules;
 
 import com.razorpay.acs.contract.ThreeDSecureErrorCode;
 import com.razorpay.threeds.exception.ValidationException;
+import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.enums.DataLengthType;
 
 public class LengthRule implements Rule<String> {
@@ -16,7 +17,7 @@ public class LengthRule implements Rule<String> {
 
     @Override
     public void validate(String value) throws ValidationException {
-        if (value == null || value.isEmpty()) {
+        if (Util.isNullorBlank(value)) {
             return;
         }
         if (DataLengthType.FIXED.equals(lengthType)) {
