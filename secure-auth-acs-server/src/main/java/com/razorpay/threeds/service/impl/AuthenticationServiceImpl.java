@@ -92,7 +92,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             cardDetailService.validateCardDetails(
                     cardDetailResponse, cardRange.getCardDetailsStore());
 
-            // todo handle INFORMATIONAL and ATTEMPT status
             if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
                 transaction.setChallengeMandated(true);
                 // todo add timer logic for challenge

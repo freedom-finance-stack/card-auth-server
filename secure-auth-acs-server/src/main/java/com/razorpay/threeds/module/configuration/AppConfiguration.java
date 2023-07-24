@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Configuration
+// todo remove ConfigurationProperties
 @ConfigurationProperties
 @Getter
 @Setter

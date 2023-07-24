@@ -1,7 +1,7 @@
 package com.razorpay.acs.dao.enums;
 
 public enum TransactionStatus {
-    CREATED("Y", "Created"), // todo check created should ne mapped to Y/N/U
+    CREATED("U", "Created"), // todo check created should ne mapped to N/U
     SUCCESS("Y", "Authentication Successful"),
     FAILED("N", "Not Authenticated"),
     UNABLE_TO_AUTHENTICATE("U", "Unable to Authentication"),

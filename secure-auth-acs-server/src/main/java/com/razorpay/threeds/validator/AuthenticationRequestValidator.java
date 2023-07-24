@@ -401,6 +401,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                         request.getThreeDSRequestorDecReqInd()),
                         new NotNullRule<>()));
 
+        // todo : revisit this for better code structure
         Rule<ArrayList<LinkedTreeMap<String, Object>>> messageExtensionRule =
                 messageExtensionValueList -> {
                     for (LinkedTreeMap<String, Object> messageExtensionValue :

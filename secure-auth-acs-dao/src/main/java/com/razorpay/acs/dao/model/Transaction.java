@@ -77,7 +77,7 @@ public class Transaction extends BaseEntity<String> {
     private TransactionMerchant transactionMerchant;
 
     @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private TransactionCardDetail transactionCardDetail; // todo lazy loading not working
+    private TransactionCardDetail transactionCardDetail; // todo verify lazy loading not working
 
     @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private TransactionPurchaseDetail transactionPurchaseDetail;
