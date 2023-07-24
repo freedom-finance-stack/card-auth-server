@@ -59,7 +59,7 @@ swagger:
 springdoc:
   show-actuator: true
   paths-to-match: /**
-  packages-to-scan: com.razorpay.threeds
+  packages-to-scan: com.razorpay.ffs.cas.acs
 
 hsm:
   enabled_gateway: "NoOpHSM"

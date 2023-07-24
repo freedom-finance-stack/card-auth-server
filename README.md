@@ -61,7 +61,7 @@ You can start Secure Auth ACS Server following below steps.
     ```
 * Run below command
     ```
-    sh ./scripts/deployment/dev/secure-auth-server-dev-deployment.sh
+    sh ./scripts/deployment/dev/cas-acs-dev-deployment.sh
     ```
 
 ## Documentation

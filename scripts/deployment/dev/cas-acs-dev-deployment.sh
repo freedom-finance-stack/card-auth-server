@@ -9,16 +9,16 @@ mvn clean install -U
 echo "Project Compilation should be Success!!"
 
 echo "Creating docker images for Card Auth Server ACS & Mysql Server(used by Card Auth Server ACS)"
-docker-compose -f ./scripts/deployment/dockerconf/secure-auth-server/docker-compose-dev.yaml up -d
+docker-compose -f ./scripts/deployment/dockerconf/card-auth-server-acs/docker-compose-dev.yaml up -d
 
 echo "Sleeping for 10 seconds before checking if all dockers are up.."
 sleep 10
 
 echo "Creating default schema in mysql db.."
-mysql -h 127.0.0.1 -P 5506 -u secure-auth -ppassword fps_acs < ./secure-auth-acs-dao/src/main/resources/sql/DDL.sql
+mysql -h 127.0.0.1 -P 5506 -u cas-acs-user -ppassword fps_acs < ./card-auth-server-dao/src/main/resources/sql/DDL.sql
 
 echo "Inserting default values in newly created schema"
-mysql -h 127.0.0.1 -P 5506 -u secure-auth -ppassword fps_acs < ./scripts/deployment/dev/dev-database-dml.sql
+mysql -h 127.0.0.1 -P 5506 -u cas-acs-user -ppassword fps_acs < ./scripts/deployment/dev/dev-database-dml.sql
 
 echo "Checking if Card Auth Server ACS is UP and running.."
 
@@ -29,7 +29,7 @@ SERVER_URL="http://127.0.0.1:8080/actuator/health"
 while [ $(date +%s) -lt $ENDTIME ]; do
     STATUS=$(curl -s -o /dev/null -w "%{http_code}" $SERVER_URL)
     if [ $STATUS -eq 200 ]; then
-        echo "Server is up at http://127.0.0.1:8080 !!"
+        echo "Server is up at http://127.0.0.1:8080/swagger-ui/index.html !!"
         break
     fi
     sleep 1

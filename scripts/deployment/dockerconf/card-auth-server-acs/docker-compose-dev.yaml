@@ -1,34 +1,34 @@
 version: "3"
 
 services:
-  secure-auth-mysql:
+  cas-acs-mysql:
     image: arm64v8/mysql:8.0
     restart: always
     environment:
       MYSQL_DATABASE: 'fps_acs'
-      MYSQL_USER: 'secure-auth'
+      MYSQL_USER: 'cas-acs-user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
       - '5506:3306'
     expose:
       - '5506'
-    container_name: 'secure-auth-mysql'
-  secure-auth-server:
+    container_name: 'cas-acs-mysql'
+  cas-acs-server:
     build:
       context: ../../../..
-      dockerfile: /Dockerfile
-    image: "secure-auth-server"
+      dockerfile: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
+    image: 'cas-acs-server'
     network_mode: "host"
     environment:
       ACS_MYSQL_HOST: 127.0.0.1
       ACS_MYSQL_PORT: 5506
       ACS_MYSQL_DATABASE: 'fps_acs'
-      ACS_MYSQL_USER: 'secure-auth'
+      ACS_MYSQL_USER: 'cas-acs-user'
       ACS_MYSQL_PASSWORD: 'password'
       ENVIRONMENT: 'prod'
     ports:
       - '8080:8080'
     depends_on:
-      - secure-auth-mysql
-    container_name: 'secure-auth-server'
+      - cas-acs-mysql
+    container_name: 'cas-acs-server'

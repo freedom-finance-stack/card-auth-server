@@ -3,8 +3,8 @@ FROM alpine:3.14
 
 # Docker Image Maintainer Team
 MAINTAINER labs-team@razorpay.com
-ENV CONTAINER_USER cas-acs-user
-ENV CONTAINER_USERGROUP cas-acs-usergroup
+ENV CONTAINER_USER cas-acs
+ENV CONTAINER_USERGROUP cas-acs
 ENV CURRENT_DIR_PATH scripts/deployment/dockerconf/card-auth-server-acs
 ARG CAS_ACS_SERVER_PORT=8080
 ENV CARD_AUTH_ACS_SERVER_PORT=$CAS_ACS_SERVER_PORT
