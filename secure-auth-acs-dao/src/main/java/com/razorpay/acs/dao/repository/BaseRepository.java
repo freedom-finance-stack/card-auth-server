@@ -1,13 +1,12 @@
 package com.razorpay.acs.dao.repository;
 
-import javax.transaction.Transactional;
-
+import com.razorpay.acs.dao.model.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import com.razorpay.acs.dao.model.BaseEntity;
+import javax.transaction.Transactional;
 
 @NoRepositoryBean
 public interface BaseRepository<T extends BaseEntity, ID> extends JpaRepository<T, ID> {

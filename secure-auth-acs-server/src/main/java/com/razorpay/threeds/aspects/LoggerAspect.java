@@ -1,28 +1,24 @@
 package com.razorpay.threeds.aspects;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.CodeSignature;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Aspect
@@ -36,13 +32,14 @@ public class LoggerAspect {
     @Value("${logger.sizeLimit:10000}")
     private int logSizeLimit;
 
-    private static final String PACKAGE_NAME = "execution(* com.example.demo..*(..))";
-
     /***
      * This contains all the packages for which we need to generate logs at DEBUG level
      */
     private static final String WHITELISTED_PACKAGES_DEBUG =
-            "(" + "execution(* com.razorpay.acs.dao..*(..))" + ")";
+            "(" + "execution(* com.razorpay.acs.dao.repository..*(..)) || "
+                    + "execution(* com.razorpay.threeds.validator..*(..)) || "
+                    + "execution(* com.razorpay.threeds.hsm..*(..))"
+                    + ")";
 
     private static final String BLACKLISTED_PACKAGES_DEBUG =
             "!("
@@ -54,15 +51,12 @@ public class LoggerAspect {
      */
     private static final String WHITELISTED_PACKAGES_INFO =
             "("
-                    + "execution(* com.example.demo.controller..*(..)) || "
-                    + "execution(* com.example.demo.service..*(..))"
+                    + "execution(* com.razorpay.threeds.service..*(..)) || "
+                    + "execution(* com.razorpay.threeds.controller..*(..))"
                     + ")";
 
     private static final String BLACKLISTED_PACKAGES_INFO =
-            "!("
-                    + "execution(* com.example.demo.controller.filters..*(..)) || "
-                    + "execution(* com.example.demo.controller.params..*(..))"
-                    + ")";
+            "!(execution(* com.razorpay.threeds.service.authvalue..*(..)))";
 
     private static final String INFO_POINTCUTS =
             WHITELISTED_PACKAGES_INFO + " && " + BLACKLISTED_PACKAGES_INFO;
@@ -98,18 +92,11 @@ public class LoggerAspect {
     private void logMethodEntry(final JoinPoint joinPoint, final LogLevel level) {
 
         final Signature signature = joinPoint.getSignature();
-        RequestMapping mapping =
-                ((MethodSignature) signature).getMethod().getAnnotation(RequestMapping.class);
+
         final String[] methodParameterNames = ((CodeSignature) signature).getParameterNames();
-        StringBuilder logStr = new StringBuilder("ENTERED: ");
-        if (mapping != null) {
-            logStr.append("PATH= ").append(mapping.path());
-            logStr.append("METHOD= ").append(Arrays.toString(mapping.method()));
-        }
-        logStr.append("METHOD_NAME={}; PARAMETER={};");
         Log(
                 level,
-                logStr.toString(),
+                "ENTERED: METHOD_NAME={}; PARAMETER={};",
                 getClassNameWithMethodName(signature),
                 getParameterNamesWithTheirValues(methodParameterNames, joinPoint.getArgs()));
     }
@@ -150,7 +137,6 @@ public class LoggerAspect {
     }
 
     private String getClassNameWithMethodName(final Signature signature) {
-
         return signature.getDeclaringTypeName() + "." + signature.getName();
     }
 
