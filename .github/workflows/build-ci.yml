@@ -63,12 +63,12 @@ jobs:
 #            echo "Branch is : $BRANCH & tag is: $IMAGE_TAG";
 #            echo ::set-output name=image_tag::$IMAGE_TAG
 
-#      - name: Setup Docker Buildx
-#        id: buildx
-#        uses: docker/setup-buildx-action@v2
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           tags: c.rzp.io/razorpay/secure-auth-server:${{ github.sha }}
           context: ../../../..
