@@ -54,7 +54,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v3
         with:
-          tags: c.rzp.io/${REPO_NAME}:${{ github.sha }}
+          tags: c.rzp.io/razorpay/secure-auth-server:${{ github.sha }}
           file: ./scripts/deployment/dockerconf/secure-auth-server/Dockerfile
           push: true
           secrets: |
