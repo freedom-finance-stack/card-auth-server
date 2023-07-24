@@ -35,6 +35,7 @@ ENV ACS_SERVER_LOG_DIRECTORY ${GLOBAL_LOG_DIRECTORY}/acs-server-logs
 ENV ACS_SERVER_SUPERVISOR_LOG_DIRECTORY ${GLOBAL_LOG_DIRECTORY}/supervisor
 ENV ACS_SERVER_BASE_DIRECTORY /opt/secure-auth/acs-server
 ENV ACS_SERVER_BIN_DIRECTORY ${ACS_SERVER_BASE_DIRECTORY}/bin
+
 # copying jar to bin
 COPY secure-auth-acs-server/target/secure-auth-acs-server.jar $ACS_SERVER_BIN_DIRECTORY/jar/secure-auth-acs-server.jar
 
