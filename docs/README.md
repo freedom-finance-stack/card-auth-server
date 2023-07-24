@@ -1,11 +1,11 @@
-# Secure Auth Server Documentation
+# Card Auth Server Documentation
 
 Open API and Swagger is integrated for smooth testing of APIs.
 Below are two ways to test APIs and requires ACS Server should be up and running.
 
 
-### ACS Secure Auth Server Open API
+### Card Auth Server ACS Open API
 Check http://{serverURL}:{serverPort}/v3/api-docs (eg. http://127.0.0.1:8080/v3/api-docs)
 
-### ACS Secure Auth Server Swagger
+### Card Auth Server ACS Swagger
 Check http://{serverURL}:{serverPort}/swagger-ui/index.html (eg. http://127.0.0.1:8080/swagger-ui/index.html)

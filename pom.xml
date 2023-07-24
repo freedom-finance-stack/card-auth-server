@@ -6,21 +6,21 @@
     <!-- ========================================================================== -->
     <!-- THIS POM DEFINITIONS -->
     <!-- ========================================================================== -->
-    <groupId>com.razorpay</groupId>
+    <groupId>com.razorpay.ffs</groupId>
     <artifactId>secure-auth-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Secure Auth Server</name>
-    <description>Open Source project for ACS and IAS</description>
+    <name>Card Authentication Server</name>
+    <description>Card Authentication Server for ACS and IAS</description>
     <packaging>pom</packaging>
 
     <!-- ========================================================================== -->
     <!-- MODULES -->
     <!-- ========================================================================== -->
     <modules>
-        <module>secure-auth-contract</module>
-        <module>secure-auth-acs-dao</module>
-        <module>secure-auth-acs-server</module>
-        <module>secure-auth-admin-service</module>
+        <module>card-auth-server-contract</module>
+        <module>card-auth-server-dao</module>
+        <module>card-auth-server-acs</module>
+        <module>card-auth-server-admin</module>
     </modules>
 
     <properties>

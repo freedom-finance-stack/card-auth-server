@@ -1,0 +1,71 @@
+# use while deployment -Dspring.profiles.active=local This will load the application.properties and the application-local.properties with the latter overriding properties from the first.
+app:
+  port: 8080
+  hostname: https://fps_acs/
+  acs:
+    referenceNumber: 12345678901234567890
+    operatorId:
+      visa: 123456789012345
+      mastercard: 123456789012345
+      amex: 123456789012345
+
+spring:
+  application:
+    name: Card Auth Server ACS
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/fps_acs
+    username: root
+    password: Mysql@123
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    showSql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  config:
+    import: "optional:file:config/monitoring/monitor-properties.yaml"
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: [ "health","prometheus", "metrics", "info" ]
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true         # needs security review, secure end point
+    prometheus:
+      enabled: true
+
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.springframework: INFO
+    com.razorpay.threeds: INFO
+
+
+swagger:
+  contact-name: Razorpay
+  contact-mail: support@razorpay.com
+  app-name: Card Auth Server ACS
+  app-description: "Card Auth Server ACS"
+  app-version: 1.0.0
+  app-license-url: https://www.apache.org/licenses/LICENSE-2.0.html
+  app-license: Apache 2.0
+
+springdoc:
+  show-actuator: true
+  paths-to-match: /**
+  packages-to-scan: com.razorpay.threeds
+
+hsm:
+  enabled_gateway: "NoOpHSM"
+  gateway:
+    luna:
+      ip: "127.0.0.1"
+      port: 8080
+      timeout: 1
+
