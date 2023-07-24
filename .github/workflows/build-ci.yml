@@ -47,11 +47,19 @@ jobs:
           username: ${{ secrets.HARBOR_DOCKER_USERNAME }}
           password: ${{ secrets.HARBOR_DOCKER_PASSWORD }}
 
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.8.6
+
+      - name: Clean, Compile, Test and  Package
+        run: mvn clean install
+
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and Push
+      - name: Push
         uses: docker/build-push-action@v3
         with:
           tags: c.rzp.io/razorpay/secure-auth-server:${{ github.sha }}
