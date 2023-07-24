@@ -51,17 +51,17 @@ jobs:
           username: ${{ secrets.HARBOR_DOCKER_USERNAME }}
           password: ${{ secrets.HARBOR_DOCKER_PASSWORD }}
 
-      - name: image tag
-        id: image_tag
-        run: |
-            BRANCH="$(echo ${GITHUB_REF##*/})";
-            IMAGE_TAG=${{ github.sha }};
-            echo "commit hash: $IMAGE_TAG";
-            if [ "$BRANCH" == "master" ]; then
-                    IMAGE_TAG="latest";
-            fi
-            echo "Branch is : $BRANCH & tag is: $IMAGE_TAG";
-            echo ::set-output name=image_tag::$IMAGE_TAG
+#      - name: image tag
+#        id: image_tag
+#        run: |
+#            BRANCH="$(echo ${GITHUB_REF##*/})";
+#            IMAGE_TAG=${{ github.sha }};
+#            echo "commit hash: $IMAGE_TAG";
+#            if [ "$BRANCH" == "master" ]; then
+#                    IMAGE_TAG="latest";
+#            fi
+#            echo "Branch is : $BRANCH & tag is: $IMAGE_TAG";
+#            echo ::set-output name=image_tag::$IMAGE_TAG
 
       - name: Setup Docker Buildx
         id: buildx
@@ -70,7 +70,7 @@ jobs:
       - name: Push
         uses: docker/build-push-action@v3
         with:
-          tags: c.rzp.io/razorpay/secure-auth-server:${{ IMAGE_TAG }}
+          tags: c.rzp.io/razorpay/secure-auth-server:${{ github.sha }}
           file: ./scripts/deployment/dockerconf/secure-auth-server/Dockerfile
           push: true
           secrets: |
