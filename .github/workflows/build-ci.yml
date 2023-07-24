@@ -19,6 +19,7 @@ jobs:
           echo "Don't cancel old workflow"
 
   build-image:
+#    change to ubuntu and remove maven installation
     runs-on: [self-hosted]
     needs: [cancel]
     continue-on-error: false
@@ -71,7 +72,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           tags: c.rzp.io/razorpay/secure-auth-server:${{ github.sha }}
-          context: ../../../..
+          context: .
           file: ./scripts/deployment/dockerconf/secure-auth-server/Dockerfile
           push: true
           secrets: |
