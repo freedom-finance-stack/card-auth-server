@@ -52,18 +52,6 @@ jobs:
           username: ${{ secrets.HARBOR_DOCKER_USERNAME }}
           password: ${{ secrets.HARBOR_DOCKER_PASSWORD }}
 
-#      - name: image tag
-#        id: image_tag
-#        run: |
-#            BRANCH="$(echo ${GITHUB_REF##*/})";
-#            IMAGE_TAG=${{ github.sha }};
-#            echo "commit hash: $IMAGE_TAG";
-#            if [ "$BRANCH" == "master" ]; then
-#                    IMAGE_TAG="latest";
-#            fi
-#            echo "Branch is : $BRANCH & tag is: $IMAGE_TAG";
-#            echo ::set-output name=image_tag::$IMAGE_TAG
-
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2

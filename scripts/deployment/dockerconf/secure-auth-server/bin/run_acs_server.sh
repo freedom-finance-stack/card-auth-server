@@ -23,7 +23,6 @@ JAVA_OPTS="$JAVA_EXTRA_OPTS $JAVA_GC_OPTS -Djava.net.preferIPv4Stack=true
           -Dsun.jnu.encoding=UTF-8
           -Dfile.encoding=UTF-8
           -Duser.timezone=UTC
-          -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE
           --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
 
 # Starting Secure Auth ACS Server Service
