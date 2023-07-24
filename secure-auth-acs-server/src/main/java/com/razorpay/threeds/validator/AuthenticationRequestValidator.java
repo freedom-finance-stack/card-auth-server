@@ -1,5 +1,11 @@
 package com.razorpay.threeds.validator;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.google.gson.JsonParser;
 import com.google.gson.internal.LinkedTreeMap;
 import com.razorpay.acs.contract.AREQ;
@@ -12,12 +18,8 @@ import com.razorpay.threeds.utils.Util;
 import com.razorpay.threeds.validator.enums.DataLengthType;
 import com.razorpay.threeds.validator.enums.ThreeDSDataElement;
 import com.razorpay.threeds.validator.rules.*;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component(value = "authenticationRequestValidator")

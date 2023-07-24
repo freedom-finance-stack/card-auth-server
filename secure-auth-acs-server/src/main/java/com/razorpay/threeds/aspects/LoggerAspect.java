@@ -1,7 +1,11 @@
 package com.razorpay.threeds.aspects;
 
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -14,11 +18,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Aspect
@@ -36,7 +37,8 @@ public class LoggerAspect {
      * This contains all the packages for which we need to generate logs at DEBUG level
      */
     private static final String WHITELISTED_PACKAGES_DEBUG =
-            "(" + "execution(* com.razorpay.acs.dao.repository..*(..)) || "
+            "("
+                    + "execution(* com.razorpay.acs.dao.repository..*(..)) || "
                     + "execution(* com.razorpay.threeds.validator..*(..)) || "
                     + "execution(* com.razorpay.threeds.hsm..*(..))"
                     + ")";
