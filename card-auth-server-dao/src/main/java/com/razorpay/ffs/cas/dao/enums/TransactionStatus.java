@@ -1,7 +1,10 @@
 package com.razorpay.ffs.cas.dao.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum TransactionStatus {
-    CREATED("U", "Created"), // todo check created should ne mapped to N/U
+    CREATED("U", "Created"),
     SUCCESS("Y", "Authentication Successful"),
     FAILED("N", "Not Authenticated"),
     UNABLE_TO_AUTHENTICATE("U", "Unable to Authentication"),
@@ -11,19 +14,12 @@ public enum TransactionStatus {
     REJECTED("R", "Authentication Rejected"),
     INFORMATIONAL("I", "Informational Only");
 
-    private String status;
-    private String description;
+    private final String status;
+    private final String description;
 
-    private TransactionStatus(String status, String description) {
+    TransactionStatus(String status, String description) {
         this.status = status;
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getStatus() {
-        return status;
-    }
 }

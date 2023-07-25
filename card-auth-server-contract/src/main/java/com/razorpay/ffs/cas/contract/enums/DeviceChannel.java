@@ -10,8 +10,8 @@ public enum DeviceChannel {
     BRW("02", "Browser"),
     TRI("03", "3DS Requestor Initiated (3RI)");
 
-    private String channel;
-    private String desc;
+    private final String channel;
+    private final String desc;
 
     public static DeviceChannel getDeviceChannel(String channel) {
         for (DeviceChannel deviceCategory : DeviceChannel.values()) {

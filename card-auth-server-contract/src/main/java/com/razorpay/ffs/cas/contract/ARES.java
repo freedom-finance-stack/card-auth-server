@@ -6,8 +6,10 @@ import com.razorpay.ffs.cas.contract.constants.EMVCOConstant;
 import com.razorpay.ffs.cas.contract.enums.ACSRenderingType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ARES extends ThreeDSObject {
 
     // All Required Fields
@@ -47,7 +49,9 @@ public class ARES extends ThreeDSObject {
 
     private String acsURL;
 
-    private String authenticationMethod; // todo check expected behaviour and authenticationType
+    private String authenticationMethod;
+
+    private String authenticationType; // todo check in challenge flow, if this field is required
 
     private String authenticationValue;
 

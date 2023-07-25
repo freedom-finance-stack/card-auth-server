@@ -1,5 +1,10 @@
 package com.razorpay.ffs.cas.contract.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum TransactionStatusReason {
     CARD_AUTHENTICATION_FAILED("01", "Card authentication failed"),
     UNKNOWN_DEVICE("02", "Unknown Device"),
@@ -28,21 +33,8 @@ public enum TransactionStatusReason {
     AUTHENTICATION_ATTEMPTED_BUT_NOT_PERFORMED_BY_CARDHOLDER(
             "26", "Authentication attempted but not performed by the cardholder");
 
-    private String code;
-    private String desc;
-
-    private TransactionStatusReason(String code, String desc) {
-        this.code = code;
-        this.desc = desc;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
+    private final String code;
+    private final String desc;
 
     public static TransactionStatusReason getTransactionStatusReason(String type) {
         for (TransactionStatusReason statusReason : TransactionStatusReason.values()) {

@@ -1,5 +1,10 @@
 package com.razorpay.ffs.cas.contract.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum ThreeRIInd {
     RECURRING_TRANSACTION("01", "Recurring transaction"),
     INSTALMENT_TRANSACTION("02", "Instalment transaction"),
@@ -13,19 +18,7 @@ public enum ThreeRIInd {
     WHITELIST_STATUS_CHECK("10", "Whitelist status check"),
     OTHER_PAYMENT("11", "Other payment");
 
-    private String value;
-    private String desc;
+    private final String value;
+    private final String desc;
 
-    private ThreeRIInd(String value, String desc) {
-        this.value = value;
-        this.desc = desc;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
 }

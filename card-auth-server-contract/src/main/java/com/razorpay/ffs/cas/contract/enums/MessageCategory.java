@@ -1,5 +1,10 @@
 package com.razorpay.ffs.cas.contract.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum MessageCategory {
     PA("01", "PAYMENT_AUTHENTICATION"),
     NPA("02", "NON_PAYMENT_AUTHENTICATION"),
@@ -19,21 +24,9 @@ public enum MessageCategory {
     DI("DI", "Domestic InApp transaction"),
     II("II", "International InApp transaction");
 
-    private String category;
-    private String desc;
+    private final String category;
+    private final String desc;
 
-    private MessageCategory(String category, String desc) {
-        this.category = category;
-        this.desc = desc;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
 
     public static String[] getCategoryValues() {
         String[] categoryValues = new String[MessageCategory.values().length];

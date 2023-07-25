@@ -149,9 +149,7 @@ public class CardholderAccountInformation implements Validatable {
         }
 
         if (this.suspiciousAccActivity != null) {
-            if (this.suspiciousAccActivity.length() > 2) {
-                return false;
-            }
+            return this.suspiciousAccActivity.length() <= 2;
         }
 
         return true;
@@ -195,26 +193,19 @@ public class CardholderAccountInformation implements Validatable {
         }
 
         if (this.suspiciousAccActivity != null) {
-            if (!EMVCOConstant.suspiciousAccActivityList.contains(suspiciousAccActivity)) {
-                return false;
-            }
+            return EMVCOConstant.suspiciousAccActivityList.contains(suspiciousAccActivity);
         }
 
         return true;
     }
 
     public boolean isEmpty() {
-
-        if (this.chAccAgeInd == null
+        return this.chAccAgeInd == null
                 && this.chAccChangeInd == null
                 && this.chAccPwChangeInd == null
                 && this.paymentAccInd == null
                 && this.shipAddressUsageInd == null
                 && this.shipNameIndicator == null
-                && this.suspiciousAccActivity == null) {
-            return true;
-        }
-
-        return false;
+                && this.suspiciousAccActivity == null;
     }
 }

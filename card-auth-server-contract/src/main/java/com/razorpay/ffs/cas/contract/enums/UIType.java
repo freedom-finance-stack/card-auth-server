@@ -1,5 +1,10 @@
 package com.razorpay.ffs.cas.contract.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum UIType {
     TEXT("01"),
     SINGLE_SELECT("02"),
@@ -7,19 +12,7 @@ public enum UIType {
     OOB("04"),
     HTML_OTHER("05");
 
-    private String type;
-
-    private UIType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+    private final String type;
 
     public static UIType getUIType(String type) {
         for (UIType uiType : UIType.values()) {

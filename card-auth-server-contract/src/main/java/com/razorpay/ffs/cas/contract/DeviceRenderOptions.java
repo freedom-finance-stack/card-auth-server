@@ -20,11 +20,7 @@ public class DeviceRenderOptions implements Validatable {
             return false;
         }
 
-        if (this.sdkUiType != null && this.sdkUiType.length == 0) {
-            return false;
-        }
-
-        return true;
+        return this.sdkUiType.length != 0;
     }
 
     public boolean isValid() {

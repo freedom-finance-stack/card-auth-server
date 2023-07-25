@@ -5,7 +5,7 @@ public enum DeviceInterface {
     HTML("02"),
     BOTH("03"); // Removed from new specification
 
-    private String value;
+    private final String value;
 
     private DeviceInterface(String value) {
         this.value = value;
