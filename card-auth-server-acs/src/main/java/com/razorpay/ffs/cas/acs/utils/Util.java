@@ -22,6 +22,7 @@ import static com.razorpay.ffs.cas.acs.constant.InternalConstants.PAD_RIGHT;
 @Slf4j
 public class Util {
     public static final String PADDED_SYMBOL_X = "X";
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
     public static boolean isNullorBlank(Object object) {
         if (null == object) {
@@ -37,8 +38,6 @@ public class Util {
     }
 
     public static String toJson(Object object) {
-        // todo create GSON bean
-        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         String strJson = gson.toJson(object);
         return strJson;
     }
