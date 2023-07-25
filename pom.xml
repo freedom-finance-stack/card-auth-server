@@ -143,7 +143,7 @@
                 <version>${spotless.version}</version>
                 <configuration>
                     <!-- optional: limit format enforcement to just the files changed by this feature branch -->
-<!--                    <ratchetFrom>origin/master</ratchetFrom>-->
+                    <!-- <ratchetFrom>origin/master</ratchetFrom> -->
                     <formats>
                         <format>
                             <includes>
