@@ -60,7 +60,7 @@ jobs:
         with:
           tags: c.rzp.io/razorpay/secure-auth-server:${{ github.sha }}
           context: .
-          file: ./scripts/deployment/dockerconf/secure-auth-server/Dockerfile
+          file: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
           push: true
           secrets: |
             git_token=${{ secrets.GIT_TOKEN }}
