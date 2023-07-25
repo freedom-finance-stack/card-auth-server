@@ -13,9 +13,9 @@ spring:
   application:
     name: Card Auth Server ACS
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/cas_db
-    username: root
-    password: Mysql@123
+    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_db}
+    username: ${ACS_MYSQL_USER:root}
+    password: ${ACS_MYSQL_PASSWORD:Mysql@123}
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true
