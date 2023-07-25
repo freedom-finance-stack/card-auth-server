@@ -1,6 +1,6 @@
-# Secure Auth Server
+# Card Auth Server
 
-Secure Auth Server(Freedom Finance Stack Initiative) is an open source project for Access Control Server.
+Card Auth Server(Freedom Finance Stack Initiative) is an open source project for Access Control Server.
 
 ## Features
 
@@ -11,12 +11,12 @@ Secure Auth Server(Freedom Finance Stack Initiative) is an open source project f
 
 \... and more!
 
-To learn more about Secure Auth Server’s features and capabilities, see our [product page](https://razorpay.com/).
+To learn more about Card Auth Server’s features and capabilities, see our [product page](https://razorpay.com/).
 
 ## Get started
-The simplest way to set up Secure Auth Server is to create a managed deployment with Dockerfile provided and deploy on VM or k8s.
+The simplest way to set up Card Auth Server is to create a managed deployment with Dockerfile provided and deploy on VM or k8s.
 
-### Run Secure Server Auth Locally
+### Run Card Server Auth Locally
 
 #### Prerequiste
 We need to install below libraries
@@ -26,16 +26,16 @@ We need to install below libraries
 * Java IDE(Intellij/Eclipse etc)
 
 #### Using Docker Compose Dev
-Docker Compose dev is located [here](https://github.com/razorpay/secure-auth-server/blob/master/scripts/deployment/dockerconf/secure-auth-server/docker-compose-dev.yaml).
+Docker Compose dev is located [here](https://github.com/razorpay/card-auth-server/blob/master/scripts/deployment/dockerconf/card-auth-server-acs/docker-compose-dev.yaml).
 
-You can start Secure Auth ACS Server following below steps.
-* Checkout Secure Auth Server Repo
+You can start Card Auth Server ACS following below steps.
+* Checkout Card Auth Server Repo
     ```
-    git checkout git@github.com:razorpay/secure-auth-server.git
+    git checkout git@github.com:razorpay/card-auth-server.git
     ```
-* Go to Secure Auth Server Repo directory
+* Go to Card Auth Server Repo directory
     ``` 
-    cd secure-auth-server
+    cd card-auth-server
     ```
 * Create java jar binaries via
     ```
@@ -43,7 +43,7 @@ You can start Secure Auth ACS Server following below steps.
     ```
 * Go to docker compose file directory
     ```
-    cd ./scripts/deployment/dockerconf/secure-auth-server/
+    cd ./scripts/deployment/dockerconf/card-auth-server/
     ```
 * Run below command
     ```
@@ -55,13 +55,13 @@ You can start Secure Auth ACS Server following below steps.
     ```
 
 #### Using Built-In Automated Shell Script
-* Go to Secure Auth Server Repo directory
+* Go to Card Auth Server Repo directory
     ``` 
-    cd secure-auth-server
+    cd card-auth-server
     ```
 * Run below command
     ```
-    sh ./scripts/deployment/dev/secure-auth-server-dev-deployment.sh
+    sh ./scripts/deployment/dev/cas-acs-dev-deployment.sh
     ```
 
 ## Documentation

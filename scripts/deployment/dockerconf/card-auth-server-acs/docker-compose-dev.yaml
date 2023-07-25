@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  cas-acs-mysql:
+    image: arm64v8/mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'cas_db'
+      MYSQL_USER: 'cas-acs-user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '5506:3306'
+    expose:
+      - '5506'
+    container_name: 'cas-acs-mysql'
+  cas-acs-server:
+    build:
+      context: ../../../..
+      dockerfile: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
+    image: 'cas-acs-server'
+    network_mode: "host"
+    environment:
+      ACS_MYSQL_HOST: 127.0.0.1
+      ACS_MYSQL_PORT: 5506
+      ACS_MYSQL_DATABASE: 'cas_db'
+      ACS_MYSQL_USER: 'cas-acs-user'
+      ACS_MYSQL_PASSWORD: 'password'
+      ENVIRONMENT: 'prod'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - cas-acs-mysql
+    container_name: 'cas-acs-server'

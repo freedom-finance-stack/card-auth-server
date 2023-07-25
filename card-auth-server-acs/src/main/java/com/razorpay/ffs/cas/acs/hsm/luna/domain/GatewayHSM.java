@@ -1,0 +1,79 @@
+package com.razorpay.ffs.cas.acs.hsm.luna.domain;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
+import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
+import org.springframework.integration.ip.tcp.connection.AbstractClientConnectionFactory;
+
+public class GatewayHSM {
+
+    private AbstractClientConnectionFactory tcpClientConnectionFactory;
+
+    private TcpSendingMessageHandler tcpSendingMessageHandler;
+
+    private TcpReceivingChannelAdapter tcpReceivingChannelAdapter;
+
+    private boolean isRunning;
+
+    private volatile boolean isConnected = false;
+
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+    private final Lock r = rwl.readLock();
+    private final Lock w = rwl.writeLock();
+
+    public boolean isConnected() {
+        r.lock();
+        try {
+            return isConnected;
+        } finally {
+            r.unlock();
+        }
+    }
+
+    public void setConnected(boolean isConnected) {
+        w.lock();
+        try {
+            this.isConnected = isConnected;
+        } finally {
+            w.unlock();
+        }
+    }
+
+    public GatewayHSM(
+            AbstractClientConnectionFactory clientConnectionFactory,
+            TcpSendingMessageHandler tcpSendingMessageHandler,
+            TcpReceivingChannelAdapter tcpReceivingChannelAdapter) {
+        super();
+        this.tcpClientConnectionFactory = clientConnectionFactory;
+        this.tcpSendingMessageHandler = tcpSendingMessageHandler;
+        this.tcpReceivingChannelAdapter = tcpReceivingChannelAdapter;
+    }
+
+    public GatewayHSM() {
+        isRunning = false;
+        isConnected = false;
+    }
+
+    public AbstractClientConnectionFactory getClientConnectionFactory() {
+        return tcpClientConnectionFactory;
+    }
+
+    public void setClientConnectionFactory(
+            AbstractClientConnectionFactory clientConnectionFactory) {
+        this.tcpClientConnectionFactory = clientConnectionFactory;
+    }
+
+    public AbstractClientConnectionFactory getTcpClientConnectionFactory() {
+        return tcpClientConnectionFactory;
+    }
+
+    public TcpSendingMessageHandler getTcpSendingMessageHandler() {
+        return tcpSendingMessageHandler;
+    }
+
+    public TcpReceivingChannelAdapter getTcpReceivingChannelAdapter() {
+        return tcpReceivingChannelAdapter;
+    }
+}

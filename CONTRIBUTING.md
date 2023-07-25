@@ -1,8 +1,8 @@
-# Contributing to Secure Auth Server
+# Contributing to Card Auth Server
 
-Secure Auth Server(ACS Server & Admin Server) is a free and open project, and we love to receive contributions from our community — you!
+Card Auth Server(ACS & Admin) is a free and open project, and we love to receive contributions from our community — you!
 There are many ways to contribute, from writing tutorials, improving the documentation, submitting bug reports 
-and feature requests or writing code which can be incorporated into Secure Auth Server itself.
+and feature requests or writing code which can be incorporated into Card Auth Server itself.
 
 If you are excited and want to make contributions, sign up for the 
 [Freedom Finance Stack Contributor Program](https://razorpay.com/).
@@ -12,12 +12,12 @@ If you are excited and want to make contributions, sign up for the
 ## Feature Requests
 
 ## Contributing code and documentation changes
-If you would like to contribute a new feature or a bug fix to Secure Auth Server, please discuss your idea first on the GitHub issue.
+If you would like to contribute a new feature or a bug fix to Card Auth Server, please discuss your idea first on the GitHub issue.
 
-The process for contributing to Secure Auth Server can be found below.
+The process for contributing to Card Auth Server can be found below.
 
 ### Fork and clone the repository
-You will need to fork the main Secure Auth Server code repository and clone it to your local machine. 
+You will need to fork the main Card Auth Server code repository and clone it to your local machine. 
 See [github help page](https://docs.github.com/en/get-started/quickstart/fork-a-repo) for help.
 
 ### Tips for code changes
@@ -38,7 +38,7 @@ Once your changes and tests are ready to submit for review:
 3. Rebase your changes
 4. Submit a pull request
 
-### Contributing to the Secure Auth Server codebase
+### Contributing to the Card Auth Server codebase
 
 #### Prerequisites
 
@@ -53,7 +53,7 @@ Alternative manual steps for IntelliJ.
 
 ####  Java Language Formatting Guidelines
 
-Java files in the Secure Auth Server codebase are automatically formatted using the [Spotless Maven plugin](https://github.com/diffplug/spotless/tree/main/plugin-maven). The formatting check is run automatically via the precommit task, but it can be run explicitly with:
+Java files in the Card Auth Server codebase are automatically formatted using the [Spotless Maven plugin](https://github.com/diffplug/spotless/tree/main/plugin-maven). The formatting check is run automatically via the precommit task, but it can be run explicitly with:
 
 ```
 mvn spotless:apply

@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  cas-acs-server:
+    build:
+      context: ../../../..
+      dockerfile: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
+    image: 'cas-acs-server'
+    environment:
+      ENVIRONMENT: 'prod'
+    ports:
+      - '8080:8080'
+      - '7081:7081'
+    container_name: 'cas-acs-server'

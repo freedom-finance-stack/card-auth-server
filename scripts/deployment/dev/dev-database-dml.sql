@@ -1,4 +1,4 @@
-USE `fps_acs`;
+USE `cas_db`;
 
 LOCK TABLES `card_detail` WRITE;
 INSERT INTO `card_detail` VALUES ('1','1','R1','I1','4016000000000018','0525',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
