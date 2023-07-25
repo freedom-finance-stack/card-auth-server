@@ -20,5 +20,4 @@ public enum ThreeRIInd {
 
     private final String value;
     private final String desc;
-
 }

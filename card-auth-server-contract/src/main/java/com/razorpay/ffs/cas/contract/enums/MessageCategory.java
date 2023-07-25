@@ -27,7 +27,6 @@ public enum MessageCategory {
     private final String category;
     private final String desc;
 
-
     public static String[] getCategoryValues() {
         String[] categoryValues = new String[MessageCategory.values().length];
         int i = 0;

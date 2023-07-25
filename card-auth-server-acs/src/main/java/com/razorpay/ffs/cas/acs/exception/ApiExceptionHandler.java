@@ -1,5 +1,7 @@
 package com.razorpay.ffs.cas.acs.exception;
 
+import java.util.Set;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -19,8 +21,6 @@ import com.razorpay.ffs.cas.contract.ThreeDSErrorResponse;
 import com.razorpay.ffs.cas.contract.ThreeDSecureErrorCode;
 
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Set;
 
 @ControllerAdvice
 @Slf4j
@@ -46,9 +46,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
         return handleExceptionInternal(ex, errorResponse, headers, status, request);
     }
+
     @Override
     protected ResponseEntity<Object> handleMissingPathVariable(
-            MissingPathVariableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            MissingPathVariableException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
@@ -62,7 +66,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
@@ -76,7 +83,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            HttpMessageNotReadableException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
@@ -90,7 +100,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            MissingServletRequestParameterException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(

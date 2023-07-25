@@ -75,8 +75,9 @@ public class ThreeDSMerchantFeilds implements Validatable {
             return false;
         }
 
-        if (this.deliveryEmailAddress != null && (deliveryEmailAddress.length() < 1 || deliveryEmailAddress.length() > 254)) {
-                return false;
+        if (this.deliveryEmailAddress != null
+                && (deliveryEmailAddress.length() < 1 || deliveryEmailAddress.length() > 254)) {
+            return false;
         }
 
         if (this.deliveryTimeframe != null) {
@@ -85,12 +86,14 @@ public class ThreeDSMerchantFeilds implements Validatable {
             }
         }
 
-        if (this.giftCardAmount != null && (giftCardAmount.length() < 1 || giftCardAmount.length() > 15)) {
-                return false;
+        if (this.giftCardAmount != null
+                && (giftCardAmount.length() < 1 || giftCardAmount.length() > 15)) {
+            return false;
         }
 
-        if (this.giftCardCount != null && (giftCardCount.length() < 1 || giftCardCount.length() > 2) ) {
-                return false;
+        if (this.giftCardCount != null
+                && (giftCardCount.length() < 1 || giftCardCount.length() > 2)) {
+            return false;
         }
 
         if (this.giftCardCurr != null) {

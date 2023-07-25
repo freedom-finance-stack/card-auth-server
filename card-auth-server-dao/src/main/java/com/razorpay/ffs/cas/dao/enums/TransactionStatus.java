@@ -21,5 +21,4 @@ public enum TransactionStatus {
         this.status = status;
         this.description = description;
     }
-
 }
