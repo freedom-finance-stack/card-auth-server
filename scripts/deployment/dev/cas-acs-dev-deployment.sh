@@ -15,10 +15,10 @@ echo "Sleeping for 10 seconds before checking if all dockers are up.."
 sleep 10
 
 echo "Creating default schema in mysql db.."
-mysql -h 127.0.0.1 -P 5506 -u cas-acs-user -ppassword fps_acs < ./card-auth-server-dao/src/main/resources/sql/DDL.sql
+mysql -h 127.0.0.1 -P 5506 -u cas-acs-user -ppassword cas_db < ./card-auth-server-dao/src/main/resources/sql/DDL.sql
 
 echo "Inserting default values in newly created schema"
-mysql -h 127.0.0.1 -P 5506 -u cas-acs-user -ppassword fps_acs < ./scripts/deployment/dev/dev-database-dml.sql
+mysql -h 127.0.0.1 -P 5506 -u cas-acs-user -ppassword cas_db < ./scripts/deployment/dev/dev-database-dml.sql
 
 echo "Checking if Card Auth Server ACS is UP and running.."
 

@@ -1,7 +1,7 @@
 # use while deployment -Dspring.profiles.active=local This will load the application.properties and the application-local.properties with the latter overriding properties from the first.
 app:
   port: 8080
-  hostname: https://fps_acs/
+  hostname: https://cas_acs/
   acs:
     referenceNumber: 12345678901234567890
     operatorId:
@@ -13,7 +13,7 @@ spring:
   application:
     name: Card Auth Server ACS
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/fps_acs
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/cas_db
     username: root
     password: Mysql@123
     driverClassName: com.mysql.cj.jdbc.Driver

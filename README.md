@@ -26,9 +26,9 @@ We need to install below libraries
 * Java IDE(Intellij/Eclipse etc)
 
 #### Using Docker Compose Dev
-Docker Compose dev is located [here](https://github.com/razorpay/secure-auth-server/blob/master/scripts/deployment/dockerconf/secure-auth-server/docker-compose-dev.yaml).
+Docker Compose dev is located [here](https://github.com/razorpay/card-auth-server/blob/master/scripts/deployment/dockerconf/card-auth-server-acs/docker-compose-dev.yaml).
 
-You can start Secure Auth ACS Server following below steps.
+You can start Card Auth Server ACS following below steps.
 * Checkout Card Auth Server Repo
     ```
     git checkout git@github.com:razorpay/card-auth-server.git

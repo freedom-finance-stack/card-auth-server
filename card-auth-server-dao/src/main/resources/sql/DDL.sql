@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS `fps_acs`;
+CREATE DATABASE IF NOT EXISTS `cas_db`;
 
-USE `fps_acs`;
+USE `cas_db`;
 
 DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE `transaction`
