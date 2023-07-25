@@ -7,7 +7,7 @@
     <!-- THIS POM DEFINITIONS -->
     <!-- ========================================================================== -->
     <groupId>com.razorpay.ffs</groupId>
-    <artifactId>secure-auth-server</artifactId>
+    <artifactId>card-auth-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>Card Authentication Server</name>
     <description>Card Authentication Server for ACS and IAS</description>
