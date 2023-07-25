@@ -12,7 +12,7 @@ public class ThreeDSException extends Exception {
 
     @Getter private final ThreeDSecureErrorCode threeDSecureErrorCode;
     @Getter private InternalErrorCode internalErrorCode;
-    private final ThreeDSErrorResponse threeDSErrorResponse = new ThreeDSErrorResponse();
+    private final ThreeDSErrorResponse threeDSErrorResponse = new ThreeDSErrorResponse(
 
     public ThreeDSException(
             final ThreeDSecureErrorCode threeDSecureErrorCode,
