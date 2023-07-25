@@ -9,7 +9,7 @@ JAVA_EXTRA_OPTS=""
 JAVA_GC_OPTS=""
 REMOTE_DEBUGGING_PORT=7081
 
-if [ "$ENVIRONMENT" = "prod" ]; then
+if [ "$SPRING_PROFILES_ACTIVE" = "prod" ]; then
   JAVA_GC_OPTS="$JAVA_GC_OPTS -Xms2G -Xmx2G -XX:+UseG1GC"
 else
   # Enabling remote debugging only in non-prod environment
@@ -23,7 +23,6 @@ JAVA_OPTS="$JAVA_EXTRA_OPTS $JAVA_GC_OPTS -Djava.net.preferIPv4Stack=true
           -Dsun.jnu.encoding=UTF-8
           -Dfile.encoding=UTF-8
           -Duser.timezone=UTC
-          -Dspring.profiles.active=$ENVIRONMENT
           --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
 
 # Starting Card Auth Server ACS Service
