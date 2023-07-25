@@ -26,7 +26,6 @@ services:
       ACS_MYSQL_DATABASE: 'cas_db'
       ACS_MYSQL_USER: 'cas-acs-user'
       ACS_MYSQL_PASSWORD: 'password'
-      ENVIRONMENT: 'prod'
     ports:
       - '8080:8080'
     depends_on:
