@@ -49,7 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException {
         try {
             transactionRepository.save(transaction);
-            return this.findById(transaction.getId());
+            return findById(transaction.getId());
         } catch (DataAccessException ex) {
             log.error("Error while saving transaction", ex);
             throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_SAVE_EXCEPTION, ex);
