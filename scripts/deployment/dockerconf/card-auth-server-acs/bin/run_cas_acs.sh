@@ -28,5 +28,5 @@ JAVA_OPTS="$JAVA_EXTRA_OPTS $JAVA_GC_OPTS -Djava.net.preferIPv4Stack=true
 # Starting Card Auth Server ACS Service
 echo "Starting Card Auth Server ACS Service..."
 echo "JAVA_OPTS: " "$JAVA_OPTS"
-exec "$JAVA_EXEC" "$JAVA_OPTS" -jar "${CAS_ACS_BIN_DIRECTORY}/jar/card-auth-server-acs.jar" &
+exec $JAVA_EXEC $JAVA_OPTS -jar "${CAS_ACS_BIN_DIRECTORY}/jar/card-auth-server-acs.jar" &
 echo "Started Card Auth Server ACS Service..."
