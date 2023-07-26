@@ -1,6 +1,7 @@
 package com.razorpay.ffs.cas.contract;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.JsonParser;
 
 import lombok.Data;
 
@@ -22,6 +23,16 @@ public class MessageExtension implements Validatable {
     public boolean isValid() {
         if (this.name != null && name.length() > 64) {
             return false;
-        } else return this.id == null || id.length() <= 64;
+        } else if (this.id != null && id.length() > 64) {
+            return false;
+        } else if (this.getData() != null) {
+            try {
+                JsonParser.parseString(this.getData());
+            } catch (Exception e) {
+                return false;
+            }
+            return this.getData().length() <= 8059;
+        }
+        return true;
     }
 }
