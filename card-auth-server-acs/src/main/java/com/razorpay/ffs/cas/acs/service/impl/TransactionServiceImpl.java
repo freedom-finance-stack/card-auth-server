@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import com.razorpay.ffs.cas.dao.model.TransactionCardDetail;
 import com.razorpay.ffs.cas.dao.model.TransactionMerchant;
 import com.razorpay.ffs.cas.dao.model.TransactionPurchaseDetail;
 import com.razorpay.ffs.cas.dao.model.TransactionReferenceDetail;
-import com.razorpay.ffs.cas.dao.repository.TransactionReferenceDetailRepository;
 import com.razorpay.ffs.cas.dao.repository.TransactionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -47,12 +45,11 @@ import static com.razorpay.ffs.cas.contract.utils.Util.DATE_FORMAT_YYYYMMDDHHMMS
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final TransactionReferenceDetailRepository transactionReferenceDetailRepository;
 
     public Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException {
         try {
             transactionRepository.save(transaction);
-            return transactionRepository.findById(transaction.getId()).get();
+            return this.findById(transaction.getId());
         } catch (DataAccessException ex) {
             log.error("Error while saving transaction", ex);
             throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_SAVE_EXCEPTION, ex);
@@ -134,13 +131,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TransactionPurchaseDetail buildTransactionPurchaseDetail(AREQ areq)
             throws ValidationException {
-        Timestamp time = null;
+        Timestamp time;
         try {
             time = Util.getTimeStampFromString(areq.getPurchaseDate(), DATE_FORMAT_YYYYMMDDHHMMSS);
         } catch (ParseException e) {
             throw new ValidationException(
-                    ThreeDSecureErrorCode.INVALID_FORMAT_VALUE,
-                    String.format("Invalid PurchaseDate"));
+                    ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid PurchaseDate");
         }
         return TransactionPurchaseDetail.builder()
                 .purchaseAmount(areq.getPurchaseAmount())
@@ -180,15 +176,5 @@ public class TransactionServiceImpl implements TransactionService {
                 areq.getThreeDSServerTransID(),
                 areq.getThreeDSServerRefNumber(),
                 areq.getDsTransID());
-    }
-
-    public Transaction findDuplicationTransaction(String threedsServerTransactionId) {
-        List<TransactionReferenceDetail> transactionReferenceDetails =
-                transactionReferenceDetailRepository.findByThreedsServerTransactionId(
-                        threedsServerTransactionId);
-        if (transactionReferenceDetails.size() != 0) {
-            return transactionReferenceDetails.get(0).getTransaction();
-        }
-        return null;
     }
 }

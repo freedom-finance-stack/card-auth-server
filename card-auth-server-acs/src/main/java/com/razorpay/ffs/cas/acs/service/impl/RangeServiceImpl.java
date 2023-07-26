@@ -35,7 +35,7 @@ public class RangeServiceImpl implements RangeService {
                     InternalErrorCode.CARD_RANGE_NOT_FOUND);
         }
 
-        CardRange cardRange = null;
+        CardRange cardRange;
         try {
             cardRange = cardRangeRepository.findByPan(Long.valueOf(pan));
         } catch (DataAccessException e) {

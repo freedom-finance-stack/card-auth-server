@@ -50,8 +50,7 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
         }
     }
 
-    public TransactionMessageTypeDetail createAndSave(
-            ThreeDSObject threeDSObject, String transactionId) {
+    public void createAndSave(ThreeDSObject threeDSObject, String transactionId) {
         TransactionMessageTypeDetail transactionMessageTypeDetail = null;
         if (threeDSObject instanceof AREQ) {
             transactionMessageTypeDetail = create((AREQ) threeDSObject, transactionId);
@@ -59,6 +58,5 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
             transactionMessageTypeDetail = create((CREQ) threeDSObject, transactionId);
         }
         this.save(transactionMessageTypeDetail);
-        return transactionMessageTypeDetail;
     }
 }

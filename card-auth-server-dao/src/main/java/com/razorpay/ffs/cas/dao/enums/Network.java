@@ -1,5 +1,8 @@
 package com.razorpay.ffs.cas.dao.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Network {
     VISA(1, "VISA"),
     MASTERCARD(2, "MASTERCARD"),
@@ -13,14 +16,6 @@ public enum Network {
     Network(int value, String description) {
         this.value = value;
         this.description = description;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public static Network getNetwork(int id) {

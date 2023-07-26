@@ -38,8 +38,7 @@ public class Util {
     }
 
     public static String toJson(Object object) {
-        String strJson = gson.toJson(object);
-        return strJson;
+        return gson.toJson(object);
     }
 
     public static String generateUUID() {
@@ -51,7 +50,7 @@ public class Util {
         String lastFourDigit = cardNumber.substring(totalLength - 4);
         String firstSixDigit = cardNumber.substring(0, 6);
 
-        Integer len = totalLength - lastFourDigit.length() - firstSixDigit.length();
+        int len = totalLength - lastFourDigit.length() - firstSixDigit.length();
         String maskedDigits = PADDED_SYMBOL_X.repeat(len);
 
         return firstSixDigit + maskedDigits + lastFourDigit;

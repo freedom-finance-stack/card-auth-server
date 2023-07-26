@@ -59,7 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throws ThreeDSException, ACSDataAccessException {
         Transaction transaction = new Transaction();
         InstitutionAcsUrl acsUrl = null;
-        ARES ares = null;
+        ARES ares;
         CardRange cardRange = null;
         try {
             areq.setTransactionId(Util.generateUUID());
@@ -118,22 +118,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         } catch (ThreeDSException ex) {
             transaction =
-                    updateErrorAndSaveTransaction(
-                            ex.getThreeDSecureErrorCode(),
-                            ex.getInternalErrorCode(),
-                            transaction,
-                            ex);
+                    updateTransactionPhaseWithError(
+                            ex.getThreeDSecureErrorCode(), ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (ACSException ex) {
-            transaction = updateErrorAndSaveTransaction(ex.getErrorCode(), transaction, ex);
+            transaction = updateTransactionForACSException(ex.getErrorCode(), transaction);
         } catch (Exception ex) {
             transaction =
-                    updateErrorAndSaveTransaction(
+                    updateTransactionPhaseWithError(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                             InternalErrorCode.INTERNAL_SERVER_ERROR,
-                            transaction,
-                            ex);
+                            transaction);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
         }
@@ -157,11 +153,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             transaction.setPhase(Phase.ARES);
         } catch (Exception ex) {
             transaction =
-                    updateErrorAndSaveTransaction(
+                    updateTransactionPhaseWithError(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                             InternalErrorCode.INTERNAL_SERVER_ERROR,
-                            transaction,
-                            ex);
+                            transaction);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
         } finally {
@@ -170,11 +165,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return ares;
     }
 
-    private Transaction updateErrorAndSaveTransaction(
+    private Transaction updateTransactionPhaseWithError(
             ThreeDSecureErrorCode threeDSecureErrorCode,
             InternalErrorCode internalErrorCode,
-            Transaction transaction,
-            Exception ex)
+            Transaction transaction)
             throws ACSDataAccessException {
         transaction.setErrorCode(threeDSecureErrorCode.getErrorCode());
         transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
@@ -184,8 +178,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return transactionService.saveOrUpdate(transaction);
     }
 
-    private Transaction updateErrorAndSaveTransaction(
-            InternalErrorCode internalErrorCode, Transaction transaction, Exception ex)
+    private Transaction updateTransactionForACSException(
+            InternalErrorCode internalErrorCode, Transaction transaction)
             throws ACSDataAccessException {
         transaction.setErrorCode(internalErrorCode.getCode());
         transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
