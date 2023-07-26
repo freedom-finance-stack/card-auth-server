@@ -12,6 +12,7 @@
     <name>Card Authentication Server</name>
     <description>Card Authentication Server for ACS and IAS</description>
     <packaging>pom</packaging>
+    <!-- comment -->
 
     <!-- ========================================================================== -->
     <!-- MODULES -->
