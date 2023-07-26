@@ -1,34 +1,17 @@
 package com.razorpay.ffs.cas.acs.validator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.google.gson.JsonParser;
-import com.google.gson.internal.LinkedTreeMap;
 import com.razorpay.ffs.cas.acs.constant.InternalConstants;
 import com.razorpay.ffs.cas.acs.exception.ValidationException;
 import com.razorpay.ffs.cas.acs.utils.Util;
 import com.razorpay.ffs.cas.acs.validator.enums.DataLengthType;
 import com.razorpay.ffs.cas.acs.validator.enums.ThreeDSDataElement;
-import com.razorpay.ffs.cas.acs.validator.rules.IsIPRule;
-import com.razorpay.ffs.cas.acs.validator.rules.IsInRule;
-import com.razorpay.ffs.cas.acs.validator.rules.IsNumericRule;
-import com.razorpay.ffs.cas.acs.validator.rules.IsUUIDRule;
-import com.razorpay.ffs.cas.acs.validator.rules.IsValidDate;
-import com.razorpay.ffs.cas.acs.validator.rules.IsValidRule;
-import com.razorpay.ffs.cas.acs.validator.rules.LengthRule;
-import com.razorpay.ffs.cas.acs.validator.rules.ListValidRule;
-import com.razorpay.ffs.cas.acs.validator.rules.NotInRule;
-import com.razorpay.ffs.cas.acs.validator.rules.NotNullRule;
-import com.razorpay.ffs.cas.acs.validator.rules.RegexRule;
-import com.razorpay.ffs.cas.acs.validator.rules.Rule;
-import com.razorpay.ffs.cas.acs.validator.rules.Validation;
-import com.razorpay.ffs.cas.acs.validator.rules.WhenRule;
+import com.razorpay.ffs.cas.acs.validator.rules.*;
 import com.razorpay.ffs.cas.contract.AREQ;
-import com.razorpay.ffs.cas.contract.ThreeDSecureErrorCode;
 import com.razorpay.ffs.cas.contract.constants.EMVCOConstant;
 import com.razorpay.ffs.cas.contract.enums.MessageCategory;
 
@@ -403,6 +386,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 && !Util.isNullorBlank(request.getWhiteListStatus()),
                         new NotNullRule<>()),
                 new IsInRule(ThreeDSDataElement.WHITE_LIST_STATUS_SOURCE.getAcceptedValues()));
+
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_DEC_MAX_TIME.getFieldName(),
                 request.getThreeDSRequestorDecMaxTime(),
@@ -414,52 +398,10 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                         request.getThreeDSRequestorDecReqInd()),
                         new NotNullRule<>()));
 
-        // todo : revisit this for better code structure
-        Rule<ArrayList<LinkedTreeMap<String, Object>>> messageExtensionRule =
-                messageExtensionValueList -> {
-                    for (LinkedTreeMap<String, Object> messageExtensionValue :
-                            messageExtensionValueList) {
-                        // According to documentation 'name' will also be string with max 64
-                        // characters
-                        String name = (String) messageExtensionValue.get("name");
-
-                        // According to documentation 'id' will also be string with max 64
-                        // characters
-                        String id = (String) messageExtensionValue.get("id");
-
-                        if (name != null && name.length() > 64) {
-                            throw new ValidationException(
-                                    ThreeDSecureErrorCode.INVALID_FORMAT,
-                                    "Invalid message extension name");
-                        } else if (id != null && id.length() > 64) {
-                            throw new ValidationException(
-                                    ThreeDSecureErrorCode.INVALID_FORMAT,
-                                    "Invalid message extension id");
-                        }
-
-                        // According to documentation 'data' will also be a Json Object with length
-                        // less than 8059
-                        Object dataValue = messageExtensionValue.get("data");
-                        try {
-                            JsonParser.parseString(dataValue.toString());
-                        } catch (Exception e) {
-                            throw new ValidationException(
-                                    ThreeDSecureErrorCode.INVALID_FORMAT,
-                                    "Invalid message extension data");
-                        }
-
-                        if (dataValue.toString().length() > 8059) {
-                            throw new ValidationException(
-                                    ThreeDSecureErrorCode.INVALID_FORMAT,
-                                    "Invalid message extension data");
-                        }
-                    }
-                };
-
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 request.getMessageExtension(),
-                new ListValidRule(List.of(messageExtensionRule)));
+                new ValidListRule<>(new IsValidRule<>()));
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())

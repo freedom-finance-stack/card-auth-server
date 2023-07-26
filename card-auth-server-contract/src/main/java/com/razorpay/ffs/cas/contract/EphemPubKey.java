@@ -13,17 +13,6 @@ public class EphemPubKey implements Validatable {
     private String x;
     private String y;
 
-    //	@Override
-    //	public String toString() {
-    //		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-    //		String strPubKey = gson.toJson(this);
-    //		return strPubKey;
-    //	}
-
-    public String toJSONString() {
-        return toString();
-    }
-
     public boolean isValid() {
         if (this.kty == null) {
             return false;

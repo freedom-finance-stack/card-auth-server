@@ -75,10 +75,9 @@ public class ThreeDSMerchantFeilds implements Validatable {
             return false;
         }
 
-        if (this.deliveryEmailAddress != null) {
-            if (deliveryEmailAddress.length() < 1 && deliveryEmailAddress.length() > 254) {
-                return false;
-            }
+        if (this.deliveryEmailAddress != null
+                && (deliveryEmailAddress.length() < 1 || deliveryEmailAddress.length() > 254)) {
+            return false;
         }
 
         if (this.deliveryTimeframe != null) {
@@ -87,20 +86,18 @@ public class ThreeDSMerchantFeilds implements Validatable {
             }
         }
 
-        if (this.giftCardAmount != null) {
-            if (giftCardAmount.length() < 1 && giftCardAmount.length() > 15) {
-                return false;
-            }
+        if (this.giftCardAmount != null
+                && (giftCardAmount.length() < 1 || giftCardAmount.length() > 15)) {
+            return false;
         }
 
-        if (this.giftCardCount != null) {
-            if (giftCardCount.length() < 1 && giftCardCount.length() > 2) {
-                return false;
-            }
+        if (this.giftCardCount != null
+                && (giftCardCount.length() < 1 || giftCardCount.length() > 2)) {
+            return false;
         }
 
         if (this.giftCardCurr != null) {
-            if (giftCardCurr.length() < 1 && giftCardCurr.length() > 3) {
+            if (giftCardCurr.length() < 1 || giftCardCurr.length() > 3) {
                 return false;
             } else if (EMVCOConstant.excludedCountry.contains(this.giftCardCurr)) {
                 return false;
@@ -128,9 +125,7 @@ public class ThreeDSMerchantFeilds implements Validatable {
         }
 
         if (this.shipIndicator != null) {
-            if (!EMVCOConstant.shipIndicatorList.contains(shipIndicator)) {
-                return false;
-            }
+            return EMVCOConstant.shipIndicatorList.contains(shipIndicator);
         }
 
         return true;

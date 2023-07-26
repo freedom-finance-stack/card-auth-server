@@ -15,16 +15,12 @@ public class Phone implements Validatable {
 
     public boolean isValid() {
 
-        if (this.cc != null) {
-            if (this.cc.length() < 1 && this.cc.length() > 3) {
-                return false;
-            }
+        if (this.cc != null && (this.cc.length() < 1 || this.cc.length() > 3)) {
+            return false;
         }
 
         if (this.subscriber != null) {
-            if (this.subscriber.length() > 15) {
-                return false;
-            }
+            return this.subscriber.length() <= 15;
         }
 
         return true;

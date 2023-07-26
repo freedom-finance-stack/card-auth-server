@@ -3,6 +3,8 @@ package com.razorpay.ffs.cas.acs.constant;
 import com.razorpay.ffs.cas.dao.enums.TransactionStatus;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -15,6 +17,8 @@ public class VISAConstant {
     public static final String PROTOCOL_VERSION_EMV_2_1_0 = "4";
     public static final String PROTOCOL_VERSION_EMV_2_2_0 = "5";
 
+    @Getter
+    @AllArgsConstructor
     public enum VISATransactionStatusInfo {
         SUCCESS(TransactionStatus.SUCCESS, "Y", "0"),
         UNABLE_TO_AUTHENTICATE(TransactionStatus.UNABLE_TO_AUTHENTICATE, "U", "5"),
@@ -25,15 +29,6 @@ public class VISAConstant {
         STRONG_CUSTOMER_AUTH_ALREADY_PERFORMED(TransactionStatus.INFORMATIONAL, "I", "4"),
         ATTEMPTS(TransactionStatus.ATTEMPT, "A", "7"),
         ATTEMPTS_WITH_SERVER_NOT_AVAILABLE(TransactionStatus.ATTEMPT, "A", "8");
-
-        VISATransactionStatusInfo(
-                TransactionStatus transactionStatus,
-                String txnStatusCode,
-                String authenticationResultCode) {
-            this.transactionStatus = transactionStatus;
-            this.txnStatusCode = txnStatusCode;
-            this.authenticationResultCode = authenticationResultCode;
-        }
 
         private final TransactionStatus transactionStatus;
         private final String txnStatusCode;
@@ -49,14 +44,6 @@ public class VISAConstant {
                 }
             }
             return result;
-        }
-
-        public String getTxnStatusCode() {
-            return txnStatusCode;
-        }
-
-        public String getAuthenticationResultCode() {
-            return authenticationResultCode;
         }
     }
 }

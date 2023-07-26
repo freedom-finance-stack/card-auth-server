@@ -2,6 +2,9 @@ package com.razorpay.ffs.cas.dao.enums;
 
 import com.razorpay.ffs.cas.contract.enums.MessageCategory;
 
+import lombok.Getter;
+
+@Getter
 public enum ECI {
     VISA_SUCCESS("05", TransactionStatus.SUCCESS, Network.VISA),
     VISA_ATTEMPTS("06", TransactionStatus.ATTEMPT, Network.VISA),
@@ -34,26 +37,22 @@ public enum ECI {
     DISCOVER_UNAUTHORIZED("07", TransactionStatus.UNABLE_TO_AUTHENTICATE, Network.DISCOVER),
     DISCOVER_REJECTED("07", TransactionStatus.REJECTED, Network.DISCOVER);
 
-    private ECI(String value, TransactionStatus status, Network network) {
+    ECI(String value, TransactionStatus status, Network network) {
         this.value = value;
         this.status = status;
         this.network = network;
     }
 
-    private ECI(
-            String value,
-            TransactionStatus status,
-            Network network,
-            MessageCategory messageCategory) {
+    ECI(String value, TransactionStatus status, Network network, MessageCategory messageCategory) {
         this.value = value;
         this.status = status;
         this.network = network;
         this.messageCategory = messageCategory;
     }
 
-    private String value;
-    private TransactionStatus status;
-    private Network network;
+    private final String value;
+    private final TransactionStatus status;
+    private final Network network;
     private MessageCategory messageCategory;
 
     public static String getValue(TransactionStatus status, Network network) {
@@ -87,17 +86,5 @@ public enum ECI {
             }
         }
         return result;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public TransactionStatus getStatus() {
-        return status;
-    }
-
-    public Network getNetwork() {
-        return network;
     }
 }

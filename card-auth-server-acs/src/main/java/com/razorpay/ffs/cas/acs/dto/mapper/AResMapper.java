@@ -14,7 +14,7 @@ import com.razorpay.ffs.cas.dao.enums.TransactionStatus;
 import com.razorpay.ffs.cas.dao.model.Transaction;
 
 @Mapper(
-        uses = {HelperMapper.class, AppConfiguration.class},
+        uses = {HelperMapper.class},
         componentModel = "spring",
         imports = {TransactionStatus.class, MessageCategory.class, Network.class})
 public interface AResMapper {
@@ -30,8 +30,7 @@ public interface AResMapper {
             expression = "java(getOperatorId(transaction, this.helperMapper.appConfiguration))")
     @Mapping(
             target = "acsReferenceNumber",
-            expression =
-                    "java(this.helperMapper.appConfiguration.getApp().getAcs().getReferenceNumber())")
+            expression = "java(this.helperMapper.appConfiguration.getAcs().getReferenceNumber())")
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(target = "eci", source = "transaction.eci")
     @Mapping(target = "acsURL", source = "aResMapperParams.acsUrl")
@@ -41,9 +40,6 @@ public interface AResMapper {
     @Mapping(
             target = "transStatusReason",
             expression = "java(getTransStatusReason(areq, transaction))")
-
-    // todo   @Mapping(target = "authenticationMethod", expression =
-    // "java(getAuthType(transaction))")
     @Mapping(target = "authenticationValue", source = "transaction.authValue")
     @Mapping(target = "threeDSServerTransID", source = "areq.threeDSServerTransID")
     @Mapping(target = "dsReferenceNumber", source = "areq.dsReferenceNumber")
@@ -54,7 +50,7 @@ public interface AResMapper {
     @Mapping(target = "sdkEphemPubKey", expression = "java(null)")
     @Mapping(target = "cardholderInfo", expression = "java(null)")
 
-    // todo    @Mapping acsRenderingType, AcsSignedContent  for appbased
+    // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
     ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
@@ -98,13 +94,13 @@ public interface AResMapper {
         String operatorId = "";
         if (Network.VISA.getValue()
                 == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
-            operatorId = appConfiguration.getApp().getAcs().getOperatorId().getVisa();
+            operatorId = appConfiguration.getAcs().getOperatorId().getVisa();
         } else if (Network.MASTERCARD.getValue()
                 == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
-            operatorId = appConfiguration.getApp().getAcs().getOperatorId().getMastercard();
+            operatorId = appConfiguration.getAcs().getOperatorId().getMastercard();
         } else if (Network.AMEX.getValue()
                 == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
-            operatorId = appConfiguration.getApp().getAcs().getOperatorId().getAmex();
+            operatorId = appConfiguration.getAcs().getOperatorId().getAmex();
         }
         return operatorId;
     }

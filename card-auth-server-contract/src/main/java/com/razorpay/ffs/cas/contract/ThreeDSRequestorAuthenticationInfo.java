@@ -22,9 +22,8 @@ public class ThreeDSRequestorAuthenticationInfo implements Validatable {
             return false;
         } else if (this.threeDSReqAuthMethod.length() > 2) {
             return false;
-        } else if (!EMVCOConstant.threeDSReqAuthMethodList.contains(this.threeDSReqAuthMethod)) {
-            return false;
+        } else {
+            return EMVCOConstant.threeDSReqAuthMethodList.contains(this.threeDSReqAuthMethod);
         }
-        return true;
     }
 }

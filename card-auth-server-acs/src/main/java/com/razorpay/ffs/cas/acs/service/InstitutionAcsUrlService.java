@@ -6,6 +6,6 @@ import com.razorpay.ffs.cas.dao.model.InstitutionAcsUrl;
 import com.razorpay.ffs.cas.dao.model.InstitutionAcsUrlPK;
 
 public interface InstitutionAcsUrlService {
-    public InstitutionAcsUrl findById(InstitutionAcsUrlPK institutionAcsUrlPK)
+    InstitutionAcsUrl findById(InstitutionAcsUrlPK institutionAcsUrlPK)
             throws ACSDataAccessException, DataNotFoundException;
 }

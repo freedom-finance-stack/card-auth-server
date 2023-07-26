@@ -5,8 +5,10 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AREQ extends ThreeDSObject {
 
     // All Required Fields
@@ -113,7 +115,6 @@ public class AREQ extends ThreeDSObject {
     private String sdkAppID;
 
     @JsonProperty("sdkEphemPubKey")
-    // private String sdkEphemPubKey;
     private EphemPubKey sdkEphemPubKey;
 
     @JsonProperty("sdkMaxTimeout")
@@ -242,7 +243,7 @@ public class AREQ extends ThreeDSObject {
     private String purchaseInstalData;
 
     @JsonProperty("messageExtension")
-    private List messageExtension;
+    private List<MessageExtension> messageExtension;
 
     @JsonProperty("recurringExpiry")
     private String recurringExpiry;

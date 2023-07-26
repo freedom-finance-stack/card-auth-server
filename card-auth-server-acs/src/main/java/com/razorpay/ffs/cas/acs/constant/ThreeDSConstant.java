@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ThreeDSConstant {
 
-    // public static final String MESSAGE_TYPE_VERSION = "2.1.0";
-    public static final String MESSAGE_TYPE_VERSION = "2.2.0";
     public static final String[] SUPPORTED_MESSAGE_VERSION = {"2.1.0", "2.2.0"};
 
     // Supported Message Types
