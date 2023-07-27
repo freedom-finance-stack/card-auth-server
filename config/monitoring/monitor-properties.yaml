@@ -4,6 +4,6 @@ management:
       application: ${spring.application.name}
     export:
       prometheus:
-        enabled: true
+        enabled: false
       graphite:
         enabled: false
