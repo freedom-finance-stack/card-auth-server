@@ -1,7 +1,5 @@
 package org.ffs.razorpay.cas.acs.validator.rules;
 
-import java.util.List;
-
 import org.ffs.razorpay.cas.acs.exception.ValidationException;
 
 public class WhenRule<T> implements Rule<T> {
@@ -31,9 +29,9 @@ public class WhenRule<T> implements Rule<T> {
     @Override
     public void validate(T value) throws ValidationException {
         if (condition) {
-               this.ifRule.validate(value);
+            this.ifRule.validate(value);
         } else if (this.elseRule != null) {
-                this.elseRule.validate(value);
+            this.elseRule.validate(value);
         }
     }
 }

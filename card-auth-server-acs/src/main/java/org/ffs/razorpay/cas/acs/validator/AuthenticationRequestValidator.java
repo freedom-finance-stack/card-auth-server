@@ -1,7 +1,6 @@
 package org.ffs.razorpay.cas.acs.validator;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.ffs.razorpay.cas.acs.constant.InternalConstants;
 import org.ffs.razorpay.cas.acs.exception.ValidationException;
@@ -21,7 +20,6 @@ import org.ffs.razorpay.cas.acs.validator.rules.NotNullRule;
 import org.ffs.razorpay.cas.acs.validator.rules.RegexRule;
 import org.ffs.razorpay.cas.acs.validator.rules.ValidListRule;
 import org.ffs.razorpay.cas.acs.validator.rules.Validation;
-import org.ffs.razorpay.cas.acs.validator.rules.WhenRule;
 import org.ffs.razorpay.cas.contract.AREQ;
 import org.ffs.razorpay.cas.contract.constants.EMVCOConstant;
 import org.ffs.razorpay.cas.contract.enums.MessageCategory;
@@ -229,7 +227,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.BROWSER_TZ.getFieldName(),
                 request.getBrowserTZ(),
-                when(validateDeviceChannelAndMessageCategory(
+                when(
+                        validateDeviceChannelAndMessageCategory(
                                 ThreeDSDataElement.BROWSER_TZ, request),
                         new NotNullRule<>()),
                 new LengthRule(DataLengthType.VARIABLE, 5),
