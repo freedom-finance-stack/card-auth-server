@@ -6,7 +6,7 @@
     <!-- ========================================================================== -->
     <!-- THIS POM DEFINITIONS -->
     <!-- ========================================================================== -->
-    <groupId>com.razorpay.ffs</groupId>
+    <groupId>org.ffs.razorpay.cas</groupId>
     <artifactId>card-auth-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>Card Authentication Server</name>
@@ -40,6 +40,8 @@
         <slf4j.version>1.7.36</slf4j.version>
         <spotless.version>2.37.0</spotless.version>
         <micrometer.version>1.9.10</micrometer.version>
+        <jackson.version>2.14.2</jackson.version>
+        <gson.version>2.8.9</gson.version>
     </properties>
 
     <dependencyManagement>
@@ -130,6 +132,24 @@
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-graphite</artifactId>
                 <version>${micrometer.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
             </dependency>
         </dependencies>
 
