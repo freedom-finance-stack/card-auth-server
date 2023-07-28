@@ -85,6 +85,46 @@ Prefix card-auth-server-acs with the name of your ACS Docker image.
 if you want to use external yaml file, add EXTERNAL_YAML_PATH=/config/external/sample-acs.yml inside scripts/deployment/dev/cas-acs-dev-deployment.sh
 Note: use absolute path for config file 
 
+### ACS Configuration (acs.yml) Explained
+Below is the explanation of the attributes present in the acs.yml configuration file:
+```yaml
+acs:
+  referenceNumber: 99995678901234567890
+
+```
+
+```yaml
+metrics:
+  export:
+    graphite:
+      enabled: true
+
+```
+
+metrics: This section contains the configuration related to metrics.
+export: This subsection specifies the metrics export settings.
+graphite: This subsection specifies the Graphite metrics exporter settings.
+enabled: This attribute indicates whether Graphite metrics exporting is enabled (true) or not (false).
+```yaml
+hsm:
+  enabled_gateway: "NoOpHSM"
+  gateway:
+    luna:
+      ip: "127.0.0.1"
+      port: 8080
+      timeout: 1
+
+```
+
+hsm: This section contains the configuration related to the Hardware Security Module (HSM).
+enabled_gateway: This attribute specifies the HSM gateway to be used. In this example, it is set to "NoOpHSM", indicating the use of the NoOp (No Operation) HSM, which means no real HSM is configured.
+gateway: This subsection contains the specific HSM gateway settings.
+luna: This subsection specifies the configuration for the Luna HSM gateway.
+ip: This attribute defines the IP address of the Luna HSM gateway. In this example, it is set to "127.0.0.1", which is a loopback address indicating that the HSM gateway is running on the same machine.
+port: This attribute defines the port number on which the Luna HSM gateway is listening. In this example, it is set to 8080.
+timeout: This attribute specifies the timeout duration (in seconds) for HSM operations. In this example, it is set to 1 second.
+Feel free to customize these configuration attributes according to your specific ACS deployment requirements. The acs.yml file allows you to fine-tune the ACS behavior and settings based on your needs.
+
 ### Conclusion
 Congratulations! You now know how to deploy the ACS server using various methods and how to provide the acs.yml configuration file for each deployment option. Enjoy using the ACS server and feel free to contribute to the project on GitHub.
 
