@@ -72,6 +72,19 @@ spec:
 ```
 Prefix card-auth-server-acs with the name of your ACS Docker image.
 
+### 5. Using Built-In Automated Shell Script 
+
+* Go to Card Auth Server Repo directory
+    ``` 
+    cd card-auth-server
+    ```
+* Run below command
+    ```
+    sh ./scripts/deployment/dev/cas-acs-dev-deployment.sh
+
+if you want to use external yaml file, add EXTERNAL_YAML_PATH=/config/external/sample-acs.yml inside scripts/deployment/dev/cas-acs-dev-deployment.sh
+Note: use absolute path for config file 
+
 ### Conclusion
 Congratulations! You now know how to deploy the ACS server using various methods and how to provide the acs.yml configuration file for each deployment option. Enjoy using the ACS server and feel free to contribute to the project on GitHub.
 
