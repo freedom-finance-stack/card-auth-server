@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.ffs.razorpay.cas.acs.exception.ThreeDSException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.ffs.razorpay.cas.acs.service.AuthenticationService;
 import org.ffs.razorpay.cas.contract.AREQ;
 import org.ffs.razorpay.cas.contract.ARES;

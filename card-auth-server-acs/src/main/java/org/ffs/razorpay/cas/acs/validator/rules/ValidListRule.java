@@ -2,7 +2,7 @@ package org.ffs.razorpay.cas.acs.validator.rules;
 
 import java.util.List;
 
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 
 public class ValidListRule<T> implements Rule<List<T>> {
 

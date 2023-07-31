@@ -1,6 +1,6 @@
 package org.ffs.razorpay.cas.acs.hsm;
 
-import org.ffs.razorpay.cas.acs.exception.HSMConnectionException;
+import org.ffs.razorpay.cas.acs.exception.threeds.HSMConnectionException;
 import org.ffs.razorpay.cas.dao.model.Transaction;
 
 public interface CvvHSM {

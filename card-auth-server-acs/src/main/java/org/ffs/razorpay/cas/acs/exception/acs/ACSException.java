@@ -1,8 +1,11 @@
-package org.ffs.razorpay.cas.acs.exception.checked;
+package org.ffs.razorpay.cas.acs.exception.acs;
 
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
 
-// Checked Exception
+// This class represents exceptions specific to the ACS (Access Control Server) functionality.
+// This Exception will be handled in code and should not return Erro message type
+// All exceptions related to ACS processing and need not send Erro in response should extend this
+// class.
 public class ACSException extends Exception {
 
     /** */

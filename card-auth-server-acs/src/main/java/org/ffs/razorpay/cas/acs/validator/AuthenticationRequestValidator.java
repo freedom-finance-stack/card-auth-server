@@ -3,11 +3,10 @@ package org.ffs.razorpay.cas.acs.validator;
 import java.util.Arrays;
 
 import org.ffs.razorpay.cas.acs.constant.InternalConstants;
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.ffs.razorpay.cas.acs.utils.Util;
 import org.ffs.razorpay.cas.acs.validator.enums.DataLengthType;
 import org.ffs.razorpay.cas.acs.validator.enums.ThreeDSDataElement;
-import org.ffs.razorpay.cas.acs.validator.rules.*;
 import org.ffs.razorpay.cas.acs.validator.rules.IsIPRule;
 import org.ffs.razorpay.cas.acs.validator.rules.IsInRule;
 import org.ffs.razorpay.cas.acs.validator.rules.IsNumericRule;

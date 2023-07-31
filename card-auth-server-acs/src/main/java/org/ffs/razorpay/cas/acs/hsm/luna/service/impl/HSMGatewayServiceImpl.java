@@ -1,8 +1,8 @@
 package org.ffs.razorpay.cas.acs.hsm.luna.service.impl;
 
 import org.ffs.razorpay.cas.acs.constant.LunaHSMConstants;
-import org.ffs.razorpay.cas.acs.exception.HSMConnectionException;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
+import org.ffs.razorpay.cas.acs.exception.threeds.HSMConnectionException;
 import org.ffs.razorpay.cas.acs.hsm.luna.domain.GatewayHSM;
 import org.ffs.razorpay.cas.acs.hsm.luna.domain.HSMTransactionMessage;
 import org.ffs.razorpay.cas.acs.hsm.luna.service.HSMGatewayAsyncReply;

@@ -1,10 +1,10 @@
 package org.ffs.razorpay.cas.acs.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ffs.razorpay.cas.acs.exception.DataNotFoundException;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.threeds.DataNotFoundException;
+import org.ffs.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.ffs.razorpay.cas.acs.service.RangeService;
 import org.ffs.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.ffs.razorpay.cas.dao.enums.CardRangeStatus;
@@ -54,9 +54,10 @@ public class RangeServiceImpl implements RangeService {
         return cardRange;
     }
 
-    public void validateRange(CardRange cardRange) throws ACSException, DataNotFoundException {
+    public void validateRange(CardRange cardRange)
+            throws TransactionDataNotValidException, DataNotFoundException {
         if (cardRange.getStatus() != CardRangeStatus.ACTIVE) {
-            throw new ACSException(InternalErrorCode.CARD_RANGE_NOT_ACTIVE);
+            throw new TransactionDataNotValidException(InternalErrorCode.CARD_RANGE_NOT_ACTIVE);
         }
 
         CardRangeGroup cardRangeGroup = cardRange.getCardRangeGroup();
@@ -75,7 +76,7 @@ public class RangeServiceImpl implements RangeService {
                     InternalErrorCode.INSTITUTION_NOT_FOUND);
         }
         if (institution.getStatus() != InstitutionStatus.ACTIVE) {
-            throw new ACSException(InternalErrorCode.INSTITUTION_INACTIVE);
+            throw new TransactionDataNotValidException(InternalErrorCode.INSTITUTION_INACTIVE);
         }
 
         if (cardRange.getNetwork() == null) {

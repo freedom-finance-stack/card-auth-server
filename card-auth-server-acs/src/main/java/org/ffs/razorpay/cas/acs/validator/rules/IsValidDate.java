@@ -3,7 +3,7 @@ package org.ffs.razorpay.cas.acs.validator.rules;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.ffs.razorpay.cas.acs.utils.Util;
 import org.ffs.razorpay.cas.contract.ThreeDSecureErrorCode;
 

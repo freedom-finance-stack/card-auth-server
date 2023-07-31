@@ -1,5 +1,6 @@
-package org.ffs.razorpay.cas.acs.exception;
+package org.ffs.razorpay.cas.acs.exception.threeds;
 
+import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
 import org.ffs.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.ffs.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.springframework.http.HttpStatus;
@@ -9,12 +10,19 @@ public class DataNotFoundException extends ThreeDSException {
 
     public DataNotFoundException(
             ThreeDSecureErrorCode errorCode, InternalErrorCode internalErrorCode) {
-        super(errorCode, internalErrorCode, internalErrorCode.getCode());
+        super(
+                errorCode,
+                internalErrorCode,
+                internalErrorCode.getCode() + " : " + internalErrorCode.getDefaultErrorMessage());
     }
 
     public DataNotFoundException(
             ThreeDSecureErrorCode errorCode, InternalErrorCode internalErrorCode, Throwable cause) {
-        super(errorCode, internalErrorCode, internalErrorCode.getCode(), cause);
+        super(
+                errorCode,
+                internalErrorCode,
+                internalErrorCode.getCode() + " : " + internalErrorCode.getDefaultErrorMessage(),
+                cause);
     }
 
     @Override

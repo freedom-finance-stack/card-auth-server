@@ -2,7 +2,7 @@ package org.ffs.razorpay.cas.acs.hsm.luna.service.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.ffs.razorpay.cas.acs.exception.HSMConnectionException;
+import org.ffs.razorpay.cas.acs.exception.threeds.HSMConnectionException;
 import org.ffs.razorpay.cas.acs.hsm.luna.command.HsmCommand;
 import org.ffs.razorpay.cas.acs.hsm.luna.domain.GatewayHSM;
 import org.ffs.razorpay.cas.acs.hsm.luna.domain.HSMTransactionMessage;

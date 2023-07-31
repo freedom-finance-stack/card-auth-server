@@ -1,6 +1,6 @@
 package org.ffs.razorpay.cas.acs.validator.rules;
 
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 
 public class WhenRule<T> implements Rule<T> {
     private final boolean condition;

@@ -2,9 +2,9 @@ package org.ffs.razorpay.cas.acs.service.cardDetail;
 
 import org.ffs.razorpay.cas.acs.dto.CardDetailResponse;
 import org.ffs.razorpay.cas.acs.dto.CardDetailsRequest;
-import org.ffs.razorpay.cas.acs.exception.DataNotFoundException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
-import org.ffs.razorpay.cas.acs.exception.checked.CardBlockedException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.CardBlockedException;
+import org.ffs.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.ffs.razorpay.cas.dao.enums.CardDetailsStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

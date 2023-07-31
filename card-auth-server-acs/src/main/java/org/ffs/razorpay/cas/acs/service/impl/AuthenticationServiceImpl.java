@@ -6,9 +6,9 @@ import org.ffs.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.ffs.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.ffs.razorpay.cas.acs.dto.mapper.AResMapper;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.ThreeDSException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.ffs.razorpay.cas.acs.service.AuthenticationService;
 import org.ffs.razorpay.cas.acs.service.ECommIndicatorService;
 import org.ffs.razorpay.cas.acs.service.InstitutionAcsUrlService;
@@ -53,6 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
+    // Method to handle authentication requests (AReq) and generate authentication response (Ares).
     @Override
     public ARES processAuthenticationRequest(@NonNull AREQ areq)
             throws ThreeDSException, ACSDataAccessException {
@@ -69,8 +70,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             areqValidator.validateRequest(areq);
 
             // todo check duplicate transaction once threeDSmethod is implemented
+            // Create and Save transaction in DB
             transaction = transactionService.create(areq);
-            // create transaction entity and save
             transaction = transactionService.saveOrUpdate(transaction);
 
             // get range and institution entity and verify
@@ -86,6 +87,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                     areq.getDeviceChannel(),
                                     cardRange.getNetwork().getCode()));
 
+            // fetch Card and User details and validate details
             CardDetailsRequest cardDetailsRequest =
                     new CardDetailsRequest(
                             cardRange.getCardRangeGroup().getInstitution().getId(),
@@ -96,6 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             cardDetailService.validateCardDetails(
                     cardDetailResponse, cardRange.getCardDetailsStore());
 
+            // Determine if challenge is required and update transaction accordingly
             if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
                 transaction.setChallengeMandated(true);
                 // todo add timer logic for challenge
@@ -115,17 +118,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 transaction.setAuthValue(authValue);
             }
 
-        } catch (ThreeDSException ex) {
-            log.error(" Message {}, Internal Error code {}", ex.getMessage(), ex.getInternalErrorCode());
+        } catch (
+                ThreeDSException
+                        ex) { // NOTE : to send Erro in response throw ThreeDSException, otherwise
+            // to return ARES handle ACSException and next code will convert it to
+            // ARes
+
+            // Handle any ThreeDSException by sending "Erro" message type as a response.
+            // updating transaction with error and updating DB and add transaction details in error
+            // message
+            // throw ThreeDSException again so that it returns to client with error message, it is
+            // handled in ResponseEntityExceptionHandler
+            log.error(
+                    " Message {}, Internal Error code {}",
+                    ex.getMessage(),
+                    ex.getInternalErrorCode());
             transaction =
                     updateTransactionPhaseWithError(
                             ex.getThreeDSecureErrorCode(), ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (ACSException ex) {
+            // Handle any ACSException by sending Ares message type as a response.
+            // updating transaction with error and updating DB
             log.error(" Message {}, Internal Error code {}", ex.getMessage(), ex.getErrorCode());
             transaction = updateTransactionForACSException(ex.getErrorCode(), transaction);
         } catch (Exception ex) {
+            // Handle any Exception by sending "Erro" message type as a response.
+            // updating transaction with error and updating DB and add transaction details in error
+            // message
+            // throw ThreeDSException again so that it returns to client with error message, it is
+            // handled in ResponseEntityExceptionHandler
             log.error(" Message {}, Error string {}", ex.getMessage(), ex.toString());
             transaction =
                     updateTransactionPhaseWithError(
@@ -136,6 +159,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
         }
 
+        // If everything is successful, send Ares message type as a response.
         try {
             String eci =
                     eCommIndicatorService.generateECI(
@@ -145,7 +169,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);
-            // Generate and Store Ares
             ares =
                     aResMapper.toAres(
                             areq,
@@ -154,6 +177,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
             transaction.setPhase(Phase.ARES);
         } catch (Exception ex) {
+            // updating transaction with error and updating DB
+            // throw ThreeDSException again so that it returns to client with error message, it is
+            // handled in ResponseEntityExceptionHandler
             transaction =
                     updateTransactionPhaseWithError(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
