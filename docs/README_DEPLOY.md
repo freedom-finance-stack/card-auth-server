@@ -88,7 +88,8 @@ Note: use absolute path for config file and make sure to run script from root di
 
 ## ACS Configuration (acs.yml) Explained
 Below is the explanation of the attributes present in the acs.yml configuration file:
-Sample acy yaml is located [here](https://github.com/freedom-finance-stack/card-auth-server/blob/master/config/external/sample-acs.yml).
+
+Sample acs.yml is located [here](https://github.com/freedom-finance-stack/card-auth-server/blob/master/config/external/sample-acs.yml).
 
 ### ACS (Card Auth Server) configuration.
 The ACS (Access Control Server) configuration allows you to customize various settings for the Access Control Server. Below are the available configuration options:
