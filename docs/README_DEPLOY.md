@@ -28,14 +28,15 @@ Replace /path/to/acs.yml with the path to your custom acs.yml configuration file
 To deploy the ACS server using Docker, you can copy the acs.yml configuration file to a specific path inside the container using the -v (volume) option. Here's an example command:
 
 ```bash
-docker run -v /path/to/acs.yml:/path/inside/container/acs.yml your-image-name
+docker run -v /path/to/acs.yml:/opt/card-auth-server/cas-acs/bin/config/acs.yml card-auth-server-acs:latest
 ```
 
-Replace /path/to/acs.yml with the path to your custom acs.yml configuration file on the host machine and your-image-name with the name of your ACS Docker image.
+Replace /path/to/acs.yml with the path to your custom acs.yml configuration file on the host machine and card-auth-server-acs:latest with the name of your ACS Docker image.
 
 ### 3. Docker Compose
 
 To use Docker Compose for deploying the ACS server, you can set environment variables in the docker-compose-dev.yaml file. Docker Compose dev is located [here](https://github.com/razorpay/card-auth-server/blob/master/scripts/deployment/dockerconf/card-auth-server-acs/docker-compose-dev.yaml).
+make sure to run following command from root directory of project. 
 
 ~Here's an example:
 ```bash
@@ -66,7 +67,7 @@ spec:
           image: card-auth-server-acs
           volumeMounts:
             - name: config-volume
-              mountPath: /path/inside/container/acs.yml
+              mountPath: /opt/card-auth-server/cas-acs/bin/config/acs.yml
               subPath: acs.yml
 
 ```
@@ -83,15 +84,34 @@ Prefix card-auth-server-acs with the name of your ACS Docker image.
     sh ./scripts/deployment/dev/cas-acs-dev-deployment.sh
 
 if you want to use external yaml file, add EXTERNAL_YAML_PATH=/config/external/sample-acs.yml inside scripts/deployment/dev/cas-acs-dev-deployment.sh
-Note: use absolute path for config file 
+Note: use absolute path for config file and make sure to run script from root directory of project.
 
 ### ACS Configuration (acs.yml) Explained
 Below is the explanation of the attributes present in the acs.yml configuration file:
+
+#### ACS (Card Auth Server) configuration.
+The ACS (Access Control Server) configuration allows you to customize various settings for the Access Control Server. Below are the available configuration options:
+
+##### Example Configuration
 ```yaml
 acs:
   referenceNumber: 99995678901234567890
-
+  operatorId:
+    visa: 123456789012345
+    mastercard: 123456789012345
+    amex: 123456789012345
 ```
+ - `acs.referenceNumber`: A unique reference number used for identification purposes within the ACS.
+
+ - `acs.operatorId`: An object that defines the operator IDs for different card networks.
+   - `visa`: The operator ID for Visa card network.
+   - `mastercard`: The operator ID for Mastercard card network.
+   - `amex`: The operator ID for American Express card network.
+
+  
+#### Micrometer Metrics Configuration for Monitoring
+
+Micrometer is a powerful library for application monitoring and metrics collection. It provides a flexible way to export metrics to various monitoring systems. To configure Micrometer metrics in your application, you can use the following YAML configuration:
 
 ```yaml
 metrics:
@@ -101,10 +121,39 @@ metrics:
 
 ```
 
-metrics: This section contains the configuration related to metrics.
-export: This subsection specifies the metrics export settings.
-graphite: This subsection specifies the Graphite metrics exporter settings.
-enabled: This attribute indicates whether Graphite metrics exporting is enabled (true) or not (false).
+The above configuration snippet allows you to export metrics to a Graphite monitoring system. Graphite is a popular time-series database that can store and visualize metrics data.
+
+To customize and export metrics to different monitoring systems or databases, you can refer to the [Micrometer documentation](https://micrometer.io/docs) for more details on available options and configurations.
+
+By using Micrometer, you can collect, analyze, and visualize application metrics effectively, helping you gain insights into your application's performance and behavior. It provides a seamless integration with various monitoring and alerting systems, making it a valuable tool for monitoring your application's health and performance.
+
+Feel free to explore the Micrometer documentation for more advanced configurations and integration options with your preferred monitoring system.
+
+
+#### HSM Configuration
+
+The High-Security Module (HSM) configuration allows you to specify the type of HSM gateway to use and its related parameters. Currently, two types of HSM gateways are supported: "LunaHSM" and "NoOpHSM."
+
+##### Configuration Options
+
+`enabled_gateway` (string)
+- Description: Specifies the type of HSM gateway to enable.
+- Possible Values:
+  - "LunaHSM": Enable the Luna HSM gateway.
+  - "NoOpHSM": Enable the NoOp HSM gateway (No operation, a mock HSM for testing).
+
+`gateway` (object)
+- Description: Additional configuration options specific to the enabled HSM gateway.
+
+
+  For "LunaHSM" enabled_gateway:
+- Description: If you have chosen to enable the "LunaHSM" gateway, you can further configure the Luna HSM connection parameters.
+- Properties:
+  - ip (string): The IP address of the Luna HSM.
+  - port (integer): The port number to connect to the Luna HSM.
+  - timeout (integer): The timeout (in seconds) for the connection to the Luna HSM.
+
+##### Example Usage
 ```yaml
 hsm:
   enabled_gateway: "NoOpHSM"
@@ -113,16 +162,14 @@ hsm:
       ip: "127.0.0.1"
       port: 8080
       timeout: 1
-
 ```
+In the above example, the "LunaHSM" gateway is enabled, and the Luna HSM is configured with the IP address "127.0.0.1," port "8080," and a connection timeout of "1" second.
 
-hsm: This section contains the configuration related to the Hardware Security Module (HSM).
-enabled_gateway: This attribute specifies the HSM gateway to be used. In this example, it is set to "NoOpHSM", indicating the use of the NoOp (No Operation) HSM, which means no real HSM is configured.
-gateway: This subsection contains the specific HSM gateway settings.
-luna: This subsection specifies the configuration for the Luna HSM gateway.
-ip: This attribute defines the IP address of the Luna HSM gateway. In this example, it is set to "127.0.0.1", which is a loopback address indicating that the HSM gateway is running on the same machine.
-port: This attribute defines the port number on which the Luna HSM gateway is listening. In this example, it is set to 8080.
-timeout: This attribute specifies the timeout duration (in seconds) for HSM operations. In this example, it is set to 1 second.
+If you want to use the "NoOpHSM" gateway, you do not need to provide any additional configuration, as it is a mock HSM used for testing purposes.
+
+Please make sure to choose the appropriate HSM gateway type and provide the relevant configuration parameters based on your use case and requirements. If you have any further questions or need assistance, feel free to reach out to our support team.
+
+
 Feel free to customize these configuration attributes according to your specific ACS deployment requirements. The acs.yml file allows you to fine-tune the ACS behavior and settings based on your needs.
 
 ### Conclusion
