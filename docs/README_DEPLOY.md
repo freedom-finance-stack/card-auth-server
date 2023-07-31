@@ -12,7 +12,7 @@ The ACS server can be deployed using the following methods:
 4. Kubernetes
 5. Using Built-In Automated Shell Script
 
-For each deploym    ent option, you can provide the `acs.yml` configuration file to customize the server's behavior and settings.
+For each deploym    ent option, you can provide the `acs.yml` configuration file to customize the server's behavior and settings. find out more acs.yml [here](#acs-configuration-acsyml-explained)
 
 ### 1. Running the JAR Command
 
@@ -86,13 +86,14 @@ Prefix card-auth-server-acs with the name of your ACS Docker image.
 if you want to use external yaml file, add EXTERNAL_YAML_PATH=/config/external/sample-acs.yml inside scripts/deployment/dev/cas-acs-dev-deployment.sh
 Note: use absolute path for config file and make sure to run script from root directory of project.
 
-### ACS Configuration (acs.yml) Explained
+## ACS Configuration (acs.yml) Explained
 Below is the explanation of the attributes present in the acs.yml configuration file:
+Sample acy yaml is located [here](https://github.com/freedom-finance-stack/card-auth-server/blob/master/config/external/sample-acs.yml).
 
-#### ACS (Card Auth Server) configuration.
+### ACS (Card Auth Server) configuration.
 The ACS (Access Control Server) configuration allows you to customize various settings for the Access Control Server. Below are the available configuration options:
 
-##### Example Configuration
+#### Example Configuration
 ```yaml
 acs:
   referenceNumber: 99995678901234567890
@@ -109,7 +110,7 @@ acs:
    - `amex`: The operator ID for American Express card network.
 
   
-#### Micrometer Metrics Configuration for Monitoring
+### Micrometer Metrics Configuration for Monitoring
 
 Micrometer is a powerful library for application monitoring and metrics collection. It provides a flexible way to export metrics to various monitoring systems. To configure Micrometer metrics in your application, you can use the following YAML configuration:
 
@@ -130,11 +131,11 @@ By using Micrometer, you can collect, analyze, and visualize application metrics
 Feel free to explore the Micrometer documentation for more advanced configurations and integration options with your preferred monitoring system.
 
 
-#### HSM Configuration
+### HSM Configuration
 
 The High-Security Module (HSM) configuration allows you to specify the type of HSM gateway to use and its related parameters. Currently, two types of HSM gateways are supported: "LunaHSM" and "NoOpHSM."
 
-##### Configuration Options
+#### Configuration Options
 
 `enabled_gateway` (string)
 - Description: Specifies the type of HSM gateway to enable.
@@ -153,7 +154,7 @@ The High-Security Module (HSM) configuration allows you to specify the type of H
   - port (integer): The port number to connect to the Luna HSM.
   - timeout (integer): The timeout (in seconds) for the connection to the Luna HSM.
 
-##### Example Usage
+#### Example Usage
 ```yaml
 hsm:
   enabled_gateway: "NoOpHSM"
@@ -172,6 +173,6 @@ Please make sure to choose the appropriate HSM gateway type and provide the rele
 
 Feel free to customize these configuration attributes according to your specific ACS deployment requirements. The acs.yml file allows you to fine-tune the ACS behavior and settings based on your needs.
 
-### Conclusion
+## Conclusion
 Congratulations! You now know how to deploy the ACS server using various methods and how to provide the acs.yml configuration file for each deployment option. Enjoy using the ACS server and feel free to contribute to the project on GitHub.
 
