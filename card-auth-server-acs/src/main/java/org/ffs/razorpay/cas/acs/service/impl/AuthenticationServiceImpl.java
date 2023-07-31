@@ -69,9 +69,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             areqValidator.validateRequest(areq);
 
             // todo check duplicate transaction once threeDSmethod is implemented
-
+            transaction = transactionService.create(areq);
             // create transaction entity and save
-            transaction = transactionService.saveOrUpdate(transactionService.create(areq));
+            transaction = transactionService.saveOrUpdate(transaction);
 
             // get range and institution entity and verify
             cardRange = rangeService.findByPan(areq.getAcctNumber());
@@ -116,14 +116,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
 
         } catch (ThreeDSException ex) {
+            log.error(" Message {}, Internal Error code {}", ex.getMessage(), ex.getInternalErrorCode());
             transaction =
                     updateTransactionPhaseWithError(
                             ex.getThreeDSecureErrorCode(), ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (ACSException ex) {
+            log.error(" Message {}, Internal Error code {}", ex.getMessage(), ex.getErrorCode());
             transaction = updateTransactionForACSException(ex.getErrorCode(), transaction);
         } catch (Exception ex) {
+            log.error(" Message {}, Error string {}", ex.getMessage(), ex.toString());
             transaction =
                     updateTransactionPhaseWithError(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
