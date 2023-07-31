@@ -44,7 +44,7 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.springframework: INFO
-    com.razorpay.threeds: INFO
+    org.ffs: INFO
 
 
 swagger:

@@ -67,14 +67,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <version>${spring.version}</version>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-            <version>${spring.version}</version>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <dependency>
@@ -85,7 +85,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
-            <version>${spring.version}</version>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <dependency>
@@ -103,6 +103,11 @@
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-ip</artifactId>
             <version>5.5.18</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ffs</groupId>
+            <artifactId>card-auth-server-extensions</artifactId>
         </dependency>
 
         <dependency>
@@ -179,7 +184,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>${start-class}</mainClass>
                     <layout>ZIP</layout>

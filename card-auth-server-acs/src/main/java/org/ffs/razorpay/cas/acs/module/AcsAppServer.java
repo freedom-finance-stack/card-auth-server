@@ -9,7 +9,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(
-        scanBasePackages = {"org.ffs.razorpay.cas.acs", "org.ffs.razorpay.cas.dao"},
+        scanBasePackages = {
+            "org.ffs.razorpay.cas.acs",
+            "org.ffs.razorpay.cas.dao",
+            "org.ffs.extensions"
+        },
         exclude = {JacksonAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = {"org.ffs.razorpay.cas.dao.repository"})
 @EntityScan(basePackages = {"org.ffs.razorpay.cas.dao.model"})

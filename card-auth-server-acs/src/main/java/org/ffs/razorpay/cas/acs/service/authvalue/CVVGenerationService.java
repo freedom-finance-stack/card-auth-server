@@ -1,17 +1,11 @@
 package org.ffs.razorpay.cas.acs.service.authvalue;
 
-import org.ffs.razorpay.cas.acs.constant.InternalConstants;
-import org.ffs.razorpay.cas.acs.constant.LunaHSMConstants;
-import org.ffs.razorpay.cas.acs.exception.HSMConnectionException;
+import org.ffs.extensions.hsm.cvv.CVVFacade;
+import org.ffs.extensions.hsm.message.HSMMessage;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
 import org.ffs.razorpay.cas.acs.exception.checked.ACSException;
-import org.ffs.razorpay.cas.acs.hsm.CvvHSM;
-import org.ffs.razorpay.cas.acs.hsm.luna.LunaCvvHSMImpl;
-import org.ffs.razorpay.cas.acs.hsm.noop.NoOpCvvHSMImpl;
 import org.ffs.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
@@ -23,34 +17,22 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CVVGenerationService {
 
-    private final ApplicationContext applicationContext;
-
-    @Value("${hsm.enabled_gateway}")
-    private String enabledHSMGateway;
+    private final CVVFacade cvvFacade;
 
     public String generateCVV(@NonNull final Transaction transaction, @NonNull final String data)
             throws ACSException {
-        CvvHSM cvvHSM = getCvvHSMImpl(enabledHSMGateway);
         try {
-            return cvvHSM.generateCVV(transaction, data);
-        } catch (HSMConnectionException hsmConnectionException) {
+            return cvvFacade.generateCVV(createHSMMessage(transaction, data));
+        } catch (Exception e) {
+            log.error("generateCVV() Exception Occurred in generating CVV", e);
             throw new ACSException(InternalErrorCode.HSM_INTERNAL_EXCEPTION);
         }
     }
 
-    /**
-     * Factory Method to fetch correct HSM configured
-     *
-     * @param hsmConfigured
-     * @return {@link CvvHSM}
-     */
-    private CvvHSM getCvvHSMImpl(String hsmConfigured) {
-        if (InternalConstants.NO_OP_HSM.equals(hsmConfigured)) {
-            return applicationContext.getBean(NoOpCvvHSMImpl.class);
-        } else if (LunaHSMConstants.LUNA_HSM.equals(hsmConfigured)) {
-            return applicationContext.getBean(LunaCvvHSMImpl.class);
-        }
+    private HSMMessage createHSMMessage(
+            @NonNull final Transaction transaction, @NonNull final String data) {
 
-        throw new IllegalArgumentException("Invalid hsm configuration for hsm: {}" + hsmConfigured);
+        // todo - fix logic for fetching hsm kcv from database
+        return new HSMMessage("hsm-key", data);
     }
 }
