@@ -4,7 +4,7 @@ app:
 
 metrics:
   export:
-    graphite:
+    prometheus:
       enabled: true
 
 hsm:
