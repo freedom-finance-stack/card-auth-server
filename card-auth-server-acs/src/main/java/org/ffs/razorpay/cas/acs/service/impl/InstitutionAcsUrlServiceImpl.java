@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  * corresponding InstitutionAcsUrl entity based on the given primary key.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 @Service

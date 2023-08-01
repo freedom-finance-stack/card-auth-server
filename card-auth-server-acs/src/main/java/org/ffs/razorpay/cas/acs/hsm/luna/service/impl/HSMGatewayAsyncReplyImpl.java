@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-/** @author */
 @Service("hSMGatewayAsyncReplyImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class HSMGatewayAsyncReplyImpl implements HSMGatewayAsyncReply<Object, Message<?>> {

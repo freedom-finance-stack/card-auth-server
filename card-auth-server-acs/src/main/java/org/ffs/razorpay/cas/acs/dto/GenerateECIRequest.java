@@ -14,7 +14,7 @@ import lombok.Data;
  * annotation {@code @Data}, which automatically generates data methods for this class.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 @Data

@@ -37,7 +37,7 @@ import static org.ffs.razorpay.cas.acs.validator.rules.WhenRule.when;
  * the name "authenticationRequestValidator".
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 @Slf4j

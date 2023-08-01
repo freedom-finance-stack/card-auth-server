@@ -12,7 +12,7 @@ import org.ffs.razorpay.cas.dao.model.InstitutionAcsUrlPK;
  * primary key.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 public interface InstitutionAcsUrlService {

@@ -8,7 +8,7 @@ import org.ffs.razorpay.cas.acs.dto.GenerateECIRequest;
  * request and is used in 3D Secure transactions to convey the result of the authentication.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 public interface ECommIndicatorService {

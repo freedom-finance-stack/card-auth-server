@@ -11,7 +11,7 @@ import org.ffs.razorpay.cas.contract.ThreeDSObject;
  *
  * @param <T> The type of ThreeDSObject to be validated.
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author ankitChoudhary
  */
 public interface ThreeDSValidator<T extends ThreeDSObject> {

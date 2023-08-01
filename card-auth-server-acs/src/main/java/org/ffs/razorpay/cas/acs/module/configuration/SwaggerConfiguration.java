@@ -15,6 +15,16 @@ import lombok.Setter;
 
 import static io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP;
 
+/**
+ * The {@code SwaggerConfiguration} class is a Spring configuration class that sets up and
+ * configures the Swagger OpenAPI documentation for the ACS (Access Control Server) module. It
+ * defines the API information, including title, version, description, and contact details. It also
+ * configures the security scheme for the API, using bearer token authentication.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Getter
 @Setter
 @Configuration
@@ -37,6 +47,12 @@ public class SwaggerConfiguration {
 
     private String contactMail;
 
+    /**
+     * Creates and configures the OpenAPI object for Swagger documentation. It sets up API
+     * information and security schemes.
+     *
+     * @return The configured {@link OpenAPI} object.
+     */
     @Bean
     public OpenAPI openAPI() {
 

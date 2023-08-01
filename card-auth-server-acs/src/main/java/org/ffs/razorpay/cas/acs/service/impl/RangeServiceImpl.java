@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  * transaction data in the ACS (Access Control Server) system.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 @Slf4j

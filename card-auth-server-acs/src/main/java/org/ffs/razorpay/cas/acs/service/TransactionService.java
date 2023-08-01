@@ -9,7 +9,7 @@ import org.ffs.razorpay.cas.dao.model.Transaction;
  * The {@code TransactionService} interface provides methods to interact with the Transaction data.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 public interface TransactionService {

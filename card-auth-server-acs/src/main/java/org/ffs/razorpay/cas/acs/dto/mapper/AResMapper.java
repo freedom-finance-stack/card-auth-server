@@ -17,7 +17,7 @@ import org.mapstruct.Mapping;
  * entity and the {@link AREQ} request to the Authentication Response {@link ARES} DTO.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 @Mapper(

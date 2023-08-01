@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
  * Request (AReq), Challenge Request (Creq) from the 3DS Server.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author ankitChoudhary, jaydeepRadadiya
  */
 @RestController("acsController")

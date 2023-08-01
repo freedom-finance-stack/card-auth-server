@@ -13,7 +13,7 @@ import org.ffs.razorpay.cas.contract.ARES;
  * parameters.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author AnkitChoudhary
  */
 public interface AuthenticationService {

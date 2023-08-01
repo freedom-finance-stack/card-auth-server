@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * result of the authentication.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 @Service

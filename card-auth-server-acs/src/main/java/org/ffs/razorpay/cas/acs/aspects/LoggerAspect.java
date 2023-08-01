@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  * exceeds the specified log size limit.
  *
  * @version 1.0.0
- * @since ACS 1.0.0
+ * @since 1.0.0
  * @author jaydeepRadadiya
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
