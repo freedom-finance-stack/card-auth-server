@@ -15,11 +15,6 @@ import lombok.Setter;
 
 import static io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP;
 
-/**
- * Created on Ağustos, 2020
- *
- * @author Faruk
- */
 @Getter
 @Setter
 @Configuration

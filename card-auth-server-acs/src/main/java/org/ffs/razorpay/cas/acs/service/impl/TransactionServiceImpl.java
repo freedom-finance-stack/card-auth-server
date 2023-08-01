@@ -38,6 +38,14 @@ import static org.ffs.razorpay.cas.contract.constants.EMVCOConstant.appDeviceInf
 import static org.ffs.razorpay.cas.contract.constants.EMVCOConstant.appDeviceInfoIOS;
 import static org.ffs.razorpay.cas.contract.utils.Util.DATE_FORMAT_YYYYMMDDHHMMSS;
 
+/**
+ * Implementation of the TransactionService interface that provides functionality to interact with
+ * the Transaction database table and create, update, and retrieve transaction records.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j

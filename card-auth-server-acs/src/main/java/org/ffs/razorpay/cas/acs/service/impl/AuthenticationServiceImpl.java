@@ -34,12 +34,22 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code AuthenticationServiceImpl} class is an implementation of the {@link
+ * AuthenticationService} interface that handles authentication requests (AReq) and generates
+ * authentication responses (Ares) in the ACS (Access Control Server) functionality. This service is
+ * responsible for processing incoming AReq messages, validating the requests, generating Ares
+ * messages, and managing transaction details in the ACS system.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Slf4j
 @Service("authenticationServiceImpl")
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+// @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final TransactionService transactionService;
@@ -51,9 +61,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AResMapper aResMapper;
     private final InstitutionAcsUrlService institutionAcsUrlService;
 
+    @Autowired
+    AuthenticationServiceImpl(
+            TransactionService transactionService,
+            TransactionMessageTypeService transactionMessageTypeService,
+            RangeService rangeService,
+            CardDetailService cardDetailService,
+            AuthValueGeneratorService authValueGeneratorService,
+            ECommIndicatorService eCommIndicatorService,
+            AResMapper aResMapper,
+            InstitutionAcsUrlService institutionAcsUrlService,
+            @Qualifier(value = "authenticationRequestValidator") ThreeDSValidator<AREQ> areqValidator) {
+        this.transactionService = transactionService;
+        this.transactionMessageTypeService = transactionMessageTypeService;
+        this.rangeService = rangeService;
+        this.cardDetailService = cardDetailService;
+        this.authValueGeneratorService = authValueGeneratorService;
+        this.eCommIndicatorService = eCommIndicatorService;
+        this.aResMapper = aResMapper;
+        this.institutionAcsUrlService = institutionAcsUrlService;
+        this.areqValidator = areqValidator;
+    }
+
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
-    // Method to handle authentication requests (AReq) and generate authentication response (Ares).
+    /**
+     * Process the authentication request (AReq) and generate the authentication response (Ares).
+     *
+     * @param areq The {@link AREQ} The authentication request (AReq) object containing the details
+     *     of the incoming request.
+     * @return ares The {@link ARES} The authentication response (Ares) object containing the
+     *     details of the generated response.
+     * @throws ThreeDSException If any ThreeDSException occurs during the processing of the AReq,
+     *     indicating that an "Erro" message type should be sent in the response.
+     * @throws ACSDataAccessException If any ACSDataAccessException occurs during the processing of
+     *     the AReq, indicating that an "Erro" message type should be sent in the response.
+     */
     @Override
     public ARES processAuthenticationRequest(@NonNull AREQ areq)
             throws ThreeDSException, ACSDataAccessException {

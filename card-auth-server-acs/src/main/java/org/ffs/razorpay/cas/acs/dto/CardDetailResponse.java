@@ -5,6 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * The {@code CardDetailResponse} class represents a response object containing card details and
+ * other information related to the card retrieval operation.
+ *
+ * <p>This class is annotated with Lombok annotations {@code @Data}, {@code @NoArgsConstructor},
+ * {@code @AllArgsConstructor}, and {@code @Builder}, which automatically generate data methods,
+ * constructors, and builder methods for this class.
+ *
+ * @version 1.0.0
+ * @since ACS 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

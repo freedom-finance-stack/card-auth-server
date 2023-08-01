@@ -12,12 +12,32 @@ import org.ffs.razorpay.cas.dao.model.Transaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/**
+ * The {@code AResMapper} interface is responsible for mapping data from the {@link Transaction}
+ * entity and the {@link AREQ} request to the Authentication Response {@link ARES} DTO.
+ *
+ * @version 1.0.0
+ * @since ACS 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Mapper(
         uses = {HelperMapper.class},
         componentModel = "spring",
         imports = {TransactionStatus.class, MessageCategory.class, Network.class})
 public interface AResMapper {
 
+    /**
+     * Converts the Authentication Request (AREQ) and Transaction objects to an Authentication
+     * Response (ARES) object. it uses MapStruct, which provides annotations to specify which
+     * attribute to map where, with processing if needed.
+     *
+     * @param areq The {@link AREQ} object representing the Authentication Request message received
+     *     from the 3DS Server.
+     * @param transaction The {@link Transaction} object representing the transaction details.
+     * @param aResMapperParams The {@link AResMapperParams} object containing additional parameters
+     *     for mapping.
+     * @return The {@link ARES} object representing the Authentication Response message.
+     */
     @Mapping(target = "acsChallengeMandated", source = "transaction.challengeMandated")
     @Mapping(
             target = "acsDecConInd",
