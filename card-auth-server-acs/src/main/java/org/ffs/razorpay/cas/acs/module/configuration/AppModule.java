@@ -21,9 +21,6 @@ public class AppModule {
 
     @Bean
     public UndertowServletWebServerFactory undertowServletWebServerFactory() {
-        log.info(
-                "AppConfiguration ReferenceNumber: "
-                        + appConfiguration.getAcs().getReferenceNumber());
         UndertowServletWebServerFactory undertowServletWebServerFactory =
                 new UndertowServletWebServerFactory();
         undertowServletWebServerFactory.addDeploymentInfoCustomizers(

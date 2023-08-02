@@ -84,22 +84,14 @@ Prefix card-auth-server-acs with the name of your ACS Docker image.
 * Run below command
     ```
     sh ./scripts/deployment/dev/cas-acs-dev-deployment.sh
-<<<<<<< HEAD
-
-=======
     ```
->>>>>>> master
 if you want to use external yaml file, add EXTERNAL_YAML_PATH=/config/external/sample-acs.yml inside scripts/deployment/dev/cas-acs-dev-deployment.sh
 Note: use absolute path for config file and make sure to run script from root directory of project.
 
 ## ACS Configuration (acs.yml) Explained
 Below is the explanation of the attributes present in the acs.yml configuration file:
 
-<<<<<<< HEAD
-Sample acs.yml is located [here](https://github.com/freedom-finance-stack/card-auth-server/blob/master/config/external/sample-acs.yml).
-=======
 Sample acs.yml is located [here](../config/external/sample-acs.yml). File name has to be acs.yml
->>>>>>> master
 
 ### ACS (Card Auth Server) configuration.
 The ACS (Access Control Server) configuration allows you to customize various settings for the Access Control Server. Below are the available configuration options:
