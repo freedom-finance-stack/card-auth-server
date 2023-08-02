@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -25,13 +26,23 @@ public class IsDate implements Validator<String> {
         if (Util.isNullorBlank(value)) {
             return;
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(acceptedFormat);
-        sdf.setLenient(false);
-        try {
-            sdf.parse(value);
-        } catch (ParseException ex) {
+        if (!isValidDateFormat(value, this.acceptedFormat)) {
             throw new ValidationException(
                     ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid date format");
+        }
+    }
+
+    private boolean isValidDateFormat(String value, String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        sdf.setLenient(false);
+
+        try {
+            Date parsedDate = sdf.parse(value);
+            String formattedDate = sdf.format(parsedDate);
+            // Compare the formatted date with the original value to ensure accurate validation
+            return formattedDate.equals(value);
+        } catch (ParseException e) {
+            return false;
         }
     }
 }
