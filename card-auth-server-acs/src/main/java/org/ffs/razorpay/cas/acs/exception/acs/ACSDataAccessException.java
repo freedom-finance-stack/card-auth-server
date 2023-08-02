@@ -1,4 +1,4 @@
-package org.ffs.razorpay.cas.acs.exception.checked;
+package org.ffs.razorpay.cas.acs.exception.acs;
 
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
 

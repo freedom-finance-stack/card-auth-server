@@ -2,9 +2,9 @@ package org.ffs.razorpay.cas.acs.service.authvalue;
 
 import org.ffs.razorpay.cas.acs.constant.InternalConstants;
 import org.ffs.razorpay.cas.acs.constant.LunaHSMConstants;
-import org.ffs.razorpay.cas.acs.exception.HSMConnectionException;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSException;
+import org.ffs.razorpay.cas.acs.exception.threeds.HSMConnectionException;
 import org.ffs.razorpay.cas.acs.hsm.CvvHSM;
 import org.ffs.razorpay.cas.acs.hsm.luna.LunaCvvHSMImpl;
 import org.ffs.razorpay.cas.acs.hsm.noop.NoOpCvvHSMImpl;

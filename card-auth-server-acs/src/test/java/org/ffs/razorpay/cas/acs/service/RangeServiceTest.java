@@ -2,10 +2,10 @@ package org.ffs.razorpay.cas.acs.service;
 
 import java.util.stream.Stream;
 
-import org.ffs.razorpay.cas.acs.exception.DataNotFoundException;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.threeds.DataNotFoundException;
+import org.ffs.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.ffs.razorpay.cas.acs.service.impl.RangeServiceImpl;
 import org.ffs.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.ffs.razorpay.cas.dao.enums.CardRangeStatus;
@@ -50,7 +50,7 @@ public class RangeServiceTest {
     public void testFindByPanEmptyValue(String input) {
         DataNotFoundException exception =
                 assertThrows(DataNotFoundException.class, () -> rangeService.findByPan(input));
-        assertEquals("3007", exception.getMessage());
+        assertEquals("3007 : CARD RANGE NOT FOUND", exception.getMessage());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class RangeServiceTest {
                 assertThrows(
                         DataNotFoundException.class,
                         () -> rangeService.findByPan("4001400112341234"));
-        assertEquals("3007", exception.getMessage());
+        assertEquals("3007 : CARD RANGE NOT FOUND", exception.getMessage());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class RangeServiceTest {
     }
 
     @Test
-    public void validateRangeTest() throws ACSException, DataNotFoundException {
+    public void validateRangeTest() throws TransactionDataNotValidException, DataNotFoundException {
         CardRange cardRange = getCardRange(CardRangeStatus.ACTIVE, InstitutionStatus.ACTIVE);
         rangeService.validateRange(cardRange);
     }
@@ -90,9 +90,11 @@ public class RangeServiceTest {
     @MethodSource("provideCardRangeNegative")
     public void validateCardRangeTestNegative(
             CardRange cardRange, InternalErrorCode internalErrorCode) {
-        ACSException exception =
-                assertThrows(ACSException.class, () -> rangeService.validateRange(cardRange));
-        assertEquals(internalErrorCode, exception.getErrorCode());
+        TransactionDataNotValidException exception =
+                assertThrows(
+                        TransactionDataNotValidException.class,
+                        () -> rangeService.validateRange(cardRange));
+        assertEquals(internalErrorCode, exception.getInternalErrorCode());
     }
 
     @ParameterizedTest

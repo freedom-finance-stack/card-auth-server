@@ -2,9 +2,9 @@ package org.ffs.razorpay.cas.acs.service.impl;
 
 import java.util.Optional;
 
-import org.ffs.razorpay.cas.acs.exception.DataNotFoundException;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.ffs.razorpay.cas.acs.service.InstitutionAcsUrlService;
 import org.ffs.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.ffs.razorpay.cas.dao.model.InstitutionAcsUrl;

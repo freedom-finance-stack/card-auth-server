@@ -1,7 +1,7 @@
 package org.ffs.razorpay.cas.acs.service;
 
-import org.ffs.razorpay.cas.acs.exception.ThreeDSException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.ffs.razorpay.cas.contract.AREQ;
 import org.ffs.razorpay.cas.contract.ARES;
 

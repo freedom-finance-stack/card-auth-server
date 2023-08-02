@@ -1,6 +1,6 @@
 package org.ffs.razorpay.cas.acs.validator.rules;
 
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 
 public interface Rule<T> {
     void validate(T value) throws ValidationException;

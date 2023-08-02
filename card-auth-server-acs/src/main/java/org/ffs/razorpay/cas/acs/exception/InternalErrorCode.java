@@ -31,10 +31,11 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "INSTITUTION NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.NO_CARD_RECORD),
+
     INSTITUTION_INACTIVE(
             "3002",
             "INSTITUTION INACTIVE",
-            TransactionStatus.FAILED,
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
     INSTITUTION_FETCH_EXCEPTION(
             "3003",
@@ -46,8 +47,9 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
     CARD_RANGE_NOT_ACTIVE(
             "3006",
             "CARD RANGE NOT ACTIVE",
-            TransactionStatus.REJECTED,
+            TransactionStatus.FAILED,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
+
     CARD_RANGE_NOT_FOUND(
             "3007",
             "CARD RANGE NOT FOUND",
@@ -97,7 +99,7 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
     INTERNAL_SERVER_ERROR(
             "501",
             "INTERNAL SERVER ERROR",
-            TransactionStatus.FAILED,
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     /** LUNA HSM Related Error Codes */

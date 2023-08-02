@@ -1,6 +1,6 @@
 package org.ffs.razorpay.cas.acs.hsm.luna;
 
-import org.ffs.razorpay.cas.acs.exception.HSMConnectionException;
+import org.ffs.razorpay.cas.acs.exception.threeds.HSMConnectionException;
 import org.ffs.razorpay.cas.acs.hsm.CvvHSM;
 import org.ffs.razorpay.cas.acs.hsm.luna.command.HsmCommand;
 import org.ffs.razorpay.cas.acs.hsm.luna.command.LunaHsmUtility;

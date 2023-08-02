@@ -1,7 +1,7 @@
 package org.ffs.razorpay.cas.acs.service;
 
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.ffs.razorpay.cas.contract.AREQ;
 import org.ffs.razorpay.cas.dao.model.Transaction;
 

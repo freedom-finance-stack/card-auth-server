@@ -1,6 +1,6 @@
 package org.ffs.razorpay.cas.acs.validator.rules;
 
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 
 import lombok.extern.slf4j.Slf4j;
 
