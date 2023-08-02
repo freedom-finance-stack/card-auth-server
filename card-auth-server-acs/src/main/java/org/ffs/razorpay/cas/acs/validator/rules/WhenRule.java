@@ -1,44 +1,37 @@
 package org.ffs.razorpay.cas.acs.validator.rules;
 
-import java.util.List;
-
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 
 public class WhenRule<T> implements Rule<T> {
     private final boolean condition;
-    private final List<Rule<T>> rules;
-    private List<Rule<T>> elseRules;
+    private final Rule<T> ifRule;
+    private Rule<T> elseRule;
 
-    public WhenRule(boolean condition, List<Rule<T>> rules, List<Rule<T>> elseRules) {
+    public WhenRule(boolean condition, Rule<T> rule, Rule<T> elseRule) {
         this.condition = condition;
-        this.rules = rules;
-        this.elseRules = elseRules;
+        this.ifRule = rule;
+        this.elseRule = elseRule;
     }
 
-    @SafeVarargs
-    public WhenRule(boolean condition, Rule<T>... rules) {
+    public WhenRule(boolean condition, Rule<T> rule) {
         this.condition = condition;
-        this.rules = List.of(rules);
+        this.ifRule = rule;
     }
 
-    public static <T> WhenRule<T> when(boolean condition, List<Rule<T>> rules) {
-        return new WhenRule<T>(condition, rules, List.of());
+    public static <T> WhenRule<T> when(boolean condition, Rule<T> rules) {
+        return new WhenRule<T>(condition, rules, null);
     }
 
-    public WhenRule<T> elseRules(List<Rule<T>> rules) {
-        return new WhenRule<T>(condition, this.rules, rules);
+    public WhenRule<T> elseRules(Rule<T> rule) {
+        return new WhenRule<T>(condition, this.ifRule, rule);
     }
 
     @Override
     public void validate(T value) throws ValidationException {
         if (condition) {
-            for (Rule<T> rule : rules) {
-                rule.validate(value);
-            }
-        } else if (elseRules != null) {
-            for (Rule<T> rule : elseRules) {
-                rule.validate(value);
-            }
+            this.ifRule.validate(value);
+        } else if (this.elseRule != null) {
+            this.elseRule.validate(value);
         }
     }
 }

@@ -106,7 +106,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.ffs</groupId>
+            <groupId>org.freedomfinancestack</groupId>
             <artifactId>card-auth-server-extensions</artifactId>
         </dependency>
 

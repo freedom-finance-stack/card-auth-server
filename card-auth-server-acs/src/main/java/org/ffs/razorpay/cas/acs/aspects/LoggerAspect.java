@@ -21,6 +21,18 @@ import org.springframework.stereotype.Component;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code LoggerAspect} class is an Aspect component that provides logging functionality for the
+ * ACS (Access Control Server) application. It intercepts method calls to log method entry, method
+ * exit, and method execution time in either DEBUG or INFO log level based on the configured
+ * pointcuts. This class is responsible for generating logs for specific packages and excluding
+ * certain packages from logging. It also includes logic to abbreviate the return value if it
+ * exceeds the specified log size limit.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Aspect
 @Component
@@ -28,8 +40,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LoggerAspect {
 
+    /**
+     * The default log message to be used when the return value is too large and needs to be
+     * abbreviated.
+     */
     private static final String DEFAULT_MASKED_LOG_MSG = "-----LARGE SIZE------";
 
+    /**
+     * The limit of log size after which the return value will be abbreviated. The default value is
+     * 10000.
+     */
     @Value("${logger.sizeLimit:10000}")
     private int logSizeLimit;
 
@@ -43,13 +63,17 @@ public class LoggerAspect {
                     + "execution(* com.razorpay.threeds.hsm..*(..))"
                     + ")";
 
+    /***
+     * This contains all the packages which should
+     * not generate at debug level
+     */
     private static final String BLACKLISTED_PACKAGES_DEBUG =
             "!("
                     + "execution(* com.razorpay.acs.dao.enums..*(..))"
                     + ")"; // Added repository as example, need change it once we have use case
     /***
      * This contains all the packages which should
-     * not be generated at INFO level
+     *  generate at INFO level
      */
     private static final String WHITELISTED_PACKAGES_INFO =
             "("
@@ -57,6 +81,10 @@ public class LoggerAspect {
                     + "execution(* com.razorpay.threeds.controller..*(..))"
                     + ")";
 
+    /***
+     * This contains all the packages which should
+     * not generate at info level
+     */
     private static final String BLACKLISTED_PACKAGES_INFO =
             "!(execution(* com.razorpay.threeds.service.authvalue..*(..)))";
 
@@ -65,11 +93,27 @@ public class LoggerAspect {
     private static final String DEBUG_POINTCUTS =
             WHITELISTED_PACKAGES_DEBUG + " && " + BLACKLISTED_PACKAGES_DEBUG;
 
+    /**
+     * Intercepts method calls for the packages specified in the DEBUG_POINTCUTS expression and logs
+     * method entry, method parameters, and method name in DEBUG log level.
+     *
+     * @param joinPoint The {@link ProceedingJoinPoint} representing the intercepted method call.
+     * @return The return value of the intercepted method call.
+     * @throws Throwable if an error occurs during the method execution.
+     */
     @Around(value = DEBUG_POINTCUTS)
     public Object logAroundInDebugMode(final ProceedingJoinPoint joinPoint) throws Throwable {
         return around(joinPoint, LogLevel.DEBUG);
     }
 
+    /**
+     * Intercepts method calls for the packages specified in the INFO_POINTCUTS expression and logs
+     * method entry, method parameters, and method name in INFO log level.
+     *
+     * @param joinPoint The {@link ProceedingJoinPoint} representing the intercepted method call.
+     * @return The return value of the intercepted method call.
+     * @throws Throwable if an error occurs during the method execution.
+     */
     @Around(value = INFO_POINTCUTS)
     public Object logAroundInInfoMode(final ProceedingJoinPoint joinPoint) throws Throwable {
         return around(joinPoint, LogLevel.INFO);

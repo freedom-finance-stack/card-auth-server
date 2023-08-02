@@ -6,9 +6,9 @@ import org.ffs.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.ffs.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.ffs.razorpay.cas.acs.dto.mapper.AResMapper;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.ThreeDSException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.ffs.razorpay.cas.acs.service.AuthenticationService;
 import org.ffs.razorpay.cas.acs.service.ECommIndicatorService;
 import org.ffs.razorpay.cas.acs.service.InstitutionAcsUrlService;
@@ -37,6 +37,17 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code AuthenticationServiceImpl} class is an implementation of the {@link
+ * AuthenticationService} interface that handles authentication requests (AReq) and generates
+ * authentication responses (Ares) in the ACS (Access Control Server) functionality. This service is
+ * responsible for processing incoming AReq messages, validating the requests, generating Ares
+ * messages, and managing transaction details in the ACS system.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Slf4j
 @Service("authenticationServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -53,6 +64,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
+    /**
+     * Process the authentication request (AReq) and generate the authentication response (Ares).
+     *
+     * @param areq The {@link AREQ} The authentication request (AReq) object containing the details
+     *     of the incoming request.
+     * @return ares The {@link ARES} The authentication response (Ares) object containing the
+     *     details of the generated response.
+     * @throws ThreeDSException If any ThreeDSException occurs during the processing of the AReq,
+     *     indicating that an "Erro" message type should be sent in the response.
+     * @throws ACSDataAccessException If any ACSDataAccessException occurs during the processing of
+     *     the AReq, indicating that an "Erro" message type should be sent in the response.
+     */
     @Override
     public ARES processAuthenticationRequest(@NonNull AREQ areq)
             throws ThreeDSException, ACSDataAccessException {
@@ -69,9 +92,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             areqValidator.validateRequest(areq);
 
             // todo check duplicate transaction once threeDSmethod is implemented
-
-            // create transaction entity and save
-            transaction = transactionService.saveOrUpdate(transactionService.create(areq));
+            // Create and Save transaction in DB
+            transaction = transactionService.create(areq);
+            transaction = transactionService.saveOrUpdate(transaction);
 
             // get range and institution entity and verify
             cardRange = rangeService.findByPan(areq.getAcctNumber());
@@ -86,6 +109,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                     areq.getDeviceChannel(),
                                     cardRange.getNetwork().getCode()));
 
+            // fetch Card and User details and validate details
             CardDetailsRequest cardDetailsRequest =
                     new CardDetailsRequest(
                             cardRange.getCardRangeGroup().getInstitution().getId(),
@@ -96,6 +120,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             cardDetailService.validateCardDetails(
                     cardDetailResponse, cardRange.getCardDetailsStore());
 
+            // Determine if challenge is required and update transaction accordingly
             if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
                 transaction.setChallengeMandated(true);
                 // todo add timer logic for challenge
@@ -116,14 +141,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
 
         } catch (ThreeDSException ex) {
+            // NOTE : to send Erro in response throw ThreeDSException, otherwise
+
+            // to return ARES handle ACSException and next code will convert it to
+            // ARes
+
+            // Handle any ThreeDSException by sending "Erro" message type as a response.
+            // updating transaction with error and updating DB and add transaction details in error
+            // message
+            // throw ThreeDSException again so that it returns to client with error message, it is
+            // handled in ResponseEntityExceptionHandler
+            log.error(
+                    " Message {}, Internal Error code {}",
+                    ex.getMessage(),
+                    ex.getInternalErrorCode());
             transaction =
                     updateTransactionPhaseWithError(
                             ex.getThreeDSecureErrorCode(), ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (ACSException ex) {
+            // Handle any ACSException by sending Ares message type as a response.
+            // updating transaction with error and updating DB
+            log.error(" Message {}, Internal Error code {}", ex.getMessage(), ex.getErrorCode());
             transaction = updateTransactionForACSException(ex.getErrorCode(), transaction);
         } catch (Exception ex) {
+            // Handle any Exception by sending "Erro" message type as a response.
+            // updating transaction with error and updating DB and add transaction details in error
+            // message
+            // throw ThreeDSException again so that it returns to client with error message, it is
+            // handled in ResponseEntityExceptionHandler
+            log.error(" Message {}, Error string {}", ex.getMessage(), ex.toString());
             transaction =
                     updateTransactionPhaseWithError(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
@@ -133,6 +181,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
         }
 
+        // If everything is successful, send Ares message type as a response.
         try {
             String eci =
                     eCommIndicatorService.generateECI(
@@ -142,7 +191,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);
-            // Generate and Store Ares
             ares =
                     aResMapper.toAres(
                             areq,
@@ -151,6 +199,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
             transaction.setPhase(Phase.ARES);
         } catch (Exception ex) {
+            // updating transaction with error and updating DB
+            // throw ThreeDSException again so that it returns to client with error message, it is
+            // handled in ResponseEntityExceptionHandler
             transaction =
                     updateTransactionPhaseWithError(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,

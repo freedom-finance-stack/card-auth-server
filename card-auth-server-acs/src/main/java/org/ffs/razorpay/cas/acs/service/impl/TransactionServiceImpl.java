@@ -9,8 +9,8 @@ import java.util.Optional;
 import org.ffs.razorpay.cas.acs.constant.InternalConstants;
 import org.ffs.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.ffs.razorpay.cas.acs.service.TransactionService;
 import org.ffs.razorpay.cas.acs.utils.Util;
 import org.ffs.razorpay.cas.contract.AREQ;
@@ -38,6 +38,14 @@ import static org.ffs.razorpay.cas.contract.constants.EMVCOConstant.appDeviceInf
 import static org.ffs.razorpay.cas.contract.constants.EMVCOConstant.appDeviceInfoIOS;
 import static org.ffs.razorpay.cas.contract.utils.Util.DATE_FORMAT_YYYYMMDDHHMMSS;
 
+/**
+ * Implementation of the TransactionService interface that provides functionality to interact with
+ * the Transaction database table and create, update, and retrieve transaction records.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j

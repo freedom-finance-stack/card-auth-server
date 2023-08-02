@@ -1,5 +1,6 @@
-package org.ffs.razorpay.cas.acs.exception;
+package org.ffs.razorpay.cas.acs.exception.threeds;
 
+import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
 import org.ffs.razorpay.cas.contract.ThreeDSecureErrorCode;
 
 import lombok.NonNull;

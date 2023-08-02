@@ -22,8 +22,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-  config:
-    import: "optional:file:config/monitoring/monitor-properties.yaml"
 
 management:
   endpoints:
@@ -38,14 +36,20 @@ management:
       enabled: true         # needs security review, secure end point
     prometheus:
       enabled: true
-
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: false
+      graphite:
+        enabled: false
 
 logging:
   level:
     org.hibernate.SQL: DEBUG
     org.springframework: INFO
     org.ffs: INFO
-
 
 swagger:
   contact-name: Razorpay

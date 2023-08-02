@@ -1,6 +1,6 @@
 package org.ffs.razorpay.cas.acs.validator.rules;
 
-import org.ffs.razorpay.cas.acs.exception.ValidationException;
+import org.ffs.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.ffs.razorpay.cas.contract.ThreeDSecureErrorCode;
 
 public class NotNullRule<T> implements Rule<T> {

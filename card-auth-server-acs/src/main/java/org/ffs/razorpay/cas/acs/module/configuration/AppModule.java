@@ -9,10 +9,12 @@ import org.springframework.context.annotation.Primary;
 import io.undertow.conduits.GzipStreamSourceConduit;
 import io.undertow.server.handlers.encoding.RequestEncodingHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Primary
 @Configuration
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class AppModule {
 
     private final AppConfiguration appConfiguration;

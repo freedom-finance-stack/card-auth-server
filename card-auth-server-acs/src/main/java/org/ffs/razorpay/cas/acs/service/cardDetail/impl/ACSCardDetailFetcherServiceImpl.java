@@ -3,10 +3,10 @@ package org.ffs.razorpay.cas.acs.service.cardDetail.impl;
 import org.ffs.razorpay.cas.acs.dto.CardDetailResponse;
 import org.ffs.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.ffs.razorpay.cas.acs.dto.mapper.CardDetailsMapper;
-import org.ffs.razorpay.cas.acs.exception.DataNotFoundException;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
-import org.ffs.razorpay.cas.acs.exception.checked.CardBlockedException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.CardBlockedException;
+import org.ffs.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.ffs.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
 import org.ffs.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.ffs.razorpay.cas.dao.enums.CardDetailsStore;
@@ -19,6 +19,17 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code ACSCardDetailFetcherServiceImpl} class is an implementation of the {@link
+ * CardDetailFetcherService} interface specifically designed for the ACS (Access Control Server)
+ * card detail retrieval functionality. This service is responsible for fetching card details from
+ * the ACS system, validating the card data, and handling exceptions related to card retrieval and
+ * validation.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Slf4j
 @Service(CardDetailsStore.CardStoreTypeConstants.ACS)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

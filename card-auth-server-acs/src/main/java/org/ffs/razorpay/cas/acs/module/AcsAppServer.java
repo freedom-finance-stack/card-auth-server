@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         scanBasePackages = {
             "org.ffs.razorpay.cas.acs",
             "org.ffs.razorpay.cas.dao",
-            "org.ffs.extensions"
+            "org.freedomfinancestack.extensions"
         },
         exclude = {JacksonAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = {"org.ffs.razorpay.cas.dao.repository"})

@@ -2,9 +2,9 @@ package org.ffs.razorpay.cas.acs.service.impl;
 
 import java.util.Optional;
 
-import org.ffs.razorpay.cas.acs.exception.DataNotFoundException;
 import org.ffs.razorpay.cas.acs.exception.InternalErrorCode;
-import org.ffs.razorpay.cas.acs.exception.checked.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.ffs.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.ffs.razorpay.cas.acs.service.InstitutionAcsUrlService;
 import org.ffs.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.ffs.razorpay.cas.dao.model.InstitutionAcsUrl;
@@ -17,12 +17,28 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code InstitutionAcsUrlServiceImpl} class is the implementation of {@link
+ * InstitutionAcsUrlService}. The service is responsible for querying the data source to fetch the
+ * corresponding InstitutionAcsUrl entity based on the given primary key.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class InstitutionAcsUrlServiceImpl implements InstitutionAcsUrlService {
     private final InstitutionAcsUrlRepository institutionAcsUrlRepository;
 
+    /**
+     * @param institutionAcsUrlPK The {@link InstitutionAcsUrlPK} object representing the primary
+     *     key of the InstitutionAcsUrl entity to be fetched.
+     * @return
+     * @throws ACSDataAccessException
+     * @throws DataNotFoundException
+     */
     @Override
     public InstitutionAcsUrl findById(InstitutionAcsUrlPK institutionAcsUrlPK)
             throws ACSDataAccessException, DataNotFoundException {
