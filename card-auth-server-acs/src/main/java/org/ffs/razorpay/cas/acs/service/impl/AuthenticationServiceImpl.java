@@ -70,6 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             areqValidator.validateRequest(areq);
 
             // todo check duplicate transaction once threeDSmethod is implemented
+
             // Create and Save transaction in DB
             transaction = transactionService.create(areq);
             transaction = transactionService.saveOrUpdate(transaction);
@@ -118,9 +119,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 transaction.setAuthValue(authValue);
             }
 
-        } catch (
-                ThreeDSException
-                        ex) { // NOTE : to send Erro in response throw ThreeDSException, otherwise
+        } catch (ThreeDSException ex) {
+            // NOTE : to send Erro in response throw ThreeDSException, otherwise
+
             // to return ARES handle ACSException and next code will convert it to
             // ARes
 
@@ -129,6 +130,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // message
             // throw ThreeDSException again so that it returns to client with error message, it is
             // handled in ResponseEntityExceptionHandler
+
             log.error(
                     " Message {}, Internal Error code {}",
                     ex.getMessage(),
