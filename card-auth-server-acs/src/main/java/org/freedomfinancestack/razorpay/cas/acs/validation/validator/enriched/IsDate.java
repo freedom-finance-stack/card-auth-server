@@ -1,18 +1,23 @@
-package org.freedomfinancestack.razorpay.cas.acs.validator.rules;
+package org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
-public class IsValidDate implements Rule<String> {
+public class IsDate implements Validator<String> {
 
     private String acceptedFormat;
 
-    public IsValidDate(String acceptedFormat) {
+    public IsDate(String acceptedFormat) {
         this.acceptedFormat = acceptedFormat;
+    }
+
+    public static IsDate isDate(String acceptedFormat) {
+        return new IsDate(acceptedFormat);
     }
 
     @Override

@@ -1,10 +1,17 @@
-package org.freedomfinancestack.razorpay.cas.acs.validator.rules;
+package org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
-public class IsNumericRule implements Rule<String> {
+public class IsNumeric implements Validator<String> {
+    private static final IsNumeric INSTANCE = new IsNumeric();
+
+    public static IsNumeric isNumeric() {
+        return INSTANCE;
+    }
+
     @Override
     public void validate(String value) throws ValidationException {
         if (Util.isNullorBlank(value)) {
