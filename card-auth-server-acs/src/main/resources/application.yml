@@ -49,7 +49,7 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.springframework: INFO
-    org.ffs: INFO
+    org.freedomfinancestack: INFO
 
 swagger:
   contact-name: Razorpay
@@ -63,7 +63,7 @@ swagger:
 springdoc:
   show-actuator: true
   paths-to-match: /**
-  packages-to-scan: org.ffs.razorpay.cas.acs
+  packages-to-scan: org.freedomfinancestack.razorpay.cas.acs
 
 hsm:
   enabled_gateway: "NoOpHSM"

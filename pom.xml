@@ -6,7 +6,7 @@
     <!-- ========================================================================== -->
     <!-- THIS POM DEFINITIONS -->
     <!-- ========================================================================== -->
-    <groupId>org.ffs.razorpay.cas</groupId>
+    <groupId>org.freedomfinancestack.razorpay.cas</groupId>
     <artifactId>card-auth-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>Card Authentication Server</name>
