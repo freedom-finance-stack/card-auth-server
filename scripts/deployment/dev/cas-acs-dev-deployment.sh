@@ -9,9 +9,9 @@ mvn clean install -U
 echo "Project Compilation should be Success!!"
 
 echo "Creating docker images for Card Auth Server ACS & Mysql Server(used by Card Auth Server ACS)"
-# if you want to use external yaml file, uncomment below line and provide the path, use absulute path
-#EXTERNAL_YAML_PATH=/config/external/sample-acs.yml docker-compose -f ./scripts/deployment/dockerconf/card-auth-server-acs/docker-compose-dev.yaml up -d
-docker-compose -f ./scripts/deployment/dockerconf/card-auth-server-acs/docker-compose-dev.yaml up -d
+ACS_YAML_PATH=""
+#ACS_YAML_PATH=/config/external/sample-acs.yml
+EXTERNAL_YAML_PATH=$ACS_YAML_PATH docker-compose -f ./scripts/deployment/dockerconf/card-auth-server-acs/docker-compose-dev.yaml up -d
 
 echo "Sleeping for 10 seconds before checking if all dockers are up.."
 sleep 10

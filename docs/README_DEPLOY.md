@@ -1,6 +1,6 @@
 # Card Auth Server (ACS)
 
-The Card Auth Server (ACS) is a powerful and flexible server that provides authentication services for card transactions. This README provides instructions on how to deploy the ACS server using various methods and how to provide the `acs.yml` configuration file for each deployment option.
+The Card Auth Server (ACS) is a powerful and flexible server that provides authentication services for card transactions. This README provides instructions on how to deploy the ACS server using various methods and how to provide the `acs.yml` configuration file to customize the server's behavior and settings.
 
 ## Deployment Options
 
@@ -12,7 +12,9 @@ The ACS server can be deployed using the following methods:
 4. Kubernetes
 5. Using Built-In Automated Shell Script
 
-For each deploym    ent option, you can provide the `acs.yml` configuration file to customize the server's behavior and settings. find out more acs.yml [here](#acs-configuration-acsyml-explained)
+For each deployment option, you can provide the `acs.yml` configuration file to customize the server's behavior and settings. find out more acs.yml [here](#acs-configuration-acsyml-explained)
+
+NOTE: File name has to be acs.yml
 
 ### 1. Running the JAR Command
 
@@ -82,14 +84,14 @@ Prefix card-auth-server-acs with the name of your ACS Docker image.
 * Run below command
     ```
     sh ./scripts/deployment/dev/cas-acs-dev-deployment.sh
-
+    ```
 if you want to use external yaml file, add EXTERNAL_YAML_PATH=/config/external/sample-acs.yml inside scripts/deployment/dev/cas-acs-dev-deployment.sh
 Note: use absolute path for config file and make sure to run script from root directory of project.
 
 ## ACS Configuration (acs.yml) Explained
 Below is the explanation of the attributes present in the acs.yml configuration file:
 
-Sample acs.yml is located [here](https://github.com/freedom-finance-stack/card-auth-server/blob/master/config/external/sample-acs.yml).
+Sample acs.yml is located [here](../config/external/sample-acs.yml). File name has to be acs.yml
 
 ### ACS (Card Auth Server) configuration.
 The ACS (Access Control Server) configuration allows you to customize various settings for the Access Control Server. Below are the available configuration options:
