@@ -161,9 +161,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 transaction.setAuthValue(authValue);
             }
 
-        } catch (
-                ThreeDSException
-                        ex) { // NOTE : to send Erro in response throw ThreeDSException, otherwise
+        } catch (ThreeDSException ex) {
+            // NOTE : to send Erro in response throw ThreeDSException, otherwise
+
             // to return ARES handle ACSException and next code will convert it to
             // ARes
 
