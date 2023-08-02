@@ -1,0 +1,16 @@
+app:
+  acs:
+    referenceNumber: 99995678901234567890
+
+metrics:
+  export:
+    prometheus:
+      enabled: true
+
+hsm:
+  enabled_gateway: "NoOpHSM"
+  gateway:
+    luna:
+      ip: "127.0.0.1"
+      port: 8080
+      timeout: 1

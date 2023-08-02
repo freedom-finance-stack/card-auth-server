@@ -8,9 +8,11 @@ ENV CONTAINER_USERGROUP cas-acs
 ENV CURRENT_DIR_PATH scripts/deployment/dockerconf/card-auth-server-acs
 ARG CAS_ACS_SERVER_PORT=8080
 ENV CARD_AUTH_ACS_SERVER_PORT=$CAS_ACS_SERVER_PORT
-ENV MONITORING_DIR_PATH config/monitoring
+# for kubernetes mount configmap volumn to below path and provide acs.yml as configmap
+# for docker deployment copy file to below path using -v in run command
+# for running java -jar command use --spring.config.additional-location to provide external config file path
+ENV EXTERNAL_CONFIG_FILE_PATH /opt/card-auth-server/cas-acs/bin/config/acs.yml
 
-#Update repository
 RUN  apk update \
   && apk upgrade \
   && apk add ca-certificates \
@@ -47,8 +49,6 @@ RUN chmod +x -R $CAS_ACS_BIN_DIRECTORY
 COPY $CURRENT_DIR_PATH/supervisor /etc/supervisor/conf.d
 COPY $CURRENT_DIR_PATH/supervisor/supervisord.conf /etc/supervisord.conf
 
-#Copying monitoring config file in Docker
-COPY $MONITORING_DIR_PATH ${CAS_ACS_BIN_DIRECTORY}/monitoring
 
 #Docker Container HealthChecks
 HEALTHCHECK --retries=5 --interval=1m --timeout=10s CMD curl -f http://localhost:$CARD_AUTH_ACS_SERVER_PORT/actuator/health || exit 1

@@ -12,5 +12,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-  config:
-    import: "file:/opt/card-auth-server/cas-acs/bin/monitoring/monitor-properties.yaml"
