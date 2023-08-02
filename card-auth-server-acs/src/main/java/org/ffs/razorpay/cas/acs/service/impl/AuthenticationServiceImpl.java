@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -49,7 +50,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service("authenticationServiceImpl")
-// @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final TransactionService transactionService;
@@ -60,28 +61,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
     private final InstitutionAcsUrlService institutionAcsUrlService;
-
-    @Autowired
-    AuthenticationServiceImpl(
-            TransactionService transactionService,
-            TransactionMessageTypeService transactionMessageTypeService,
-            RangeService rangeService,
-            CardDetailService cardDetailService,
-            AuthValueGeneratorService authValueGeneratorService,
-            ECommIndicatorService eCommIndicatorService,
-            AResMapper aResMapper,
-            InstitutionAcsUrlService institutionAcsUrlService,
-            @Qualifier(value = "authenticationRequestValidator") ThreeDSValidator<AREQ> areqValidator) {
-        this.transactionService = transactionService;
-        this.transactionMessageTypeService = transactionMessageTypeService;
-        this.rangeService = rangeService;
-        this.cardDetailService = cardDetailService;
-        this.authValueGeneratorService = authValueGeneratorService;
-        this.eCommIndicatorService = eCommIndicatorService;
-        this.aResMapper = aResMapper;
-        this.institutionAcsUrlService = institutionAcsUrlService;
-        this.areqValidator = areqValidator;
-    }
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
