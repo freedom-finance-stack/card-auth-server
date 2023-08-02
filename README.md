@@ -54,7 +54,7 @@ You can start Card Auth Server ACS following below steps.
     curl --location 'http://127.0.0.1:8080/actuator/health'
     ```
 
-#### [Find out more on deployment](https://github.com/freedom-finance-stack/card-auth-server/blob/master/docs/README_DEPLOY.md)
+#### [Find out more on deployment](docs/README_DEPLOY.md)
 
 ## Documentation
 For information related to documents of this project, refer to [Docs Readme](docs/README.md)
