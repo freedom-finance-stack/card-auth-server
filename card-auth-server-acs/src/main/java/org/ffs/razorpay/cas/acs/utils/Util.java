@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @version 1.0.0
  * @since 1.0.0
- * @author ankitChoudhary, jaydeepRadadiya
+ * @author ankitchoudhary2209, jaydeepRadadiya
  */
 @Slf4j
 public class Util {

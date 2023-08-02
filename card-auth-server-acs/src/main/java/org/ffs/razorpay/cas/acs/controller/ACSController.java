@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @version 1.0.0
  * @since 1.0.0
- * @author ankitChoudhary, jaydeepRadadiya
+ * @author ankitchoudhary2209, jaydeepRadadiya
  */
 @RestController("acsController")
 @RequestMapping("/v1/transaction")

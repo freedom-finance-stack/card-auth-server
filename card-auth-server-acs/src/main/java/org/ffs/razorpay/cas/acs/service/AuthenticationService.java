@@ -14,7 +14,7 @@ import org.ffs.razorpay.cas.contract.ARES;
  *
  * @version 1.0.0
  * @since 1.0.0
- * @author AnkitChoudhary
+ * @author ankitchoudhary2209
  */
 public interface AuthenticationService {
 
