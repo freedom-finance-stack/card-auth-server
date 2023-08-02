@@ -20,12 +20,29 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code RangeServiceImpl} class is an implementation of the {@link RangeService} interface
+ * that provides functionality to fetch card range details and validate card ranges based on
+ * transaction data in the ACS (Access Control Server) system.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RangeServiceImpl implements RangeService {
     private final CardRangeRepository cardRangeRepository;
 
+    /**
+     * Fetches card range for given PAN
+     *
+     * @param pan
+     * @return The {@link CardRange} entity corresponding to the given primary key.
+     * @throws DataNotFoundException
+     * @throws ACSDataAccessException
+     */
     public CardRange findByPan(String pan) throws DataNotFoundException, ACSDataAccessException {
         if (StringUtils.isBlank(pan)) {
             log.error("PAN is null or empty");
@@ -54,6 +71,13 @@ public class RangeServiceImpl implements RangeService {
         return cardRange;
     }
 
+    /**
+     * Validates the CardRange entity based on the given transaction data.
+     *
+     * @param cardRange the {@link CardRange} entity to be validated.
+     * @throws TransactionDataNotValidException
+     * @throws DataNotFoundException
+     */
     public void validateRange(CardRange cardRange)
             throws TransactionDataNotValidException, DataNotFoundException {
         if (cardRange.getStatus() != CardRangeStatus.ACTIVE) {

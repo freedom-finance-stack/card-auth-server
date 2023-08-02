@@ -37,6 +37,17 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code AuthenticationServiceImpl} class is an implementation of the {@link
+ * AuthenticationService} interface that handles authentication requests (AReq) and generates
+ * authentication responses (Ares) in the ACS (Access Control Server) functionality. This service is
+ * responsible for processing incoming AReq messages, validating the requests, generating Ares
+ * messages, and managing transaction details in the ACS system.
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Slf4j
 @Service("authenticationServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -53,7 +64,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
-    // Method to handle authentication requests (AReq) and generate authentication response (Ares).
+    /**
+     * Process the authentication request (AReq) and generate the authentication response (Ares).
+     *
+     * @param areq The {@link AREQ} The authentication request (AReq) object containing the details
+     *     of the incoming request.
+     * @return ares The {@link ARES} The authentication response (Ares) object containing the
+     *     details of the generated response.
+     * @throws ThreeDSException If any ThreeDSException occurs during the processing of the AReq,
+     *     indicating that an "Erro" message type should be sent in the response.
+     * @throws ACSDataAccessException If any ACSDataAccessException occurs during the processing of
+     *     the AReq, indicating that an "Erro" message type should be sent in the response.
+     */
     @Override
     public ARES processAuthenticationRequest(@NonNull AREQ areq)
             throws ThreeDSException, ACSDataAccessException {
@@ -70,7 +92,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             areqValidator.validateRequest(areq);
 
             // todo check duplicate transaction once threeDSmethod is implemented
-
             // Create and Save transaction in DB
             transaction = transactionService.create(areq);
             transaction = transactionService.saveOrUpdate(transaction);
@@ -130,7 +151,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // message
             // throw ThreeDSException again so that it returns to client with error message, it is
             // handled in ResponseEntityExceptionHandler
-
             log.error(
                     " Message {}, Internal Error code {}",
                     ex.getMessage(),

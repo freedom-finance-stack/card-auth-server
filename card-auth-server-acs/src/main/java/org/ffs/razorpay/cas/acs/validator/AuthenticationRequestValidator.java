@@ -28,15 +28,39 @@ import lombok.extern.slf4j.Slf4j;
 
 import static org.ffs.razorpay.cas.acs.validator.rules.WhenRule.when;
 
+/**
+ * The {@code AuthenticationRequestValidator} class is responsible for validating the Authentication
+ * Request (AREQ) received from the 3DS Server.
+ *
+ * <p>This class is annotated with Lombok annotation {@code @Slf4j} to enable logging, and it is
+ * also annotated with Spring annotation {@code @Component} to mark it as a Spring component with
+ * the name "authenticationRequestValidator".
+ *
+ * @version 1.0.0
+ * @since 1.0.0
+ * @author jaydeepRadadiya
+ */
 @Slf4j
 @Component(value = "authenticationRequestValidator")
 public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
 
+    /**
+     * Validates the authentication request (AREQ).
+     *
+     * @param request The authentication request (AREQ) to be validated.
+     * @throws ValidationException If the request fails validation.
+     */
     @Override
     public void validateRequest(AREQ request) throws ValidationException {
         validateAuthenticationRequest(request);
     }
 
+    /**
+     * Validates the authentication request (AREQ) by performing various validation checks.
+     *
+     * @param request The authentication request (AREQ) to be validated.
+     * @throws ValidationException If the request fails validation.
+     */
     private void validateAuthenticationRequest(AREQ request) throws ValidationException {
         validateMandatoryFields(request);
         validateConditionalFields(request);
