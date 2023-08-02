@@ -116,7 +116,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
 
         } catch (ThreeDSException ex) {
-            log.error(" Message {}, Internal Error code {}", ex.getMessage(), ex.getInternalErrorCode());
+            log.error(
+                    " Message {}, Internal Error code {}",
+                    ex.getMessage(),
+                    ex.getInternalErrorCode());
             transaction =
                     updateTransactionPhaseWithError(
                             ex.getThreeDSecureErrorCode(), ex.getInternalErrorCode(), transaction);
