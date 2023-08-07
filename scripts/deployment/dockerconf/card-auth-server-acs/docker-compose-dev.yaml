@@ -29,8 +29,6 @@ services:
       SPRING_PROFILES_ACTIVE: 'dev'
     volumes:
       - ${EXTERNAL_YAML_PATH}:/opt/card-auth-server/cas-acs/bin/config/acs.yml
-    ports:
-      - '8080:8080'
     depends_on:
       - cas-acs-mysql
     container_name: 'cas-acs-server'

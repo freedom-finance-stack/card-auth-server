@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 @Data
-@Service("hSMMessageValidator")
+@Service
 public class HSMMessageValidator {
     public void validateHSMMessage(@NonNull final HSMMessage hsmMessage) throws Exception {
         if (StringUtils.isBlank(hsmMessage.getKcv())) {
