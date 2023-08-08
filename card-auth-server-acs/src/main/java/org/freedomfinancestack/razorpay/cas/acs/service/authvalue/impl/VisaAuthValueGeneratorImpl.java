@@ -72,14 +72,19 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         // Place the resultant value from step 5, the Seed value, Authentication results code,
         // Second Factor Authentication Code into a 128-bit field padded to the right with binary
         // zeros.
-        String cvv =
+        String extractedData =
                 sixteenDigitNumericValue
                         + seedATN
                         + strAuthenticationResultCode
                         + secondFactorAuthCode;
+
+        // Place into 128-bit field padded to the right with binary zeros.
         String data =
                 Util.padString(
-                        cvv, 32, InternalConstants.PADDED_SYMBOL_0, InternalConstants.PAD_RIGHT);
+                        extractedData,
+                        32,
+                        InternalConstants.PADDED_SYMBOL_0,
+                        InternalConstants.PAD_RIGHT);
 
         String cvvOutput = cvvGenerationService.generateCVV(transaction, data);
 

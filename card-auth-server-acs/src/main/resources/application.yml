@@ -49,7 +49,7 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.springframework: INFO
-    org.freedomfinancestack.razorpay.cas.acs: INFO
+    org.freedomfinancestack: INFO
 
 swagger:
   contact-name: Razorpay
