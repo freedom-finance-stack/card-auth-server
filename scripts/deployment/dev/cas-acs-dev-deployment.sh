@@ -24,7 +24,7 @@ mysql -h 127.0.0.1 -P 5506 -u cas-acs-user -ppassword cas_db < ./scripts/deploym
 
 echo "Checking if Card Auth Server ACS is UP and running.."
 
-TIMEOUT=20
+TIMEOUT=20gs
 ENDTIME=$(($(date +%s) + TIMEOUT))
 SERVER_URL="http://127.0.0.1:8080/actuator/health"
 

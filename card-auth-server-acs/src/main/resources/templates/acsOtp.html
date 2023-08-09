@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "ISO-8859-1" />
+    <link href = "css/styles.css" rel = "stylesheet"/>
+    <title>Spring Boot Application</title>
+</head>
+<body>
+<h4>Welcome to Thymeleaf Spring Boot web application</h4>
+<p>The secret message is: <strong th:text="${message}"></strong></p>
+
+<div align="center">
+    <form action="#" th:action="@{/v1/transaction/register}" method="post" >
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+</body>
+</html>
