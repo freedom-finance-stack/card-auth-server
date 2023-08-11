@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
-@ComponentScan(value = {"org.ffs.extensions"})
+@ComponentScan(value = {"org.freedomfinancestack.extensions"})
 public class HSMCommandModule {
 
     @Value("${hsm.enabled_gateway}")

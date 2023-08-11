@@ -26,21 +26,11 @@ public class NoOpHSMCommandImpl extends HSMCommand {
 
     @Override
     public void processResponse(byte[] responseMessage) {
-        hsmMessage.setCvv(NO_OP_CVV_OUTPUT);
+        hsmMessage.setHsmResponse(NO_OP_CVV_OUTPUT);
     }
 
     @Override
     public byte[] sendRequest(byte[] requestMessage) throws Exception {
-        return new byte[0];
-    }
-
-    @Override
-    public byte[] encode() {
-        return new byte[0];
-    }
-
-    @Override
-    public byte[] decode() {
         return new byte[0];
     }
 }

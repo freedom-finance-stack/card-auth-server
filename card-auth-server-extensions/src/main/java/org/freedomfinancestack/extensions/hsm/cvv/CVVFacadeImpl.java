@@ -1,5 +1,6 @@
 package org.freedomfinancestack.extensions.hsm.cvv;
 
+import org.apache.commons.lang3.StringUtils;
 import org.freedomfinancestack.extensions.hsm.command.HSMCommand;
 import org.freedomfinancestack.extensions.hsm.command.enums.HSMCommandType;
 import org.freedomfinancestack.extensions.hsm.command.factory.HSMCommandFactory;
@@ -40,6 +41,14 @@ public class CVVFacadeImpl implements CVVFacade {
 
         hsmCommand.processHSMMessage(hsmMessage);
 
-        return hsmMessage.getCvv();
+        String hsmResponse = hsmMessage.getHsmResponse();
+
+        if (StringUtils.isBlank(hsmResponse) || hsmResponse.length() < 4) {
+            throw new Exception(
+                    "HSM Response cannot be null or empty and hsmResponse cannot be less than 3"
+                            + " digits");
+        }
+        // returning first 3 digits which as CVV
+        return hsmResponse.substring(0, 3);
     }
 }

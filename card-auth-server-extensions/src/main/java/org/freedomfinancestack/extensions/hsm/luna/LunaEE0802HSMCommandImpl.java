@@ -101,37 +101,26 @@ public class LunaEE0802HSMCommandImpl extends HSMCommand {
         System.arraycopy(responseMessage, 6, responseMessageBytes, 0, responseMessageBytes.length);
 
         String outputData = HexUtil.hexValue(responseMessageBytes, 0, responseMessageBytes.length);
-        String cvv = null;
+        String hsmResponse = null;
         try {
             String responseCode = outputData.substring(6, 8);
             if (responseCode.equals(HSM_SUCCESSFUL_RESPONSE)) {
-                cvv =
-                        outputData.substring(
-                                8, 11); // HexUtility.hexToAscii(outputData.substring(26));
-                hsmMessage.setCvv(cvv);
+                // todo - check if the HSM Response retrieved is correct.
+                hsmResponse = outputData.substring(8);
+                hsmMessage.setHsmResponse(hsmResponse);
                 log.debug("processResponse() Cvv generation is successful");
             } else {
-                hsmMessage.setCvv(cvv);
+                hsmMessage.setHsmResponse(hsmResponse);
                 log.error(
                         "processResponse() Cvv generation is failed with response code: {} ",
                         responseCode);
             }
         } catch (Exception exp) {
-            hsmMessage.setCvv(cvv);
+            hsmMessage.setHsmResponse(hsmResponse);
             log.error(
                     "processResponse() Cvv generation is failed with exception "
                             + HexUtil.getStackTrace(exp));
         }
-    }
-
-    @Override
-    public byte[] encode() {
-        return new byte[0];
-    }
-
-    @Override
-    public byte[] decode() {
-        return new byte[0];
     }
 
     private HSMTransactionMessage createHSMTransactionMessage(byte[] requestMessage) {

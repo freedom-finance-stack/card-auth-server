@@ -15,10 +15,6 @@ public abstract class HSMCommand {
 
     public abstract void processResponse(byte[] responseMessage);
 
-    public abstract byte[] encode();
-
-    public abstract byte[] decode();
-
     public void processHSMMessage(@NonNull final HSMMessage hsmMessage) throws Exception {
         this.hsmMessage = hsmMessage;
 

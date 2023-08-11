@@ -10,7 +10,7 @@ public class HSMMessage {
 
     private String data;
 
-    private String cvv;
+    private String hsmResponse;
 
     public HSMMessage(@NonNull final String kcv, @NonNull final String data) {
         this.kcv = kcv;

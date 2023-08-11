@@ -76,12 +76,11 @@ public class HexDump {
         try {
             return zeropad(Integer.toString(i, 16), w);
         } catch (Exception e) {
-            // ulfLog.debug("hexOffset " + DHUtility.getStackTrace(e));
             return e.getMessage();
         }
     }
 
-    public static String padleft(String s, int len, char c) throws Exception {
+    public static String padLeft(String s, int len, char c) throws Exception {
         s = s.trim();
         if (s.length() > len) {
             throw new Exception("invalid len " + s.length() + "/" + len);
@@ -96,7 +95,7 @@ public class HexDump {
     }
 
     public static String zeropad(String s, int len) throws Exception {
-        return padleft(s, len, '0');
+        return padLeft(s, len, '0');
     }
 
     public static String hexdump(byte[] b) {
