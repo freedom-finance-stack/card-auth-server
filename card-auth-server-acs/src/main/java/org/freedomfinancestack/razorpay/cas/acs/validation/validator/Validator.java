@@ -1,11 +1,11 @@
-package org.freedomfinancestack.razorpay.cas.acs.validator.rules;
+package org.freedomfinancestack.razorpay.cas.acs.validation.validator;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 
-public interface Rule<T> {
+public interface Validator<T> {
     void validate(T value) throws ValidationException;
 
-    default Rule<T> and(Rule<T> other) {
+    default Validator<T> and(Validator<T> other) {
         return value -> {
             validate(value);
             other.validate(value);

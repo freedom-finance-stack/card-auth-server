@@ -18,7 +18,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.acs.validator.ThreeDSValidator;
+import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
