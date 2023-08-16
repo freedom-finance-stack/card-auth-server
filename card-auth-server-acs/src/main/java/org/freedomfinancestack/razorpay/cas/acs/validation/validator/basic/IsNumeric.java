@@ -5,6 +5,10 @@ import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IsNumeric implements Validator<String> {
     private static final IsNumeric INSTANCE = new IsNumeric();
 

@@ -9,7 +9,7 @@ import org.freedomfinancestack.razorpay.cas.contract.Validatable;
 public class IsValidObject<T extends Validatable> implements Validator<T> {
 
     public static <T extends Validatable> IsValidObject<T> isValidObject() {
-        return new IsValidObject<T>();
+        return new IsValidObject<>();
     }
 
     @Override

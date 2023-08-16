@@ -7,6 +7,10 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
 import com.google.common.net.InetAddresses;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IsIP implements Validator<String> {
     private static final IsIP INSTANCE = new IsIP();
 
