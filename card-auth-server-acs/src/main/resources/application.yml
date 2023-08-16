@@ -73,3 +73,12 @@ hsm:
       port: 8080
       timeout: 1
 
+modules:
+  security:
+    SecurityModule1:
+      enabled: false
+    SecurityModule2:
+      enabled: false
+  request_parsing:
+    RequestParsingModule1:
+      enabled: false

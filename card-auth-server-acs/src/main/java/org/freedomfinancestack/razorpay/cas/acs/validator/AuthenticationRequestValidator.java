@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.validator;
 
-import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
@@ -25,7 +25,7 @@ import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
 
 /**
  * The {@code AuthenticationRequestValidator} class is responsible for validating the Authentication
@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component(value = "authenticationRequestValidator")
-public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
+public class AuthenticationRequestValidator extends ThreeDSValidator<AREQ> {
 
     /**
      * Validates the authentication request (AREQ).

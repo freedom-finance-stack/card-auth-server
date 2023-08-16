@@ -1,5 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
@@ -18,9 +22,11 @@ import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.acs.validator.ChallengeRequestValidator;
 import org.freedomfinancestack.razorpay.cas.acs.validator.ThreeDSValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
+import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
@@ -32,10 +38,6 @@ import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * The {@code AuthenticationServiceImpl} class is an implementation of the {@link
@@ -62,7 +64,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AResMapper aResMapper;
     private final InstitutionAcsUrlService institutionAcsUrlService;
 
-    @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
+    @Qualifier(value = "authenticationRequestValidator")
+    private final ThreeDSValidator<AREQ> areqValidator;
+
+    private final ChallengeRequestValidator<CREQ> creqValidator;
 
     /**
      * Process the authentication request (AReq) and generate the authentication response (Ares).

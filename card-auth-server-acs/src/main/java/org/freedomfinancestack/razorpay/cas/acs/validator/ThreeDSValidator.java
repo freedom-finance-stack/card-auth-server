@@ -14,7 +14,7 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSObject;
  * @since 1.0.0
  * @author ankitchoudhary2209
  */
-public interface ThreeDSValidator<T extends ThreeDSObject> {
+public abstract class ThreeDSValidator<T extends ThreeDSObject> {
 
     /**
      * Validates the ThreeDSObject.
@@ -22,5 +22,5 @@ public interface ThreeDSValidator<T extends ThreeDSObject> {
      * @param request The ThreeDSObject to be validated.
      * @throws ThreeDSException If the object fails validation.
      */
-    void validateRequest(T request) throws ThreeDSException;
+    public abstract void validateRequest(T request) throws ThreeDSException;
 }
