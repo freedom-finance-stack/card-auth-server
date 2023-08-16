@@ -11,10 +11,9 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSExcepti
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
-import org.freedomfinancestack.razorpay.cas.contract.CREQ;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSObject;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.ValidateChallengeRequest;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
+import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -31,8 +30,9 @@ import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.fromJson;
 @RequiredArgsConstructor
 public class ChallengeServiceImpl implements ChallengeService {
 
-    final TransactionService transactionService;
+    private final TransactionService transactionService;
     private final TransactionMessageTypeService transactionMessageTypeService;
+    private final ChallengeRequestValidator challengeRequestValidator;
 
     @Override
     public ChallengeResponse processBrwChallengeRequest(String strCReq, String threeDSSessionData) {
@@ -59,8 +59,13 @@ public class ChallengeServiceImpl implements ChallengeService {
                 Map<MessageType, ThreeDSObject> threeDSMessageMap =
                         transactionMessageTypeService.getTransactionMessagesByTransactionId(
                                 transaction.getId());
-                // validate CRES
-
+                // validate Creq
+                if (Util.isNullorBlank(cReq.getChallengeCancel())) {
+                    challengeRequestValidator.validateRequest(
+                            cReq,
+                            (AREQ) threeDSMessageMap.get(MessageType.AReq),
+                            (CRES) threeDSMessageMap.get(MessageType.CRes));
+                }
             }
 
         } catch (ACSDataAccessException ex) {

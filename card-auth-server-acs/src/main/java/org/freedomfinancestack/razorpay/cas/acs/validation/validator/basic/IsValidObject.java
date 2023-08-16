@@ -7,10 +7,9 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.Validatable;
 
 public class IsValidObject<T extends Validatable> implements Validator<T> {
-    private static final IsValidObject INSTANCE = new IsValidObject();
 
-    public static IsValidObject isValidObject() {
-        return INSTANCE;
+    public static <T extends Validatable> IsValidObject<T> isValidObject() {
+        return new IsValidObject<T>();
     }
 
     @Override

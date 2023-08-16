@@ -16,6 +16,9 @@ public class CREQ extends ThreeDSObject {
     @JsonProperty("threeDSServerTransID")
     private String threeDSServerTransID;
 
+    @JsonProperty("threeDSRequestorAppURL")
+    private String threeDSRequestorAppURL;
+
     @JsonProperty("acsTransID")
     private String acsTransID;
 
@@ -47,13 +50,10 @@ public class CREQ extends ThreeDSObject {
     private String challengeHTMLDataEntry;
 
     @JsonProperty("messageExtension")
-    private List messageExtension;
+    private List<MessageExtension> messageExtension;
 
     @JsonProperty("resendChallenge")
     private String resendChallenge;
-
-    @JsonProperty("whitelistingDataEntry")
-    private String whitelistingDataEntry;
 
     @JsonProperty("challengeNoEntry")
     private String challengeNoEntry;
