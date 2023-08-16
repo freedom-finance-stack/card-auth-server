@@ -57,7 +57,7 @@ jobs:
       - name: Push
         uses: docker/build-push-action@v4
         with:
-          tags: anky2209/ankitchoudhary2209/card-auth-server:latest
+          tags: ankitchoudhary2209/card-auth-server:latest
           context: .
           file: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
           push: true
