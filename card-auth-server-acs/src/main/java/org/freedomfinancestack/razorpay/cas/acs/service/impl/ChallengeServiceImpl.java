@@ -15,6 +15,7 @@ import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public ChallengeResponse processBrwChallengeRequest(String strCReq, String threeDSSessionData) {
-
+        // todo handle browser refresh, timeout and multiple request, whitelisting allowed, INC counter
+        // todo check all the status and phase updated peroperly
         log.info("processBrowserRequest - Received CReq Request - " + strCReq);
         CREQ cReq;
         Transaction transaction;
@@ -66,6 +68,16 @@ public class ChallengeServiceImpl implements ChallengeService {
                             (AREQ) threeDSMessageMap.get(MessageType.AReq),
                             (CRES) threeDSMessageMap.get(MessageType.CRes));
                 }
+
+                transaction.setPhase(Phase.CREQ);
+                transaction.setThreedsSessionData(threeDSSessionData);
+                // fetch features for given card, parse property, crate property class  (consider which are generic and what are specific to otp and how it is stored currently in system )
+                // change DB to store property in string from format, enum for name
+                // create Feature service and enum for feature name
+
+
+
+
             }
 
         } catch (ACSDataAccessException ex) {
