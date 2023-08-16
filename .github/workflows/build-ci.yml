@@ -25,7 +25,7 @@ jobs:
   build-image:
     #    change to ubuntu and remove maven installation
     runs-on: ubuntu-latest
-    needs: [cancel]
+    needs: [ cancel ]
     continue-on-error: false
     name: Build Image
     env:
@@ -44,34 +44,20 @@ jobs:
       - name: Clean, Compile, Test and  Package
         run: mvn -B clean install
 
-#      - name: Login to Docker hub
-#        uses: docker/login-action@v2
-#        with:
-#          registry: c.rzp.io
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#
-#      - name: Setup Docker Buildx
-#        id: buildx
-#        uses: docker/setup-buildx-action@v2
-#
-#      - name: Push
-#        uses: docker/build-push-action@v4
-#        with:
-#          tags: c.rzp.io/razorpay/secure-auth-server:${{ github.sha }}
-#          context: .
-#          file: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
-#          push: true
-#          secrets: |
-#            git_token=${{ secrets.GIT_TOKEN }}
-#          build-args: |
-#            GIT_ACTOR=${{ github.actor }}'
+      - name: Login to Docker hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Update Build Status Succeeded
-        if: success()
-        run: |
-          echo 'Status check has passed!'
-          curl -X POST -H "Content-Type: application/json" -H "Authorization: token ${{ github.token }}" \
-          -d '{ "state" : "success" , "context" : "'github/${APP_NAME}-status-check'" , "description" : "'github/${APP_NAME}-status-check'", "target_url" : "'https://github.com/${REPO_NAME}'" }' \
-          https://api.github.com/repos/${REPO_NAME}/statuses/${GITHUB_SHA}
-          exit 0
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Push
+        uses: docker/build-push-action@v4
+        with:
+          tags: card-auth-server:latest
+          context: .
+          file: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
+          push: true
