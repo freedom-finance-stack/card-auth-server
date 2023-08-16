@@ -1,15 +1,22 @@
-package org.freedomfinancestack.razorpay.cas.acs.validator.rules;
+package org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched;
+
+import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
-public class RegexRule implements Rule<String> {
+public class RegexValidator implements Validator<String> {
 
-    private final java.util.regex.Pattern pattern;
+    private final Pattern pattern;
 
-    public RegexRule(String regex) {
+    public RegexValidator(String regex) {
         this.pattern = java.util.regex.Pattern.compile(regex);
+    }
+
+    public static RegexValidator regexValidator(String rgxPattern) {
+        return new RegexValidator(rgxPattern);
     }
 
     @Override

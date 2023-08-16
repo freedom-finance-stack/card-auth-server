@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.acs.validator;
+package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSObject;

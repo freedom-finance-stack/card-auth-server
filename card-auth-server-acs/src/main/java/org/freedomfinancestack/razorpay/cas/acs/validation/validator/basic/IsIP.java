@@ -1,13 +1,22 @@
-package org.freedomfinancestack.razorpay.cas.acs.validator.rules;
+package org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
 import com.google.common.net.InetAddresses;
 
-public class IsIPRule implements Rule<String> {
-    public IsIPRule() {}
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class IsIP implements Validator<String> {
+    private static final IsIP INSTANCE = new IsIP();
+
+    public static IsIP isIP() {
+        return INSTANCE;
+    }
 
     @Override
     public void validate(String value) throws ValidationException {

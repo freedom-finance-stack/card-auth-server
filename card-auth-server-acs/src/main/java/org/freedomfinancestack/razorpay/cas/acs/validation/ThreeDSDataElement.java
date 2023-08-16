@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.acs.validator.enums;
+package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;

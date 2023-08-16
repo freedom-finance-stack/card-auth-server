@@ -1,18 +1,22 @@
-package org.freedomfinancestack.razorpay.cas.acs.validator.rules;
+package org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.acs.validator.enums.DataLengthType;
+import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
-public class LengthRule implements Rule<String> {
+public class LengthValidator implements Validator<String> {
 
     private final int length;
     private final DataLengthType lengthType;
 
-    public LengthRule(DataLengthType lengthType, int length) {
+    public LengthValidator(DataLengthType lengthType, int length) {
         this.length = length;
         this.lengthType = lengthType;
+    }
+
+    public static LengthValidator lengthValidator(DataLengthType lengthType, int length) {
+        return new LengthValidator(lengthType, length);
     }
 
     @Override
@@ -31,5 +35,10 @@ public class LengthRule implements Rule<String> {
                         ThreeDSecureErrorCode.INVALID_FORMAT_LENGTH, "Invalid value ");
             }
         }
+    }
+
+    public enum DataLengthType {
+        FIXED,
+        VARIABLE
     }
 }
