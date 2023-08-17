@@ -9,7 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
-import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationService;
+import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.InstitutionAcsUrlService;
 import org.freedomfinancestack.razorpay.cas.acs.service.RangeService;
@@ -39,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * The {@code AuthenticationServiceImpl} class is an implementation of the {@link
- * AuthenticationService} interface that handles authentication requests (AReq) and generates
+ * AuthenticationRequestService} interface that handles authentication requests (AReq) and generates
  * authentication responses (Ares) in the ACS (Access Control Server) functionality. This service is
  * responsible for processing incoming AReq messages, validating the requests, generating Ares
  * messages, and managing transaction details in the ACS system.
@@ -51,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service("authenticationServiceImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationRequestServiceImpl implements AuthenticationRequestService {
 
     private final TransactionService transactionService;
     private final TransactionMessageTypeService transactionMessageTypeService;

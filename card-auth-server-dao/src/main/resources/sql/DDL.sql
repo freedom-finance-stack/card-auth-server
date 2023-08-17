@@ -1,6 +1,8 @@
-CREATE DATABASE IF NOT EXISTS `cas_db`;
+CREATE
+DATABASE IF NOT EXISTS `cas_db`;
 
-USE `cas_db`;
+USE
+`cas_db`;
 
 DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE `transaction`
@@ -10,7 +12,7 @@ CREATE TABLE `transaction`
     `message_category`          ENUM ('PA', 'NPA', 'PVPA', 'PVNPA', 'NW', 'TW', 'IT', 'AT', 'AW', 'DI', 'II' ),
     `message_version`           varchar(10),
     `challenge_mandated`        bool,
-    `transaction_status`        ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLANGE_REQUIRED','CHALLANGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL')                           NOT NULL,
+    `transaction_status`        ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLANGE_REQUIRED','CHALLANGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL') NOT NULL,
     `transaction_status_reason` varchar(80),
     `phase`                     ENUM ('AREQ','ARES','CREQ','RETRY_CREQ','CRES','RREQ','REDIRECT','RESEND_OTP','AUTH_INITIATE','GENERATE_OTP','AUTH_RESULT','SEAMLESS_GENERATE_OTP','VERIFY_OTP','RRES','ERROR') NOT NULL,
     `threeds_session_data`      varchar(1024),
@@ -20,7 +22,7 @@ CREATE TABLE `transaction`
     `device_name`               varchar(20),
     `interaction_count`         int,
     `error_code`                varchar(20),
-    `created_at`                timestamp                                                                                                                                                                       NOT NULL,
+    `created_at`                timestamp NOT NULL,
     `modified_at`               timestamp,
     `deleted_at`                timestamp
 );
@@ -68,7 +70,7 @@ CREATE TABLE `transaction_message_type_detail`
     `received_timestamp` timestamp,
     `sent_timestamp`     timestamp,
     `message_type`       ENUM ('AReq', 'Ares', 'CReq', 'CRes', 'RReq', 'RRes'),
-    `created_at`         timestamp NOT NULL,
+    `created_at`         timestamp   NOT NULL,
     `modified_at`        timestamp,
     `deleted_at`         timestamp
 );
@@ -79,7 +81,7 @@ CREATE INDEX `transaction_message_type_detail_transaction_id_idx` ON `transactio
 DROP TABLE IF EXISTS `transaction_reference_detail`;
 CREATE TABLE `transaction_reference_detail`
 (
-    `transaction_id`                  varchar(36) PRIMARY KEY ,
+    `transaction_id`                  varchar(36) PRIMARY KEY,
     `threeds_server_transaction_id`   varchar(36),
     `threeds_server_reference_number` varchar(36),
     `ds_transaction_id`               varchar(36),
@@ -93,13 +95,13 @@ CREATE TABLE `institution_acs_url`
 (
     `institution_id` varchar(5)  NOT NULL,
     `device_channel` varchar(10) NOT NULL,
-    `network_code`   tinyint  NOT NULL,
+    `network_code`   tinyint     NOT NULL,
     `challenge_url`  varchar(400) DEFAULT NULL,
     `created_at`     timestamp   NOT NULL,
     `created_by`     varchar(40) NOT NULL,
     `modified_at`    timestamp,
     `modified_by`    varchar(40),
-    `deleted_at`     timestamp default NULL,
+    `deleted_at`     timestamp    default NULL,
     `deleted_by`     varchar(40),
     PRIMARY KEY (`institution_id`, `device_channel`, `network_code`)
 );
@@ -140,8 +142,8 @@ CREATE TABLE `institution`
     `iso_country_code` smallint,
     `timezone`         varchar(25),
     `status`           ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
-    `created_at`       timestamp                   NOT NULL,
-    `created_by`       varchar(40)                 NOT NULL,
+    `created_at`       timestamp   NOT NULL,
+    `created_by`       varchar(40) NOT NULL,
     `modified_at`      timestamp,
     `modified_by`      varchar(40),
     `deleted_at`       timestamp default NULL,
@@ -183,18 +185,18 @@ CREATE TABLE `card_range`
     `start_range`             decimal(25),
     `end_range`               decimal(25),
     `attempt_allowed`         tinyint,
-    `block_on_exceed_attempt` tinyint                             NOT NULL,
-    `status`                  ENUM ('ACTIVE', 'INACTIVE')         NOT NULL,
+    `block_on_exceed_attempt` tinyint     NOT NULL,
+    `status`                  ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
     `card_type`               ENUM ('CREDIT', 'DEBIT', 'PREPAID') NOT NULL,
-    `risk_flag`               ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA')  NOT NULL,
+    `risk_flag`               ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA') NOT NULL,
     `description`             varchar(255),
     `whitelisting_allowed`    tinyint,
     `card_details_store`      enum ('ACS', 'API_1'),
     `network_code`            tinyint,
-    `created_at`              timestamp                           NOT NULL,
-    `modified_at`             timestamp                           NOT NULL,
+    `created_at`              timestamp   NOT NULL,
+    `modified_at`             timestamp   NOT NULL,
     `deleted_at`              timestamp default NULL,
-    `created_by`              varchar(40)                         NOT NULL,
+    `created_by`              varchar(40) NOT NULL,
     `modified_by`             varchar(40),
     `deleted_by`              varchar(40)
 );
@@ -218,18 +220,19 @@ DROP TABLE IF EXISTS `feature`;
 CREATE TABLE `feature`
 (
     `id`          varchar(36) PRIMARY KEY,
-    `entity_type` varchar(20),
-    `entity_id`   varchar(36) NOT NULL,
-    `active`      bool        NOT NULL,
-    `name`        varchar(20),
-    `properties`  json,
-    `created_at`  timestamp   NOT NULL,
-    `created_by`  varchar(40) NOT NULL,
+    `entity_type`  ENUM ('INSTITUTION', 'CARD_RANGE', 'CARD_RANGE_GROUP') NOT NULL,
+    `entity_id`   varchar(36)  NOT NULL,
+    `active`      bool         NOT NULL,
+    `name`        ENUM ('CHALLENGE_AUTH_TYPE', 'CHALLENGE_ATTEMPT', 'OTP', 'PASSWORD', 'OOB') NOT NULL,
+    `properties`  varchar(500) NOT NULL,
+    `created_at`  timestamp    NOT NULL,
+    `created_by`  varchar(40)  NOT NULL,
     `modified_at` timestamp,
     `modified_by` varchar(40),
     `deleted_at`  timestamp,
     `deleted_by`  varchar(40)
 );
+CREATE INDEX feature_entity_type_entity_id_name ON feature (name, entity_type, entity_id );
 
 DROP TABLE IF EXISTS `cardholder`;
 CREATE TABLE `cardholder`
@@ -252,7 +255,7 @@ CREATE TABLE `card_detail`
 (
     `id`             varchar(36) PRIMARY KEY,
     `cardholder_id`  varchar(36) NOT NULL,
-    `card_range_id`       varchar(36) NOT NULL,
+    `card_range_id`  varchar(36) NOT NULL,
     `institution_id` varchar(36) NOT NULL,
     `card_number`    varchar(25),
     `card_expiry`    varchar(4),

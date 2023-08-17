@@ -37,8 +37,10 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public ChallengeResponse processBrwChallengeRequest(String strCReq, String threeDSSessionData) {
-        // todo handle browser refresh, timeout and multiple request, whitelisting allowed, INC counter
+        // todo handle browser refresh, timeout and multiple request, whitelisting allowed, INC
+        // counter
         // todo check all the status and phase updated peroperly
+        // todo dynamic configurable UI
         log.info("processBrowserRequest - Received CReq Request - " + strCReq);
         CREQ cReq;
         Transaction transaction;
@@ -71,12 +73,12 @@ public class ChallengeServiceImpl implements ChallengeService {
 
                 transaction.setPhase(Phase.CREQ);
                 transaction.setThreedsSessionData(threeDSSessionData);
-                // fetch features for given card, parse property, crate property class  (consider which are generic and what are specific to otp and how it is stored currently in system )
-                // change DB to store property in string from format, enum for name
+                // fetch features for given card, parse property, crate property class  (consider
+                // which are generic and what are specific to otp and how it is stored currently in
+                // system )
+                // change DB to store property in string from format, enum for name remove
+                // whitelisitng allowes, attempt and block from current table
                 // create Feature service and enum for feature name
-
-
-
 
             }
 
