@@ -11,7 +11,7 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
 public class IsDate implements Validator<String> {
 
-    private String acceptedFormat;
+    private final String acceptedFormat;
 
     public IsDate(String acceptedFormat) {
         this.acceptedFormat = acceptedFormat;
