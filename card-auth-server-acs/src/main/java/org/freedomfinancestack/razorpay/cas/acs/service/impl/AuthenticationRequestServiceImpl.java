@@ -92,6 +92,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             areqValidator.validateRequest(areq);
 
             // todo check duplicate transaction once threeDSmethod is implemented
+
             // Create and Save transaction in DB
             transaction = transactionService.create(areq);
             transaction = transactionService.saveOrUpdate(transaction);
@@ -99,20 +100,23 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             // get range and institution entity and verify
             cardRange = rangeService.findByPan(areq.getAcctNumber());
             rangeService.validateRange(cardRange);
-            transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetwork().getCode());
 
+            // update Ids in transaction
+            transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetwork().getCode());
+            transaction.setCardRangeId(cardRange.getId());
+            transaction.setInstitutionId(cardRange.getInstitution().getId());
             // get acs url
             acsUrl =
                     institutionAcsUrlService.findById(
                             new InstitutionAcsUrlPK(
-                                    cardRange.getCardRangeGroup().getInstitution().getId(),
+                                    cardRange.getInstitution().getId(),
                                     areq.getDeviceChannel(),
                                     cardRange.getNetwork().getCode()));
 
             // fetch Card and User details and validate details
             CardDetailsRequest cardDetailsRequest =
                     new CardDetailsRequest(
-                            cardRange.getCardRangeGroup().getInstitution().getId(),
+                            cardRange.getInstitution().getId(),
                             areq.getAcctNumber());
             CardDetailResponse cardDetailResponse =
                     cardDetailService.getCardDetails(

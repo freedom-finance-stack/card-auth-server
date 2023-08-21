@@ -60,7 +60,7 @@ public class ARES extends ThreeDSObject {
 
     private String eci;
 
-    private List messageExtension;
+    private List<MessageExtension> messageExtension;
 
     private String transStatusReason;
 

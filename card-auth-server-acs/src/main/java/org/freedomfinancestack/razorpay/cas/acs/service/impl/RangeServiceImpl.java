@@ -84,17 +84,9 @@ public class RangeServiceImpl implements RangeService {
             throw new TransactionDataNotValidException(InternalErrorCode.CARD_RANGE_NOT_ACTIVE);
         }
 
-        CardRangeGroup cardRangeGroup = cardRange.getCardRangeGroup();
-        if (cardRangeGroup == null) {
-            log.error("Card range group not found for card range: " + cardRange.getId());
-            throw new DataNotFoundException(
-                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
-                    InternalErrorCode.RANGE_GROUP_NOT_FOUND);
-        }
-
-        Institution institution = cardRangeGroup.getInstitution();
+        Institution institution = cardRange.getInstitution();
         if (institution == null) {
-            log.error("Institution not found for card range group: " + cardRangeGroup.getId());
+            log.error("Institution not found for card range: " + cardRange.getId());
             throw new DataNotFoundException(
                     ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
                     InternalErrorCode.INSTITUTION_NOT_FOUND);

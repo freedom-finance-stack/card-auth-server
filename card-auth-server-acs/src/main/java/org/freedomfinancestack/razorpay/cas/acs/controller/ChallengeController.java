@@ -44,10 +44,11 @@ public class ChallengeController {
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public String handleChallengeRequest(
             @RequestParam(name = "creq") String strCReq,
-            @RequestParam(name = "threeDSSessionData") String threeDSSessionData,
+            @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model) {
         ChallengeResponse challengeResponse =
                 challengeService.processBrwChallengeRequest(strCReq, threeDSSessionData);
+        // todo unhandled exception
         if (challengeResponse.isError()) {
             model.addAttribute("cRes", challengeResponse.getCRes());
             model.addAttribute("notificationUrl", challengeResponse.getNotificationUrl());

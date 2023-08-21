@@ -36,9 +36,6 @@ public class Institution extends BaseEntity<String> {
     @Column(name = "status")
     private InstitutionStatus status;
 
-    //    @OneToMany(mappedBy = "institution")
-    //    private List<RangeGroup> rangeGroups;
-
     @Column(name = "created_by", nullable = false)
     private String createdBy;
 

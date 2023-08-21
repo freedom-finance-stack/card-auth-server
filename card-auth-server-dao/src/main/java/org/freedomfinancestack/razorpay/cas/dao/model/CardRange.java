@@ -24,9 +24,8 @@ public class CardRange extends BaseEntity<String> {
     @Id private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "range_group_id", referencedColumnName = "id")
-    @MapsId
-    private CardRangeGroup cardRangeGroup;
+    @JoinColumn(name = "institution_id", referencedColumnName = "id")
+    private Institution institution;
 
     @Column(name = "start_range")
     private Long startRange;

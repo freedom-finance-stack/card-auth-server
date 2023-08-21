@@ -9,6 +9,7 @@ CREATE TABLE `transaction`
 (
     `id`                        varchar(36) PRIMARY KEY,
     `institution_id`            varchar(36),
+    `card_range_id`            varchar(36),
     `message_category`          ENUM ('PA', 'NPA', 'PVPA', 'PVNPA', 'NW', 'TW', 'IT', 'AT', 'AW', 'DI', 'II' ),
     `message_version`           varchar(10),
     `challenge_mandated`        bool,
@@ -181,7 +182,7 @@ DROP TABLE IF EXISTS `card_range`;
 CREATE TABLE `card_range`
 (
     `id`                      varchar(36) PRIMARY KEY,
-    `range_group_id`          varchar(36),
+    `card_range_group_id`     varchar(36),
     `start_range`             decimal(25),
     `end_range`               decimal(25),
     `attempt_allowed`         tinyint,
@@ -205,7 +206,6 @@ DROP TABLE IF EXISTS `card_range_group`;
 CREATE TABLE `card_range_group`
 (
     `id`             varchar(36) PRIMARY KEY,
-    `institution_id` varchar(36),
     `name`           varchar(50),
     `description`    varchar(150),
     `created_at`     timestamp   NOT NULL,

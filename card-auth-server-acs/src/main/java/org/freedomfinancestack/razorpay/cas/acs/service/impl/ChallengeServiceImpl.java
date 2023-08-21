@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessExcep
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -34,6 +35,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final TransactionService transactionService;
     private final TransactionMessageTypeService transactionMessageTypeService;
     private final ChallengeRequestValidator challengeRequestValidator;
+    private final FeatureService featureService;
 
     @Override
     public ChallengeResponse processBrwChallengeRequest(String strCReq, String threeDSSessionData) {
@@ -73,12 +75,11 @@ public class ChallengeServiceImpl implements ChallengeService {
 
                 transaction.setPhase(Phase.CREQ);
                 transaction.setThreedsSessionData(threeDSSessionData);
-                // fetch features for given card, parse property, crate property class  (consider
-                // which are generic and what are specific to otp and how it is stored currently in
-                // system )
-                // change DB to store property in string from format, enum for name remove
-                // whitelisitng allowes, attempt and block from current table
-                // create Feature service and enum for feature name
+
+                // institution_id, Range id ,Range group ID
+              //  featureService.getAuthenticationConfig(entityIdsByType);
+                // remove whitelisitng allowes, attempt and block from current table
+
 
             }
 
