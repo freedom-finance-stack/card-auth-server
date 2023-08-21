@@ -537,7 +537,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.CARD_EXPIRY_DATE.getFieldName(),
                 request.getCardExpiryDate(),
                 lengthValidator(LengthValidator.DataLengthType.FIXED, 4),
-                isDate("YYMM"));
+                isDate("yyMM"));
 
         Validation.validate(
                 ThreeDSDataElement.BILL_ADDR_CITY.getFieldName(),

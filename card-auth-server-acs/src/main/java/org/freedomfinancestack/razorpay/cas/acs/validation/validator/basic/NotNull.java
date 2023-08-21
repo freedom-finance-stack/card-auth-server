@@ -4,6 +4,10 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationExce
 import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NotNull<T> implements Validator<T> {
 
     public static <T> NotNull<T> notNull() {
