@@ -357,9 +357,6 @@
       "CardholderAccountInformation": {
         "type": "object",
         "properties": {
-          "dataValid": {
-            "type": "boolean"
-          },
           "valid": {
             "type": "boolean"
           },
@@ -368,6 +365,9 @@
             "format": "int32"
           },
           "empty": {
+            "type": "boolean"
+          },
+          "dataValid": {
             "type": "boolean"
           },
           "chAccAgeInd": {
@@ -432,10 +432,10 @@
               "type": "string"
             }
           },
-          "mandatoryValueAvailable": {
+          "valid": {
             "type": "boolean"
           },
-          "valid": {
+          "mandatoryValueAvailable": {
             "type": "boolean"
           }
         }
@@ -577,10 +577,10 @@
           "threeDSReqPriorRef": {
             "type": "string"
           },
-          "mandatoryValueAvailable": {
+          "valid": {
             "type": "boolean"
           },
-          "valid": {
+          "mandatoryValueAvailable": {
             "type": "boolean"
           }
         }
