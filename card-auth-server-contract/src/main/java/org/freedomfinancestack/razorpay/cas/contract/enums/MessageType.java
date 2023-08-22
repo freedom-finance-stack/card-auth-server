@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.dao.enums;
+package org.freedomfinancestack.razorpay.cas.contract.enums;
 
 public enum MessageType {
     AReq,

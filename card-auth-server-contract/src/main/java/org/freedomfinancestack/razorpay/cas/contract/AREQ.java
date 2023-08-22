@@ -2,6 +2,8 @@ package org.freedomfinancestack.razorpay.cas.contract;
 
 import java.util.List;
 
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
@@ -276,10 +278,9 @@ public class AREQ extends ThreeDSObject {
     private String threeDSRequestorDecReqInd;
 
     private transient String transactionId;
-    // -------------------------------------------
 
-    /*@JsonProperty("threeDSRequestorNPAInd")
-    private String threeDSRequestorNPAInd;
-    @JsonProperty("challengeMandated")
-    private String challengeMandated;*/
+    @Override
+    public MessageType getThreeDSMessageType() {
+        return MessageType.AReq;
+    }
 }

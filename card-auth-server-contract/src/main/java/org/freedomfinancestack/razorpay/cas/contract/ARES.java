@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ACSRenderingType;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -66,4 +67,9 @@ public class ARES extends ThreeDSObject {
     private String whiteListStatus;
 
     private String whiteListStatusSource;
+
+    @Override
+    public MessageType getThreeDSMessageType() {
+        return MessageType.ARes;
+    }
 }

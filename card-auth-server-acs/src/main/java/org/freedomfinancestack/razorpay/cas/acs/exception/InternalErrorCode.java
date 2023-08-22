@@ -118,7 +118,18 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "7000",
             "Internal Error occurred in HSM",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE);
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+    CREQ_JSON_PARSING_ERROR(
+            "8001",
+            "Can't parse Creq message",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    TRANSACTION_NOT_FOUND(
+            "8002",
+            "TRANSACTION ID NOT FOUND",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.INVALID_TRANSACTION);
 
     private final String code;
 

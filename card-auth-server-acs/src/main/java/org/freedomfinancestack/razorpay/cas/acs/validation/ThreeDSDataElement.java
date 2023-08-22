@@ -615,11 +615,11 @@ public enum ThreeDSDataElement {
 
     // ----------------------------------------------------------
 
-    final String fieldName; // e.g deviceChannel
-    String acceptedFormat; // e.g YYYYMMDDHHMMSS
-    String[] acceptedValues; // e.g { "Y", "N", "U" }
-    DeviceChannel[] supportedChannel; // e.g APP / BRW / TRI
-    MessageCategory[] supportedCategory; // e.g PA / NPA
+    private final String fieldName; // e.g deviceChannel
+    private String acceptedFormat; // e.g YYYYMMDDHHMMSS
+    private String[] acceptedValues; // e.g { "Y", "N", "U" }
+    private DeviceChannel[] supportedChannel; // e.g APP / BRW / TRI
+    private MessageCategory[] supportedCategory; // e.g PA / NPA
 
     ThreeDSDataElement(
             String desc,

@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * The {@code ACSController} class is a REST controller responsible for handling Authentication
- * Request (AReq), Challenge Request (Creq) from the 3DS Server.
+ * Request (AReq) from the 3DS Server.
  *
  * @version 1.0.0
  * @since 1.0.0
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RestController("acsController")
 @RequestMapping("/v1/transaction")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class ACSController {
+public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
@@ -66,7 +66,7 @@ public class ACSController {
                         description = "Bad Request or Request not according to Areq Schema")
             })
     @PostMapping(
-            value = "/auth-request",
+            value = "/authentication/browser",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "acs.auth-request", longTask = true)
