@@ -33,12 +33,6 @@ public class CardRange extends BaseEntity<String> {
     @Column(name = "end_range")
     private Long endRange;
 
-    @Column(name = "attempt_allowed")
-    private Byte attemptAllowed;
-
-    @Column(name = "block_on_exceed_attempt", nullable = false)
-    private Byte blockOnExceedAttempt;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private CardRangeStatus status;
@@ -53,9 +47,6 @@ public class CardRange extends BaseEntity<String> {
 
     @Column(name = "description")
     private String description;
-
-    @Column(name = "whitelisting_allowed")
-    private boolean whitelistingAllowed;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "card_details_store")

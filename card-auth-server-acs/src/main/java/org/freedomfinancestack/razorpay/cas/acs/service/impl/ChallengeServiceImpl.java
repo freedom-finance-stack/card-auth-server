@@ -58,7 +58,7 @@ public class ChallengeServiceImpl implements ChallengeService {
                 throw new ThreeDSException(
                         ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
                         InternalErrorCode.TRANSACTION_NOT_FOUND,
-                        InternalErrorCode.TRANSACTION_NOT_FOUND.getDefaultErrorMessage());
+                        InternalErrorCode.TRANSACTION_NOT_FOUND.getDefaultErrorMessage() + "FOR CHALLENGE");
             }
             if (transaction.getTransactionStatus().equals(TransactionStatus.FAILED)
                     || transaction.getTransactionStatus().equals(TransactionStatus.REJECTED)) {
