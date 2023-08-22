@@ -66,7 +66,7 @@ public class ChallengeController {
      * @return
      */
     @RequestMapping(
-            value = "/validate-challenge/browser",
+            value = "/challenge/browser/validate",
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")

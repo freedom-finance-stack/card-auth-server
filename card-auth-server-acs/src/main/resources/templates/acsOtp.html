@@ -9,7 +9,7 @@
 <div class="challengeInfoText">You are paying merchant XYZ, $$ amount</div>
 <div class="verificationCode">we have sent you test message on ...</div>
 <div align="center">
-    <form action="#" th:action="@{/v1/transaction/validate-challenge/browser}" method="post" name = "submitForm" >
+    <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post" name = "submitForm" >
         <input name="authVal" id="authVal" type="password" class="inputText">
         <button type="submit">Submit</button>
     </form>
