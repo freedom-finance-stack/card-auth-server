@@ -66,7 +66,7 @@ public class AuthenticationController {
                         description = "Bad Request or Request not according to Areq Schema")
             })
     @PostMapping(
-            value = "/auth-request",
+            value = "/authentication/browser",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "acs.auth-request", longTask = true)

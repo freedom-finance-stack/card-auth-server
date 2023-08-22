@@ -3,22 +3,16 @@
 <head>
     <meta charset = "ISO-8859-1" />
     <link href = "css/styles.css" rel = "stylesheet"/>
-    <title>Spring Boot Application</title>
+    <title>Purchase Authentication</title>
 </head>
 <body>
-<h4>Welcome to Thymeleaf Spring Boot web application</h4>
-<p>The secret message is: <strong th:text="${message}"></strong></p>
-
+<div class="challengeInfoText">You are paying merchant XYZ, $$ amount</div>
+<div class="verificationCode">we have sent you test message on ...</div>
 <div align="center">
-    <form action="#" th:action="@{/v1/transaction/register}" method="post" >
-        <button type="submit">Register</button>
+    <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post" name = "submitForm" >
+        <input name="authVal" id="authVal" type="password" class="inputText">
+        <button type="submit">Submit</button>
     </form>
 </div>
-
 </body>
-<script>
-    function submitForm() {
-        document.getElementById("myForm").submit();
-    }
-</script>
 </html>

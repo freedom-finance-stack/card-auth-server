@@ -38,7 +38,7 @@ public class ChallengeController {
      *     HTML format.
      */
     @RequestMapping(
-            value = "/browser-challenge",
+            value = "/challenge/browser",
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
@@ -67,10 +67,10 @@ public class ChallengeController {
      * @return
      */
     @RequestMapping(
-            value = "/validate-browser-challenge",
+            value = "/challenge/browser/validate",
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
-            consumes = "application/json; charset=utf-8")
+            consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public String handleChallengeValidationRequest(
             ValidateChallengeRequest validateChallengeRequest, Model model) {
         ValidateChallengeResponse validateChallengeResponse =

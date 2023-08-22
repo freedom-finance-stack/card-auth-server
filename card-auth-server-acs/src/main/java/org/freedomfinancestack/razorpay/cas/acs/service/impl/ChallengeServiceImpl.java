@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.validation.constraints.NotNull;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
@@ -41,7 +42,8 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final FeatureService featureService;
 
     @Override
-    public ChallengeResponse processBrwChallengeRequest(String strCReq, String threeDSSessionData) {
+    public ChallengeResponse processBrwChallengeRequest(
+            @NotNull final String strCReq, final String threeDSSessionData) {
         // todo handle browser refresh, timeout and multiple request, whitelisting allowed,
         // INCounter
         // todo state management for status
@@ -58,7 +60,8 @@ public class ChallengeServiceImpl implements ChallengeService {
                 throw new ThreeDSException(
                         ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
                         InternalErrorCode.TRANSACTION_NOT_FOUND,
-                        InternalErrorCode.TRANSACTION_NOT_FOUND.getDefaultErrorMessage() + "FOR CHALLENGE");
+                        InternalErrorCode.TRANSACTION_NOT_FOUND.getDefaultErrorMessage()
+                                + "FOR CHALLENGE");
             }
             if (transaction.getTransactionStatus().equals(TransactionStatus.FAILED)
                     || transaction.getTransactionStatus().equals(TransactionStatus.REJECTED)) {
@@ -76,7 +79,6 @@ public class ChallengeServiceImpl implements ChallengeService {
                             (AREQ) threeDSMessageMap.get(MessageType.AReq),
                             (CRES) threeDSMessageMap.get(MessageType.CRes));
                 }
-
                 transaction.setPhase(Phase.CREQ);
                 transaction.setThreedsSessionData(threeDSSessionData);
 
@@ -126,7 +128,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public ValidateChallengeResponse validateChallengeRequest(
-            ValidateChallengeRequest validateChallengeRequest) {
+            @NotNull final ValidateChallengeRequest validateChallengeRequest) {
         return null;
     }
 }

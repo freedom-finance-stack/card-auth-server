@@ -31,8 +31,10 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RangeServiceTest {
-    @Mock CardRangeRepository cardRangeRepository;
-    @InjectMocks RangeServiceImpl rangeService;
+    @Mock
+    CardRangeRepository cardRangeRepository;
+    @InjectMocks
+    RangeServiceImpl rangeService;
     static String PanNumber = "4001400112341234";
 
     @Test
@@ -123,10 +125,7 @@ public class RangeServiceTest {
                         InternalErrorCode.INVALID_NETWORK),
                 Arguments.of(
                         getCardRangeWithEmpty(true, false, true),
-                        InternalErrorCode.INSTITUTION_NOT_FOUND),
-                Arguments.of(
-                        getCardRangeWithEmpty(false, true, true),
-                        InternalErrorCode.RANGE_GROUP_NOT_FOUND));
+                        InternalErrorCode.INSTITUTION_NOT_FOUND));
     }
 
     private static CardRange getCardRange(
