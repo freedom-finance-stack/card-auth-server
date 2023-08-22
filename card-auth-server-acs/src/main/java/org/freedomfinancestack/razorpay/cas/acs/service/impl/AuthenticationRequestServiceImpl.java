@@ -116,8 +116,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             // fetch Card and User details and validate details
             CardDetailsRequest cardDetailsRequest =
                     new CardDetailsRequest(
-                            cardRange.getInstitution().getId(),
-                            areq.getAcctNumber());
+                            cardRange.getInstitution().getId(), areq.getAcctNumber());
             CardDetailResponse cardDetailResponse =
                     cardDetailService.getCardDetails(
                             cardDetailsRequest, cardRange.getCardDetailsStore());

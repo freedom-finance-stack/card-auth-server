@@ -2,11 +2,11 @@ package org.freedomfinancestack.razorpay.cas.dao.model;
 
 import javax.persistence.*;
 
-import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -23,9 +23,9 @@ public class CardRangeGroup extends BaseEntity<String> {
 
     private String description;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "institution_id", referencedColumnName = "id")
-//    private Institution institution;
+    //    @ManyToOne(fetch = FetchType.EAGER)
+    //    @JoinColumn(name = "institution_id", referencedColumnName = "id")
+    //    private Institution institution;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;

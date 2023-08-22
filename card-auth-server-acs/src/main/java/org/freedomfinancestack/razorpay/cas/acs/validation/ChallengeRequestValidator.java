@@ -108,26 +108,6 @@ public class ChallengeRequestValidator {
 
     protected void validateOptionalFields(CREQ incomingCreq, AREQ areq, CRES cres)
             throws ValidationException {
-        String acsUiType = cres.getAcsUiType();
-        boolean conditionForChallengeDataEntry =
-                (Arrays.asList("01", "02", "03").contains(acsUiType)
-                                && NO.equals(incomingCreq.getResendChallenge()))
-                        && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                        && (!Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                && !incomingCreq.getChallengeNoEntry().equals("Y"));
-        Validation.validate(
-                ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
-                incomingCreq.getChallengeDataEntry(),
-                when(conditionForChallengeDataEntry, notNull()),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 45));
-
-        boolean conditionForChallengeHTMLDataEntry =
-                (Arrays.asList("01", "02", "03", "04", "05").contains(acsUiType))
-                        && !Util.isNullorBlank(incomingCreq.getChallengeCancel());
-        Validation.validate(
-                ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
-                incomingCreq.getChallengeHTMLDataEntry(),
-                when(conditionForChallengeHTMLDataEntry, notNull()));
 
         Validation.validate(
                 ThreeDSDataElement.RESEND_CHALLENGE.getFieldName(),
@@ -141,5 +121,28 @@ public class ChallengeRequestValidator {
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 incomingCreq.getMessageExtension(),
                 isListValid(isValidObject()));
+
+        if (cres != null) {
+            String acsUiType = cres.getAcsUiType();
+            boolean conditionForChallengeDataEntry =
+                    (Arrays.asList("01", "02", "03").contains(acsUiType)
+                                    && NO.equals(incomingCreq.getResendChallenge()))
+                            && Util.isNullorBlank(incomingCreq.getChallengeCancel())
+                            && (!Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
+                                    && !incomingCreq.getChallengeNoEntry().equals("Y"));
+            Validation.validate(
+                    ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
+                    incomingCreq.getChallengeDataEntry(),
+                    when(conditionForChallengeDataEntry, notNull()),
+                    lengthValidator(LengthValidator.DataLengthType.VARIABLE, 45));
+
+            boolean conditionForChallengeHTMLDataEntry =
+                    (Arrays.asList("01", "02", "03", "04", "05").contains(acsUiType))
+                            && !Util.isNullorBlank(incomingCreq.getChallengeCancel());
+            Validation.validate(
+                    ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
+                    incomingCreq.getChallengeHTMLDataEntry(),
+                    when(conditionForChallengeHTMLDataEntry, notNull()));
+        }
     }
 }

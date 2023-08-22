@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.contract;
 import java.time.Instant;
 
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -34,7 +35,7 @@ public class ThreeDSErrorResponse {
     private String errorMessageType;
 
     @JsonProperty("messageType")
-    private String messageType = EMVCOConstant.MESSAGE_TYPE_ERRO;
+    private String messageType = MessageType.Erro.toString();
 
     @JsonProperty("messageVersion")
     private String messageVersion = EMVCOConstant.MESSAGE_TYPE_VERSION;

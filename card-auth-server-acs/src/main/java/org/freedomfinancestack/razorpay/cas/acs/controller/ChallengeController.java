@@ -48,7 +48,7 @@ public class ChallengeController {
             Model model) {
         ChallengeResponse challengeResponse =
                 challengeService.processBrwChallengeRequest(strCReq, threeDSSessionData);
-        // todo unhandled exception
+        // todo unhandled exception, if challengeResponse is null
         if (challengeResponse.isError()) {
             model.addAttribute("cRes", challengeResponse.getCRes());
             model.addAttribute("notificationUrl", challengeResponse.getNotificationUrl());

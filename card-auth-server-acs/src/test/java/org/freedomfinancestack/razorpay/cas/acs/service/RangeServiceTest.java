@@ -12,7 +12,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.CardRangeStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
-import org.freedomfinancestack.razorpay.cas.dao.model.CardRangeGroup;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.freedomfinancestack.razorpay.cas.dao.model.Network;
 import org.freedomfinancestack.razorpay.cas.dao.repository.CardRangeRepository;
@@ -133,10 +132,8 @@ public class RangeServiceTest {
     private static CardRange getCardRange(
             CardRangeStatus status, InstitutionStatus institutionStatus) {
         CardRange cardRange = new CardRange();
-        CardRangeGroup cardRangeGroup = new CardRangeGroup();
         Institution institution = new Institution();
-        cardRange.setCardRangeGroup(cardRangeGroup);
-        cardRangeGroup.setInstitution(institution);
+        cardRange.setInstitution(institution);
         cardRange.setStatus(status);
         institution.setStatus(institutionStatus);
         cardRange.setNetwork(Network.builder().code((byte) 1).build());
@@ -146,16 +143,12 @@ public class RangeServiceTest {
     private static CardRange getCardRangeWithEmpty(
             Boolean hasCardRangeGroup, Boolean hasInstitution, boolean hasNetwork) {
         CardRange cardRange = new CardRange();
-        CardRangeGroup cardRangeGroup = new CardRangeGroup();
         Institution institution = new Institution();
         cardRange.setStatus(CardRangeStatus.ACTIVE);
         institution.setStatus(InstitutionStatus.ACTIVE);
 
         if (hasInstitution) {
-            cardRangeGroup.setInstitution(institution);
-        }
-        if (hasCardRangeGroup) {
-            cardRange.setCardRangeGroup(cardRangeGroup);
+            cardRange.setInstitution(institution);
         }
         if (hasNetwork) {
             cardRange.setNetwork(Network.builder().code((byte) 1).build());

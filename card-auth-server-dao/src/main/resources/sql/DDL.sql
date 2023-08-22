@@ -68,9 +68,7 @@ CREATE TABLE `transaction_message_type_detail`
     `id`                 varchar(36) PRIMARY KEY,
     `transaction_id`     varchar(36) NOT NULL,
     `message`            json,
-    `received_timestamp` timestamp,
-    `sent_timestamp`     timestamp,
-    `message_type`       ENUM ('AReq', 'Ares', 'CReq', 'CRes', 'RReq', 'RRes'),
+    `message_type`       ENUM ('AReq', 'ARes', 'CReq', 'CRes', 'RReq', 'RRes'),
     `created_at`         timestamp   NOT NULL,
     `modified_at`        timestamp,
     `deleted_at`         timestamp

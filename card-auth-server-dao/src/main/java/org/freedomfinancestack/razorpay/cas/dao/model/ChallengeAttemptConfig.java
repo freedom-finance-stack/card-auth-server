@@ -2,20 +2,20 @@ package org.freedomfinancestack.razorpay.cas.dao.model;
 
 import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureName;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
 
 @Data
 public class ChallengeAttemptConfig implements IFeature {
 
-    @JsonProperty(value = "attempt_allowed")
+    @SerializedName(value = "attempt_allowed")
     int attemptAllowed;
 
-    @JsonProperty(value = "block_on_exceed_OTP_attempt")
+    @SerializedName(value = "block_on_exceed_OTP_attempt")
     boolean blockOnExceedOtpAttempt;
 
-    @JsonProperty(value = "whitelisting_allowed")
+    @SerializedName(value = "whitelisting_allowed")
     boolean whitelistingAllowed;
 
     @Override

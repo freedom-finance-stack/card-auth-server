@@ -3,20 +3,20 @@ package org.freedomfinancestack.razorpay.cas.dao.model;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureName;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
 
 @Data
 public class ChallengeAuthTypeConfig implements IFeature {
 
-    @JsonProperty(value = "threshold")
+    @SerializedName(value = "threshold")
     long threshold;
 
-    @JsonProperty(value = "threshold_auth_type")
+    @SerializedName(value = "threshold_auth_type")
     AuthType thresholdAuthType;
 
-    @JsonProperty(value = "default_auth_type")
+    @SerializedName(value = "default_auth_type")
     AuthType defaultAuthType;
 
     @Override

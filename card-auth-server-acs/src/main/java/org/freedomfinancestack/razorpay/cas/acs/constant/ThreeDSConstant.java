@@ -9,28 +9,6 @@ public class ThreeDSConstant {
     public static final String[] SUPPORTED_MESSAGE_VERSION = {"2.1.0", "2.2.0"};
 
     // Supported Message Types
-    public static final String MESSAGE_TYPE_AREQ = "AReq";
-    public static final String MESSAGE_TYPE_ARES = "ARes";
-    public static final String MESSAGE_TYPE_CREQ = "CReq";
-    public static final String MESSAGE_TYPE_CRES = "CRes";
-    public static final String MESSAGE_TYPE_RREQ = "RReq";
-    public static final String MESSAGE_TYPE_RRES = "RRes";
-    public static final String MESSAGE_TYPE_ERRO = "Erro";
-    public static final String MESSAGE_TYPE_VREQ =
-            "VReq"; // Validation request added for browser call only
-
-    public static final String MESSAGE_TYPE_AUTHINITIATE = "Auth_Initiate";
-
-    public static final String MESSAGE_TYPE_CARD_API_REQ = "APIReq";
-    public static final String MESSAGE_TYPE_CARD_API_RES = "APIRes";
-    public static final String MESSAGE_TYPE_THREEDS_METHOD_REQ = "TMReq";
-    public static final String MESSAGE_TYPE_THREEDS_METHOD_RES = "TMRes";
-
-    public static final String MESSAGE_TYPE_CDRES = "CDRes";
-    public static final String MESSAGE_TYPE_CVREQ = "CVReq";
-
-    // Names of data elements
-    public static final String ELEMENT_THREE_RIIND = "threeRIInd";
     public static final String ELEMENT_THREEDS_COMPIND = "threeDSCompInd";
     public static final String ELEMENT_THREEDS_REQUESTOR_ID = "threeDSRequestorID";
     public static final String ELEMENT_THREEDS_REQUESTOR_NAME = "threeDSRequestorName";

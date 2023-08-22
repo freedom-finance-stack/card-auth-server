@@ -1,7 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
@@ -16,6 +18,7 @@ import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -39,8 +42,9 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public ChallengeResponse processBrwChallengeRequest(String strCReq, String threeDSSessionData) {
-        // todo handle browser refresh, timeout and multiple request, whitelisting allowed, INC
-        // counter
+        // todo handle browser refresh, timeout and multiple request, whitelisting allowed,
+        // INCounter
+        // todo state management for status
         // todo check all the status and phase updated peroperly
         // todo dynamic configurable UI
         log.info("processBrowserRequest - Received CReq Request - " + strCReq);
@@ -50,7 +54,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         try {
             cReq = parseEncryptedRequest(strCReq);
             transaction = transactionService.findById(cReq.getAcsTransID());
-            if (null == transaction) {
+            if (null == transaction || !transaction.isChallengeMandated()) {
                 throw new ThreeDSException(
                         ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
                         InternalErrorCode.TRANSACTION_NOT_FOUND,
@@ -61,10 +65,10 @@ public class ChallengeServiceImpl implements ChallengeService {
                 // handle
             } else {
                 // log creq
-                transactionMessageTypeService.createAndSave(cReq, cReq.getAcsTransID());
                 Map<MessageType, ThreeDSObject> threeDSMessageMap =
                         transactionMessageTypeService.getTransactionMessagesByTransactionId(
                                 transaction.getId());
+                transactionMessageTypeService.createAndSave(cReq, cReq.getAcsTransID());
                 // validate Creq
                 if (Util.isNullorBlank(cReq.getChallengeCancel())) {
                     challengeRequestValidator.validateRequest(
@@ -77,10 +81,13 @@ public class ChallengeServiceImpl implements ChallengeService {
                 transaction.setThreedsSessionData(threeDSSessionData);
 
                 // institution_id, Range id ,Range group ID
-              //  featureService.getAuthenticationConfig(entityIdsByType);
+                Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
+                entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
+                entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
+                AuthConfigDto authConfigDto =
+                        featureService.getAuthenticationConfig(entityIdsByType);
                 // remove whitelisitng allowes, attempt and block from current table
-
-
+                log.info("e");
             }
 
         } catch (ACSDataAccessException ex) {

@@ -2,13 +2,13 @@ package org.freedomfinancestack.razorpay.cas.dao.model;
 
 import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureName;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
 
 @Data
 public class OtpConfig implements IFeature {
-    @JsonProperty("length")
+    @SerializedName("length")
     int length;
 
     @Override
