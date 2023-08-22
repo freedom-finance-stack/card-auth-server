@@ -31,10 +31,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RangeServiceTest {
-    @Mock
-    CardRangeRepository cardRangeRepository;
-    @InjectMocks
-    RangeServiceImpl rangeService;
+    @Mock CardRangeRepository cardRangeRepository;
+    @InjectMocks RangeServiceImpl rangeService;
     static String PanNumber = "4001400112341234";
 
     @Test

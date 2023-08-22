@@ -21,16 +21,16 @@ public interface FeatureRepository extends BaseRepository<Feature, String> {
                             FeatureEntityType.CARD_RANGE_GROUP,
                             FeatureEntityType.INSTITUTION));
 
-    Feature findFeatureByNameAndEntityTypeAndEntityId(
-            FeatureName name, FeatureEntityType entityType, String entityID);
+    Feature findFeatureByNameAndEntityTypeAndEntityIdAndActive(
+            FeatureName name, FeatureEntityType entityType, String entityID, Boolean active);
 
     default IFeature findFeatureByIds(
             FeatureName name, Map<FeatureEntityType, String> entityIdsByType) {
         for (FeatureEntityType entityType : preference) {
             if (entityIdsByType.containsKey(entityType)) {
                 Feature feature =
-                        findFeatureByNameAndEntityTypeAndEntityId(
-                                name, entityType, entityIdsByType.get(entityType));
+                        findFeatureByNameAndEntityTypeAndEntityIdAndActive(
+                                name, entityType, entityIdsByType.get(entityType), true);
                 if (feature != null) {
                     switch (feature.getName()) {
                         case CHALLENGE_AUTH_TYPE:

@@ -81,15 +81,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
                 transaction.setPhase(Phase.CREQ);
                 transaction.setThreedsSessionData(threeDSSessionData);
-
-                // institution_id, Range id ,Range group ID
-                Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
-                entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
-                entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
-                AuthConfigDto authConfigDto =
-                        featureService.getAuthenticationConfig(entityIdsByType);
-                // remove whitelisitng allowes, attempt and block from current table
-                log.info("e");
+                AuthConfigDto authConfigDto = getAuthConfig(transaction);
+                // Todo add OTP flow
             }
 
         } catch (ACSDataAccessException ex) {
@@ -100,6 +93,19 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         }
 
         return null;
+    }
+
+    @Override
+    public ValidateChallengeResponse validateChallengeRequest(
+            @NotNull final ValidateChallengeRequest validateChallengeRequest) {
+        return null;
+    }
+
+    private AuthConfigDto getAuthConfig(Transaction transaction) throws ACSDataAccessException {
+        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
+        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
+        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
+        return featureService.getAuthenticationConfig(entityIdsByType);
     }
 
     private CREQ parseEncryptedRequest(String strCReq) throws ParseException {
@@ -124,11 +130,5 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR);
         }
         return creq;
-    }
-
-    @Override
-    public ValidateChallengeResponse validateChallengeRequest(
-            @NotNull final ValidateChallengeRequest validateChallengeRequest) {
-        return null;
     }
 }
