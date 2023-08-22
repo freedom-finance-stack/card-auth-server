@@ -106,7 +106,7 @@
             <dependency>
                 <groupId>org.freedomfinancestack</groupId>
                 <artifactId>card-auth-server-extensions</artifactId>
-                <version>1.0.3-SNAPSHOT</version>
+                <version>1.0.3</version>
             </dependency>
 
             <!-- Logging Dependencies-->
