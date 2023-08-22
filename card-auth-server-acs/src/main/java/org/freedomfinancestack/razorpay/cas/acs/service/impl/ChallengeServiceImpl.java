@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.util.Map;
+import javax.validation.constraints.NotNull;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
@@ -35,7 +36,8 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final ChallengeRequestValidator challengeRequestValidator;
 
     @Override
-    public ChallengeResponse processBrwChallengeRequest(String strCReq, String threeDSSessionData) {
+    public ChallengeResponse processBrwChallengeRequest(
+            @NotNull final String strCReq, final String threeDSSessionData) {
 
         log.info("processBrowserRequest - Received CReq Request - " + strCReq);
         CREQ cReq;
@@ -84,6 +86,7 @@ public class ChallengeServiceImpl implements ChallengeService {
                     ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID,
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR);
         }
+
         CREQ creq;
         try {
             String decryptedCReq = decodeBase64(strCReq);
@@ -104,7 +107,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public ValidateChallengeResponse validateChallengeRequest(
-            ValidateChallengeRequest validateChallengeRequest) {
+            @NotNull final ValidateChallengeRequest validateChallengeRequest) {
         return null;
     }
 }

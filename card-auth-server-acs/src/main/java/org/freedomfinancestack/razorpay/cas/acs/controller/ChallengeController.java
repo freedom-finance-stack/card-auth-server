@@ -69,7 +69,7 @@ public class ChallengeController {
             value = "/validate-browser-challenge",
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
-            consumes = "application/json; charset=utf-8")
+            consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public String handleChallengeValidationRequest(
             ValidateChallengeRequest validateChallengeRequest, Model model) {
         ValidateChallengeResponse validateChallengeResponse =
