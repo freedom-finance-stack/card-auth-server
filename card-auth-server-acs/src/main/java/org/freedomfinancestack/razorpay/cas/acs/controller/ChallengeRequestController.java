@@ -2,7 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
-import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.contract.ValidateChallengeRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +21,9 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/v1/transaction")
 @RequiredArgsConstructor
-public class ChallengeController {
+public class ChallengeRequestController {
 
-    private final ChallengeService challengeService;
+    private final ChallengeRequestService challengeRequestService;
 
     /**
      * Handles Challenge Request (CReq) received from the 3DS Server and generates HTML pages for
@@ -47,7 +47,7 @@ public class ChallengeController {
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model) {
         ChallengeResponse challengeResponse =
-                challengeService.processBrwChallengeRequest(strCReq, threeDSSessionData);
+                challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
         // todo unhandled exception, if challengeResponse is null
         if (challengeResponse.isError()) {
             model.addAttribute("cRes", challengeResponse.getCRes());
@@ -74,7 +74,7 @@ public class ChallengeController {
     public String handleChallengeValidationRequest(
             ValidateChallengeRequest validateChallengeRequest, Model model) {
         ValidateChallengeResponse validateChallengeResponse =
-                challengeService.validateChallengeRequest(validateChallengeRequest);
+                challengeRequestService.validateChallengeRequest(validateChallengeRequest);
         model.addAttribute("cRes", validateChallengeResponse.getCRes());
         model.addAttribute("notificationUrl", validateChallengeResponse.getNotificationUrl());
         model.addAttribute("threeDSSessionData", validateChallengeResponse.getThreeDSSessionData());

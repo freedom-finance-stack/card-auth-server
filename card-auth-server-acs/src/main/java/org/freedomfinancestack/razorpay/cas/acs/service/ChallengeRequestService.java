@@ -4,7 +4,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 
-public interface ChallengeService {
+public interface ChallengeRequestService {
 
     ChallengeResponse processBrwChallengeRequest(
             final String creq, final String threeDSSessionData);

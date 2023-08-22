@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RestController("acsController")
 @RequestMapping("/v1/transaction")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AuthenticationController {
+public class AuthenticationRequestController {
 
     private final AuthenticationRequestService authenticationRequestService;
 

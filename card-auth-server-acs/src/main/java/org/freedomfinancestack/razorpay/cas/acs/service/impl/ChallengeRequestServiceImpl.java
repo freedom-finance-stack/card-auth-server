@@ -11,7 +11,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
-import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
@@ -34,7 +34,7 @@ import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.fromJson;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ChallengeServiceImpl implements ChallengeService {
+public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     private final TransactionService transactionService;
     private final TransactionMessageTypeService transactionMessageTypeService;
