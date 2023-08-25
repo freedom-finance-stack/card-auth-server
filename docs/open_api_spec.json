@@ -20,10 +20,10 @@
     }
   ],
   "paths": {
-    "/v1/transaction/auth-request": {
+    "/v1/transaction/authentication/browser": {
       "post": {
         "tags": [
-          "acs-controller"
+          "authentication-controller"
         ],
         "summary": "Handles Authentication Request generating from 3DS Server",
         "operationId": "handleAuthenticationRequest",
@@ -79,6 +79,17 @@
         "properties": {
           "transactionId": {
             "type": "string"
+          },
+          "threeDSMessageType": {
+            "type": "string",
+            "enum": [
+              "AReq",
+              "ARes",
+              "CReq",
+              "CRes",
+              "RReq",
+              "RRes"
+            ]
           },
           "threeDSRequestorURL": {
             "type": "string"
@@ -357,14 +368,14 @@
       "CardholderAccountInformation": {
         "type": "object",
         "properties": {
-          "valid": {
-            "type": "boolean"
-          },
           "length": {
             "type": "integer",
             "format": "int32"
           },
           "empty": {
+            "type": "boolean"
+          },
+          "valid": {
             "type": "boolean"
           },
           "dataValid": {
@@ -509,12 +520,12 @@
       "ThreeDSMerchantFeilds": {
         "type": "object",
         "properties": {
-          "valid": {
-            "type": "boolean"
-          },
           "length": {
             "type": "integer",
             "format": "int32"
+          },
+          "valid": {
+            "type": "boolean"
           },
           "shipIndicator": {
             "type": "string"
@@ -679,6 +690,17 @@
           },
           "whiteListStatusSource": {
             "type": "string"
+          },
+          "threeDSMessageType": {
+            "type": "string",
+            "enum": [
+              "AReq",
+              "ARes",
+              "CReq",
+              "CRes",
+              "RReq",
+              "RRes"
+            ]
           }
         }
       }
