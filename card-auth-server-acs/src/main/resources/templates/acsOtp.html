@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "ISO-8859-1" />
+    <link href = "css/styles.css" rel = "stylesheet"/>
+    <title>Purchase Authentication</title>
+</head>
+<body>
+<div class="challengeInfoText">You are paying merchant XYZ, $$ amount</div>
+<div class="verificationCode">we have sent you test message on ...</div>
+<div align="center">
+    <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post" name = "submitForm" >
+        <input name="authVal" id="authVal" type="password" class="inputText">
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>

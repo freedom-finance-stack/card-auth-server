@@ -177,8 +177,10 @@ public class LoggerAspect {
         switch (level) {
             case INFO:
                 log.info(message, vars);
+                break;
             case DEBUG:
                 log.debug(message, vars);
+                break;
         }
     }
 

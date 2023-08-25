@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -22,9 +23,9 @@ import lombok.extern.slf4j.Slf4j;
  * The {@code Util} class provides various utility methods used across the ACS (Access Control
  * Server) module.
  *
+ * @author ankitchoudhary2209, jaydeepRadadiya
  * @version 1.0.0
  * @since 1.0.0
- * @author ankitchoudhary2209, jaydeepRadadiya
  */
 @Slf4j
 public class Util {
@@ -70,6 +71,18 @@ public class Util {
     }
 
     /**
+     * Converts an Json string to given classs using Gson library.
+     *
+     * @param json the json string to be converted to Object
+     * @param classOfT the class of T
+     * @return Object of given class
+     */
+    public static <T> T fromJson(String json, Class<T> classOfT) {
+        // todo handle error
+        return gson.fromJson(json, classOfT);
+    }
+
+    /**
      * Generates a random UUID (Universally Unique Identifier).
      *
      * @return the random UUID as a string
@@ -93,6 +106,16 @@ public class Util {
         String maskedDigits = PADDED_SYMBOL_X.repeat(len);
 
         return firstSixDigit + maskedDigits + lastFourDigit;
+    }
+
+    /**
+     * Decode base64 data to string.
+     *
+     * @param base64Data string data
+     * @return decoded string
+     */
+    public static String decodeBase64(String base64Data) {
+        return new String(Base64.getDecoder().decode(base64Data), StandardCharsets.UTF_8);
     }
 
     /**

@@ -1,6 +1,10 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
+import java.util.Map;
+
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSObject;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.model.TransactionMessageTypeDetail;
 
 /**
@@ -29,4 +33,7 @@ public interface TransactionMessageTypeService {
      *     TransactionMessageTypeDetail.
      */
     void createAndSave(ThreeDSObject threeDSObject, String transactionId);
+
+    Map<MessageType, ThreeDSObject> getTransactionMessagesByTransactionId(String id)
+            throws ThreeDSException;
 }
