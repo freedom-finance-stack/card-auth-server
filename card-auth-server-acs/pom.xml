@@ -207,6 +207,18 @@
                             <goal>build-info</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -229,6 +241,24 @@
                         <version>5.8.2</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <apiDocsUrl>http://127.0.0.1:8080/v3/api-docs</apiDocsUrl>
+                    <outputFileName>open_api_spec.json</outputFileName>
+                    <outputDir>${project.parent.basedir}/docs</outputDir>
+                </configuration>
             </plugin>
         </plugins>
     </build>
