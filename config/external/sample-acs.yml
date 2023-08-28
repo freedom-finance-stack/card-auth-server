@@ -17,5 +17,5 @@ hsm:
 
 modules:
   security:
-    SecurityModule1:
+    SecurityModuleAWS:
       enabled: true
