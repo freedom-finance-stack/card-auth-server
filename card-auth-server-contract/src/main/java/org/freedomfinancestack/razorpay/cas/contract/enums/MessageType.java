@@ -12,7 +12,6 @@ public enum MessageType {
     CVRes("CVRes"),
     RRes("RRes");
 
-
     private final String stringValue;
 
     MessageType(String stringValue) {

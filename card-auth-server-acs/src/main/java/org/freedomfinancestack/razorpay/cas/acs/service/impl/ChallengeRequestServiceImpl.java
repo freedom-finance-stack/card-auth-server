@@ -144,14 +144,14 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 // If Phase CDRES : generate OTP page return
             }
 
-        }  catch (ThreeDSException ex) {
+        } catch (ThreeDSException ex) {
             challengeResponse.setError(true);
             // create error response and add to response
             //       / Error
         } catch (InvalidStateTransactionException e) {
             throw new RuntimeException(e);
         } catch (ACSException e) {
-           //  Generate CRes
+            //  Generate CRes
             throw new RuntimeException(e);
         } finally {
             // If Phase RRes or IsError set   :

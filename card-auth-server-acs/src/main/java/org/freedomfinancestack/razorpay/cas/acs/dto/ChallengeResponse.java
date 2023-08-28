@@ -1,7 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto;
 
-import org.freedomfinancestack.razorpay.cas.contract.CRES;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,5 +31,4 @@ public class ChallengeResponse {
     String encryptedCRes;
     String encryptedErro;
     String notificationUrl;
-
 }

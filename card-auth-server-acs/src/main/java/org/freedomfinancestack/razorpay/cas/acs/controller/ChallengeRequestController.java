@@ -67,9 +67,12 @@ public class ChallengeRequestController {
      * Handles Challenge Validation Request (ValidateCReq) received from the client browser for OTP
      * verification and generates CRes for the Browser.
      *
-     * @param validateChallengeRequest
-     * @param model
-     * @return
+     * @param validateChallengeRequest The {@link ValidateChallengeRequest} object representing the
+     *     Challenge Validation Request message received from the browser.
+     * @param model The {@link Model} object representing the UI Model for HTML template data
+     *     binding.
+     * @return The {@link String} object representing the Challenge Response message in JS enabled
+     *     HTML format.
      */
     @RequestMapping(
             value = "/challenge/browser/validate",
