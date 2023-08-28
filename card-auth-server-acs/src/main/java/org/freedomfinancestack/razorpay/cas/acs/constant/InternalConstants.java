@@ -10,6 +10,7 @@ public class InternalConstants {
     public static final String ANDROID = "Android";
     public static final String IOS = "iOS";
     public static final String YES = "Y";
+    public static final String NO = "N";
     public static final String SPACE = " ";
     public static final String COLON_SEPARATOR = " : ";
     public static final String COMMA = ",";

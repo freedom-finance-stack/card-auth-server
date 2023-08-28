@@ -3,7 +3,7 @@ package org.freedomfinancestack.razorpay.cas.dao.model;
 import java.sql.Timestamp;
 import javax.persistence.*;
 
-import org.freedomfinancestack.razorpay.cas.dao.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;

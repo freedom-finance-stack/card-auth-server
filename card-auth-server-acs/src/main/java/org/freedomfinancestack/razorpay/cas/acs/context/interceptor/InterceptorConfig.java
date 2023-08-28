@@ -20,8 +20,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @ConditionalOnProperty(
             name = "hsm.enabled_gateway",
             havingValue = HSMCommandType.HSMCommandTypeConstants.NO_OP_HSM)
-    protected SecurityModuleAWS securityModuleAWS(){
-        securityModuleAWS =  new SecurityModuleAWS();
+    protected SecurityModuleAWS securityModuleAWS() {
+        securityModuleAWS = new SecurityModuleAWS();
         return securityModuleAWS;
     }
 
