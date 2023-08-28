@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
-import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.AResMapper;
@@ -29,6 +28,7 @@ import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrlPK;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.freedomfinancestack.razorpay.cas.dao.statemachine.StateMachine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -44,9 +44,9 @@ import lombok.extern.slf4j.Slf4j;
  * responsible for processing incoming AReq messages, validating the requests, generating Ares
  * messages, and managing transaction details in the ACS system.
  *
+ * @author jaydeepRadadiya
  * @version 1.0.0
  * @since 1.0.0
- * @author jaydeepRadadiya
  */
 @Slf4j
 @Service("authenticationServiceImpl")
@@ -105,6 +105,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetwork().getCode());
             transaction.setCardRangeId(cardRange.getId());
             transaction.setInstitutionId(cardRange.getInstitution().getId());
+
             // get acs url
             acsUrl =
                     institutionAcsUrlService.findById(
@@ -114,35 +115,13 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                     cardRange.getNetwork().getCode()));
 
             // fetch Card and User details and validate details
-            CardDetailsRequest cardDetailsRequest =
-                    new CardDetailsRequest(
-                            cardRange.getInstitution().getId(), areq.getAcctNumber());
-            CardDetailResponse cardDetailResponse =
-                    cardDetailService.getCardDetails(
-                            cardDetailsRequest, cardRange.getCardDetailsStore());
             cardDetailService.validateCardDetails(
-                    cardDetailResponse, cardRange.getCardDetailsStore());
+                    new CardDetailsRequest(
+                            cardRange.getInstitution().getId(), areq.getAcctNumber()),
+                    cardRange.getCardDetailsStore());
 
             // Determine if challenge is required and update transaction accordingly
-            if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
-                transaction.setChallengeMandated(true);
-                // todo add timer logic for challenge
-                transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
-            } else {
-                transaction.setChallengeMandated(false);
-                String eci =
-                        eCommIndicatorService.generateECI(
-                                new GenerateECIRequest(
-                                                transaction.getTransactionStatus(),
-                                                cardRange.getNetwork(),
-                                                transaction.getMessageCategory())
-                                        .setThreeRIInd(areq.getThreeRIInd()));
-                transaction.setEci(eci);
-                transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-                String authValue = authValueGeneratorService.getAuthValue(transaction);
-                transaction.setAuthValue(authValue);
-            }
-
+            determineChallenge(areq, transaction, cardRange);
         } catch (ThreeDSException ex) {
             // NOTE : to send Erro in response throw ThreeDSException, otherwise
 
@@ -200,7 +179,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             transaction,
                             AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
             transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
-            transaction.setPhase(Phase.ARES);
+            StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
         } catch (Exception ex) {
             // updating transaction with error and updating DB
             // throw ThreeDSException again so that it returns to client with error message, it is
@@ -218,14 +197,47 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
         return ares;
     }
 
+    private void determineChallenge(AREQ areq, Transaction transaction, CardRange cardRange)
+            throws ACSException, ThreeDSException {
+        if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
+            transaction.setChallengeMandated(true);
+            // todo add timer logic for challenge
+            transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
+        } else {
+            transaction.setChallengeMandated(false);
+            String eci =
+                    eCommIndicatorService.generateECI(
+                            new GenerateECIRequest(
+                                            transaction.getTransactionStatus(),
+                                            cardRange.getNetwork(),
+                                            transaction.getMessageCategory())
+                                    .setThreeRIInd(areq.getThreeRIInd()));
+            transaction.setEci(eci);
+            transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+            String authValue = authValueGeneratorService.getAuthValue(transaction);
+            transaction.setAuthValue(authValue);
+        }
+    }
+
+    private boolean isChallengeRequired(RiskFlag riskFlag, Transaction transaction) {
+        // todo honor ThreeDSRequestorChallsengeInd once RBA is implemented
+        if (riskFlag.equals(RiskFlag.NO_CHALLENGE)) {
+            return false;
+        } else if (riskFlag.equals(RiskFlag.CHALLENGE)) {
+            return true;
+        } else { // RBA
+            throw new UnsupportedOperationException("RBA is not supported yet");
+        }
+    }
+
     private Transaction updateTransactionPhaseWithError(
             ThreeDSecureErrorCode threeDSecureErrorCode,
             InternalErrorCode internalErrorCode,
             Transaction transaction)
             throws ACSDataAccessException {
-        transaction.setErrorCode(threeDSecureErrorCode.getErrorCode());
+        transaction.setErrorCode(internalErrorCode.getCode());
         transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
-        transaction.setPhase(Phase.ERROR);
+        transaction.setPhase(Phase.AERROR);
         transaction.setTransactionStatusReason(
                 internalErrorCode.getTransactionStatusReason().getCode());
         return transactionService.saveOrUpdate(transaction);
@@ -239,16 +251,5 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
         transaction.setTransactionStatusReason(
                 internalErrorCode.getTransactionStatusReason().getCode());
         return transactionService.saveOrUpdate(transaction);
-    }
-
-    private boolean isChallengeRequired(RiskFlag riskFlag, Transaction transaction) {
-        // todo honor ThreeDSRequestorChallsengeInd once RBA is implemented
-        if (riskFlag.equals(RiskFlag.NO_CHALLENGE)) {
-            return false;
-        } else if (riskFlag.equals(RiskFlag.CHALLENGE)) {
-            return true;
-        } else { // RBA
-            throw new UnsupportedOperationException("RBA is not supported yet");
-        }
     }
 }

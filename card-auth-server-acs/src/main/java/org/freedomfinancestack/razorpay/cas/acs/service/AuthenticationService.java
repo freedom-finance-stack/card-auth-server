@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
-import org.freedomfinancestack.razorpay.cas.acs.dto.Authentication;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 
 /**
@@ -9,9 +9,9 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
  *
  * @param <T>
  */
-public interface AuthenticationService<T extends Authentication> {
+public interface AuthenticationService {
 
-    public void preAuthenticate(T t) throws ACSException;
+    public void preAuthenticate(AuthenticationDto authenticationDto) throws ACSException;
 
-    public AuthResponse authenticate(T t) throws ACSException;
+    public AuthResponse authenticate(AuthenticationDto authenticationDto) throws ACSException;
 }

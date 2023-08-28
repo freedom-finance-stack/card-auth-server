@@ -281,41 +281,40 @@ CREATE TABLE `network`
     `deleted_by`  varchar(40)
 );
 
-DROP TABLE IF EXISTS `otp_information`;
-CREATE TABLE `otp_information`
-(
-    `id`          varchar(36) PRIMARY KEY,
-    `unique_id`   varchar(36),
-    `created_at`  timestamp NOT NULL,
-    `modified_at` timestamp NOT NULL,
-    `deleted_at`  timestamp default NULL
-);
 
 DROP TABLE IF EXISTS `otp`;
 CREATE TABLE `otp`
 (
     `id`                 varchar(36) PRIMARY KEY,
+    `value`              varchar(36) NOT NULL,
     `channel`            varchar(36),
-    `otp_information_id` varchar(36) NOT NULL,
     `destination`        varchar(36),
-    `otp_status`         varchar(36),
     `response`           varchar(36),
     `provider`           varchar(36),
-    `attempts`           int,
+    `otp_status`         ENUM ('CREATED', 'SENT', 'FAIL'),
+    `attempted`          int,
+    `valid_till`         timestamp,
     `created_at`         timestamp   NOT NULL,
     `modified_at`        timestamp   NOT NULL,
     `deleted_at`         timestamp default NULL
 );
 
-DROP TABLE IF EXISTS `otp_detail`;
-CREATE TABLE `otp_detail`
+DROP TABLE IF EXISTS `otp_transaction_detail`;
+CREATE TABLE `otp_transaction_detail`
 (
     `id`                  varchar(36),
-    `otp_id`              varchar(36) NOT NULL,
     `transaction_id`      varchar(36) NOT NULL,
-    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
     `resend_count`        int,
+    `otp_id`              varchar(36) NOT NULL,
+    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
     `created_at`          timestamp   NOT NULL,
     `modified_at`         timestamp   NOT NULL,
     `deleted_at`          timestamp default NULL
 );
+
+
+# Purposed tables for OTP
+#  OTP : ID , Value, Valid_till, Attempt, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
+#  NOTIFICATION : CHANNEL, DESTINATION, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
+#  OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID, RESEND_COUNT
+

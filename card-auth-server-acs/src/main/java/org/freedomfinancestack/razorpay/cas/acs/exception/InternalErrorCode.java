@@ -134,7 +134,12 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8003",
             "CONFIG ERROR IN ACS",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE);
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    CANCELLED_BY_CARDHOLDER(
+            "8004",
+            "CANCELED BY CARD HOLDER",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.LOW_CONFIDENCE);
 
     private final String code;
 

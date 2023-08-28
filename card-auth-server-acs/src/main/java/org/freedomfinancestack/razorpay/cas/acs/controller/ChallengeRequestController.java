@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.ValidateChallengeRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +51,11 @@ public class ChallengeRequestController {
                 challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
         // todo unhandled exception, if challengeResponse is null
         if (challengeResponse.isError()) {
-            model.addAttribute("cRes", challengeResponse.getCRes());
+            if (Util.isNullorBlank(challengeResponse.getEncryptedCRes())) {
+                model.addAttribute("cRes", challengeResponse.getEncryptedCRes());
+            } else {
+                model.addAttribute("erro", challengeResponse.getEncryptedErro());
+            }
             model.addAttribute("notificationUrl", challengeResponse.getNotificationUrl());
             return "threeDSecureResponseSubmit";
         }

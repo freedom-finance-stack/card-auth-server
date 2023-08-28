@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.NO;
+import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
 import static org.freedomfinancestack.razorpay.cas.acs.validation.AuthenticationRequestValidator.validateDeviceChannelAndMessageCategory;
 import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.IsValidObject.isValidObject;
 import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.NotNull.notNull;
@@ -126,10 +126,10 @@ public class ChallengeRequestValidator {
             String acsUiType = cres.getAcsUiType();
             boolean conditionForChallengeDataEntry =
                     (Arrays.asList("01", "02", "03").contains(acsUiType)
-                                    && NO.equals(incomingCreq.getResendChallenge()))
+                                    && !YES.equals(incomingCreq.getResendChallenge()))
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                             && (!Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                    && !incomingCreq.getChallengeNoEntry().equals("Y"));
+                                    && !YES.equals(incomingCreq.getChallengeNoEntry()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeDataEntry(),

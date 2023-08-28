@@ -29,6 +29,9 @@ public class ChallengeResponse {
 
     // optional fields only used in case of error
     boolean isError;
-    CRES cRes;
+
+    String encryptedCRes;
+    String encryptedErro;
     String notificationUrl;
+
 }

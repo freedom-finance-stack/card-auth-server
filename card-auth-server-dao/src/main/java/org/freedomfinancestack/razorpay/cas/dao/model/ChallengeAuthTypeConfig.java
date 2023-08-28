@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
+import java.math.BigDecimal;
+
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureName;
 
@@ -11,7 +13,7 @@ import lombok.Data;
 public class ChallengeAuthTypeConfig implements IFeature {
 
     @SerializedName(value = "threshold")
-    long threshold;
+    BigDecimal threshold;
 
     @SerializedName(value = "threshold_auth_type")
     AuthType thresholdAuthType;

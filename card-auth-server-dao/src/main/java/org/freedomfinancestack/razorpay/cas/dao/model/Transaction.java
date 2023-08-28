@@ -5,6 +5,8 @@ import javax.persistence.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
+import org.freedomfinancestack.razorpay.cas.dao.statemachine.State;
+import org.freedomfinancestack.razorpay.cas.dao.statemachine.StateMachineEntity;
 import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +21,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 @Builder
-public class Transaction extends BaseEntity<String> {
+public class Transaction extends BaseEntity<String>
+        implements StateMachineEntity<Phase, Phase.PhaseEvent> {
     @Id private String id;
 
     @Column(name = "institution_id")
@@ -117,5 +120,20 @@ public class Transaction extends BaseEntity<String> {
     public void setTransactionBrowserDetail(TransactionBrowserDetail transactionBrowserDetail) {
         this.transactionBrowserDetail = transactionBrowserDetail;
         transactionBrowserDetail.setTransaction(this);
+    }
+
+    @Override
+    public String EntityName() {
+        return "transaction";
+    }
+
+    @Override
+    public void SetState(State<Phase, Phase.PhaseEvent> state) {
+        this.setPhase((Phase) state);
+    }
+
+    @Override
+    public Phase GetState() {
+        return this.getPhase();
     }
 }

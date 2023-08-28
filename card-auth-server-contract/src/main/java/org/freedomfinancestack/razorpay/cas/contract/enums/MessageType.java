@@ -5,9 +5,13 @@ public enum MessageType {
     ARes("ARes"),
     CReq("CReq"),
     CRes("CRes"),
+    Erro("Erro"),
     RReq("RReq"),
-    RRes("RRes"),
-    Erro("Erro");
+    CDReq("CDReq"),
+    //
+    CVRes("CVRes"),
+    RRes("RRes");
+
 
     private final String stringValue;
 
