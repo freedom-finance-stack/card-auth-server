@@ -3,9 +3,9 @@ package org.freedomfinancestack.razorpay.cas.acs.context.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.freedomfinancestack.extensions.ext_modules.security.SecurityModuleAWS;
 import org.freedomfinancestack.razorpay.cas.acs.context.RequestContext;
 import org.freedomfinancestack.razorpay.cas.acs.context.RequestContextHolder;
-import org.freedomfinancestack.razorpay.cas.acs.module.custom.SecurityModuleAWS;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,10 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
         RequestContextHolder.set(requestContext);
 
         if (securityModuleAWS != null) {
-            securityModuleAWS.verifyRequest(httpServletRequest);
+            boolean isVerified = securityModuleAWS.verifyRequest(httpServletRequest);
+            /**
+             * Business logic on what to do if request is not verified.
+             */
         }
 
         return AsyncHandlerInterceptor.super.preHandle(

@@ -1,14 +1,13 @@
 package org.freedomfinancestack.razorpay.cas.acs.context.interceptor;
 
-import org.freedomfinancestack.extensions.hsm.command.enums.HSMCommandType;
-import org.freedomfinancestack.razorpay.cas.acs.module.custom.SecurityModuleAWS;
+import lombok.extern.slf4j.Slf4j;
+
+import org.freedomfinancestack.extensions.ext_modules.security.SecurityModuleAWS;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration("interceptorConfig")
@@ -16,10 +15,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     private SecurityModuleAWS securityModuleAWS;
 
+    /**
+     * Since, SecurityModuleAWS is a bean, this can be used across this whole project.
+     */
     @Bean
     @ConditionalOnProperty(
-            name = "hsm.enabled_gateway",
-            havingValue = HSMCommandType.HSMCommandTypeConstants.NO_OP_HSM)
+            name = "modules.security.SecurityModuleAWS.enabled",
+            havingValue = "true")
     protected SecurityModuleAWS securityModuleAWS() {
         securityModuleAWS = new SecurityModuleAWS();
         return securityModuleAWS;
