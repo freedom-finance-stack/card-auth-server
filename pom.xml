@@ -19,8 +19,6 @@
     <modules>
         <module>card-auth-server-contract</module>
         <module>card-auth-server-dao</module>
-        <!-- todo - This module will be removed once it is moved to Central repo-->
-        <module>card-auth-server-extensions</module>
         <module>card-auth-server-acs</module>
         <module>card-auth-server-admin</module>
     </modules>
@@ -44,6 +42,7 @@
         <micrometer.version>1.9.10</micrometer.version>
         <jackson.version>2.14.2</jackson.version>
         <gson.version>2.8.9</gson.version>
+        <cas-extensions.version>1.0.4-SNAPSHOT</cas-extensions.version>
     </properties>
 
     <dependencyManagement>
@@ -105,12 +104,11 @@
             </dependency>
 
             <!-- Card Auth Server Extensions Dependency -->
-            <!-- todo - Change this once Extensions repo is pushed to Maven Central -->
-<!--            <dependency>-->
-<!--                <groupId>org.freedomfinancestack</groupId>-->
-<!--                <artifactId>card-auth-server-extensions</artifactId>-->
-<!--                <version>1.0.0-SNAPSHOT</version>-->
-<!--            </dependency>-->
+            <dependency>
+                <groupId>org.freedomfinancestack</groupId>
+                <artifactId>card-auth-server-extensions</artifactId>
+                <version>${cas-extensions.version}</version>
+            </dependency>
 
             <!-- Logging Dependencies-->
             <dependency>
@@ -163,6 +161,16 @@
         </dependencies>
 
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
