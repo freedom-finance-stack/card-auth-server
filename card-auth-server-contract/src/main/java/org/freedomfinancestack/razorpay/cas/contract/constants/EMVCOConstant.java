@@ -15,6 +15,7 @@ public class EMVCOConstant {
      * */
     public static final String MESSAGE_TYPE_ARES = "ARes";
     public static final String MESSAGE_TYPE_CREQ = "CReq";
+    public static final String MESSAGE_TYPE_CRES = "CRes";
     public static final String MESSAGE_TYPE_ERRO = "Erro";
     public static final String MESSAGE_TYPE_VERSION = "2.2.0";
     public static final String appDeviceInfoAndroid = "Android";

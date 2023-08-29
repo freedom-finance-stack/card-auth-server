@@ -1,1 +1,106 @@
-;
+                                     **************************************
+                                        OPEN SOURCE TERMS AND CONDITIONS
+                                     **************************************
+ 
+By using the Software, You agree to all of the terms and conditions ("Terms") below.
+ 
+"Licensor" is the entity offering these Terms
+"Licensee" is the entity using the Software
+ 
+"Software" refers to the software the Licensor makes available under these terms, including any portion of it.
+ 
+"You/Your" refers to the individual or entity agreeing to these terms.
+ 
+"Company" is any legal entity, sole proprietorship, or other kind of organization that You work for,
+plus all organizations that have control over, are under the control of, or are under common control
+with that organization.
+
+"Control" means ownership of substantially all the assets of an entity, or the power to direct
+its management and policies by vote, contract, or otherwise. Control can be direct or indirect.
+ 
+"License/Licenses" refer to all the licenses granted to You for the Software under these Terms.
+ 
+"Use" means anything you do with the Software as per the Terms herein.
+"User" means the individual or the Company who uses the Software
+ 
+"Trademark" means trademarks, service marks, and similar rights as per the intellectual property rights.
+
+ 
+1. Copyright License
+--------------------
+The Licensor grants you a non-exclusive, royalty-free, worldwide, non-sublicensable, non-transferable
+license to use, copy, distribute, make available, and prepare derivative works of the software,
+in each case subject to the limitations and conditions mentioned under these Terms.
+ 
+2. Limitations
+--------------
+You may not provide the Software to third parties as a hosted or managed service and a Software of your own,
+where the Software provides Users with access to any substantial set of the features or functionality of the Software.
+For the avoidance of doubt, You are not permitted to sell or use the codebase and/or the source code to deploy it
+at other shared infrastructure including in an infrastructure or hardware owned by You.
+ 
+You may not move, change, disable, or circumvent the license key functionality in the Software,
+and You may not remove or obscure any functionality in the Software that is protected by the license key.
+ 
+You may not alter, remove, or obscure any licensing, copyright, or other notices of the Licensor in the Software.
+You shall not be permitted to use the trademark without seeking prior permission from the Licensor.
+ 
+3. Patents
+----------
+The Licensor grants You a License to use the Software as per the Terms herein.
+Under any patent claims the Licensor can license, or becomes able to license, to make, have made, use, sell,
+offer for sale, import and have imported the Software, in each case subject to the
+limitations and conditions in these Terms.
+This License does not cover any patent claims that You cause to be infringed by modifications or additions to the Software.
+If You or Your Company make any written claim that the Software infringes or contributes to infringement of any patent,
+Your License for the Software granted under these Terms ends immediately.
+If Your Company makes such a claim, Your patent license ends immediately for work on behalf of You Company.
+ 
+4. Notices
+----------
+You must ensure that anyone who gets a copy of any part of the Software from You also gets a copy of these Terms.
+ 
+If You modify the Software, You must include in any modified copies of the Software prominent notices stating
+that You have modified the Software.
+ 
+5. No Other Rights
+------------------
+These terms do not imply any licenses other than those expressly granted in these Terms.
+ 
+6. Termination
+--------------
+If You use the Software in violation of these Terms and/or if such Use is not licensed then
+Your Licenses will automatically terminate. If the Licensor provides You with a notice of Your violation,
+You must cease all Use of this license no later than 30 days after You receive that notice.
+Your licenses will be reinstated retroactively, if required. However, if You violate these Terms after such reinstatement
+then any such additional violation of these Terms will cause Your licenses to terminate automatically and permanently.
+ 
+7. Disclaimer
+-------------
+To the extent permitted by law, the Software comes as is, without any warranty or condition,
+and the Licensor will not be liable to you for any damages arising out of these Terms or the use or nature of the Software,
+under any kind of legal claim.
+ 
+8. Indemnity
+------------
+You shall indemnify the Licensor in respect of any claims or losses or damages that arise due to the usage of this
+Software by You.
+ 
+9.Terms of Use
+--------------
+    a.  In every licensed file, original copyright, patent, trademark, and attribution notices must be preserved
+        (excluding notices that do not pertain to any part of the derivative works).
+    b.  In every licensed file changed, a notification must be added stating that changes have been made to that file.
+    c.  If a NOTICE text file is included as part of the distribution of the original work, then derivative works must
+        include a readable copy of these notices within a NOTICE text file distributed as part of the derivative works,
+        within the source form or documentation, or within a display generated by the derivative works
+        (wherever such third-party notices normally appear).
+    d.  The contents of the NOTICE file do not modify the license, as they are for informational purposes only,
+        and adding more attribution notices as addenda to the NOTICE text is permissible,
+        provided that these notices cannot be understood as modifying the license.
+    e.  Modifications may have appropriate copyright notices and may provide different license terms for the modifications.
+
+
+
+Your Use of these Terms amounts to acceptance of the Terms and any changes further made to it by the Licensor.
+Licensor reserves the right to amend the Terms at its sole discretion whenever required.

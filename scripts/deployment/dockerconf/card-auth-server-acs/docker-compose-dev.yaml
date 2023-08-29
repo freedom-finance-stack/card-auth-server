@@ -28,7 +28,7 @@ services:
       ACS_MYSQL_PASSWORD: 'password'
       SPRING_PROFILES_ACTIVE: 'dev'
     volumes:
-      - ${EXTERNAL_YAML_PATH}:/opt/card-auth-server/cas-acs/bin/config/acs.yml
+      - ${EXTERNAL_YAML_PATH:-/dev/null}:/opt/card-auth-server/cas-acs/bin/config/acs.yml
     ports:
       - '8080:8080'
     depends_on:

@@ -64,6 +64,9 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public Transaction findById(String id) throws ACSDataAccessException {
+        if (Util.isNullorBlank(id)) {
+            return null;
+        }
         try {
             Optional<Transaction> transaction = transactionRepository.findById(id);
             if (transaction.isPresent()) {

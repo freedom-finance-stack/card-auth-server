@@ -52,8 +52,8 @@ logging:
     org.freedomfinancestack: INFO
 
 swagger:
-  contact-name: Razorpay
-  contact-mail: support@razorpay.com
+  contact-name: Freedom Finance Stack
+  contact-mail: contact@freedomfinancestack.org
   app-name: Card Auth Server ACS
   app-description: "Card Auth Server ACS"
   app-version: 1.0.0
