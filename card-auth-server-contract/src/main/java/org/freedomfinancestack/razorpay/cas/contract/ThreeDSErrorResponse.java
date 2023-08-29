@@ -6,7 +6,6 @@ import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,38 +18,27 @@ public class ThreeDSErrorResponse {
 
     // All Required Fields
 
-    @JsonProperty("errorCode")
     private String errorCode;
 
-    @JsonProperty("errorComponent")
     private String errorComponent;
 
-    @JsonProperty("errorDescription")
     private String errorDescription;
 
-    @JsonProperty("errorDetail")
     private String errorDetail;
 
-    @JsonProperty("errorMessageType")
     private String errorMessageType;
 
-    @JsonProperty("messageType")
     private String messageType = MessageType.Erro.toString();
 
-    @JsonProperty("messageVersion")
     private String messageVersion = EMVCOConstant.MESSAGE_TYPE_VERSION;
 
     // All Conditional Fields
-    @JsonProperty("threeDSServerTransID")
     private String threeDSServerTransID;
 
-    @JsonProperty("acsTransID")
     private String acsTransID;
 
-    @JsonProperty("dsTransID")
     private String dsTransID;
 
-    @JsonProperty("sdkTransID")
     private String sdkTransID;
 
     // -----------------------------

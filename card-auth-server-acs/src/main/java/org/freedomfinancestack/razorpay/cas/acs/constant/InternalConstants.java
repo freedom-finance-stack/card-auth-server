@@ -24,9 +24,12 @@ public class InternalConstants {
     public static final String PAD_RIGHT = "RIGHT";
     public static final String NO_OP_HSM = "NoOpHSM";
 
-    public static final String CHALLENGE_INFORMATION_TEXT = "we have sent you a text message with a code ";
-    public static final String CHALLENGE_INFORMATION_MOBILE_TEXT = "to your registered mobile number %s";
+    public static final String CHALLENGE_INFORMATION_TEXT =
+            "we have sent you a text message with a code ";
+    public static final String CHALLENGE_INFORMATION_MOBILE_TEXT =
+            "to your registered mobile number %s";
     public static final String AND = "and";
 
-    public static final String CHALLENGE_INFORMATION_EMAIL_TEXT = "to your registered email address %s";
+    public static final String CHALLENGE_INFORMATION_EMAIL_TEXT =
+            "to your registered email address %s";
 }

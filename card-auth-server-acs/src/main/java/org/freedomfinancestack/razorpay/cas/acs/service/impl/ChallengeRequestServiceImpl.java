@@ -13,10 +13,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
@@ -52,10 +49,12 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
     private final InstitutionRepository institutionRepository;
+    private final ResultRequestService resultRequestService;
 
     @Override
     public CdRes processBrwChallengeRequest(
-            @NotNull final String strCReq, final String threeDSSessionData) {
+            @NotNull final String strCReq, final String threeDSSessionData)
+            throws ACSDataAccessException, InvalidStateTransactionException {
         // todo handle browser refresh, timeout and multiple request from different states,
         // whitelisting allowed,
         // todo dynamic configurable UI
@@ -65,7 +64,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         AREQ aReq;
         Transaction transaction = null;
         CdRes cdRes = new CdRes();
-
+        boolean sendRres = false;
         try {
             // 1 : parse Creq
             cReq = parseEncryptedRequest(strCReq);
@@ -73,11 +72,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             // 2 : find Transaction and previous request, response
             transaction = transactionService.findById(cReq.getAcsTransID());
             if (null == transaction || !transaction.isChallengeMandated()) {
-                throw new ThreeDSException(
+                throw new DataNotFoundException(
                         ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
-                        InternalErrorCode.TRANSACTION_NOT_FOUND,
-                        InternalErrorCode.TRANSACTION_NOT_FOUND.getDefaultErrorMessage()
-                                + "FOR CHALLENGE");
+                        InternalErrorCode.TRANSACTION_NOT_FOUND);
             }
             // todo removing this fetch and use transaction data
             Map<MessageType, ThreeDSObject> threeDSMessageMap =
@@ -99,9 +96,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (!transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED)) {
                 // 5: invalid transaction state
                 if (transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)) {
-                    throw new ValidationException(
-                            ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                            "Transaction already completed");
+                    //                    throw new ValidationException(
+                    //                            ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                    //                            "Transaction already completed");
+
                 } else {
                     throw new ValidationException(
                             ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
@@ -143,10 +141,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
                     //  generateOTP page
                     generateCDres(cdRes, transaction);
-
-                    //save CDres and transaction
-                    transactionService.saveOrUpdate(transaction);
-                    transactionMessageTypeService.createAndSave(cdRes, transaction.getId());
                 } else {
                     throw new ValidationException(
                             ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
@@ -154,25 +148,81 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
             }
 
+        } catch (ParseException ex) {
+            // don't send Rres for ParseException
+            generateErrorResponse(
+                    cdRes,
+                    ex.getThreeDSecureErrorCode(),
+                    InternalErrorCode.INVALID_STATE_TRANSITION,
+                    transaction,
+                    ex.getMessage());
         } catch (ThreeDSException ex) {
-            cdRes.setError(true);
-            // create error response and add to response
-            //       / Error
+            sendRres = true;
+            generateErrorResponse(
+                    cdRes,
+                    ex.getThreeDSecureErrorCode(),
+                    ex.getInternalErrorCode(),
+                    transaction,
+                    ex.getMessage());
         } catch (InvalidStateTransactionException e) {
-            throw new RuntimeException(e);
-        } catch (ACSException e) {
-            //  Generate CRes
-            throw new RuntimeException(e);
+            sendRres = true;
+            generateErrorResponse(
+                    cdRes,
+                    ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                    InternalErrorCode.INVALID_STATE_TRANSITION,
+                    transaction,
+                    e.getMessage());
+        } catch (ACSException ex) {
+            sendRres = true;
+            generateErrorResponse(
+                    cdRes,
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    ex.getErrorCode(),
+                    transaction,
+                    ex.getMessage());
+        } catch (Exception ex) {
+            sendRres = true;
+            generateErrorResponse(
+                    cdRes,
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    transaction,
+                    ex.getMessage());
+        } finally {
+            // save CDres and Transaction
+            transactionMessageTypeService.createAndSave(cdRes, transaction.getId());
+            transactionService.saveOrUpdate(transaction);
         }
 
-
-        // save Trasection
-            // Send Rreq
+        // send RRes
+        try {
+            if (sendRres) {
+                resultRequestService.sendRreq(transaction);
+                StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
+            }
+        } catch (ThreeDSException e) {
+            generateErrorResponse(
+                    cdRes,
+                    e.getThreeDSecureErrorCode(),
+                    e.getInternalErrorCode(),
+                    transaction,
+                    e.getMessage());
+        } catch (InvalidStateTransactionException ex) {
+            generateErrorResponse(
+                    cdRes,
+                    ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                    InternalErrorCode.INVALID_STATE_TRANSITION,
+                    transaction,
+                    ex.getMessage());
+        } finally {
+            // save CDres and Transaction
+            transactionMessageTypeService.createAndSave(cdRes, transaction.getId());
+            transactionService.saveOrUpdate(transaction);
+        }
         return cdRes;
     }
 
-    private void generateCDres(CdRes cdRes, Transaction transaction)
-            throws DataNotFoundException {
+    private void generateCDres(CdRes cdRes, Transaction transaction) throws DataNotFoundException {
         cdRes.setTransactionId(transaction.getId());
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
@@ -190,26 +240,72 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         cdRes.setJsEnableIndicator(
                 transaction.getTransactionBrowserDetail().getJavascriptEnabled());
         StringBuilder challengeText = new StringBuilder();
-        TransactionCardHolderDetail transactionCardHolderDetail = transaction.getTransactionCardHolderDetail();
+        TransactionCardHolderDetail transactionCardHolderDetail =
+                transaction.getTransactionCardHolderDetail();
         boolean isContactInfoAvailable = false;
         if (!Util.isNullorBlank(transactionCardHolderDetail.getMobileNumber())) {
             isContactInfoAvailable = true;
-            challengeText.append(String.format(InternalConstants.CHALLENGE_INFORMATION_MOBILE_TEXT, transactionCardHolderDetail.getMobileNumber()));
+            challengeText.append(
+                    String.format(
+                            InternalConstants.CHALLENGE_INFORMATION_MOBILE_TEXT,
+                            transactionCardHolderDetail.getMobileNumber()));
         }
         if (!Util.isNullorBlank(transactionCardHolderDetail.getEmailId())) {
-            if(isContactInfoAvailable){
+            if (isContactInfoAvailable) {
                 challengeText.append(InternalConstants.AND);
             }
             isContactInfoAvailable = true;
-            challengeText.append(String.format(InternalConstants.CHALLENGE_INFORMATION_EMAIL_TEXT, transactionCardHolderDetail.getEmailId()));
+            challengeText.append(
+                    String.format(
+                            InternalConstants.CHALLENGE_INFORMATION_EMAIL_TEXT,
+                            transactionCardHolderDetail.getEmailId()));
         }
         if (!isContactInfoAvailable) {
-            log.error("No contact information found for card user for transaction id " + transaction.getId());
+            log.error(
+                    "No contact information found for card user for transaction id "
+                            + transaction.getId());
             throw new DataNotFoundException(
                     ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
                     InternalErrorCode.NO_CHANNEL_FOUND_FOR_OTP);
         }
         cdRes.setChallengeText(InternalConstants.CHALLENGE_INFORMATION_TEXT + challengeText);
+    }
+
+    public void generateErrorResponse(
+            CdRes cdRes,
+            ThreeDSecureErrorCode error,
+            InternalErrorCode internalErrorCode,
+            Transaction transaction,
+            String errorDetail)
+            throws InvalidStateTransactionException {
+        cdRes.setError(true);
+        String errorRes = generateErrorResponse(error, transaction, errorDetail);
+        cdRes.setEncryptedErro(Util.encodeBase64(errorRes));
+
+        transaction.setErrorCode(internalErrorCode.getCode());
+        transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+        transaction.setTransactionStatusReason(
+                internalErrorCode.getTransactionStatusReason().getCode());
+        StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
+    }
+
+    public String generateErrorResponse(
+            ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
+        ThreeDSErrorResponse errorObj = new ThreeDSErrorResponse();
+        if (error != null) {
+            errorObj.setErrorCode(error.getErrorCode());
+            errorObj.setErrorComponent(error.getErrorComponent());
+            errorObj.setErrorDescription(error.getErrorDescription());
+            errorObj.setErrorDetail(errorDetail);
+        }
+        if (null != transaction) {
+            errorObj.setMessageVersion(transaction.getMessageVersion());
+            errorObj.setAcsTransID(transaction.getId());
+            errorObj.setDsTransID(transaction.getTransactionReferenceDetail().getDsTransactionId());
+            errorObj.setThreeDSServerTransID(
+                    transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+        }
+        return Util.toJson(errorObj);
     }
 
     @Override
@@ -228,7 +324,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private CREQ parseEncryptedRequest(String strCReq) throws ParseException {
         if (null == strCReq || strCReq.contains(" ")) {
             throw new ParseException(
-                    ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID,
+                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR);
         }
         CREQ creq;
@@ -237,13 +333,13 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             creq = fromJson(decryptedCReq, CREQ.class);
         } catch (Exception e) {
             throw new ParseException(
-                    ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID,
+                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR,
                     e);
         }
         if (null == creq) {
             throw new ParseException(
-                    ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID,
+                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR);
         }
         return creq;

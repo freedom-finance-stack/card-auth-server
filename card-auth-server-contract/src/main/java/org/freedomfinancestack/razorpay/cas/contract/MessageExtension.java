@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.contract;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonParser;
 
@@ -11,16 +10,9 @@ import lombok.Data;
 @Data
 public class MessageExtension implements Validatable {
 
-    @JsonProperty("name")
     private String name;
-
-    @JsonProperty("id")
     private String id;
-
-    @JsonProperty("criticalityIndicator")
     private String criticalityIndicator;
-
-    @JsonProperty("data")
     private Map<String, Object> data;
 
     public boolean isValid() {

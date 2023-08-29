@@ -124,12 +124,14 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8001",
             "Can't parse Creq message",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+            TransactionStatusReason.INVALID_TRANSACTION),
+
     TRANSACTION_NOT_FOUND(
             "8002",
             "TRANSACTION ID NOT FOUND",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
+
     INVALID_CONFIG(
             "8003",
             "CONFIG ERROR IN ACS",
@@ -144,8 +146,12 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8005",
             "NO CHANNEL FOUND FOR OTP",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.CARDHOLDER_NOT_ENROLLED_IN_SERVICE
-    );
+            TransactionStatusReason.CARDHOLDER_NOT_ENROLLED_IN_SERVICE),
+    INVALID_STATE_TRANSITION(
+            "8006",
+            "invalid state transition",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION);
 
     private final String code;
 

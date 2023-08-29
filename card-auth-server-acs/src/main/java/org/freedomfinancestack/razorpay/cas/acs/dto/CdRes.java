@@ -2,11 +2,12 @@ package org.freedomfinancestack.razorpay.cas.acs.dto;
 
 import java.io.Serializable;
 
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSObject;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSObject;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
 /**
  * The {@code ChallengeResponse} class represents a response object for creq.

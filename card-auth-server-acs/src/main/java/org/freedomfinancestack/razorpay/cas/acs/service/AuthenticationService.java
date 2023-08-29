@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 
 /**
  * AuthenticationService interface This interface provides methods for authenticating users using
@@ -22,7 +23,7 @@ public interface AuthenticationService {
      *     authentication.
      * @throws ACSException If an exception occurs during the pre-authentication process.
      */
-    void preAuthenticate(AuthenticationDto authenticationDto) throws ACSException;
+    void preAuthenticate(AuthenticationDto authenticationDto) throws ThreeDSException;
 
     /**
      * Authenticates a user using the specified authentication method.
@@ -32,5 +33,5 @@ public interface AuthenticationService {
      * @return An AuthResponse indicating the result of the authentication process.
      * @throws ACSException If an exception occurs during the authentication process.
      */
-    AuthResponse authenticate(AuthenticationDto authenticationDto) throws ACSException;
+    AuthResponse authenticate(AuthenticationDto authenticationDto) throws ThreeDSException;
 }
