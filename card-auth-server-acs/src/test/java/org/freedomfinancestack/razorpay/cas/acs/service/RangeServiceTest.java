@@ -13,7 +13,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
-import org.freedomfinancestack.razorpay.cas.dao.model.Network;
 import org.freedomfinancestack.razorpay.cas.dao.repository.CardRangeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

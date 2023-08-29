@@ -40,10 +40,7 @@ public class AuthValueGeneratorService {
                 getAuthValueGenerator(
                         Objects.requireNonNull(
                                 Network.getNetwork(
-                                        transaction
-                                                .getTransactionCardDetail()
-                                                .getNetworkCode()
-                                                .intValue())));
+                                        transaction.getTransactionCardDetail().getNetworkCode())));
 
         if (authValueGenerator == null) {
             log.error("getAuthValue() Error occurred as auth value generator is empty or null");
@@ -56,7 +53,7 @@ public class AuthValueGeneratorService {
     /**
      * Factory Method to fetch correct Auth Value generator corresponding to network
      *
-     * @param network which is {@link com.razorpay.acs.dao.model.Network}
+     * @param network {@link Network}
      * @return {@link AuthValueGenerator}
      */
     private AuthValueGenerator getAuthValueGenerator(@NonNull final Network network) {

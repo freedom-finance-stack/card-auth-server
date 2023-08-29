@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
-import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
+import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -47,19 +47,19 @@ public class ChallengeRequestController {
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model) {
-        ChallengeResponse challengeResponse =
+        CdRes cdRes =
                 challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
         // todo unhandled exception, if challengeResponse is null
-        if (challengeResponse.isError()) {
-            if (Util.isNullorBlank(challengeResponse.getEncryptedCRes())) {
-                model.addAttribute("cRes", challengeResponse.getEncryptedCRes());
+        if (cdRes.isError()) {
+            if (Util.isNullorBlank(cdRes.getEncryptedCRes())) {
+                model.addAttribute("cRes", cdRes.getEncryptedCRes());
             } else {
-                model.addAttribute("erro", challengeResponse.getEncryptedErro());
+                model.addAttribute("erro", cdRes.getEncryptedErro());
             }
-            model.addAttribute("notificationUrl", challengeResponse.getNotificationUrl());
+            model.addAttribute("notificationUrl", cdRes.getNotificationUrl());
             return "threeDSecureResponseSubmit";
         }
-        model.addAttribute("challengeResponse", challengeResponse);
+        model.addAttribute("challengeResponse", cdRes);
         return "acsOtp";
     }
 

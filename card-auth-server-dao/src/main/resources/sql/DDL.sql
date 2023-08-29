@@ -22,6 +22,7 @@ CREATE TABLE `transaction`
     `device_channel`            varchar(10),
     `device_name`               varchar(20),
     `interaction_count`         int,
+    `challenge_cancel_ind`      varchar(2),
     `error_code`                varchar(20),
     `created_at`                timestamp NOT NULL,
     `modified_at`               timestamp,
@@ -68,7 +69,7 @@ CREATE TABLE `transaction_message_type_detail`
     `id`                 varchar(36) PRIMARY KEY,
     `transaction_id`     varchar(36) NOT NULL,
     `message`            json,
-    `message_type`       ENUM ('AReq', 'ARes', 'CReq', 'CRes', 'RReq', 'RRes'),
+    `message_type`       ENUM ('AReq', 'ARes', 'CReq', 'CRes', 'RReq', 'RRes', 'CDRes', 'CVReq'),
     `created_at`         timestamp   NOT NULL,
     `modified_at`        timestamp,
     `deleted_at`         timestamp
@@ -84,10 +85,24 @@ CREATE TABLE `transaction_reference_detail`
     `threeds_server_transaction_id`   varchar(36),
     `threeds_server_reference_number` varchar(36),
     `ds_transaction_id`               varchar(36),
+    `ds_url`                          varchar(200),
     `created_at`                      timestamp NOT NULL,
     `modified_at`                     timestamp NOT NULL,
     `deleted_at`                      timestamp default NULL
 );
+
+DROP TABLE IF EXISTS `transaction_cardholder_detail`;
+CREATE TABLE `transaction_cardholder_detail`
+(
+    `transaction_id`                  varchar(36) PRIMARY KEY,
+    `mobile_number`                   varchar(20),
+    `email_id`                        varchar(100),
+    `name`                            varchar(50),
+    `created_at`                      timestamp NOT NULL,
+    `modified_at`                     timestamp NOT NULL,
+    `deleted_at`                      timestamp default NULL
+);
+
 
 DROP TABLE IF EXISTS `institution_acs_url`;
 CREATE TABLE `institution_acs_url`
@@ -267,19 +282,6 @@ CREATE TABLE `card_detail`
     `deleted_by`     varchar(40)
 );
 
-DROP TABLE IF EXISTS `network`;
-CREATE TABLE `network`
-(
-    `id`          varchar(36) PRIMARY KEY,
-    `code`        tinyint     NOT NULL,
-    `name`        varchar(50) NOT NULL,
-    `created_at`  timestamp   NOT NULL,
-    `created_by`  varchar(40) NOT NULL,
-    `modified_at` timestamp,
-    `modified_by` varchar(40),
-    `deleted_at`  timestamp default NULL,
-    `deleted_by`  varchar(40)
-);
 
 
 DROP TABLE IF EXISTS `otp`;

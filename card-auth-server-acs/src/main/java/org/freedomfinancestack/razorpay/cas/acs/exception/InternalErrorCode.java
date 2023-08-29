@@ -139,7 +139,13 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8004",
             "CANCELED BY CARD HOLDER",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.LOW_CONFIDENCE);
+            TransactionStatusReason.LOW_CONFIDENCE),
+    NO_CHANNEL_FOUND_FOR_OTP(
+            "8005",
+            "NO CHANNEL FOUND FOR OTP",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.CARDHOLDER_NOT_ENROLLED_IN_SERVICE
+    );
 
     private final String code;
 

@@ -87,6 +87,7 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
                 case AReq:
                     messageMap.put(messageType, Util.fromJson(message, AREQ.class));
                     break;
+
                 default:
                     throw new ThreeDSException(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,

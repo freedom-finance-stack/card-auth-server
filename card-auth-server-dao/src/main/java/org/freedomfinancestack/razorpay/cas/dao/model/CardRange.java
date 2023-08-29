@@ -52,13 +52,8 @@ public class CardRange extends BaseEntity<String> {
     @Column(name = "card_details_store")
     private CardDetailsStore cardDetailsStore;
 
-    @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true, targetEntity = Network.class)
-    @JoinColumn(
-            name = "network_code",
-            referencedColumnName = "code",
-            insertable = false,
-            updatable = false)
-    private Network network;
+    @Column(name = "network_code")
+    private Byte networkCode;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;
