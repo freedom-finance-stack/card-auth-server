@@ -5,7 +5,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
-import org.freedomfinancestack.razorpay.cas.acs.service.RangeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.CardRangeService;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardRangeStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The {@code RangeServiceImpl} class is an implementation of the {@link RangeService} interface
+ * The {@code RangeServiceImpl} class is an implementation of the {@link CardRangeService} interface
  * that provides functionality to fetch card range details and validate card ranges based on
  * transaction data in the ACS (Access Control Server) system.
  *
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RangeServiceImpl implements RangeService {
+public class CardRangeServiceImpl implements CardRangeService {
     // todo rename to cardRangeService
     private final CardRangeRepository cardRangeRepository;
 

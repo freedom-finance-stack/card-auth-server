@@ -68,6 +68,7 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
     public Map<MessageType, ThreeDSObject> getTransactionMessagesByTransactionId(String id)
             throws ThreeDSException {
         Map<MessageType, ThreeDSObject> messageMap = new HashMap<>();
+        // todo handle multiple entry exist for same type
         List<TransactionMessageTypeDetail> messageTypeDetails =
                 transactionMessageTypeDetailRepository.findAllByTransactionId(id);
         if (messageTypeDetails == null || messageTypeDetails.isEmpty()) {

@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.Le
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,10 @@ public class ChallengeRequestValidator {
      */
     public void validateRequest(CREQ incomingCreq, AREQ areq, CRES cres)
             throws ValidationException {
+        if (incomingCreq == null || areq == null || cres == null) {
+            throw new ValidationException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Transaction data missing");
+        }
         validateChallengeRequest(incomingCreq, areq, cres);
     }
 
