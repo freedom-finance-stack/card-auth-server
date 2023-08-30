@@ -1,8 +1,9 @@
 name: Docker Build and Push to DockerHub
 
 on:
-  label:
-    types: [ created, edited, deleted ]
+  pull_request:
+    types:
+      - labeled
 
 jobs:
   cancel:
