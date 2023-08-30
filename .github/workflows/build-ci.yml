@@ -1,4 +1,4 @@
-name: Build
+name: Build Artifact
 
 on:
   pull_request:
@@ -22,7 +22,7 @@ jobs:
         id: dont_cancel
         run: |
           echo "Don't cancel old workflow"
-  build-image:
+  build-artifact:
     #    change to ubuntu and remove maven installation
     runs-on: ubuntu-latest
     needs: [ cancel ]
