@@ -23,7 +23,7 @@ jobs:
         run: |
           echo "Don't cancel old workflow"
   docker-build-push:
-    #    change to ubuntu and remove maven installation
+    if: ${{ github.event.label.name == 'DockerBuild' }}
     runs-on: ubuntu-latest
     needs: [ cancel ]
     continue-on-error: false
