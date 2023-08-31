@@ -12,7 +12,7 @@ public class ChallengeAttemptConfig implements IFeature {
     @SerializedName(value = "attempt_allowed")
     int attemptAllowed;
 
-    @SerializedName(value = "block_on_exceed_OTP_attempt")
+    @SerializedName(value = "block_on_exceed_otp_attempt")
     boolean blockOnExceedOtpAttempt;
 
     @SerializedName(value = "whitelisting_allowed")

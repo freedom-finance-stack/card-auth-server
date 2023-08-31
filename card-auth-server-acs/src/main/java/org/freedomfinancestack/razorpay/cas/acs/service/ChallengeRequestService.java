@@ -11,6 +11,5 @@ public interface ChallengeRequestService {
     CdRes processBrwChallengeRequest(final String creq, final String threeDSSessionData)
             throws ACSDataAccessException, InvalidStateTransactionException;
 
-    ValidateChallengeResponse validateChallengeRequest(
-            final ValidateChallengeRequest validateChallengeRequest);
+    ValidateChallengeResponse processBrwChallengeValidationRequest(final CVReq CVReq);
 }

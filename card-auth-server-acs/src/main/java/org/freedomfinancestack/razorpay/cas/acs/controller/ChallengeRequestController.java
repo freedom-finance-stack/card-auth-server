@@ -5,7 +5,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.contract.ValidateChallengeRequest;
+import org.freedomfinancestack.razorpay.cas.contract.CVReq;
 import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,8 +74,8 @@ public class ChallengeRequestController {
      * Handles Challenge Validation Request (ValidateCReq) received from the client browser for OTP
      * verification and generates CRes for the Browser.
      *
-     * @param validateChallengeRequest The {@link ValidateChallengeRequest} object representing the
-     *     Challenge Validation Request message received from the browser.
+     * @param CVReq The {@link CVReq} object representing the * Challenge Validation Request message
+     *     received from the browser.
      * @param model The {@link Model} object representing the UI Model for HTML template data
      *     binding.
      * @return The {@link String} object representing the Challenge Response message in JS enabled
@@ -86,10 +86,9 @@ public class ChallengeRequestController {
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public String handleChallengeValidationRequest(
-            ValidateChallengeRequest validateChallengeRequest, Model model) {
+    public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
         ValidateChallengeResponse validateChallengeResponse =
-                challengeRequestService.validateChallengeRequest(validateChallengeRequest);
+                challengeRequestService.processBrwChallengeValidationRequest(CVReq);
         model.addAttribute("cRes", validateChallengeResponse.getCRes());
         model.addAttribute("notificationUrl", validateChallengeResponse.getNotificationUrl());
         model.addAttribute("threeDSSessionData", validateChallengeResponse.getThreeDSSessionData());
