@@ -25,6 +25,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -96,8 +97,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     }
 
     @Override
-    public ValidateChallengeResponse validateChallengeRequest(
-            @NotNull final ValidateChallengeRequest validateChallengeRequest) {
+    public ValidateChallengeResponse processBrwChallengeValidationRequest(
+            @NonNull final CVReq CVReq) {
         return null;
     }
 
