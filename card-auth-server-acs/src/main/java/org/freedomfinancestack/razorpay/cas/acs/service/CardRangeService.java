@@ -15,7 +15,7 @@ import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
  * @since 1.0.0
  * @author jaydeepRadadiya
  */
-public interface RangeService {
+public interface CardRangeService {
     /**
      * Finds and retrieves the CardRange entity based on the given primary key (rangeId).
      *

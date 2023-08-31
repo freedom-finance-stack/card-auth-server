@@ -9,9 +9,9 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessExcep
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestService;
+import org.freedomfinancestack.razorpay.cas.acs.service.CardRangeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.InstitutionAcsUrlService;
-import org.freedomfinancestack.razorpay.cas.acs.service.RangeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
@@ -55,7 +55,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
 
     private final TransactionService transactionService;
     private final TransactionMessageTypeService transactionMessageTypeService;
-    private final RangeService rangeService;
+    private final CardRangeService cardRangeService;
     private final CardDetailService cardDetailService;
     private final AuthValueGeneratorService authValueGeneratorService;
     private final ECommIndicatorService eCommIndicatorService;
@@ -98,8 +98,8 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transaction = transactionService.saveOrUpdate(transaction);
 
             // get range and institution entity and verify
-            cardRange = rangeService.findByPan(areq.getAcctNumber());
-            rangeService.validateRange(cardRange);
+            cardRange = cardRangeService.findByPan(areq.getAcctNumber());
+            cardRangeService.validateRange(cardRange);
 
             // update Ids in transaction
             transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetwork().getCode());

@@ -6,7 +6,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
-import org.freedomfinancestack.razorpay.cas.acs.service.impl.RangeServiceImpl;
+import org.freedomfinancestack.razorpay.cas.acs.service.impl.CardRangeServiceImpl;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardRangeStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
@@ -30,9 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RangeServiceTest {
+public class CardRangeServiceTest {
     @Mock CardRangeRepository cardRangeRepository;
-    @InjectMocks RangeServiceImpl rangeService;
+    @InjectMocks CardRangeServiceImpl rangeService;
     static String PanNumber = "4001400112341234";
 
     @Test

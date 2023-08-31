@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CardRangeRepository extends BaseRepository<CardRange, String> {
     // todo remove raw query
-    @Query("select r from CardRange r where r.startRange < ?1 and r.endRange > ?1")
+    @Query("select r from CardRange r where r.startRange <= ?1 and r.endRange >= ?1")
     CardRange findByPan(Long pan);
 }
