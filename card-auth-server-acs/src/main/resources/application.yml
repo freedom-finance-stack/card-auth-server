@@ -50,6 +50,7 @@ logging:
     org.hibernate.SQL: DEBUG
     org.springframework: INFO
     org.freedomfinancestack: INFO
+#    org.hibernate.type.descriptor.sql: TRACE
 
 swagger:
   contact-name: Freedom Finance Stack
@@ -72,4 +73,9 @@ hsm:
       ip: "127.0.0.1"
       port: 8080
       timeout: 1
+
+
+
+
+
 

@@ -2,8 +2,8 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
-import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeService;
-import org.freedomfinancestack.razorpay.cas.contract.ValidateChallengeRequest;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
+import org.freedomfinancestack.razorpay.cas.contract.CVReq;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +21,9 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/v1/transaction")
 @RequiredArgsConstructor
-public class ChallengeController {
+public class ChallengeRequestController {
 
-    private final ChallengeService challengeService;
+    private final ChallengeRequestService challengeRequestService;
 
     /**
      * Handles Challenge Request (CReq) received from the 3DS Server and generates HTML pages for
@@ -44,10 +44,11 @@ public class ChallengeController {
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public String handleChallengeRequest(
             @RequestParam(name = "creq") String strCReq,
-            @RequestParam(name = "threeDSSessionData") String threeDSSessionData,
+            @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model) {
         ChallengeResponse challengeResponse =
-                challengeService.processBrwChallengeRequest(strCReq, threeDSSessionData);
+                challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
+        // todo unhandled exception, if challengeResponse is null
         if (challengeResponse.isError()) {
             model.addAttribute("cRes", challengeResponse.getCRes());
             model.addAttribute("notificationUrl", challengeResponse.getNotificationUrl());
@@ -61,7 +62,7 @@ public class ChallengeController {
      * Handles Challenge Validation Request (ValidateCReq) received from the client browser for OTP
      * verification and generates CRes for the Browser.
      *
-     * @param validateChallengeRequest
+     * @param CVReq
      * @param model
      * @return
      */
@@ -70,10 +71,9 @@ public class ChallengeController {
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public String handleChallengeValidationRequest(
-            ValidateChallengeRequest validateChallengeRequest, Model model) {
+    public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
         ValidateChallengeResponse validateChallengeResponse =
-                challengeService.validateChallengeRequest(validateChallengeRequest);
+                challengeRequestService.processBrwChallengeValidationRequest(CVReq);
         model.addAttribute("cRes", validateChallengeResponse.getCRes());
         model.addAttribute("notificationUrl", validateChallengeResponse.getNotificationUrl());
         model.addAttribute("threeDSSessionData", validateChallengeResponse.getThreeDSSessionData());

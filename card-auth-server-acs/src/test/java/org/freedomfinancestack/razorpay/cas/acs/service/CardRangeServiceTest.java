@@ -6,13 +6,12 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
-import org.freedomfinancestack.razorpay.cas.acs.service.impl.RangeServiceImpl;
+import org.freedomfinancestack.razorpay.cas.acs.service.impl.CardRangeServiceImpl;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardRangeStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
-import org.freedomfinancestack.razorpay.cas.dao.model.CardRangeGroup;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.freedomfinancestack.razorpay.cas.dao.model.Network;
 import org.freedomfinancestack.razorpay.cas.dao.repository.CardRangeRepository;
@@ -31,9 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class RangeServiceTest {
+public class CardRangeServiceTest {
     @Mock CardRangeRepository cardRangeRepository;
-    @InjectMocks RangeServiceImpl rangeService;
+    @InjectMocks CardRangeServiceImpl rangeService;
     static String PanNumber = "4001400112341234";
 
     @Test
@@ -124,19 +123,14 @@ public class RangeServiceTest {
                         InternalErrorCode.INVALID_NETWORK),
                 Arguments.of(
                         getCardRangeWithEmpty(true, false, true),
-                        InternalErrorCode.INSTITUTION_NOT_FOUND),
-                Arguments.of(
-                        getCardRangeWithEmpty(false, true, true),
-                        InternalErrorCode.RANGE_GROUP_NOT_FOUND));
+                        InternalErrorCode.INSTITUTION_NOT_FOUND));
     }
 
     private static CardRange getCardRange(
             CardRangeStatus status, InstitutionStatus institutionStatus) {
         CardRange cardRange = new CardRange();
-        CardRangeGroup cardRangeGroup = new CardRangeGroup();
         Institution institution = new Institution();
-        cardRange.setCardRangeGroup(cardRangeGroup);
-        cardRangeGroup.setInstitution(institution);
+        cardRange.setInstitution(institution);
         cardRange.setStatus(status);
         institution.setStatus(institutionStatus);
         cardRange.setNetwork(Network.builder().code((byte) 1).build());
@@ -146,16 +140,12 @@ public class RangeServiceTest {
     private static CardRange getCardRangeWithEmpty(
             Boolean hasCardRangeGroup, Boolean hasInstitution, boolean hasNetwork) {
         CardRange cardRange = new CardRange();
-        CardRangeGroup cardRangeGroup = new CardRangeGroup();
         Institution institution = new Institution();
         cardRange.setStatus(CardRangeStatus.ACTIVE);
         institution.setStatus(InstitutionStatus.ACTIVE);
 
         if (hasInstitution) {
-            cardRangeGroup.setInstitution(institution);
-        }
-        if (hasCardRangeGroup) {
-            cardRange.setCardRangeGroup(cardRangeGroup);
+            cardRange.setInstitution(institution);
         }
         if (hasNetwork) {
             cardRange.setNetwork(Network.builder().code((byte) 1).build());

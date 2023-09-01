@@ -57,11 +57,7 @@ public class LoggerAspect {
      * This contains all the packages for which we need to generate logs at DEBUG level
      */
     private static final String WHITELISTED_PACKAGES_DEBUG =
-            "("
-                    + "execution(* com.razorpay.acs.dao.repository..*(..)) || "
-                    + "execution(* com.razorpay.threeds.validator..*(..)) || "
-                    + "execution(* com.razorpay.threeds.hsm..*(..))"
-                    + ")";
+            "(" + "execution(*  org.freedomfinancestack.razorpay.cas.dao.repository..*(..))" + ")";
 
     /***
      * This contains all the packages which should
@@ -69,7 +65,7 @@ public class LoggerAspect {
      */
     private static final String BLACKLISTED_PACKAGES_DEBUG =
             "!("
-                    + "execution(* com.razorpay.acs.dao.enums..*(..))"
+                    + "execution(* org.freedomfinancestack.razorpay.cas.dao.enums..*(..))"
                     + ")"; // Added repository as example, need change it once we have use case
     /***
      * This contains all the packages which should
@@ -77,8 +73,9 @@ public class LoggerAspect {
      */
     private static final String WHITELISTED_PACKAGES_INFO =
             "("
-                    + "execution(* com.razorpay.threeds.service..*(..)) || "
-                    + "execution(* com.razorpay.threeds.controller..*(..))"
+                    + "execution(* org.freedomfinancestack.razorpay.cas.acs.service..*(..)) || "
+                    + "execution(* org.freedomfinancestack.razorpay.cas.acs.controller..*(..)) || "
+                    + "execution(* org.freedomfinancestack.razorpay.cas.contract..*(..))"
                     + ")";
 
     /***
@@ -86,7 +83,7 @@ public class LoggerAspect {
      * not generate at info level
      */
     private static final String BLACKLISTED_PACKAGES_INFO =
-            "!(execution(* com.razorpay.threeds.service.authvalue..*(..)))";
+            "!(execution(* org.freedomfinancestack.razorpay.cas.acs.service.authvalue..*(..)))";
 
     private static final String INFO_POINTCUTS =
             WHITELISTED_PACKAGES_INFO + " && " + BLACKLISTED_PACKAGES_INFO;

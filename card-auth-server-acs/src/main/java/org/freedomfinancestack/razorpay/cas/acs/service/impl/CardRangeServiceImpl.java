@@ -5,12 +5,11 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
-import org.freedomfinancestack.razorpay.cas.acs.service.RangeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.CardRangeService;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardRangeStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
-import org.freedomfinancestack.razorpay.cas.dao.model.CardRangeGroup;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.freedomfinancestack.razorpay.cas.dao.repository.CardRangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * The {@code RangeServiceImpl} class is an implementation of the {@link RangeService} interface
+ * The {@code RangeServiceImpl} class is an implementation of the {@link CardRangeService} interface
  * that provides functionality to fetch card range details and validate card ranges based on
  * transaction data in the ACS (Access Control Server) system.
  *
@@ -32,7 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RangeServiceImpl implements RangeService {
+public class CardRangeServiceImpl implements CardRangeService {
+    // todo rename to cardRangeService
     private final CardRangeRepository cardRangeRepository;
 
     /**
@@ -84,17 +84,9 @@ public class RangeServiceImpl implements RangeService {
             throw new TransactionDataNotValidException(InternalErrorCode.CARD_RANGE_NOT_ACTIVE);
         }
 
-        CardRangeGroup cardRangeGroup = cardRange.getCardRangeGroup();
-        if (cardRangeGroup == null) {
-            log.error("Card range group not found for card range: " + cardRange.getId());
-            throw new DataNotFoundException(
-                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
-                    InternalErrorCode.RANGE_GROUP_NOT_FOUND);
-        }
-
-        Institution institution = cardRangeGroup.getInstitution();
+        Institution institution = cardRange.getInstitution();
         if (institution == null) {
-            log.error("Institution not found for card range group: " + cardRangeGroup.getId());
+            log.error("Institution not found for card range: " + cardRange.getId());
             throw new DataNotFoundException(
                     ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
                     InternalErrorCode.INSTITUTION_NOT_FOUND);

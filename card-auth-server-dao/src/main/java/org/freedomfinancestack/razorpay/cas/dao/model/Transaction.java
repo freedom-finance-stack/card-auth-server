@@ -25,6 +25,9 @@ public class Transaction extends BaseEntity<String> {
     @Column(name = "institution_id")
     private String institutionId;
 
+    @Column(name = "card_range_id")
+    private String cardRangeId;
+
     @Column(name = "message_version")
     private String messageVersion;
 

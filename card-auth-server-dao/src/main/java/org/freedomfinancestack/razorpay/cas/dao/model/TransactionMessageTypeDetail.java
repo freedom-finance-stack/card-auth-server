@@ -1,6 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import java.sql.Timestamp;
 import javax.persistence.*;
 
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
@@ -27,12 +26,6 @@ public class TransactionMessageTypeDetail extends BaseEntity<String> {
 
     @Column(name = "transaction_id")
     private String transactionId;
-
-    @Column(name = "received_timestamp")
-    private Timestamp receivedTimestamp;
-
-    @Column(name = "sent_timestamp")
-    private Timestamp sentTimestamp;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type")

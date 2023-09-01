@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.utils;
 import java.text.ParseException;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,5 +45,14 @@ class UtilTest {
                 () -> Util.getTimeStampFromString("12122023", "yyyyMMddHHmmss"));
         assertThrows(
                 ParseException.class, () -> Util.getTimeStampFromString("121223", "dd.MM.yyyy"));
+    }
+
+    @Test
+    public void testFromJson_Success() {
+        String json = "{\"institutionId\": \"I1\", \"cardNumber\": \"112444\"}";
+        CardDetailsRequest cardDetailsRequest = new CardDetailsRequest("I1", "112444");
+        CardDetailsRequest result = Util.fromJson(json, CardDetailsRequest.class);
+        assertEquals(cardDetailsRequest.getInstitutionId(), result.getInstitutionId());
+        assertEquals(cardDetailsRequest.getCardNumber(), result.getCardNumber());
     }
 }

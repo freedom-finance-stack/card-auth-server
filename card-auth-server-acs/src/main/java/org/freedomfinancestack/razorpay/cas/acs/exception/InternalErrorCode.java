@@ -129,7 +129,12 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8002",
             "TRANSACTION ID NOT FOUND",
             TransactionStatus.FAILED,
-            TransactionStatusReason.INVALID_TRANSACTION);
+            TransactionStatusReason.INVALID_TRANSACTION),
+    INVALID_CONFIG(
+            "8003",
+            "CONFIG ERROR IN ACS",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE);
 
     private final String code;
 

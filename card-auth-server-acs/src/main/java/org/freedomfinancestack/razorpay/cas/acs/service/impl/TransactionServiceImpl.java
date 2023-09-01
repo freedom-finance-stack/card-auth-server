@@ -135,7 +135,6 @@ public class TransactionServiceImpl implements TransactionService {
             transactionBuilder.deviceName(InternalConstants.BROWSER);
             transactionBuilder.deviceChannel(DeviceChannel.BRW.getChannel());
         }
-        transactionBuilder.institutionId("institutionId");
         return transactionBuilder.build();
     }
 

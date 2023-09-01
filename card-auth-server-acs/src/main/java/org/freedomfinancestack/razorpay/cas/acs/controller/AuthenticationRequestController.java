@@ -6,7 +6,7 @@ import javax.validation.Valid;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
-import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationService;
+import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestService;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +31,9 @@ import lombok.RequiredArgsConstructor;
 @RestController("acsController")
 @RequestMapping("/v1/transaction")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AuthenticationController {
+public class AuthenticationRequestController {
 
-    private final AuthenticationService authenticationService;
+    private final AuthenticationRequestService authenticationRequestService;
 
     /**
      * Handles Authentication Request (AReq) received from the 3DS Server and generates
@@ -76,6 +76,6 @@ public class AuthenticationController {
             HttpServletResponse httpServletResponse,
             @RequestHeader HttpHeaders headers)
             throws ThreeDSException, ACSDataAccessException {
-        return authenticationService.processAuthenticationRequest(areq);
+        return authenticationRequestService.processAuthenticationRequest(areq);
     }
 }

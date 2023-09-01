@@ -1,6 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +42,6 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
                         Util.toJson(message), message.getThreeDSMessageType());
         transactionMessageTypeDetail.setId(Util.generateUUID());
         transactionMessageTypeDetail.setTransactionId(transactionId);
-        transactionMessageTypeDetail.setReceivedTimestamp(
-                new Timestamp(System.currentTimeMillis()));
         return transactionMessageTypeDetail;
     }
 
@@ -71,9 +68,10 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
     public Map<MessageType, ThreeDSObject> getTransactionMessagesByTransactionId(String id)
             throws ThreeDSException {
         Map<MessageType, ThreeDSObject> messageMap = new HashMap<>();
+        // todo handle multiple entry exist for same type
         List<TransactionMessageTypeDetail> messageTypeDetails =
                 transactionMessageTypeDetailRepository.findAllByTransactionId(id);
-        if (messageTypeDetails != null && !messageTypeDetails.isEmpty()) {
+        if (messageTypeDetails == null || messageTypeDetails.isEmpty()) {
             return null;
         }
         for (TransactionMessageTypeDetail messageTypeDetail : messageTypeDetails) {

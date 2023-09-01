@@ -6,6 +6,7 @@ import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Where(clause = "deleted_at is null")
+@EqualsAndHashCode(callSuper = true)
 public class CardRangeGroup extends BaseEntity<String> {
     @Id private String id;
 
@@ -21,9 +23,9 @@ public class CardRangeGroup extends BaseEntity<String> {
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "institution_id", referencedColumnName = "id")
-    private Institution institution;
+    //    @ManyToOne(fetch = FetchType.EAGER)
+    //    @JoinColumn(name = "institution_id", referencedColumnName = "id")
+    //    private Institution institution;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;

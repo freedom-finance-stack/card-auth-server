@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.Le
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,10 @@ public class ChallengeRequestValidator {
      */
     public void validateRequest(CREQ incomingCreq, AREQ areq, CRES cres)
             throws ValidationException {
+        if (incomingCreq == null || areq == null || cres == null) {
+            throw new ValidationException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Transaction data missing");
+        }
         validateChallengeRequest(incomingCreq, areq, cres);
     }
 
@@ -108,26 +113,6 @@ public class ChallengeRequestValidator {
 
     protected void validateOptionalFields(CREQ incomingCreq, AREQ areq, CRES cres)
             throws ValidationException {
-        String acsUiType = cres.getAcsUiType();
-        boolean conditionForChallengeDataEntry =
-                (Arrays.asList("01", "02", "03").contains(acsUiType)
-                                && NO.equals(incomingCreq.getResendChallenge()))
-                        && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                        && (!Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                && !incomingCreq.getChallengeNoEntry().equals("Y"));
-        Validation.validate(
-                ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
-                incomingCreq.getChallengeDataEntry(),
-                when(conditionForChallengeDataEntry, notNull()),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 45));
-
-        boolean conditionForChallengeHTMLDataEntry =
-                (Arrays.asList("01", "02", "03", "04", "05").contains(acsUiType))
-                        && !Util.isNullorBlank(incomingCreq.getChallengeCancel());
-        Validation.validate(
-                ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
-                incomingCreq.getChallengeHTMLDataEntry(),
-                when(conditionForChallengeHTMLDataEntry, notNull()));
 
         Validation.validate(
                 ThreeDSDataElement.RESEND_CHALLENGE.getFieldName(),
@@ -141,5 +126,28 @@ public class ChallengeRequestValidator {
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 incomingCreq.getMessageExtension(),
                 isListValid(isValidObject()));
+
+        if (cres != null) {
+            String acsUiType = cres.getAcsUiType();
+            boolean conditionForChallengeDataEntry =
+                    (Arrays.asList("01", "02", "03").contains(acsUiType)
+                                    && NO.equals(incomingCreq.getResendChallenge()))
+                            && Util.isNullorBlank(incomingCreq.getChallengeCancel())
+                            && (!Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
+                                    && !incomingCreq.getChallengeNoEntry().equals("Y"));
+            Validation.validate(
+                    ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
+                    incomingCreq.getChallengeDataEntry(),
+                    when(conditionForChallengeDataEntry, notNull()),
+                    lengthValidator(LengthValidator.DataLengthType.VARIABLE, 45));
+
+            boolean conditionForChallengeHTMLDataEntry =
+                    (Arrays.asList("01", "02", "03", "04", "05").contains(acsUiType))
+                            && !Util.isNullorBlank(incomingCreq.getChallengeCancel());
+            Validation.validate(
+                    ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
+                    incomingCreq.getChallengeHTMLDataEntry(),
+                    when(conditionForChallengeHTMLDataEntry, notNull()));
+        }
     }
 }
