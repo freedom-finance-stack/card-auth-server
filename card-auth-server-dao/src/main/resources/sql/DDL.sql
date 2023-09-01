@@ -178,16 +178,13 @@ DROP TABLE IF EXISTS `card_range`;
 CREATE TABLE `card_range`
 (
     `id`                      varchar(36) PRIMARY KEY,
-    `card_range_group_id`     varchar(36),
+    `institution_id`          varchar(36),
     `start_range`             decimal(25),
     `end_range`               decimal(25),
-    `attempt_allowed`         tinyint,
-    `block_on_exceed_attempt` tinyint     NOT NULL,
     `status`                  ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
     `card_type`               ENUM ('CREDIT', 'DEBIT', 'PREPAID') NOT NULL,
     `risk_flag`               ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA') NOT NULL,
     `description`             varchar(255),
-    `whitelisting_allowed`    tinyint,
     `card_details_store`      enum ('ACS', 'API_1'),
     `network_code`            tinyint,
     `created_at`              timestamp   NOT NULL,
