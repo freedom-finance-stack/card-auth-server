@@ -1,11 +1,10 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl;
 
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.Base64;
+import static org.freedomfinancestack.razorpay.cas.contract.utils.Util.DATE_FORMAT_YYDDD;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.freedomfinancestack.razorpay.cas.acs.constant.AuthenticationMethod;
@@ -23,11 +22,12 @@ import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import static org.freedomfinancestack.razorpay.cas.contract.utils.Util.DATE_FORMAT_YYDDD;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 
 @Slf4j
 @Service(value = "visaAuthValueGeneratorServiceImpl")
@@ -90,32 +90,43 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
 
         String authMethod = getAuthenticationMethodCode(transaction);
 
-        LocalDateTime objPurchaseDate =
-                transaction.getTransactionPurchaseDetail().getPurchaseTimestamp().toLocalDateTime();
+        String purchaseDate = "";
+        if (transaction.getTransactionPurchaseDetail().getPurchaseTimestamp() != null) {
+            LocalDateTime objPurchaseDate =
+                    transaction
+                            .getTransactionPurchaseDetail()
+                            .getPurchaseTimestamp()
+                            .toLocalDateTime();
 
-        String purchaseDate = String.valueOf(objPurchaseDate.getDayOfYear());
-        if (purchaseDate.length() < 3) {
-            purchaseDate =
-                    Util.padString(
-                            purchaseDate,
-                            3,
-                            InternalConstants.PADDED_SYMBOL_0,
-                            InternalConstants.PAD_LEFT);
+            purchaseDate = String.valueOf(objPurchaseDate.getDayOfYear());
+            if (purchaseDate.length() < 3) {
+                purchaseDate =
+                        Util.padString(
+                                purchaseDate,
+                                3,
+                                InternalConstants.PADDED_SYMBOL_0,
+                                InternalConstants.PAD_LEFT);
+            }
         }
 
-        long purchaseAmountLong =
-                Long.parseLong(transaction.getTransactionPurchaseDetail().getPurchaseAmount());
-        String purchaseAmountHexString = Long.toHexString(purchaseAmountLong).toUpperCase();
-        purchaseAmountHexString =
-                Util.padString(
-                        purchaseAmountHexString,
-                        10,
-                        InternalConstants.PADDED_SYMBOL_0,
-                        InternalConstants.PAD_LEFT); // HexDump.zeropad(hexString, 10);
+        String purchaseAmountHexString = "";
+        if (transaction.getTransactionPurchaseDetail().getPurchaseAmount() != null) {
+            long purchaseAmountLong =
+                    Long.parseLong(transaction.getTransactionPurchaseDetail().getPurchaseAmount());
+            purchaseAmountHexString = Long.toHexString(purchaseAmountLong).toUpperCase();
+            purchaseAmountHexString =
+                    Util.padString(
+                            purchaseAmountHexString,
+                            10,
+                            InternalConstants.PADDED_SYMBOL_0,
+                            InternalConstants.PAD_LEFT); // HexDump.zeropad(hexString, 10);
+        }
 
         String strSupplementalData =
                 purchaseAmountHexString
-                        + transaction.getTransactionPurchaseDetail().getPurchaseCurrency()
+                        + (transaction.getTransactionPurchaseDetail().getPurchaseCurrency() == null
+                                ? ""
+                                : transaction.getTransactionPurchaseDetail().getPurchaseCurrency())
                         + purchaseDate;
 
         String cavvVersion = VISAConstant.CAVV_VERSION_7 + VISAConstant.PROTOCOL_VERSION_EMV_2_1_0;
@@ -176,6 +187,9 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
     }
 
     private String getAuthenticationAmount(Transaction transaction) {
+        if (Util.isNullorBlank(transaction.getTransactionPurchaseDetail().getPurchaseAmount())) {
+            return "";
+        }
         return Util.padString(
                 transaction.getTransactionPurchaseDetail().getPurchaseAmount(),
                 12,
