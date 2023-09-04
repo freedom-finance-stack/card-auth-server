@@ -37,7 +37,6 @@ public interface AResMapper {
      * Response (ARES) object. it uses MapStruct, which provides annotations to specify which
      * attribute to map where, with processing if needed.
      *
-     * 
      * @param areq The {@link AREQ} object representing the Authentication Request message received
      *     from the 3DS Server.
      * @param transaction The {@link Transaction} object representing the transaction details.
