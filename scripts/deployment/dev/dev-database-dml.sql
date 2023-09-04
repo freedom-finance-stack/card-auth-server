@@ -1,11 +1,13 @@
 USE `cas_db`;
 
 LOCK TABLES `card_detail` WRITE;
-INSERT INTO `card_detail` VALUES ('1','1','R1','I1','4016000000000018','0525',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('1', '1', 'R1','I1','4016000000000018','0525',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('2', '1', 'R2','I1','7654310438720050','0525',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;
-INSERT INTO `card_range` VALUES ('R1','I1',4016000000000000,4016000000000100,'ACTIVE','CREDIT','NO_CHALLENGE','Visa Testing','ACS',1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_range` VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R2', 'I1', 7654310400000000, 7654310499999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
@@ -21,7 +23,8 @@ INSERT INTO `institution` VALUES ('I1','HDFC Bank','HDFC',356,'Asia/Kolkata','AC
 UNLOCK TABLES;
 
 LOCK TABLES `institution_acs_url` WRITE;
-INSERT INTO `institution_acs_url` VALUES ('I1','02',1,'http://localhost:8080/v1/transaction/challenge-request',NOW(),'dev-user',NOW(),'dev-user',NULL,NULL);
+INSERT INTO `institution_acs_url` VALUES ('I1', '02', 1, 'http://localhost:8080/v1/transaction/challenge-request', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_acs_url` VALUES ('I1', '01', 1, 'http://localhost:8080/v1/transaction/challenge-request', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `network` WRITE;

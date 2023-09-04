@@ -26,8 +26,8 @@ import org.freedomfinancestack.razorpay.cas.dao.model.TransactionMerchant;
 import org.freedomfinancestack.razorpay.cas.dao.model.TransactionPurchaseDetail;
 import org.freedomfinancestack.razorpay.cas.dao.model.TransactionReferenceDetail;
 import org.freedomfinancestack.razorpay.cas.dao.repository.TransactionRepository;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
