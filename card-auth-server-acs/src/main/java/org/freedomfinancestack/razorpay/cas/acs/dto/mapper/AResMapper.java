@@ -44,9 +44,18 @@ public interface AResMapper {
      *     for mapping.
      * @return The {@link ARES} object representing the Authentication Response message.
      */
+    @Mapping(target = "acsChallengeMandated", source = "transaction.challengeMandated")
+    @Mapping(
+            target = "acsDecConInd",
+            expression =
+                    "java(transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)"
+                            + " ? \"Y\" : \"N\")")
+    @Mapping(
+            target = "acsOperatorID",
+            expression = "java(getOperatorId(transaction, this.helperMapper.appConfiguration))")
     @Mapping(
             target = "acsReferenceNumber",
-            expression = "java(String.valueOf(\"3DS_LOA_ACS_UTSB_020100_00009\"))")
+            expression = "java(this.helperMapper.appConfiguration.getAcs().getReferenceNumber())")
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(target = "eci", source = "transaction.eci")
     @Mapping(target = "acsURL", source = "aResMapperParams.acsUrl")
