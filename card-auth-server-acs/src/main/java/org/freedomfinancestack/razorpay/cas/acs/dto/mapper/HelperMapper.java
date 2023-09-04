@@ -33,7 +33,7 @@ public class HelperMapper {
      * @param bool The Boolean value to convert.
      * @return "Y" if the Boolean is true, "N" if it is false, or null if the input Boolean is null.
      */
-    public String asString(Boolean bool) {
-        return null == bool ? null : (bool ? YES : NO);
-    }
+    //    public String asString(Boolean bool) {
+    //        return null == bool ? null : (bool ? YES : NO);
+    //    }
 }
