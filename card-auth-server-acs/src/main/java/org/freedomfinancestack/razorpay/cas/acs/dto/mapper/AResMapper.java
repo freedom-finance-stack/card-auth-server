@@ -49,7 +49,7 @@ public interface AResMapper {
             target = "acsDecConInd",
             expression =
                     "java(transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)"
-                            + " ? \"Y\" : \"N\")")
+                        + " ? \"Y\" : \"N\")")
     @Mapping(
             target = "acsOperatorID",
             expression = "java(getOperatorId(transaction, this.helperMapper.appConfiguration))")
