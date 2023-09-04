@@ -140,20 +140,30 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TransactionPurchaseDetail buildTransactionPurchaseDetail(AREQ areq)
             throws ValidationException {
-        Timestamp time;
+        TransactionPurchaseDetail transactionPurchaseDetail =
+                TransactionPurchaseDetail.builder()
+                        .purchaseAmount(areq.getPurchaseAmount())
+                        .purchaseCurrency(areq.getPurchaseCurrency())
+                        .build();
+
         try {
-            time = Util.getTimeStampFromString(areq.getPurchaseDate(), DATE_FORMAT_YYYYMMDDHHMMSS);
+            if (!Util.isNullorBlank(areq.getPurchaseDate())) {
+                Timestamp time =
+                        Util.getTimeStampFromString(
+                                areq.getPurchaseDate(), DATE_FORMAT_YYYYMMDDHHMMSS);
+                transactionPurchaseDetail.setPurchaseTimestamp(time);
+            }
         } catch (ParseException e) {
             throw new ValidationException(
                     ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid PurchaseDate");
         }
-        return TransactionPurchaseDetail.builder()
-                .purchaseAmount(areq.getPurchaseAmount())
-                .purchaseCurrency(areq.getPurchaseCurrency())
-                .purchaseExponent(Byte.valueOf(areq.getPurchaseExponent()))
-                .purchaseTimestamp(time)
-                .payTokenInd(Boolean.valueOf(areq.getPayTokenInd()))
-                .build();
+        if (!Util.isNullorBlank(areq.getPurchaseExponent())) {
+            transactionPurchaseDetail.setPurchaseExponent(Byte.valueOf(areq.getPurchaseExponent()));
+        }
+        if (!Util.isNullorBlank(areq.getPayTokenInd())) {
+            transactionPurchaseDetail.setPayTokenInd(Boolean.valueOf(areq.getPayTokenInd()));
+        }
+        return transactionPurchaseDetail;
     }
 
     private TransactionMerchant buildTransactionMerchant(AREQ areq) {
