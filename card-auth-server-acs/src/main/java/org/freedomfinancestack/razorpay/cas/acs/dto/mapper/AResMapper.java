@@ -46,7 +46,7 @@ public interface AResMapper {
      */
     @Mapping(
             target = "acsReferenceNumber",
-            expression = "java(String.valueOf(\"132123123123123123\"))")
+            expression = "java(String.valueOf(\"3DS_LOA_ACS_UTSB_020100_00009\"))")
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(target = "eci", source = "transaction.eci")
     @Mapping(target = "acsURL", source = "aResMapperParams.acsUrl")
