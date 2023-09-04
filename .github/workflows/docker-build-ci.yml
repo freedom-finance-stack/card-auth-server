@@ -57,7 +57,7 @@ jobs:
       - name: Push
         uses: docker/build-push-action@v4
         with:
-          tags: razorpay/freedomfinancestack:${{ github.sha }}
+          tags: razorpay/freedomfinancestack:frictionless-ul-portal-fixes
           context: .
           file: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
           push: true
