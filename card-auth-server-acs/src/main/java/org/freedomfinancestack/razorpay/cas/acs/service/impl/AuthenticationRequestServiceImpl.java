@@ -194,11 +194,14 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);
-            ares =
-                    aResMapper.toAres(
-                            areq,
-                            transaction,
-                            AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
+
+            AResMapperParams aResMapperParams = AResMapperParams.builder().build();
+            if (!transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)
+                    && acsUrl != null) {
+                aResMapperParams.setAcsUrl(acsUrl.getChallengeUrl());
+            }
+
+            ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
             transaction.setPhase(Phase.ARES);
         } catch (Exception ex) {
