@@ -106,6 +106,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transaction.setCardRangeId(cardRange.getId());
             transaction.setInstitutionId(cardRange.getInstitution().getId());
 
+            // update Ids in transaction
+            transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetwork().getCode());
+            transaction.setCardRangeId(cardRange.getId());
+            transaction.setInstitutionId(cardRange.getInstitution().getId());
             // get acs url
             acsUrl =
                     institutionAcsUrlService.findById(

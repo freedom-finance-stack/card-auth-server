@@ -8,7 +8,6 @@ public enum MessageType {
     Erro("Erro"),
     RReq("RReq"),
     CDReq("CDReq"),
-    //
     CVRes("CVRes"),
     RRes("RRes");
 
