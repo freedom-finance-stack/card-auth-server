@@ -6,10 +6,7 @@ import java.util.Optional;
 import javax.validation.constraints.NotNull;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
-import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
-import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
+import org.freedomfinancestack.razorpay.cas.acs.dto.*;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
@@ -51,6 +48,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final AuthenticationServiceLocator authenticationServiceLocator;
     private final InstitutionRepository institutionRepository;
     private final ResultRequestService resultRequestService;
+    private final ECommIndicatorService eCommIndicatorService;
 
     @Override
     public CdRes processBrwChallengeRequest(
@@ -62,7 +60,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
         log.info("processBrowserRequest - Received CReq Request - " + strCReq);
         CREQ cReq;
-        AREQ aReq;
+        AREQ aReq = null;
         Transaction transaction = null;
         CdRes cdRes = new CdRes();
         boolean sendRres = false;
@@ -191,6 +189,16 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     ex.getMessage());
         } finally {
             // save CDres and Transaction
+            GenerateECIRequest generateECIRequest =
+                    new GenerateECIRequest(
+                            transaction.getTransactionStatus(),
+                            transaction.getTransactionCardDetail().getNetworkCode(),
+                            transaction.getMessageCategory());
+            if (aReq != null) {
+                generateECIRequest.setThreeRIInd(aReq.getThreeRIInd());
+            }
+            String eci = eCommIndicatorService.generateECI(generateECIRequest);
+            transaction.setEci(eci);
             transactionMessageTypeService.createAndSave(cdRes, transaction.getId());
             transactionService.saveOrUpdate(transaction);
         }

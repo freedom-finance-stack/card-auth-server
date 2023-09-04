@@ -9,6 +9,25 @@ app:
       mastercard: 123456789012345
       amex: 123456789012345
 
+gateway:
+  services:
+    VISA_DS:
+      url: https://sample.com
+      mock: true
+      keyStore:
+        path: classpath:acs/sample.p12
+        password: password
+      retryable:
+        maxAttempts: 2
+    MASTERCARD_DS:
+      url: https://sample.com
+      mock: true
+      keyStore:
+        path: classpath:acs/sample.p12
+        password: password
+      retryable:
+        maxAttempts: 2
+
 spring:
   application:
     name: Card Auth Server ACS

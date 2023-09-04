@@ -53,9 +53,7 @@ public interface AResMapper {
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(target = "eci", source = "transaction.eci")
     @Mapping(target = "acsURL", source = "aResMapperParams.acsUrl")
-    @Mapping(
-            target = "transStatus",
-            expression = "java(transaction.getTransactionStatus().getStatus())")
+    @Mapping(target = "transStatus", source = "transaction.transactionStatus.status")
     @Mapping(
             target = "transStatusReason",
             expression = "java(getTransStatusReason(areq, transaction))")
@@ -96,16 +94,6 @@ public interface AResMapper {
             }
         }
         return transStatusReason;
-    }
-
-    default String getAuthType(Transaction transaction) {
-        if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
-                        transaction.getTransactionStatus())
-                || TransactionStatus.CHALLENGE_REQUIRED.equals(
-                        transaction.getTransactionStatus())) {
-            return "02"; // hard coded to Dynamic
-        }
-        return "";
     }
 
     default String getOperatorId(Transaction transaction, AppConfiguration appConfiguration) {
