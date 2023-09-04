@@ -23,7 +23,7 @@
     "/v1/transaction/authentication/browser": {
       "post": {
         "tags": [
-          "authentication-controller"
+          "authentication-request-controller"
         ],
         "summary": "Handles Authentication Request generating from 3DS Server",
         "operationId": "handleAuthenticationRequest",
@@ -88,7 +88,8 @@
               "CReq",
               "CRes",
               "RReq",
-              "RRes"
+              "RRes",
+              "Erro"
             ]
           },
           "threeDSRequestorURL": {
@@ -368,14 +369,14 @@
       "CardholderAccountInformation": {
         "type": "object",
         "properties": {
+          "valid": {
+            "type": "boolean"
+          },
           "length": {
             "type": "integer",
             "format": "int32"
           },
           "empty": {
-            "type": "boolean"
-          },
-          "valid": {
             "type": "boolean"
           },
           "dataValid": {
@@ -520,12 +521,12 @@
       "ThreeDSMerchantFeilds": {
         "type": "object",
         "properties": {
+          "valid": {
+            "type": "boolean"
+          },
           "length": {
             "type": "integer",
             "format": "int32"
-          },
-          "valid": {
-            "type": "boolean"
           },
           "shipIndicator": {
             "type": "string"
@@ -679,7 +680,7 @@
           "messageExtension": {
             "type": "array",
             "items": {
-              "type": "object"
+              "$ref": "#/components/schemas/MessageExtension"
             }
           },
           "transStatusReason": {
@@ -699,7 +700,8 @@
               "CReq",
               "CRes",
               "RReq",
-              "RRes"
+              "RRes",
+              "Erro"
             ]
           }
         }

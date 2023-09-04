@@ -5,11 +5,11 @@ INSERT INTO `card_detail` VALUES ('1','1','R1','I1','4016000000000018','0525',0,
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;
-INSERT INTO `card_range` VALUES ('R1','RG1',4016000000000000,4016000000000100,3,1,'ACTIVE','CREDIT','NO_CHALLENGE','Visa Testing',1,'ACS',1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_range` VALUES ('R1','I1',4016000000000000,4016000000000100,'ACTIVE','CREDIT','NO_CHALLENGE','Visa Testing','ACS',1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
-INSERT INTO `card_range_group` VALUES ('RG1','I1','Platinum','Testing',NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_range_group` VALUES ('RG1','I1','Platinum',NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `cardholder` WRITE;
