@@ -5,6 +5,11 @@ INSERT INTO `card_detail` VALUES ('1', '1', 'R1','I1','4016000000000018','0525',
 INSERT INTO `card_detail` VALUES ('2', '1', 'R2','I1','7654310438720050','0535',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('3', '1', 'R3','I1','7654350720400013','0535',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('4', '1', 'R5','I1','5116000000000018','0535',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('5', '1', 'R2','I1','7654310438700047','0535',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('6', '1', 'R2','I1','7654310438700062','0535',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('7', '1', 'R2','I1','7654310438700070','0535',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('8', '1', 'R2','I1','7654310438746321','0535',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('9', '1', 'R2','I1','7654310438700096','0535',0,NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;

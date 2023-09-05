@@ -173,7 +173,9 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         // and identify the Authentication Date
         String authenticationAmount = getAuthenticationAmount(transaction);
         String authenticationCurrency =
-                transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
+                transaction.getTransactionPurchaseDetail().getPurchaseCurrency() == null
+                        ? ""
+                        : transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
 
         String authenticationDate = getAuthenticationDate();
 
