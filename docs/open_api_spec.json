@@ -369,14 +369,14 @@
       "CardholderAccountInformation": {
         "type": "object",
         "properties": {
+          "valid": {
+            "type": "boolean"
+          },
           "length": {
             "type": "integer",
             "format": "int32"
           },
           "empty": {
-            "type": "boolean"
-          },
-          "valid": {
             "type": "boolean"
           },
           "dataValid": {
@@ -521,12 +521,12 @@
       "ThreeDSMerchantFeilds": {
         "type": "object",
         "properties": {
+          "valid": {
+            "type": "boolean"
+          },
           "length": {
             "type": "integer",
             "format": "int32"
-          },
-          "valid": {
-            "type": "boolean"
           },
           "shipIndicator": {
             "type": "string"
