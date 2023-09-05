@@ -10,23 +10,29 @@ app:
       amex: 123456789012345
 
 gateway:
-  services:
-    VISA_DS:
-      url: https://sample.com
-      mock: true
-      keyStore:
-        path: classpath:acs/sample.p12
-        password: password
-      retryable:
-        maxAttempts: 2
-    MASTERCARD_DS:
-      url: https://sample.com
-      mock: true
-      keyStore:
-        path: classpath:acs/sample.p12
-        password: password
-      retryable:
-        maxAttempts: 2
+  ds:
+    mock: true
+    services:
+      VISA_DS:
+        url: https://sample.site/
+        useSSL: false
+        connectTimeout : 5000
+        readTimeout : 5000
+        keyStore:
+          path: classpath:acs/sample.p12
+          password: password
+        retryable:
+          maxAttempts: 2
+      MASTERCARD_DS:
+        url: https://sample.site/
+        useSSL: false
+        connectTimeout: 5000
+        readTimeout: 5000
+        keyStore:
+          path: classpath:acs/sample.p12
+          password: password
+        retryable:
+          maxAttempts: 2
 
 spring:
   application:

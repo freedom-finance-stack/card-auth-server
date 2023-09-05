@@ -8,22 +8,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class VisaDsHttpsGatewayService extends HttpsGatewayService {
+public class MasterCardDsHttpsGatewayService extends HttpsGatewayService {
 
-    private final RestTemplate visaDsRestTemplate;
+    private final RestTemplate masterCardDsRestTemplate;
     private final DsGatewayConfig.ServiceConfig serviceConfig;
 
     @Autowired
-    public VisaDsHttpsGatewayService(
-            @Qualifier("visaDsRestTemplate") RestTemplate visaDsRestTemplate,
+    public MasterCardDsHttpsGatewayService(
+            @Qualifier("masterCardDsRestTemplate") RestTemplate masterCardDsRestTemplate,
             DsGatewayConfig dsGatewayConfig) {
-        this.visaDsRestTemplate = visaDsRestTemplate;
-        this.serviceConfig = dsGatewayConfig.getServices().get(ClientType.VISA_DS);
+        this.masterCardDsRestTemplate = masterCardDsRestTemplate;
+        this.serviceConfig = dsGatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
     }
 
     @Override
     RestTemplate getRestTemplate() {
-        return this.visaDsRestTemplate;
+        return this.masterCardDsRestTemplate;
     }
 
     @Override

@@ -184,7 +184,7 @@ public class TransactionServiceImpl implements TransactionService {
         return new TransactionReferenceDetail(
                 areq.getThreeDSServerTransID(),
                 areq.getThreeDSServerRefNumber(),
-                areq.getDsURL(),
-                areq.getDsTransID());
+                areq.getDsTransID(),
+                areq.getDsURL());
     }
 }

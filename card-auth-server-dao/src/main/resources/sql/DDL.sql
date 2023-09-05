@@ -15,7 +15,7 @@ CREATE TABLE `transaction`
     `challenge_mandated`        bool,
     `transaction_status`        ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLENGE_REQUIRED','CHALLENGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL') NOT NULL,
     `transaction_status_reason` varchar(80),
-    `phase`                     ENUM ('AREQ','ARES','CREQ','RETRY_CREQ','CRES','RREQ','REDIRECT','RESEND_OTP','AUTH_INITIATE','GENERATE_OTP','AUTH_RESULT','SEAMLESS_GENERATE_OTP','VERIFY_OTP','RRES','ERROR') NOT NULL,
+    `phase`                     ENUM ('AREQ','ARES','AERROR','CREQ','CRES','RREQ','CDRES','CVREQ','ERROR') NOT NULL,
     `threeds_session_data`      varchar(1024),
     `auth_value`                varchar(200),
     `eci`                       varchar(3),

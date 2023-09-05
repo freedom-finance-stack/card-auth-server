@@ -1,19 +1,16 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.cert.CertificateException;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,14 +20,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomRestTemplateConfiguration {
 
-    private final GatewayConfig gatewayConfig;
+    private final DsGatewayConfig dsGatewayConfig;
 
     @Bean("visaDsRestTemplate")
     public RestTemplate visaRestTemplate()
             throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
                     CertificateException, IOException {
-        GatewayConfig.ServiceConfig visaConfig =
-                gatewayConfig.getServices().get(ClientType.VISA_DS);
+        DsGatewayConfig.ServiceConfig visaConfig =
+                dsGatewayConfig.getServices().get(ClientType.VISA_DS);
+
         return getRestTemplate(visaConfig);
     }
 
@@ -38,25 +36,29 @@ public class CustomRestTemplateConfiguration {
     public RestTemplate masterCardRestTemplate()
             throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
                     CertificateException, IOException {
-        GatewayConfig.ServiceConfig masterCardConfig =
-                gatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
+        DsGatewayConfig.ServiceConfig masterCardConfig =
+                dsGatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
         return getRestTemplate(masterCardConfig);
     }
 
-    private RestTemplate getRestTemplate(GatewayConfig.ServiceConfig config)
+    private RestTemplate getRestTemplate(DsGatewayConfig.ServiceConfig config)
             throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
                     CertificateException, IOException {
-        SSLContext sslContext =
-                new SSLContextBuilder()
-                        .loadTrustMaterial(
-                                config.getKeyStore().getPath().getURL(),
-                                config.getKeyStore().getPassword().toCharArray())
-                        .build();
-        SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
-        CloseableHttpClient httpClient =
-                HttpClients.custom().setSSLSocketFactory(sslConFactory).build();
-        ClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory(httpClient);
+        HttpClientBuilder httpClient = HttpClients.custom();
+        if (config.isUseSSL()) {
+            SSLContext sslContext =
+                    new SSLContextBuilder()
+                            .loadTrustMaterial(
+                                    config.getKeyStore().getPath().getURL(),
+                                    config.getKeyStore().getPassword().toCharArray())
+                            .build();
+            SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
+            httpClient.setSSLSocketFactory(sslConFactory);
+        }
+        HttpComponentsClientHttpRequestFactory requestFactory =
+                new HttpComponentsClientHttpRequestFactory(httpClient.build());
+        requestFactory.setConnectTimeout(config.getConnectTimeout());
+        requestFactory.setReadTimeout(config.getReadTimeout());
         return new RestTemplate(requestFactory);
     }
 }

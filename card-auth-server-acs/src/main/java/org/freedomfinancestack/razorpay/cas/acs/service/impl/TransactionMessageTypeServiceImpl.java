@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
@@ -58,9 +59,9 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
     /**
      * get all the messages for the transaction id and return a map of message for each message type
      *
-     * @param id
-     * @return
+     * @param id transaction id for which messages are to be fetched.
      * @throws ThreeDSException
+     * @return map with
      */
     @Override
     public Map<MessageType, ThreeDSObject> getTransactionMessagesByTransactionId(String id)
@@ -88,7 +89,15 @@ public class TransactionMessageTypeServiceImpl implements TransactionMessageType
                 case AReq:
                     messageMap.put(messageType, Util.fromJson(message, AREQ.class));
                     break;
-
+                case RReq:
+                    messageMap.put(messageType, Util.fromJson(message, RREQ.class));
+                    break;
+                case CDRes:
+                    messageMap.put(messageType, Util.fromJson(message, CdRes.class));
+                    break;
+                case CVReq:
+                    messageMap.put(messageType, Util.fromJson(message, CVReq.class));
+                    break;
                 default:
                     throw new ThreeDSException(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,

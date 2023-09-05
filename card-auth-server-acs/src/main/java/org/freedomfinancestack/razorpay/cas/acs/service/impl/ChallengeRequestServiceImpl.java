@@ -71,9 +71,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             // 2 : find Transaction and previous request, response
             transaction = transactionService.findById(cReq.getAcsTransID());
             if (null == transaction || !transaction.isChallengeMandated()) {
-                throw new DataNotFoundException(
-                        ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
-                        InternalErrorCode.TRANSACTION_NOT_FOUND);
+                throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
             }
             // todo removing this fetch and use transaction data
             Map<MessageType, ThreeDSObject> threeDSMessageMap =
@@ -124,7 +122,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     // return or throw exception
                 }
 
-                if (Phase.CRES.equals(transaction.getPhase())) {
+                if (Phase.CREQ.equals(transaction.getPhase())) {
                     transaction.setThreedsSessionData(threeDSSessionData);
                     AuthConfigDto authConfigDto = getAuthConfig(transaction);
                     AuthenticationService authenticationService =
@@ -143,16 +141,16 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 } else {
                     throw new ValidationException(
                             ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                            "Another transaction is progress or Cres not expected");
+                            "Another transaction is progress or Creq not expected");
                 }
             }
 
-        } catch (ParseException ex) {
+        } catch (ParseException | TransactionDataNotValidException ex) {
             // don't send Rres for ParseException
             generateErrorResponse(
                     cdRes,
                     ex.getThreeDSecureErrorCode(),
-                    InternalErrorCode.INVALID_STATE_TRANSITION,
+                    ex.getInternalErrorCode(),
                     transaction,
                     ex.getMessage());
         } catch (ThreeDSException ex) {
@@ -189,45 +187,25 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     ex.getMessage());
         } finally {
             // save CDres and Transaction
-            GenerateECIRequest generateECIRequest =
-                    new GenerateECIRequest(
-                            transaction.getTransactionStatus(),
-                            transaction.getTransactionCardDetail().getNetworkCode(),
-                            transaction.getMessageCategory());
-            if (aReq != null) {
-                generateECIRequest.setThreeRIInd(aReq.getThreeRIInd());
+            if (transaction != null) {
+                GenerateECIRequest generateECIRequest =
+                        new GenerateECIRequest(
+                                transaction.getTransactionStatus(),
+                                transaction.getTransactionCardDetail().getNetworkCode(),
+                                transaction.getMessageCategory());
+                if (aReq != null) {
+                    generateECIRequest.setThreeRIInd(aReq.getThreeRIInd());
+                }
+                String eci = eCommIndicatorService.generateECI(generateECIRequest);
+                transaction.setEci(eci);
+                if (sendRres) {
+                    resultRequestService.processRreq(transaction);
+                }
+                transactionService.saveOrUpdate(transaction);
+                transactionMessageTypeService.createAndSave(cdRes, transaction.getId());
             }
-            String eci = eCommIndicatorService.generateECI(generateECIRequest);
-            transaction.setEci(eci);
-            transactionMessageTypeService.createAndSave(cdRes, transaction.getId());
-            transactionService.saveOrUpdate(transaction);
         }
 
-        // send RRes
-        try {
-            if (sendRres) {
-                resultRequestService.sendRreq(transaction);
-                StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
-            }
-        } catch (ThreeDSException e) {
-            generateErrorResponse(
-                    cdRes,
-                    e.getThreeDSecureErrorCode(),
-                    e.getInternalErrorCode(),
-                    transaction,
-                    e.getMessage());
-        } catch (InvalidStateTransactionException ex) {
-            generateErrorResponse(
-                    cdRes,
-                    ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                    InternalErrorCode.INVALID_STATE_TRANSITION,
-                    transaction,
-                    ex.getMessage());
-        } finally {
-            // save CDres and Transaction
-            transactionMessageTypeService.createAndSave(cdRes, transaction.getId());
-            transactionService.saveOrUpdate(transaction);
-        }
         return cdRes;
     }
 
@@ -288,33 +266,16 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             String errorDetail)
             throws InvalidStateTransactionException {
         cdRes.setError(true);
-        String errorRes = generateErrorResponse(error, transaction, errorDetail);
+        ThreeDSErrorResponse errorObj = Util.generateErrorResponse(error, transaction, errorDetail);
+        String errorRes = Util.toJson(errorObj);
         cdRes.setEncryptedErro(Util.encodeBase64(errorRes));
-
-        transaction.setErrorCode(internalErrorCode.getCode());
-        transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
-        transaction.setTransactionStatusReason(
-                internalErrorCode.getTransactionStatusReason().getCode());
-        StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
-    }
-
-    public String generateErrorResponse(
-            ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
-        ThreeDSErrorResponse errorObj = new ThreeDSErrorResponse();
-        if (error != null) {
-            errorObj.setErrorCode(error.getErrorCode());
-            errorObj.setErrorComponent(error.getErrorComponent());
-            errorObj.setErrorDescription(error.getErrorDescription());
-            errorObj.setErrorDetail(errorDetail);
-        }
         if (null != transaction) {
-            errorObj.setMessageVersion(transaction.getMessageVersion());
-            errorObj.setAcsTransID(transaction.getId());
-            errorObj.setDsTransID(transaction.getTransactionReferenceDetail().getDsTransactionId());
-            errorObj.setThreeDSServerTransID(
-                    transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+            transaction.setErrorCode(internalErrorCode.getCode());
+            transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+            transaction.setTransactionStatusReason(
+                    internalErrorCode.getTransactionStatusReason().getCode());
+            StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
         }
-        return Util.toJson(errorObj);
     }
 
     @Override

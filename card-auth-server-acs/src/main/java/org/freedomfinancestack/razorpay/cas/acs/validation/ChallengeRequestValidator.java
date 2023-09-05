@@ -10,6 +10,7 @@ import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class ChallengeRequestValidator {
      */
     public void validateRequest(CREQ incomingCreq, AREQ areq, CRES cres)
             throws ValidationException {
-        if (incomingCreq == null || areq == null || cres == null) {
+        if (incomingCreq == null || areq == null) {
             throw new ValidationException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Transaction data missing");
         }
@@ -62,7 +63,7 @@ public class ChallengeRequestValidator {
                 ThreeDSDataElement.MESSAGE_TYPE.getFieldName(),
                 incomingCreq.getMessageType(),
                 notNull(),
-                isIn(new String[] {"CReq"}));
+                isIn(new String[] {MessageType.CReq.toString()}));
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
                 incomingCreq.getMessageVersion(),
