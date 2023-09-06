@@ -1,0 +1,67 @@
+# use while deployment -Dspring.profiles.active=local This will load the application.properties and the application-local.properties with the latter overriding properties from the first.
+app:
+  port: 7070
+  hostname: https://cas_admin_server/
+
+spring:
+  application:
+    name: Card Auth ACS Admin Server
+  datasource:
+    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_db}
+    username: ${ACS_MYSQL_USER:root}
+    password: ${ACS_MYSQL_PASSWORD:password}
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    showSql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: [ "health","prometheus", "metrics", "info" ]
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true         # needs security review, secure end point
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: false
+      graphite:
+        enabled: false
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.springframework: INFO
+    org.freedomfinancestack: INFO
+#    org.hibernate.type.descriptor.sql: TRACE
+
+swagger:
+  contact-name: Freedom Finance Stack
+  contact-mail: contact@freedomfinancestack.org
+  app-name: Card Auth ACS Admin Server
+  app-description: "Card Auth ACS Admin Server"
+  app-version: 1.0.0
+  app-license-url: https://www.apache.org/licenses/LICENSE-2.0.html
+  app-license: Apache 2.0
+
+springdoc:
+  show-actuator: true
+  paths-to-match: /**
+  packages-to-scan: org.freedomfinancestack.razorpay.cas.admin
+
+
+
+
+
+
