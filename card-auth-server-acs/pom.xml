@@ -176,10 +176,18 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-graphite</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>16.0.1</version>
+        </dependency>
+
+        <!-- Cryptix Jar -->
+        <dependency>
+            <groupId>cryptix</groupId>
+            <artifactId>cryptix</artifactId>
+            <version>3.2.0</version>
         </dependency>
 
     </dependencies>
