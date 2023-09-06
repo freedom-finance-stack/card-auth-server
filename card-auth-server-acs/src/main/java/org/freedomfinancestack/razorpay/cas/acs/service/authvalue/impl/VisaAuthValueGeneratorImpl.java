@@ -91,7 +91,8 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         String authMethod = getAuthenticationMethodCode(transaction);
 
         String purchaseDate = "";
-        if (transaction.getTransactionPurchaseDetail().getPurchaseTimestamp() != null) {
+        if (transaction.getTransactionPurchaseDetail() != null
+                && transaction.getTransactionPurchaseDetail().getPurchaseTimestamp() != null) {
             LocalDateTime objPurchaseDate =
                     transaction
                             .getTransactionPurchaseDetail()
@@ -110,7 +111,8 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         }
 
         String purchaseAmountHexString = "";
-        if (transaction.getTransactionPurchaseDetail().getPurchaseAmount() != null) {
+        if (transaction.getTransactionPurchaseDetail() != null
+                && transaction.getTransactionPurchaseDetail().getPurchaseAmount() != null) {
             long purchaseAmountLong =
                     Long.parseLong(transaction.getTransactionPurchaseDetail().getPurchaseAmount());
             purchaseAmountHexString = Long.toHexString(purchaseAmountLong).toUpperCase();

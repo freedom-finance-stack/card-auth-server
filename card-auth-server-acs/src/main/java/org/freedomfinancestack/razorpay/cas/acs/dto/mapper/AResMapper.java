@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
+import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -58,7 +59,12 @@ public interface AResMapper {
             expression = "java(this.helperMapper.appConfiguration.getAcs().getReferenceNumber())")
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(target = "eci", source = "transaction.eci")
-    @Mapping(target = "acsURL", source = "aResMapperParams.acsUrl")
+    @Mapping(
+            target = "acsURL",
+            expression =
+                    "java(!transaction.getTransactionStatus()."
+                            + "equals(TransactionStatus.SUCCESS) && institutionAcsUrl != null ? "
+                            + "institutionAcsUrl.getChallengeUrl() : null)")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -77,7 +83,11 @@ public interface AResMapper {
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
-    ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
+    ARES toAres(
+            AREQ areq,
+            Transaction transaction,
+            InstitutionAcsUrl institutionAcsUrl,
+            AResMapperParams aResMapperParams);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
         String transStatusReason = "";

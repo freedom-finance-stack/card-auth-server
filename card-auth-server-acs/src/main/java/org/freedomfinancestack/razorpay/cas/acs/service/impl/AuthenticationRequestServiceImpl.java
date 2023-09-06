@@ -198,12 +198,8 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transaction.setEci(eci);
 
             AResMapperParams aResMapperParams = AResMapperParams.builder().build();
-            if (!transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)
-                    && acsUrl != null) {
-                aResMapperParams.setAcsUrl(acsUrl.getChallengeUrl());
-            }
+            ares = aResMapper.toAres(areq, transaction, acsUrl, aResMapperParams);
 
-            ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
             transaction.setPhase(Phase.ARES);
         } catch (Exception ex) {

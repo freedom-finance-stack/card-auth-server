@@ -33,16 +33,6 @@ public class Util {
     private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
     /**
-     * Checks if the given object is null
-     *
-     * @param object the object to check
-     * @return {@code true} if the object is null, {@code false} otherwise
-     */
-    public static boolean isNull(Object object) {
-        return null == object;
-    }
-
-    /**
      * Checks if the given object is null or its string representation is blank.
      *
      * @param object the object to check
