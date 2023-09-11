@@ -60,11 +60,7 @@ public class AuthValueGeneratorService {
     /**
      * Factory Method to fetch correct Auth Value generator corresponding to network
      *
-<<<<<<< HEAD
      * @param network {@link Network}
-=======
-     * @param network which is {@link org.freedomfinancestack.razorpay.cas.dao.enums.Network}
->>>>>>> master
      * @return {@link AuthValueGenerator}
      */
     private AuthValueGenerator getAuthValueGenerator(@NonNull final Network network) {
