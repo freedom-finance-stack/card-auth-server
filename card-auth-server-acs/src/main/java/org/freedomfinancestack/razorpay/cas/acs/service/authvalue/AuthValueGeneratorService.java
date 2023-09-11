@@ -8,6 +8,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationExce
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl.MasterCardAuthValueGeneratorImpl;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl.VisaAuthValueGeneratorImpl;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ public class AuthValueGeneratorService {
 
     public String getAuthValue(@NonNull final Transaction transaction)
             throws ACSException, ThreeDSException {
+
+        // Auth Value should be generated only in PA(messageCategory = 01)
+        if (!transaction.getMessageCategory().equals(MessageCategory.PA)) {
+            return null;
+        }
+
         if (transaction.getTransactionCardDetail() == null
                 || transaction.getTransactionCardDetail().getNetworkCode() == null) {
             log.error(
@@ -53,7 +60,11 @@ public class AuthValueGeneratorService {
     /**
      * Factory Method to fetch correct Auth Value generator corresponding to network
      *
+<<<<<<< HEAD
      * @param network {@link Network}
+=======
+     * @param network which is {@link org.freedomfinancestack.razorpay.cas.dao.enums.Network}
+>>>>>>> master
      * @return {@link AuthValueGenerator}
      */
     private AuthValueGenerator getAuthValueGenerator(@NonNull final Network network) {

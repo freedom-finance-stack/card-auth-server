@@ -3,7 +3,7 @@ app:
   port: 8080
   hostname: https://cas_acs/
   acs:
-    referenceNumber: 12345678901234567890
+    referenceNumber: "12345678901234567890"
     operatorId:
       visa: 123456789012345
       mastercard: 123456789012345
