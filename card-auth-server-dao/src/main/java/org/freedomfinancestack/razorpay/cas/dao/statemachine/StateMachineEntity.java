@@ -1,10 +1,10 @@
 package org.freedomfinancestack.razorpay.cas.dao.statemachine;
 
-public interface StateMachineEntity<S extends State<S, E>, E> {
+public interface StateMachineEntity<E> {
 
     String EntityName();
 
-    void SetState(State<S, E> name);
+    void SetState(State<E> name);
 
-    S GetState();
+    State<E> GetState();
 }

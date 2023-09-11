@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -44,6 +47,19 @@ public class ChallengeRequestController {
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @Operation(summary = "Handles browser Challenge Request generating user's browser")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     public String handleChallengeRequest(
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
@@ -86,6 +102,19 @@ public class ChallengeRequestController {
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @Operation(summary = "Handles browser validation Challenge Request generating user's browser")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
         ValidateChallengeResponse validateChallengeResponse =
                 challengeRequestService.processBrwChallengeValidationRequest(CVReq);

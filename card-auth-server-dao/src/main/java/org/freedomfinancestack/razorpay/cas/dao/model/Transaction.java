@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted_at is null")
 @Builder
 public class Transaction extends BaseEntity<String>
-        implements StateMachineEntity<Phase, Phase.PhaseEvent> {
+        implements StateMachineEntity<Phase.PhaseEvent> {
     @Id private String id;
 
     @Column(name = "institution_id")
@@ -128,7 +128,7 @@ public class Transaction extends BaseEntity<String>
     }
 
     @Override
-    public void SetState(State<Phase, Phase.PhaseEvent> state) {
+    public void SetState(State<Phase.PhaseEvent> state) {
         this.setPhase((Phase) state);
     }
 
