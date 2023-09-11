@@ -21,8 +21,14 @@ public class AuthenticationServiceLocator {
     private final AuthenticationService otpAuthenticationService;
 
     public AuthenticationService locateTransactionAuthenticationService(
-            Transaction transaction, String purchaseAmount, ChallengeAuthTypeConfig authConfig)
+            Transaction transaction, ChallengeAuthTypeConfig authConfig)
             throws InvalidAuthTypeException {
+        String purchaseAmount = null;
+        if (transaction.getTransactionPurchaseDetail() != null
+                && !Util.isNullorBlank(
+                        transaction.getTransactionPurchaseDetail().getPurchaseAmount())) {
+            purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
+        }
         if (authConfig.getThresholdAuthType() != null
                 && !Util.isNullorBlank(purchaseAmount)
                 && new BigDecimal(purchaseAmount).compareTo(authConfig.getThreshold()) >= 0) {

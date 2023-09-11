@@ -10,8 +10,8 @@ import lombok.Data;
 public class CVReq extends ThreeDSObject implements Serializable {
     String transactionId;
     String authVal;
-    String resendChallenge;
-    String cancelChallenge;
+    boolean resendChallenge;
+    boolean cancelChallenge;
 
     @Override
     public MessageType getThreeDSMessageType() {

@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
-import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -56,21 +55,24 @@ public class ChallengeRequestController {
             // todo unhandled exception and if challengeResponse is null
             throw new RuntimeException(e);
         }
-
         if (cdRes.isError()) {
-            if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
-                throw new RuntimeException("Transaction not recognized");
-            }
-            if (!Util.isNullorBlank(cdRes.getEncryptedCRes())) {
-                model.addAttribute("cRes", cdRes.getEncryptedCRes());
-            } else {
-                model.addAttribute("erro", cdRes.getEncryptedErro());
-            }
-            model.addAttribute("notificationUrl", cdRes.getNotificationUrl());
-            return "threeDSecureResponseSubmit";
+            return createCresAndErrorMessageResponse(model, cdRes);
         }
         model.addAttribute("challengeResponse", cdRes);
         return "acsOtp";
+    }
+
+    private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes) {
+        if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
+            throw new RuntimeException("Transaction not recognized");
+        }
+        if (!Util.isNullorBlank(cdRes.getEncryptedCRes())) {
+            model.addAttribute("cRes", cdRes.getEncryptedCRes());
+        } else {
+            model.addAttribute("erro", cdRes.getEncryptedErro());
+        }
+        model.addAttribute("notificationUrl", cdRes.getNotificationUrl());
+        return "threeDSecureResponseSubmit";
     }
 
     /**
@@ -90,11 +92,11 @@ public class ChallengeRequestController {
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
-        ValidateChallengeResponse validateChallengeResponse =
-                challengeRequestService.processBrwChallengeValidationRequest(CVReq);
-        model.addAttribute("cRes", validateChallengeResponse.getCRes());
-        model.addAttribute("notificationUrl", validateChallengeResponse.getNotificationUrl());
-        model.addAttribute("threeDSSessionData", validateChallengeResponse.getThreeDSSessionData());
-        return "threeDSecureResponseSubmit";
+        CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(CVReq);
+        if (cdRes.isChallengeCompleted() || cdRes.isError()) {
+            return createCresAndErrorMessageResponse(model, cdRes);
+        }
+        model.addAttribute("challengeResponse", cdRes);
+        return "acsOtp";
     }
 }

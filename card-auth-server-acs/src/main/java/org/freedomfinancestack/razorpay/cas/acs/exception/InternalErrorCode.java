@@ -151,7 +151,13 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8006",
             "invalid state transition",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.INVALID_TRANSACTION);
+            TransactionStatusReason.INVALID_TRANSACTION),
+    EXCEED_MAX_ALLOWED_ATTEMPTS(
+            "8007",
+            "attempts exceeded",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.EXCEED_MAX_CHALLANGES
+    ) ;
 
     private final String code;
 

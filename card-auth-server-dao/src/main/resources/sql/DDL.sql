@@ -9,7 +9,7 @@ CREATE TABLE `transaction`
 (
     `id`                        varchar(36) PRIMARY KEY,
     `institution_id`            varchar(36),
-    `card_range_id`            varchar(36),
+    `card_range_id`             varchar(36),
     `message_category`          ENUM ('PA', 'NPA', 'PVPA', 'PVNPA', 'NW', 'TW', 'IT', 'AT', 'AW', 'DI', 'II' ),
     `message_version`           varchar(10),
     `challenge_mandated`        bool,
@@ -22,6 +22,7 @@ CREATE TABLE `transaction`
     `device_channel`            varchar(10),
     `device_name`               varchar(20),
     `interaction_count`         int,
+    `resend_count`              int,
     `challenge_cancel_ind`      varchar(2),
     `error_code`                varchar(20),
     `created_at`                timestamp NOT NULL,
@@ -316,7 +317,7 @@ CREATE TABLE `otp_transaction_detail`
 
 
 # Purposed tables for OTP
-#  OTP : ID , Value, Valid_till, Attempt, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
+#  OTP : ID , Value, Valid_till, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
 #  NOTIFICATION : CHANNEL, DESTINATION, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
-#  OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID, RESEND_COUNT
+#  OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID
 

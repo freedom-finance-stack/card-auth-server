@@ -12,6 +12,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessExcep
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
+import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
 import org.freedomfinancestack.razorpay.cas.contract.*;
@@ -49,6 +50,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final InstitutionRepository institutionRepository;
     private final ResultRequestService resultRequestService;
     private final ECommIndicatorService eCommIndicatorService;
+    private final CardDetailService cardDetailService;
 
     @Override
     public CdRes processBrwChallengeRequest(
@@ -127,9 +129,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     AuthConfigDto authConfigDto = getAuthConfig(transaction);
                     AuthenticationService authenticationService =
                             authenticationServiceLocator.locateTransactionAuthenticationService(
-                                    transaction,
-                                    transaction.getTransactionPurchaseDetail().getPurchaseAmount(),
-                                    authConfigDto.getChallengeAuthTypeConfig());
+                                    transaction, authConfigDto.getChallengeAuthTypeConfig());
                     authenticationService.preAuthenticate(
                             AuthenticationDto.builder()
                                     .authConfigDto(authConfigDto)
@@ -279,9 +279,203 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     }
 
     @Override
-    public ValidateChallengeResponse processBrwChallengeValidationRequest(
-            @NonNull final CVReq CVReq) {
+    public CdRes processBrwChallengeValidationRequest(@NonNull final CVReq CVReq) {
+        try {
+            processBrwChallengeValidationReq(CVReq);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
+    }
+
+    private CdRes processBrwChallengeValidationReq(CVReq cvReq) throws ACSDataAccessException {
+        TransactionDto transactionDto = new TransactionDto();
+        ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
+        challengeFlowDto.setCdRes(new CdRes());
+
+        try {
+            // find Transaction and previous request, response
+            fetchTransactionData(cvReq.getTransactionId(), transactionDto);
+            // set Notification url to send Cres
+            challengeFlowDto
+                    .getCdRes()
+                    .setNotificationUrl(transactionDto.getAreq().getNotificationURL());
+
+            Transaction transaction = transactionDto.getTransaction();
+            // log cvreq
+            transactionMessageTypeService.createAndSave(cvReq, cvReq.getTransactionId());
+
+            // 4 flows
+            // 1: if Challenge cancel by user
+            // 2: If transaction status is incorrect
+            // 3: if resend challenge
+            // 4: else perform validation
+
+            if (cvReq.isCancelChallenge()) {}
+
+            if (!transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED)) {}
+
+            // State transition
+            AuthConfigDto authConfigDto = getAuthConfig(transaction);
+            if (cvReq.isResendChallenge()) {
+                StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
+                handleSendChallenge(challengeFlowDto, transaction, authConfigDto);
+            } else {
+                StateMachine.Trigger(transaction, Phase.PhaseEvent.VALIDATION_REQ_RECEIVED);
+                handleChallengeValidation(challengeFlowDto, transaction, authConfigDto);
+            }
+
+        } catch (ParseException | TransactionDataNotValidException ex) {
+            // don't send Rres for ParseException
+            generateErrorResponse(
+                    cdRes,
+                    ex.getThreeDSecureErrorCode(),
+                    ex.getInternalErrorCode(),
+                    transaction,
+                    ex.getMessage());
+        } catch (ThreeDSException ex) {
+            sendRres = true;
+            generateErrorResponse(
+                    cdRes,
+                    ex.getThreeDSecureErrorCode(),
+                    ex.getInternalErrorCode(),
+                    transaction,
+                    ex.getMessage());
+        } catch (InvalidStateTransactionException e) {
+            sendRres = true;
+            generateErrorResponse(
+                    cdRes,
+                    ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                    InternalErrorCode.INVALID_STATE_TRANSITION,
+                    transaction,
+                    e.getMessage());
+        } catch (ACSException ex) {
+            sendRres = true;
+            generateErrorResponse(
+                    cdRes,
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    ex.getErrorCode(),
+                    transaction,
+                    ex.getMessage());
+        } catch (Exception ex) {
+            sendRres = true;
+            generateErrorResponse(
+                    cdRes,
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    transaction,
+                    ex.getMessage());
+        } finally {
+            // save CDres and Transaction
+            // this block of code should avoid throwing exception, in case of exception we won't be
+            // able to send RReq to DS
+            GenerateECIRequest generateECIRequest =
+                    new GenerateECIRequest(
+                            transactionDto.getTransaction().getTransactionStatus(),
+                            transactionDto
+                                    .getTransaction()
+                                    .getTransactionCardDetail()
+                                    .getNetworkCode(),
+                            transactionDto.getTransaction().getMessageCategory());
+            if (transactionDto.getAreq() != null) {
+                generateECIRequest.setThreeRIInd(transactionDto.getAreq().getThreeRIInd());
+            }
+            String eci = eCommIndicatorService.generateECI(generateECIRequest);
+            transactionDto.getTransaction().setEci(eci);
+            transactionService.saveOrUpdate(transactionDto.getTransaction());
+            transactionMessageTypeService.createAndSave(
+                    challengeFlowDto.getCdRes(), transactionDto.getTransaction().getId());
+        }
+        // rreq is handled differently for validation flow as we need to handle error
+        if (challengeFlowDto.isSendRreq()) {
+            resultRequestService.processRreq(transactionDto.getTransaction());
+        }
+
+        return challengeFlowDto.getCdRes();
+    }
+
+    private void handleChallengeValidation(
+            CVReq cvReq,
+            Transaction transaction,
+            AuthConfigDto authConfigDto,
+            ChallengeFlowDto challengeFlowDto)
+            throws ThreeDSException, InvalidStateTransactionException {
+        AuthenticationService authenticationService =
+                authenticationServiceLocator.locateTransactionAuthenticationService(
+                        transaction, authConfigDto.getChallengeAuthTypeConfig());
+
+        AuthResponse authResponse =
+                authenticationService.authenticate(
+                        AuthenticationDto.builder()
+                                .authConfigDto(authConfigDto)
+                                .transaction(transaction)
+                                .authValue(cvReq.getAuthVal())
+                                .build());
+
+        if (authResponse.isAuthenticated()) {
+            transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+            StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
+        } else if (authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
+                > transaction.getInteractionCount()) {
+            StateMachine.Trigger(transaction, Phase.PhaseEvent.INVALID_AUTH_VAL);
+            // show incorrect OTP on UI
+            generateCDres(challengeFlowDto.getCdRes(), transaction);
+        } else {
+            transaction.setTransactionStatus(
+                    InternalErrorCode.EXCEED_MAX_ALLOWED_ATTEMPTS.getTransactionStatus());
+            transaction.setTransactionStatusReason(
+                    InternalErrorCode.EXCEED_MAX_ALLOWED_ATTEMPTS
+                            .getTransactionStatusReason()
+                            .getCode());
+            transaction.setErrorCode(InternalErrorCode.EXCEED_MAX_ALLOWED_ATTEMPTS.getCode());
+            StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_ATTEMPT_EXHAUSTED);
+            if (authConfigDto.getChallengeAttemptConfig().isBlockOnExceedAttempt()) {
+                userDetailService.blockUser(transaction.getTransactionCardDetail().getCardNumber());
+            }
+        }
+    }
+
+    private void handleSendChallenge(
+            ChallengeFlowDto challengeFlowDto, Transaction transaction, AuthConfigDto authConfigDto)
+            throws ThreeDSException, InvalidStateTransactionException {
+
+        AuthenticationService authenticationService =
+                authenticationServiceLocator.locateTransactionAuthenticationService(
+                        transaction, authConfigDto.getChallengeAuthTypeConfig());
+        authenticationService.preAuthenticate(
+                AuthenticationDto.builder()
+                        .authConfigDto(authConfigDto)
+                        .transaction(transaction)
+                        .build());
+        StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
+        //  generateOTP page
+        generateCDres(challengeFlowDto.getCdRes(), transaction);
+    }
+
+    private void fetchTransactionData(String transactionId, TransactionDto transactionDto)
+            throws ACSDataAccessException, ThreeDSException {
+        Transaction transaction = transactionService.findById(transactionId);
+        if (null == transaction || !transaction.isChallengeMandated()) {
+            throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
+        }
+
+        Map<MessageType, ThreeDSObject> threeDSMessageMap =
+                transactionMessageTypeService.getTransactionMessagesByTransactionId(
+                        transaction.getId());
+        if (null != threeDSMessageMap && !threeDSMessageMap.isEmpty()) {
+            if (threeDSMessageMap.containsKey(MessageType.AReq)) {
+                transactionDto.setAreq((AREQ) threeDSMessageMap.get(MessageType.AReq));
+            }
+            if (threeDSMessageMap.containsKey(MessageType.ARes)) {
+                transactionDto.setAres((ARES) threeDSMessageMap.get(MessageType.ARes));
+            }
+            if (threeDSMessageMap.containsKey(MessageType.CReq)) {
+                transactionDto.setCreq((CREQ) threeDSMessageMap.get(MessageType.CReq));
+            }
+            if (threeDSMessageMap.containsKey(MessageType.CRes)) {
+                transactionDto.setCres((CRES) threeDSMessageMap.get(MessageType.CRes));
+            }
+        }
     }
 
     private AuthConfigDto getAuthConfig(Transaction transaction) throws ACSDataAccessException {
