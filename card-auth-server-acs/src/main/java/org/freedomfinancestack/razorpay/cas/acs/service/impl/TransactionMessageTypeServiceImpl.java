@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.razorpay.cas.dao.enums.Phase.CRES;
-
 /**
  * Implementation of the TransactionMessageTypeService interface that provides functionality to
  * create and save transaction message type details for AREQ and CREQ messages.
