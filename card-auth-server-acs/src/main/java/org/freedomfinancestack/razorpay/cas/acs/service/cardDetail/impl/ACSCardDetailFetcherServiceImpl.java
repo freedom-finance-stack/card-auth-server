@@ -59,11 +59,11 @@ public class ACSCardDetailFetcherServiceImpl implements CardDetailFetcherService
     public void blockCard(CardDetailsRequest cardDetailsRequest) throws ACSDataAccessException {
         log.info("Block card in CardDetails table");
         try {
-            cardDetailRepository.(cardDetailsRequest.getCardNumber());
+            cardDetailRepository.blockCard(
+                    cardDetailsRequest.getCardNumber(), cardDetailsRequest.getInstitutionId());
         } catch (DataAccessException ex) {
             throw new ACSDataAccessException(InternalErrorCode.CARD_USER_FETCH_EXCEPTION, ex);
         }
-
     }
 
     public void validateCardDetails(CardDetailResponse cardDetailResponse)

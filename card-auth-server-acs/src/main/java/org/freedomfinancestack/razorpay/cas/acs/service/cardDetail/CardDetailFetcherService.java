@@ -28,8 +28,8 @@ public interface CardDetailFetcherService {
 
     /**
      * Block the card based on the provided {@link CardDetailsRequest}
-     * @param cardDetailsRequest the request object containing card details
-     *                           to block the card
+     *
+     * @param cardDetailsRequest the request object containing card details to block the card
      * @throws ACSDataAccessException if there is a data access issue while blocking the card
      */
     void blockCard(CardDetailsRequest cardDetailsRequest) throws ACSDataAccessException;

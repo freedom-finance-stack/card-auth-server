@@ -156,8 +156,7 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8007",
             "attempts exceeded",
             TransactionStatus.FAILED,
-            TransactionStatusReason.EXCEED_MAX_CHALLANGES
-    ) ;
+            TransactionStatusReason.EXCEED_MAX_CHALLANGES);
 
     private final String code;
 
