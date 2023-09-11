@@ -212,4 +212,19 @@ public class Util {
         int max = (int) Math.pow(10, digits) - 1;
         return random.nextInt(max - min + 1) + min;
     }
+
+    /**
+     * Extend the string with a symbol till the mentioned length
+     *
+     * @param text string which needs to be extended
+     * @param symbol extension string
+     * @param len desired length
+     * @return desired extended string
+     */
+    public static String extendString(String text, String symbol, Integer len) {
+        while (text.length() < len) {
+            text += symbol;
+        }
+        return text;
+    }
 }
