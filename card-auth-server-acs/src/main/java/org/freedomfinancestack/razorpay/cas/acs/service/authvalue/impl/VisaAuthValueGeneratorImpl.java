@@ -100,14 +100,12 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
                             .toLocalDateTime();
 
             purchaseDate = String.valueOf(objPurchaseDate.getDayOfYear());
-            if (purchaseDate.length() < 3) {
-                purchaseDate =
-                        Util.padString(
-                                purchaseDate,
-                                3,
-                                InternalConstants.PADDED_SYMBOL_0,
-                                InternalConstants.PAD_LEFT);
-            }
+            purchaseDate =
+                    Util.padString(
+                            purchaseDate,
+                            3,
+                            InternalConstants.PADDED_SYMBOL_0,
+                            InternalConstants.PAD_LEFT);
         }
 
         String purchaseAmountHexString = "";
@@ -175,10 +173,7 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         // and identify the Authentication Date
         String authenticationAmount = getAuthenticationAmount(transaction);
         String authenticationCurrency =
-                transaction.getTransactionPurchaseDetail().getPurchaseCurrency() == null
-                        ? ""
-                        : transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
-
+                transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
         String authenticationDate = getAuthenticationDate();
 
         return authenticationAmount + authenticationCurrency + authenticationDate;

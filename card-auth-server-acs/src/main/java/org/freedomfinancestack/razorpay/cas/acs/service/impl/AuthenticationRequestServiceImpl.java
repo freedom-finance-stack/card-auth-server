@@ -140,9 +140,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 transaction.setEci(eci);
                 transaction.setTransactionStatus(TransactionStatus.SUCCESS);
                 String authValue = authValueGeneratorService.getAuthValue(transaction);
-                if (!Util.isNullorBlank(authValue)) {
-                    transaction.setAuthValue(authValue);
-                }
+                transaction.setAuthValue(authValue);
             }
 
         } catch (ThreeDSException ex) {
