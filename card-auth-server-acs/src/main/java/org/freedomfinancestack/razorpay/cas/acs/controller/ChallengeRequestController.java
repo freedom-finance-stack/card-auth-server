@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
@@ -52,14 +53,20 @@ public class ChallengeRequestController {
         // todo unhandled exception, if challengeResponse is null
         if (challengeResponse.isError()) {
             if (Util.isNullorBlank(challengeResponse.getEncryptedCRes())) {
-                model.addAttribute("cRes", challengeResponse.getEncryptedCRes());
+                model.addAttribute(
+                        InternalConstants.MODEL_ATTRIBUTE_CRES,
+                        challengeResponse.getEncryptedCRes());
             } else {
-                model.addAttribute("erro", challengeResponse.getEncryptedErro());
+                model.addAttribute(
+                        InternalConstants.MODEL_ATTRIBUTE_ERRO,
+                        challengeResponse.getEncryptedErro());
             }
-            model.addAttribute("notificationUrl", challengeResponse.getNotificationUrl());
+            model.addAttribute(
+                    InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL,
+                    challengeResponse.getNotificationUrl());
             return "threeDSecureResponseSubmit";
         }
-        model.addAttribute("challengeResponse", challengeResponse);
+        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_RESPONSE, challengeResponse);
         return "acsOtp";
     }
 
@@ -82,9 +89,14 @@ public class ChallengeRequestController {
     public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
         ValidateChallengeResponse validateChallengeResponse =
                 challengeRequestService.processBrwChallengeValidationRequest(CVReq);
-        model.addAttribute("cRes", validateChallengeResponse.getCRes());
-        model.addAttribute("notificationUrl", validateChallengeResponse.getNotificationUrl());
-        model.addAttribute("threeDSSessionData", validateChallengeResponse.getThreeDSSessionData());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_CRES, validateChallengeResponse.getCRes());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL,
+                validateChallengeResponse.getNotificationUrl());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_THREEDS_SESSION_DATA,
+                validateChallengeResponse.getThreeDSSessionData());
         return "threeDSecureResponseSubmit";
     }
 }
