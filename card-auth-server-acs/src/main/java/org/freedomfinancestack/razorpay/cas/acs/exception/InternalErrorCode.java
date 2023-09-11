@@ -131,7 +131,6 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "TRANSACTION ID NOT FOUND",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
-
     INVALID_CONFIG(
             "8003",
             "CONFIG ERROR IN ACS",

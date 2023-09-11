@@ -32,4 +32,9 @@ public class InternalConstants {
 
     public static final String CHALLENGE_INFORMATION_EMAIL_TEXT =
             "to your registered email address %s";
+    public static final String MODEL_ATTRIBUTE_CRES = "cRes";
+    public static final String MODEL_ATTRIBUTE_ERRO = "erro";
+    public static final String MODEL_ATTRIBUTE_NOTIFICATION_URL = "notificationUrl";
+    public static final String MODEL_ATTRIBUTE_THREEDS_SESSION_DATA = "threeDSSessionData";
+    public static final String MODEL_ATTRIBUTE_CHALLENGE_RESPONSE = "challengeResponse";
 }

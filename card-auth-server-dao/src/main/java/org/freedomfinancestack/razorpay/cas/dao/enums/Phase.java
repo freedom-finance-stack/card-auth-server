@@ -8,7 +8,7 @@ import org.freedomfinancestack.razorpay.cas.dao.statemachine.State;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public enum Phase implements State<Phase, Phase.PhaseEvent> {
+public enum Phase implements State<Phase.PhaseEvent> {
     AREQ {
         @Override
         public Phase nextState(PhaseEvent event) throws InvalidStateTransactionException {
