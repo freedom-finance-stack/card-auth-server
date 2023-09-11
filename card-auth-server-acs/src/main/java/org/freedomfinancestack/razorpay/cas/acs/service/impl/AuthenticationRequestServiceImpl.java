@@ -173,11 +173,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);
-            ares =
-                    aResMapper.toAres(
-                            areq,
-                            transaction,
-                            AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
+
+            AResMapperParams aResMapperParams = AResMapperParams.builder().build();
+            ares = aResMapper.toAres(areq, transaction, acsUrl, aResMapperParams);
+
             transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
         } catch (Exception ex) {
