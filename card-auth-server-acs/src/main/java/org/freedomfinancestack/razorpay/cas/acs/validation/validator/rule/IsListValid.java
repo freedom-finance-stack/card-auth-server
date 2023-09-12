@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.validation.validator.rule;
 import java.util.List;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
 
 public class IsListValid<T> implements Validator<List<T>> {
@@ -19,6 +20,10 @@ public class IsListValid<T> implements Validator<List<T>> {
 
     @Override
     public void validate(List<T> values) throws ValidationException {
+        if (Util.isNullorBlank(values)) {
+            return;
+        }
+
         for (T nextElement : values) {
             validationRuleToApply.validate(nextElement);
         }
