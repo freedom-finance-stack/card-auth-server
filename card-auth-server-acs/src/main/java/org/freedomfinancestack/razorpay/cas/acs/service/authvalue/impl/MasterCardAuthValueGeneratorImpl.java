@@ -64,7 +64,10 @@ public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
                             .toUpperCase();
             log.debug("4 bytes IAV:" + encodedHexadecimal);
 
-            String iavValue = MasterCardConstants.TLV_TAG + encodedHexadecimal + MasterCardConstants.ZERO_PADDING;
+            String iavValue =
+                    MasterCardConstants.TLV_TAG
+                            + encodedHexadecimal
+                            + MasterCardConstants.ZERO_PADDING;
             iav =
                     Base64.encodeBase64String(
                             org.apache.commons.codec.binary.Hex.decodeHex(iavValue.toCharArray()));

@@ -29,5 +29,4 @@ public class InternalConstants {
     public static final String MODEL_ATTRIBUTE_NOTIFICATION_URL = "notificationUrl";
     public static final String MODEL_ATTRIBUTE_THREEDS_SESSION_DATA = "threeDSSessionData";
     public static final String MODEL_ATTRIBUTE_CHALLENGE_RESPONSE = "challengeResponse";
-
 }
