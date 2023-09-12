@@ -182,14 +182,12 @@
             <version>16.0.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.16.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/javax.xml.crypto/jsr105-api -->
         <dependency>
             <groupId>javax.xml.crypto</groupId>
             <artifactId>jsr105-api</artifactId>

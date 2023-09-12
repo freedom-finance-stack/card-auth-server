@@ -6,9 +6,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.MasterCardConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AuthValueConfig;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGenerator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -23,13 +25,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
 
+    @Autowired AuthValueConfig authValueConfig;
+
     @Override
     public String createAuthValue(Transaction transaction)
             throws ACSException, ValidationException {
         String iav = null;
 
         try {
-            String acsKey = "B039878C1F96D212F509B2DC4CC8CD1BB039878C1F96D212F509B2DC4CC8CD1B";
+            String acsKey = authValueConfig.getAcsKey();
 
             String dsTransId = transaction.getTransactionReferenceDetail().getDsTransactionId();
 
@@ -37,15 +41,17 @@ public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
 
             String PAN = transaction.getTransactionCardDetail().getCardNumber();
 
-            String extendedPAN = Util.extendString(PAN, InternalConstants.SYMBOL_F, 20);
+            String extendedPAN =
+                    Util.padString(
+                            PAN, 20, InternalConstants.SYMBOL_F, InternalConstants.PAD_RIGHT);
 
             String data = extendedPAN + dsTransId;
 
-            final Mac sha256HMAC = Mac.getInstance("HmacSHA256");
+            final Mac sha256HMAC = Mac.getInstance(MasterCardConstants.HMACSHA256_ALGORITHM);
             final SecretKeySpec secretkey =
                     new SecretKeySpec(
                             org.apache.commons.codec.binary.Hex.decodeHex(acsKey.toCharArray()),
-                            "HmacSHA256");
+                            MasterCardConstants.HMACSHA256_ALGORITHM);
 
             sha256HMAC.init(secretkey);
             final byte[] byteData =
@@ -58,7 +64,7 @@ public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
                             .toUpperCase();
             log.debug("4 bytes IAV:" + encodedHexadecimal);
 
-            String iavValue = "C604" + encodedHexadecimal + "000000000000000000000000000000";
+            String iavValue = MasterCardConstants.TLV_TAG + encodedHexadecimal + MasterCardConstants.ZERO_PADDING;
             iav =
                     Base64.encodeBase64String(
                             org.apache.commons.codec.binary.Hex.decodeHex(iavValue.toCharArray()));
@@ -70,7 +76,7 @@ public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
                             + e.getStackTrace()
                             + " "
                             + "Error while deriving the MasterCard AAV value";
-            log.debug(message);
+            log.error(message);
             throw new ACSException(
                     InternalErrorCode.HSM_INTERNAL_EXCEPTION,
                     "Error while deriving the MasterCard AAV value",

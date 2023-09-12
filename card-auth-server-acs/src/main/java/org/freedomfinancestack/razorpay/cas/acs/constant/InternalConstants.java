@@ -23,5 +23,5 @@ public class InternalConstants {
     public static final String PAD_LEFT = "LEFT";
     public static final String PAD_RIGHT = "RIGHT";
     public static final String NO_OP_HSM = "NoOpHSM";
-    public static final String SYMBOL_F = "F";
+    public static final Character SYMBOL_F = 'F';
 }
