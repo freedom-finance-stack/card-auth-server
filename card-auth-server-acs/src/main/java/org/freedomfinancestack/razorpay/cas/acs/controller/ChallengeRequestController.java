@@ -1,13 +1,18 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -42,6 +47,19 @@ public class ChallengeRequestController {
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @Operation(summary = "Handles browser Challenge Request generating user's browser")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     public String handleChallengeRequest(
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
@@ -50,11 +68,21 @@ public class ChallengeRequestController {
                 challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
         // todo unhandled exception, if challengeResponse is null
         if (challengeResponse.isError()) {
-            model.addAttribute("cRes", challengeResponse.getCRes());
-            model.addAttribute("notificationUrl", challengeResponse.getNotificationUrl());
+            if (Util.isNullorBlank(challengeResponse.getEncryptedCRes())) {
+                model.addAttribute(
+                        InternalConstants.MODEL_ATTRIBUTE_CRES,
+                        challengeResponse.getEncryptedCRes());
+            } else {
+                model.addAttribute(
+                        InternalConstants.MODEL_ATTRIBUTE_ERRO,
+                        challengeResponse.getEncryptedErro());
+            }
+            model.addAttribute(
+                    InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL,
+                    challengeResponse.getNotificationUrl());
             return "threeDSecureResponseSubmit";
         }
-        model.addAttribute("challengeResponse", challengeResponse);
+        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_RESPONSE, challengeResponse);
         return "acsOtp";
     }
 
@@ -62,21 +90,42 @@ public class ChallengeRequestController {
      * Handles Challenge Validation Request (ValidateCReq) received from the client browser for OTP
      * verification and generates CRes for the Browser.
      *
-     * @param CVReq
-     * @param model
-     * @return
+     * @param CVReq The {@link CVReq} object representing the * Challenge Validation Request message
+     *     received from the browser.
+     * @param model The {@link Model} object representing the UI Model for HTML template data
+     *     binding.
+     * @return The {@link String} object representing the Challenge Response message in JS enabled
+     *     HTML format.
      */
     @RequestMapping(
             value = "/challenge/browser/validate",
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @Operation(summary = "Handles browser validation Challenge Request generating user's browser")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
         ValidateChallengeResponse validateChallengeResponse =
                 challengeRequestService.processBrwChallengeValidationRequest(CVReq);
-        model.addAttribute("cRes", validateChallengeResponse.getCRes());
-        model.addAttribute("notificationUrl", validateChallengeResponse.getNotificationUrl());
-        model.addAttribute("threeDSSessionData", validateChallengeResponse.getThreeDSSessionData());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_CRES, validateChallengeResponse.getCRes());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL,
+                validateChallengeResponse.getNotificationUrl());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_THREEDS_SESSION_DATA,
+                validateChallengeResponse.getThreeDSSessionData());
         return "threeDSecureResponseSubmit";
     }
 }

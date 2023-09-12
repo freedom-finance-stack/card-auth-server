@@ -11,6 +11,7 @@
 <div align="center">
     <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post" name = "submitForm" >
         <input name="authVal" id="authVal" type="password" class="inputText">
+        <input name="messageType" value="CVReq" type="hidden" >
         <button type="submit">Submit</button>
     </form>
 </div>
