@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.RReqMapper;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.DsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpStatusCodeException;
@@ -14,6 +15,7 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
+import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
 import org.freedomfinancestack.razorpay.cas.dao.statemachine.StateMachine;
@@ -43,10 +45,13 @@ public class ResultRequestServiceImpl implements ResultRequestService {
     }
 
     @Override
-    public void processRreq(Transaction transaction) {
+    public boolean processRreq(Transaction transaction) {
+        boolean isSuccessful;
         try {
             handleRreq(transaction);
+            isSuccessful = true;
         } catch (Exception ex) {
+            isSuccessful = false;
             // Ignore any exception in sending RReq after retries and complete transaction
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
             try {
@@ -58,6 +63,7 @@ public class ResultRequestServiceImpl implements ResultRequestService {
                         e);
             }
         }
+        return isSuccessful;
     }
 
     private void handleRreq(Transaction transaction)
@@ -71,22 +77,28 @@ public class ResultRequestServiceImpl implements ResultRequestService {
                             Network.getNetwork(
                                     transaction.getTransactionCardDetail().getNetworkCode()),
                             rreq);
-            resultResponseValidator.validateRequest(rres, rreq);
             transactionMessageTypeService.createAndSave(rres, transaction.getId());
+            resultResponseValidator.validateRequest(rres, rreq);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RRES_RECEIVED);
         } catch (ValidationException e) {
-            generateSendErrorResponse(transaction, e.getThreeDSecureErrorCode(), e.getMessage());
+            transaction.setTransactionStatus(e.getInternalErrorCode().getTransactionStatus());
+            transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
+            sendDsErrorResponse(transaction, e.getThreeDSecureErrorCode(), e.getMessage());
             throw e;
         } catch (GatewayHttpStatusCodeException e) {
+            transaction.setTransactionStatus(TransactionStatus.UNABLE_TO_AUTHENTICATE);
             if (e.getStatusCode().series() == HttpStatus.Series.CLIENT_ERROR) {
-                generateSendErrorResponse(
+                transaction.setErrorCode(InternalErrorCode.CONNECTION_TO_DS_FAILED.getCode());
+                sendDsErrorResponse(
                         transaction, ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT, e.getMessage());
+            } else {
+                transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
             }
             throw e;
         }
     }
 
-    private void generateSendErrorResponse(
+    private void sendDsErrorResponse(
             Transaction transaction, ThreeDSecureErrorCode error, String errorDetails) {
         // send error message to DS.  Ignore all the exception as its 2nd communication to DS, we
         // want to send Cres back

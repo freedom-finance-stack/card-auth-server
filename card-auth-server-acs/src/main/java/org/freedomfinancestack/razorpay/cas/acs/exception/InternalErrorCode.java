@@ -6,7 +6,9 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import lombok.Getter;
 
 @Getter
-public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piyush
+public enum
+        InternalErrorCode { // todo get this file reviewed by Ashish and Piyush and revisit error
+    // codes
 
     // Error code for card USER
     CARD_USER_NOT_FOUND(
@@ -156,6 +158,21 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8007",
             "attempts exceeded",
             TransactionStatus.FAILED,
+            TransactionStatusReason.EXCEED_MAX_CHALLANGES),
+    INVALID_RRES(
+            "8008",
+            "invalid RRes received from DS",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.INVALID_TRANSACTION),
+    CONNECTION_TO_DS_FAILED(
+            "8009",
+            "can't connect to DS to send RReq",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+    CHALLENGE_RESEND_THRESHOLD_EXCEEDED(
+            "8010",
+            "challenge resend threshold exceeded",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.EXCEED_MAX_CHALLANGES);
 
     private final String code;

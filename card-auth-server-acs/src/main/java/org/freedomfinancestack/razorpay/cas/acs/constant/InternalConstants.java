@@ -32,4 +32,6 @@ public class InternalConstants {
 
     public static final String CHALLENGE_INFORMATION_EMAIL_TEXT =
             "to your registered email address %s";
+
+    public static final String CHALLENGE_INCORRECT_OTP_TEXT = "we have entered incorrect OTP";
 }

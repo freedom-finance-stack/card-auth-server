@@ -55,31 +55,36 @@ public class ChallengeRequestController {
             // todo unhandled exception and if challengeResponse is null
             throw new RuntimeException(e);
         }
-        if (cdRes.isError()) {
+        if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
         }
-        model.addAttribute("challengeResponse", cdRes);
-        return "acsOtp";
+        return createCdRes(model, cdRes);
     }
 
     private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes) {
         if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
             throw new RuntimeException("Transaction not recognized");
         }
-        if (!Util.isNullorBlank(cdRes.getEncryptedCRes())) {
-            model.addAttribute("cRes", cdRes.getEncryptedCRes());
-        } else {
+        if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
             model.addAttribute("erro", cdRes.getEncryptedErro());
+        } else {
+            model.addAttribute("cRes", cdRes.getEncryptedCRes());
         }
+        model.addAttribute("threeDSSessionData", cdRes.getThreeDSSessionData());
         model.addAttribute("notificationUrl", cdRes.getNotificationUrl());
         return "threeDSecureResponseSubmit";
+    }
+
+    private static String createCdRes(Model model, CdRes cdRes) {
+        model.addAttribute("cdRes", cdRes);
+        return "acsOtp";
     }
 
     /**
      * Handles Challenge Validation Request (ValidateCReq) received from the client browser for OTP
      * verification and generates CRes for the Browser.
      *
-     * @param CVReq The {@link CVReq} object representing the * Challenge Validation Request message
+     * @param cVReq The {@link CVReq} object representing the * Challenge Validation Request message
      *     received from the browser.
      * @param model The {@link Model} object representing the UI Model for HTML template data
      *     binding.
@@ -91,12 +96,11 @@ public class ChallengeRequestController {
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
-        CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(CVReq);
+    public String handleChallengeValidationRequest(CVReq cVReq, Model model) {
+        CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(cVReq);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
         }
-        model.addAttribute("challengeResponse", cdRes);
-        return "acsOtp";
+        return createCdRes(model, cdRes);
     }
 }

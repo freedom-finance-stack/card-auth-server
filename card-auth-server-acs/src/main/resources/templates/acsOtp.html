@@ -28,6 +28,14 @@
             margin-bottom: 20px;
         }
 
+
+        .alert {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: indianred;
+        }
+
         .separator {
             border-top: 1px solid #ccc;
             margin: 20px 0;
@@ -81,12 +89,13 @@
     <p><span th:text="${cdRes.challengeText}"></span></p>
     <p>You have <strong th:text="${cdRes.attemptLeft}"></strong> attempts left.</p>
     <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post"
-          th:object=”${validateChallengeRequest}”>
+          th:object=”${cVReq}”>
         <label for="otp">Verification Code</label>
         <input type="text" id="otp" name="otp" th:field=”*{authVal}” required>
         <input type="hidden" name="transactionId" th:value="${response.transactionId}" th:field=”*{transactionId}”>
         <button type="submit">Submit</button>
     </form>
+    <p class="alert"> <span th:text="${cdRes.challengeInfoText}"> incorrect otp </span> </p>
     <div class="resend" th:if="${cdRes.resendBlocked} != 'true'">
         <p>Didn't receive the code?
             <button type="button">Resend</button>

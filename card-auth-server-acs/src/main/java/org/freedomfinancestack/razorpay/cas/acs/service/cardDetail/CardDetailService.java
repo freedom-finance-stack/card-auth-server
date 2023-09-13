@@ -51,7 +51,6 @@ public class CardDetailService {
      *
      * @param cardDetailsRequest the card details request
      * @param type the type of card details store
-     * @return the response containing the fetched card details
      * @throws ACSDataAccessException if there is an error while fetching card details
      */
     public void blockCard(CardDetailsRequest cardDetailsRequest, CardDetailsStore type)
