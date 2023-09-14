@@ -1,11 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,13 +46,7 @@ public class ChallengeRequestController {
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model) {
-        CdRes cdRes = null;
-        try {
-            cdRes = challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
-        } catch (ACSDataAccessException | InvalidStateTransactionException e) {
-            // todo unhandled exception and if challengeResponse is null
-            throw new RuntimeException(e);
-        }
+        CdRes cdRes = challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
         }
