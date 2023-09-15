@@ -2,12 +2,11 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import javax.validation.constraints.NotNull;
 
-import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
+import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CdResMapperImpl;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
@@ -23,10 +22,7 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
-import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
-import org.freedomfinancestack.razorpay.cas.dao.model.TransactionCardHolderDetail;
-import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionRepository;
 import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
 import org.freedomfinancestack.razorpay.cas.dao.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
@@ -49,7 +45,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final ChallengeRequestValidator challengeRequestValidator;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
-    private final InstitutionRepository institutionRepository;
+    private final CdResMapperImpl cdResMapper;
     private final ResultRequestService resultRequestService;
     private final ECommIndicatorService eCommIndicatorService;
     private final CardDetailService cardDetailService;
@@ -225,6 +221,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     private CdRes processBrwChallengeValidationReq(CVReq cvReq)
             throws ACSDataAccessException, InvalidStateTransactionException {
+        // todo combine ChallengeValidationReq and ChallengeReq
         TransactionDto transactionDto = new TransactionDto();
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         challengeFlowDto.setCdRes(new CdRes());
@@ -388,7 +385,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     > transaction.getInteractionCount()) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.INVALID_AUTH_VAL);
                 challengeFlowDto.getCdRes().setChallengeInfoText(authResponse.getDisplayMessage());
-                generateCDres(challengeFlowDto.getCdRes(), transaction);
+                cdResMapper.generateCDres(challengeFlowDto.getCdRes(), transaction);
             } else {
                 transaction.setTransactionStatus(
                         InternalErrorCode.EXCEED_MAX_ALLOWED_ATTEMPTS.getTransactionStatus());
@@ -456,7 +453,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         .build());
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
         //  generateOTP page
-        generateCDres(challengeFlowDto.getCdRes(), transaction);
+        cdResMapper.generateCDres(challengeFlowDto.getCdRes(), transaction);
     }
 
     private void handleCancelChallenge(ChallengeFlowDto challengeFlowDto, Transaction transaction)
@@ -531,55 +528,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR);
         }
         return creq;
-    }
-
-    private void generateCDres(CdRes cdRes, Transaction transaction) throws DataNotFoundException {
-        cdRes.setTransactionId(transaction.getId());
-        Optional<Institution> institution =
-                institutionRepository.findById(transaction.getInstitutionId());
-        if (institution.isPresent()) {
-            cdRes.setInstitutionName(institution.get().getName());
-        } else {
-            log.error("Institution not found for transaction: " + transaction.getId());
-            throw new DataNotFoundException(
-                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
-                    InternalErrorCode.INSTITUTION_NOT_FOUND);
-        }
-        Network network =
-                Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
-        cdRes.setSchemaName(network.getName());
-        cdRes.setJsEnableIndicator(
-                transaction.getTransactionBrowserDetail().getJavascriptEnabled());
-        StringBuilder challengeText = new StringBuilder();
-        TransactionCardHolderDetail transactionCardHolderDetail =
-                transaction.getTransactionCardHolderDetail();
-        boolean isContactInfoAvailable = false;
-        if (!Util.isNullorBlank(transactionCardHolderDetail.getMobileNumber())) {
-            isContactInfoAvailable = true;
-            challengeText.append(
-                    String.format(
-                            InternalConstants.CHALLENGE_INFORMATION_MOBILE_TEXT,
-                            transactionCardHolderDetail.getMobileNumber()));
-        }
-        if (!Util.isNullorBlank(transactionCardHolderDetail.getEmailId())) {
-            if (isContactInfoAvailable) {
-                challengeText.append(InternalConstants.AND);
-            }
-            isContactInfoAvailable = true;
-            challengeText.append(
-                    String.format(
-                            InternalConstants.CHALLENGE_INFORMATION_EMAIL_TEXT,
-                            transactionCardHolderDetail.getEmailId()));
-        }
-        if (!isContactInfoAvailable) {
-            log.error(
-                    "No contact information found for card user for transaction id "
-                            + transaction.getId());
-            throw new DataNotFoundException(
-                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
-                    InternalErrorCode.NO_CHANNEL_FOUND_FOR_OTP);
-        }
-        cdRes.setChallengeText(InternalConstants.CHALLENGE_INFORMATION_TEXT + challengeText);
     }
 
     public void generateErrorResponseAndUpdateTransaction(

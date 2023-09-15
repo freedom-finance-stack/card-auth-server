@@ -46,7 +46,8 @@ public class ChallengeRequestController {
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model) {
-        CdRes cdRes = challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
+        CdRes cdRes =
+                challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
         }
