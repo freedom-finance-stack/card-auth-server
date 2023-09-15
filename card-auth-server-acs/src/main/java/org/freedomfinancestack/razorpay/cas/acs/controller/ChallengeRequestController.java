@@ -1,11 +1,13 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeResponse;
+import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
+import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -64,25 +66,27 @@ public class ChallengeRequestController {
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model) {
-        ChallengeResponse challengeResponse =
-                challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
-        // todo unhandled exception, if challengeResponse is null
-        if (challengeResponse.isError()) {
-            if (Util.isNullorBlank(challengeResponse.getEncryptedCRes())) {
+        CdRes cdRes = null;
+        try {
+            cdRes = challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
+        } catch (ACSDataAccessException | InvalidStateTransactionException e) {
+            // todo unhandled exception and if challengeResponse is null
+            throw new RuntimeException(e);
+        }
+
+        if (cdRes.isError()) {
+            if (Util.isNullorBlank(cdRes.getEncryptedCRes())) {
                 model.addAttribute(
-                        InternalConstants.MODEL_ATTRIBUTE_CRES,
-                        challengeResponse.getEncryptedCRes());
+                        InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
             } else {
                 model.addAttribute(
-                        InternalConstants.MODEL_ATTRIBUTE_ERRO,
-                        challengeResponse.getEncryptedErro());
+                        InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
             }
             model.addAttribute(
-                    InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL,
-                    challengeResponse.getNotificationUrl());
+                    InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL, cdRes.getNotificationUrl());
             return "threeDSecureResponseSubmit";
         }
-        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_RESPONSE, challengeResponse);
+        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_RESPONSE, cdRes);
         return "acsOtp";
     }
 

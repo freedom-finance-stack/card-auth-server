@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,267 +14,267 @@ import lombok.EqualsAndHashCode;
 public class AREQ extends ThreeDSObject {
 
     // All Required Fields
-    @JsonProperty("threeDSRequestorURL")
+    @SerializedName(value = "threeDSRequestorURL")
     private String threeDSRequestorURL;
 
-    @JsonProperty("threeDSCompInd")
+    @SerializedName(value = "threeDSCompInd")
     private String threeDSCompInd;
 
-    @JsonProperty("threeDSRequestorAuthenticationInd")
+    @SerializedName(value = "threeDSRequestorAuthenticationInd")
     private String threeDSRequestorAuthenticationInd;
 
-    @JsonProperty("threeDSRequestorID")
+    @SerializedName(value = "threeDSRequestorID")
     private String threeDSRequestorID;
 
-    @JsonProperty("threeDSRequestorName")
+    @SerializedName(value = "threeDSRequestorName")
     private String threeDSRequestorName;
 
-    @JsonProperty("threeDSServerRefNumber")
+    @SerializedName(value = "threeDSServerRefNumber")
     private String threeDSServerRefNumber;
 
-    @JsonProperty("threeDSServerTransID")
+    @SerializedName(value = "threeDSServerTransID")
     private String threeDSServerTransID;
 
-    @JsonProperty("threeDSServerURL")
+    @SerializedName(value = "threeDSServerURL")
     private String threeDSServerURL;
 
-    @JsonProperty("threeRIInd")
+    @SerializedName(value = "threeRIInd")
     private String threeRIInd;
 
-    @JsonProperty("acquirerBIN")
+    @SerializedName(value = "acquirerBIN")
     private String acquirerBIN;
 
-    @JsonProperty("acquirerMerchantID")
+    @SerializedName(value = "acquirerMerchantID")
     private String acquirerMerchantID;
 
-    @JsonProperty("browserAcceptHeader")
+    @SerializedName(value = "browserAcceptHeader")
     private String browserAcceptHeader;
 
-    @JsonProperty("browserJavaEnabled")
+    @SerializedName(value = "browserJavaEnabled")
     private String browserJavaEnabled;
 
-    @JsonProperty("browserLanguage")
+    @SerializedName(value = "browserLanguage")
     private String browserLanguage;
 
-    @JsonProperty("browserColorDepth")
+    @SerializedName(value = "browserColorDepth")
     private String browserColorDepth;
 
-    @JsonProperty("browserScreenHeight")
+    @SerializedName(value = "browserScreenHeight")
     private String browserScreenHeight;
 
-    @JsonProperty("browserScreenWidth")
+    @SerializedName(value = "browserScreenWidth")
     private String browserScreenWidth;
 
-    @JsonProperty("browserTZ")
+    @SerializedName(value = "browserTZ")
     private String browserTZ;
 
-    @JsonProperty("browserUserAgent")
+    @SerializedName(value = "browserUserAgent")
     private String browserUserAgent;
 
-    @JsonProperty("acctNumber")
+    @SerializedName(value = "acctNumber")
     private String acctNumber;
 
-    @JsonProperty("deviceChannel")
+    @SerializedName(value = "deviceChannel")
     private String deviceChannel;
 
-    @JsonProperty("deviceRenderOptions")
+    @SerializedName(value = "deviceRenderOptions")
     private DeviceRenderOptions deviceRenderOptions;
 
-    @JsonProperty("mcc")
+    @SerializedName(value = "mcc")
     private String mcc;
 
-    @JsonProperty("merchantCountryCode")
+    @SerializedName(value = "merchantCountryCode")
     private String merchantCountryCode;
 
-    @JsonProperty("merchantName")
+    @SerializedName(value = "merchantName")
     private String merchantName;
 
-    @JsonProperty("messageCategory")
+    @SerializedName(value = "messageCategory")
     private String messageCategory;
 
-    @JsonProperty("messageType")
+    @SerializedName(value = "messageType")
     private String messageType;
 
-    @JsonProperty("messageVersion")
+    @SerializedName(value = "messageVersion")
     private String messageVersion;
 
-    @JsonProperty("notificationURL")
+    @SerializedName(value = "notificationURL")
     private String notificationURL;
 
-    @JsonProperty("purchaseAmount")
+    @SerializedName(value = "purchaseAmount")
     private String purchaseAmount;
 
-    @JsonProperty("purchaseCurrency")
+    @SerializedName(value = "purchaseCurrency")
     private String purchaseCurrency;
 
-    @JsonProperty("purchaseExponent")
+    @SerializedName(value = "purchaseExponent")
     private String purchaseExponent;
 
-    @JsonProperty("purchaseDate")
+    @SerializedName(value = "purchaseDate")
     private String purchaseDate;
 
-    @JsonProperty("sdkAppID")
+    @SerializedName(value = "sdkAppID")
     private String sdkAppID;
 
-    @JsonProperty("sdkEphemPubKey")
+    @SerializedName(value = "sdkEphemPubKey")
     private EphemPubKey sdkEphemPubKey;
 
-    @JsonProperty("sdkMaxTimeout")
+    @SerializedName(value = "sdkMaxTimeout")
     private String sdkMaxTimeout;
 
-    @JsonProperty("sdkReferenceNumber")
+    @SerializedName(value = "sdkReferenceNumber")
     private String sdkReferenceNumber;
 
-    @JsonProperty("sdkTransID")
+    @SerializedName(value = "sdkTransID")
     private String sdkTransID;
 
     // All Optional Fields
-    @JsonProperty("threeDSRequestorAuthenticationInfo")
+    @SerializedName(value = "threeDSRequestorAuthenticationInfo")
     private ThreeDSRequestorAuthenticationInfo threeDSRequestorAuthenticationInfo;
 
-    @JsonProperty("threeDSRequestorChallengeInd")
+    @SerializedName(value = "threeDSRequestorChallengeInd")
     private String threeDSRequestorChallengeInd;
 
-    @JsonProperty("threeDSRequestorPriorAuthenticationInfo")
+    @SerializedName(value = "threeDSRequestorPriorAuthenticationInfo")
     private ThreeDSRequestorPriorAuthenticationInfo threeDSRequestorPriorAuthenticationInfo;
 
-    @JsonProperty("addrMatch")
+    @SerializedName(value = "addrMatch")
     private String addrMatch;
 
-    @JsonProperty("acctInfo")
+    @SerializedName(value = "acctInfo")
     private CardholderAccountInformation acctInfo;
 
-    @JsonProperty("acctID")
+    @SerializedName(value = "acctID")
     private String acctID;
 
-    @JsonProperty("merchantRiskIndicator")
+    @SerializedName(value = "merchantRiskIndicator")
     private ThreeDSMerchantFeilds merchantRiskIndicator;
 
-    @JsonProperty("threeDSReqAuthMethodInd")
+    @SerializedName(value = "threeDSReqAuthMethodInd")
     private String threeDSReqAuthMethodInd;
 
     // All Conditional Fields
-    @JsonProperty("threeDSServerOperatorID")
+    @SerializedName(value = "threeDSServerOperatorID")
     private String threeDSServerOperatorID;
 
-    @JsonProperty("acctType")
+    @SerializedName(value = "acctType")
     private String acctType;
 
-    @JsonProperty("broadInfo")
+    @SerializedName(value = "broadInfo")
     private BrodInfo broadInfo;
 
-    @JsonProperty("browserIP")
+    @SerializedName(value = "browserIP")
     private String browserIP;
 
-    @JsonProperty("cardExpiryDate")
+    @SerializedName(value = "cardExpiryDate")
     private String cardExpiryDate;
 
-    @JsonProperty("billAddrCity")
+    @SerializedName(value = "billAddrCity")
     private String billAddrCity;
 
-    @JsonProperty("billAddrCountry")
+    @SerializedName(value = "billAddrCountry")
     private String billAddrCountry;
 
-    @JsonProperty("billAddrLine1")
+    @SerializedName(value = "billAddrLine1")
     private String billAddrLine1;
 
-    @JsonProperty("billAddrLine2")
+    @SerializedName(value = "billAddrLine2")
     private String billAddrLine2;
 
-    @JsonProperty("billAddrLine3")
+    @SerializedName(value = "billAddrLine3")
     private String billAddrLine3;
 
-    @JsonProperty("billAddrPostCode")
+    @SerializedName(value = "billAddrPostCode")
     private String billAddrPostCode;
 
-    @JsonProperty("billAddrState")
+    @SerializedName(value = "billAddrState")
     private String billAddrState;
 
-    @JsonProperty("email")
+    @SerializedName(value = "email")
     private String email;
 
-    @JsonProperty("homePhone")
+    @SerializedName(value = "homePhone")
     private Phone homePhone;
 
-    @JsonProperty("mobilePhone")
+    @SerializedName(value = "mobilePhone")
     private Phone mobilePhone;
 
-    @JsonProperty("cardholderName")
+    @SerializedName(value = "cardholderName")
     private String cardholderName;
 
-    @JsonProperty("shipAddrCity")
+    @SerializedName(value = "shipAddrCity")
     private String shipAddrCity;
 
-    @JsonProperty("shipAddrCountry")
+    @SerializedName(value = "shipAddrCountry")
     private String shipAddrCountry;
 
-    @JsonProperty("shipAddrLine1")
+    @SerializedName(value = "shipAddrLine1")
     private String shipAddrLine1;
 
-    @JsonProperty("shipAddrLine2")
+    @SerializedName(value = "shipAddrLine2")
     private String shipAddrLine2;
 
-    @JsonProperty("shipAddrLine3")
+    @SerializedName(value = "shipAddrLine3")
     private String shipAddrLine3;
 
-    @JsonProperty("shipAddrPostCode")
+    @SerializedName(value = "shipAddrPostCode")
     private String shipAddrPostCode;
 
-    @JsonProperty("shipAddrState")
+    @SerializedName(value = "shipAddrState")
     private String shipAddrState;
 
-    @JsonProperty("workPhone")
+    @SerializedName(value = "workPhone")
     private Phone workPhone;
 
-    @JsonProperty("deviceInfo")
+    @SerializedName(value = "deviceInfo")
     private String deviceInfo;
 
-    @JsonProperty("dsReferenceNumber")
+    @SerializedName(value = "dsReferenceNumber")
     private String dsReferenceNumber;
 
-    @JsonProperty("dsTransID")
+    @SerializedName(value = "dsTransID")
     private String dsTransID;
 
-    @JsonProperty("dsURL")
+    @SerializedName(value = "dsURL")
     private String dsURL;
 
-    @JsonProperty("payTokenInd")
+    @SerializedName(value = "payTokenInd")
     private String payTokenInd;
 
-    @JsonProperty("purchaseInstalData")
+    @SerializedName(value = "purchaseInstalData")
     private String purchaseInstalData;
 
-    @JsonProperty("messageExtension")
+    @SerializedName(value = "messageExtension")
     private List<MessageExtension> messageExtension;
 
-    @JsonProperty("recurringExpiry")
+    @SerializedName(value = "recurringExpiry")
     private String recurringExpiry;
 
-    @JsonProperty("recurringFrequency")
+    @SerializedName(value = "recurringFrequency")
     private String recurringFrequency;
 
-    @JsonProperty("sdkEncData")
+    @SerializedName(value = "sdkEncData")
     private String sdkEncData;
 
-    @JsonProperty("transType")
+    @SerializedName(value = "transType")
     private String transType;
 
-    @JsonProperty("browserJavascriptEnabled")
+    @SerializedName(value = "browserJavascriptEnabled")
     private String browserJavascriptEnabled;
 
-    @JsonProperty("whiteListStatus")
+    @SerializedName(value = "whiteListStatus")
     private String whiteListStatus;
 
-    @JsonProperty("whiteListStatusSource")
+    @SerializedName(value = "whiteListStatusSource")
     private String whiteListStatusSource;
 
-    @JsonProperty("payTokenSource")
+    @SerializedName(value = "payTokenSource")
     private String payTokenSource;
 
-    @JsonProperty("threeDSRequestorDecMaxTime")
+    @SerializedName(value = "threeDSRequestorDecMaxTime")
     private String threeDSRequestorDecMaxTime;
 
-    @JsonProperty("threeDSRequestorDecReqInd")
+    @SerializedName(value = "threeDSRequestorDecReqInd")
     private String threeDSRequestorDecReqInd;
 
     private transient String transactionId;

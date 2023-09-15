@@ -49,6 +49,9 @@ public class Transaction extends BaseEntity<String>
     @Column(name = "transaction_status_reason")
     private String transactionStatusReason;
 
+    @Column(name = "challenge_cancel_ind")
+    private String challengeCancelInd;
+
     @Enumerated(EnumType.STRING)
     private Phase phase;
 
@@ -91,6 +94,9 @@ public class Transaction extends BaseEntity<String>
     @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private TransactionSdkDetail transactionSdkDetail;
 
+    @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private TransactionCardHolderDetail transactionCardHolderDetail;
+
     public void setTransactionReferenceDetail(
             TransactionReferenceDetail transactionReferenceDetail) {
         this.transactionReferenceDetail = transactionReferenceDetail;
@@ -110,6 +116,12 @@ public class Transaction extends BaseEntity<String>
     public void setTransactionSdkDetail(TransactionSdkDetail transactionSdkDetail) {
         this.transactionSdkDetail = transactionSdkDetail;
         transactionSdkDetail.setTransaction(this);
+    }
+
+    public void setTransactionCardHolderDetail(
+            TransactionCardHolderDetail transactionCardHolderDetail) {
+        this.transactionCardHolderDetail = transactionCardHolderDetail;
+        transactionCardHolderDetail.setTransaction(this);
     }
 
     public void setTransactionPurchaseDetail(TransactionPurchaseDetail transactionPurchaseDetail) {

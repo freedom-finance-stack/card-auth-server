@@ -119,6 +119,16 @@ public class Util {
     }
 
     /**
+     * Encode base64 data to string.
+     *
+     * @param data String data
+     * @return encoded string
+     */
+    public static String encodeBase64(String data) {
+        return Base64.getEncoder().encodeToString(data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
      * Pads the input string with the specified padding character to achieve the desired length.
      *
      * @param input the input string to be padded
