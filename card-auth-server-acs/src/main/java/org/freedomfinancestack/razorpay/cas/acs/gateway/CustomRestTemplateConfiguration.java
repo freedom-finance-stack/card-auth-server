@@ -5,10 +5,20 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
+
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
+
+
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -44,21 +54,32 @@ public class CustomRestTemplateConfiguration {
     private RestTemplate getRestTemplate(DsGatewayConfig.ServiceConfig config)
             throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
                     CertificateException, IOException {
-        HttpClientBuilder httpClient = HttpClients.custom();
-        if (config.isUseSSL()) {
-            SSLContext sslContext =
-                    new SSLContextBuilder()
-                            .loadTrustMaterial(
-                                    config.getKeyStore().getPath().getURL(),
-                                    config.getKeyStore().getPassword().toCharArray())
-                            .build();
-            SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
-            httpClient.setSSLSocketFactory(sslConFactory);
-        }
+        SSLContext sslContext =
+                new SSLContextBuilder()
+                        .loadTrustMaterial(
+                                config.getKeyStore().getPath().getURL(),
+                                config.getKeyStore().getPassword().toCharArray())
+                        .build();
+        final SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+        final Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
+                .register("https", sslsf)
+                .register("http", new PlainConnectionSocketFactory())
+                .build();
+
+        final BasicHttpClientConnectionManager connectionManager =
+                new BasicHttpClientConnectionManager(socketFactoryRegistry);
+
+
+        final CloseableHttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(connectionManager)
+                .build();
+
         HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory(httpClient.build());
+                new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(httpClient);
         requestFactory.setConnectTimeout(config.getConnectTimeout());
         requestFactory.setReadTimeout(config.getReadTimeout());
         return new RestTemplate(requestFactory);
     }
+
 }
