@@ -1,8 +1,11 @@
-package org.freedomfinancestack.razorpay.cas.acs.gateway;
+package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayServiceImpl;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.mock.DsGatewayServiceMock;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;

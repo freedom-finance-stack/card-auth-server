@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.acs.gateway;
+package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 
 import java.util.HashSet;
 import java.util.Set;

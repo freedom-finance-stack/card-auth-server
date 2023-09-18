@@ -2,7 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.RReqMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
-import org.freedomfinancestack.razorpay.cas.acs.gateway.DsGatewayService;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpStatusCodeException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
