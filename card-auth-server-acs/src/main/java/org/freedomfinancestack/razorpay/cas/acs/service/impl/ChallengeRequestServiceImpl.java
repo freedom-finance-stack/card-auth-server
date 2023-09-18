@@ -7,11 +7,22 @@ import javax.validation.constraints.NotNull;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
+import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.*;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
+import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
 import org.freedomfinancestack.razorpay.cas.contract.*;
@@ -32,7 +43,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.decodeBase64;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.fromJson;
 
@@ -84,7 +94,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             transactionMessageTypeService.createAndSave(cReq, cReq.getAcsTransID());
 
             // 4:  State transition
-            if (YES.equals(cReq.getResendChallenge())) {
+            if (InternalConstants.YES.equals(cReq.getResendChallenge())) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
             } else {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);

@@ -11,7 +11,6 @@
             margin: 0;
             padding: 0;
         }
-
         .container {
             max-width: 90%;
             margin: 0 auto;
@@ -20,28 +19,23 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
         .heading {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
         .separator {
             border-top: 1px solid #ccc;
             margin: 20px 0;
         }
-
         form {
             margin-top: 20px;
         }
-
         label {
             display: block;
             margin-bottom: 5px;
         }
-
         input[type="text"] {
             width: 100%;
             padding: 10px;
@@ -49,7 +43,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-
         button {
             padding: 10px 20px;
             background-color: #007bff;
@@ -58,12 +51,10 @@
             border-radius: 4px;
             cursor: pointer;
         }
-
         .resend {
             text-align: center;
             margin-top: 20px;
         }
-
         .resend button {
             background-color: white;
             color: #007bff;
@@ -71,7 +62,6 @@
     </style>
 </head>
 <body>
-<<<<<<< HEAD
 <div class="container">
     <div class="heading">
         <h2><span th:text="${cdRes.institutionName}"></span></h2>
@@ -80,26 +70,15 @@
     <div class="separator"></div>
     <h2>Enter Verification Code</h2>
     <p><span th:text="${cdRes.challengeText}"></span></p>
-    <p>You have <strong th:text="${cdRes.attemptLeft}"></strong> attempts left.</p>
-    <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post"
-          th:object=”${validateChallengeRequest}”>
+    <p>You have <strong th:text="${cdRes.attemptLeft}" ></strong> attempts left.</p>
+    <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post" th:object=”${validateChallengeRequest}” >
         <label for="otp">Verification Code</label>
         <input type="text" id="otp" name="otp" th:field=”*{authVal}” required>
-        <input type="hidden" name="transactionId" th:value="${response.transactionId}" th:field=”*{transactionId}”>
-=======
-<div class="challengeInfoText">You are paying merchant XYZ, $$ amount</div>
-<div class="verificationCode">we have sent you test message on ...</div>
-<div align="center">
-    <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post" name = "submitForm" >
-        <input name="authVal" id="authVal" type="password" class="inputText">
-        <input name="messageType" value="CVReq" type="hidden" >
->>>>>>> master
+        <input type="hidden" name="transactionId" th:value="${response.transactionId}"  th:field=”*{transactionId}”>
         <button type="submit">Submit</button>
     </form>
-    <div class="resend" th:if="${cdRes.resendBlocked} != 'true'">
-        <p>Didn't receive the code?
-            <button type="button">Resend</button>
-        </p>
+    <div class="resend" th:if="${cdRes.resendBlocked} != 'true'" >
+        <p>Didn't receive the code? <button type="button">Resend</button></p>
     </div>
 </div>
 </body>

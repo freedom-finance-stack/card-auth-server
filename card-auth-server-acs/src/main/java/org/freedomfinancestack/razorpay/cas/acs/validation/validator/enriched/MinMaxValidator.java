@@ -19,6 +19,9 @@ public class MinMaxValidator<T> implements Validator<T> {
 
     @Override
     public void validate(T value) throws ValidationException {
+        if (value == null) {
+            return;
+        }
 
         if (value instanceof String) {
             String actualValue = (String) value;

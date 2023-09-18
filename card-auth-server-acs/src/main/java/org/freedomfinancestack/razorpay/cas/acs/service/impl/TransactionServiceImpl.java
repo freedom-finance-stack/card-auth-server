@@ -27,9 +27,10 @@ import org.freedomfinancestack.razorpay.cas.dao.model.TransactionPurchaseDetail;
 import org.freedomfinancestack.razorpay.cas.dao.model.TransactionReferenceDetail;
 import org.freedomfinancestack.razorpay.cas.dao.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
+import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,9 +118,11 @@ public class TransactionServiceImpl implements TransactionService {
         if (areq.getDeviceChannel().equals(DeviceChannel.APP.getChannel())) {
             try {
                 byte[] decodedByte = Base64.getDecoder().decode(areq.getDeviceInfo());
-                JSONObject deviceInfoJson = new JSONObject(new String(decodedByte));
-                JSONObject dd = deviceInfoJson.getJSONObject("DD");
-                appDeviceInfo = dd.getString("C001");
+                JsonObject jsonObject = Util.fromJson(new String(decodedByte), JsonObject.class);
+                JsonObject ddJsonObject = jsonObject.get("DD").getAsJsonObject();
+                if (ddJsonObject != null) {
+                    appDeviceInfo = ddJsonObject.get("C001").getAsString();
+                }
             } catch (Exception e) {
                 log.debug(e.getMessage());
             }
@@ -140,20 +143,30 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TransactionPurchaseDetail buildTransactionPurchaseDetail(AREQ areq)
             throws ValidationException {
-        Timestamp time;
+        TransactionPurchaseDetail transactionPurchaseDetail =
+                TransactionPurchaseDetail.builder()
+                        .purchaseAmount(areq.getPurchaseAmount())
+                        .purchaseCurrency(areq.getPurchaseCurrency())
+                        .build();
+
         try {
-            time = Util.getTimeStampFromString(areq.getPurchaseDate(), DATE_FORMAT_YYYYMMDDHHMMSS);
+            if (!Util.isNullorBlank(areq.getPurchaseDate())) {
+                Timestamp time =
+                        Util.getTimeStampFromString(
+                                areq.getPurchaseDate(), DATE_FORMAT_YYYYMMDDHHMMSS);
+                transactionPurchaseDetail.setPurchaseTimestamp(time);
+            }
         } catch (ParseException e) {
             throw new ValidationException(
                     ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid PurchaseDate");
         }
-        return TransactionPurchaseDetail.builder()
-                .purchaseAmount(areq.getPurchaseAmount())
-                .purchaseCurrency(areq.getPurchaseCurrency())
-                .purchaseExponent(Byte.valueOf(areq.getPurchaseExponent()))
-                .purchaseTimestamp(time)
-                .payTokenInd(Boolean.valueOf(areq.getPayTokenInd()))
-                .build();
+        if (!Util.isNullorBlank(areq.getPurchaseExponent())) {
+            transactionPurchaseDetail.setPurchaseExponent(Byte.valueOf(areq.getPurchaseExponent()));
+        }
+        if (!Util.isNullorBlank(areq.getPayTokenInd())) {
+            transactionPurchaseDetail.setPayTokenInd(Boolean.valueOf(areq.getPayTokenInd()));
+        }
+        return transactionPurchaseDetail;
     }
 
     private TransactionMerchant buildTransactionMerchant(AREQ areq) {

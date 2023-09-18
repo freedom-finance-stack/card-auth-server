@@ -5,8 +5,6 @@ import java.time.Instant;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,11 +39,9 @@ public class ThreeDSErrorResponse {
 
     private String sdkTransID;
 
-    // -----------------------------
+    private int httpStatus;
 
-    @JsonIgnore private int httpStatus;
-
-    @JsonIgnore private Instant timestamp = Instant.now();
+    private Instant timestamp = Instant.now();
 
     public ThreeDSErrorResponse setAcsTransID(String acsTransID) {
         this.acsTransID = acsTransID;

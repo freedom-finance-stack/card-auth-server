@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -45,6 +49,19 @@ public class ChallengeRequestController {
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @Operation(summary = "Handles browser Challenge Request generating user's browser")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     public String handleChallengeRequest(
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
@@ -61,15 +78,18 @@ public class ChallengeRequestController {
             if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
                 throw new RuntimeException("Transaction not recognized");
             }
-            if (!Util.isNullorBlank(cdRes.getEncryptedCRes())) {
-                model.addAttribute("cRes", cdRes.getEncryptedCRes());
+            if (Util.isNullorBlank(cdRes.getEncryptedCRes())) {
+                model.addAttribute(
+                        InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
             } else {
-                model.addAttribute("erro", cdRes.getEncryptedErro());
+                model.addAttribute(
+                        InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
             }
-            model.addAttribute("notificationUrl", cdRes.getNotificationUrl());
+            model.addAttribute(
+                    InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL, cdRes.getNotificationUrl());
             return "threeDSecureResponseSubmit";
         }
-        model.addAttribute("challengeResponse", cdRes);
+        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_RESPONSE, cdRes);
         return "acsOtp";
     }
 
@@ -89,12 +109,30 @@ public class ChallengeRequestController {
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @Operation(summary = "Handles browser validation Challenge Request generating user's browser")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
         ValidateChallengeResponse validateChallengeResponse =
                 challengeRequestService.processBrwChallengeValidationRequest(CVReq);
-        model.addAttribute("cRes", validateChallengeResponse.getCRes());
-        model.addAttribute("notificationUrl", validateChallengeResponse.getNotificationUrl());
-        model.addAttribute("threeDSSessionData", validateChallengeResponse.getThreeDSSessionData());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_CRES, validateChallengeResponse.getCRes());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL,
+                validateChallengeResponse.getNotificationUrl());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_THREEDS_SESSION_DATA,
+                validateChallengeResponse.getThreeDSSessionData());
         return "threeDSecureResponseSubmit";
     }
 }
