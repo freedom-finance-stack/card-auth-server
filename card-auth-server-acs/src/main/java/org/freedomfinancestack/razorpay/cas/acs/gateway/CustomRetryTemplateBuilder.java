@@ -7,6 +7,7 @@ import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpSta
 import org.springframework.classify.Classifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.RetryPolicy;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.ExceptionClassifierRetryPolicy;
 import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
@@ -15,10 +16,12 @@ import org.springframework.retry.support.RetryTemplate;
 public class CustomRetryTemplateBuilder {
 
     private static final int DEFAULT_MAX_ATTEMPS = 2;
-
+    private static final long DEFAULT_BACKOFF_PERIOD = 1000l;
     private final Set<HttpStatus> httpStatusRetry;
 
     private int retryMaxAttempts = DEFAULT_MAX_ATTEMPS;
+
+    private long backOffPeriod = DEFAULT_BACKOFF_PERIOD;
 
     public CustomRetryTemplateBuilder() {
         this.httpStatusRetry = new HashSet<>();
@@ -34,6 +37,11 @@ public class CustomRetryTemplateBuilder {
         return this;
     }
 
+    public CustomRetryTemplateBuilder withBackOffPeriod(long backOffPeriod) {
+        this.backOffPeriod = backOffPeriod;
+        return this;
+    }
+
     public RetryTemplate build() {
         if (this.httpStatusRetry.isEmpty()) {
             this.httpStatusRetry.addAll(getDefaults());
@@ -46,6 +54,10 @@ public class CustomRetryTemplateBuilder {
         ExceptionClassifierRetryPolicy policy = new ExceptionClassifierRetryPolicy();
         policy.setExceptionClassifier(configureStatusCodeBasedRetryPolicy());
         retry.setRetryPolicy(policy);
+
+        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
+        fixedBackOffPolicy.setBackOffPeriod(backOffPeriod);
+        retry.setBackOffPolicy(fixedBackOffPolicy);
 
         return retry;
     }

@@ -23,6 +23,7 @@ gateway:
           password: password
         retryable:
           maxAttempts: 2
+          backOffPeriod: 1000   #ms
       MASTERCARD_DS:
         url: https://sample.site/
         useSSL: false
@@ -33,6 +34,7 @@ gateway:
           password: password
         retryable:
           maxAttempts: 2
+          backOffPeriod: 1000
 
 spring:
   application:

@@ -48,6 +48,7 @@ public class DsGatewayConfig {
     @Setter
     public static class RetryConfig {
         private int maxAttempts = 2;
+        private Long backOffPeriod;
     }
 
     @Bean("gatewayService")

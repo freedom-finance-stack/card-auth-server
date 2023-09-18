@@ -52,6 +52,8 @@ public class DsGatewayServiceImpl implements DsGatewayService {
         Map<String, Object> queryParamMap = new HashMap<>();
         headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         try {
+            // in case of Result Request flow fails, then only we are sending error message to DS.
+            // As retry would be already done while sending RREQ we don't need, retry again in sending error message
             httpsGatewayService.sendRequest(
                     Util.toJson(errorResponse), HttpMethod.POST, headerMap, queryParamMap);
         } catch (JsonSyntaxException jsonSyntaxException) {

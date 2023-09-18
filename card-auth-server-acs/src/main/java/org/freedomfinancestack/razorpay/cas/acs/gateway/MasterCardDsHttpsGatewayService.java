@@ -30,7 +30,7 @@ public class MasterCardDsHttpsGatewayService extends HttpsGatewayService {
     RetryTemplate getRetryTemplate() {
         return new CustomRetryTemplateBuilder()
                 .withRetryMaxAttempts(serviceConfig.getRetryable().getMaxAttempts())
-                .withHttpStatus(HttpStatus.TOO_MANY_REQUESTS)
+                .withBackOffPeriod(serviceConfig.getRetryable().getBackOffPeriod())
                 .withHttpStatus(HttpStatus.BAD_GATEWAY)
                 .withHttpStatus(HttpStatus.GATEWAY_TIMEOUT)
                 .withHttpStatus(HttpStatus.SERVICE_UNAVAILABLE)

@@ -23,7 +23,7 @@ import org.mapstruct.Mapping;
 public interface RReqMapper {
 
     /**
-     * Creates a Result Request (AREQ) from Transaction objects to communication to DS. it uses
+     * Creates a Result Request (RREQ) from Transaction objects to communication to DS. it uses
      * MapStruct, which provides annotations to specify which
      *
      * @param transaction The {@link Transaction} object representing the transaction details.
