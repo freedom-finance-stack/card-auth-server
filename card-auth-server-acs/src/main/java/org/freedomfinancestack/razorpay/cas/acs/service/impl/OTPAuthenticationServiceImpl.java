@@ -13,10 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 public class OTPAuthenticationServiceImpl implements AuthenticationService {
 
     @Override
-    public void preAuthenticate(AuthenticationDto authentication) throws ThreeDSException {}
+    public void preAuthenticate(AuthenticationDto authentication) throws ThreeDSException {
+        // Generation
+        // send
+    }
 
     @Override
     public AuthResponse authenticate(AuthenticationDto authentication) throws ThreeDSException {
+        // otp fetch from DB
+        // validation
         return null;
     }
 }

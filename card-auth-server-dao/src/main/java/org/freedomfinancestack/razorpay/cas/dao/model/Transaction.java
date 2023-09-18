@@ -52,6 +52,9 @@ public class Transaction extends BaseEntity<String>
     @Column(name = "challenge_cancel_ind")
     private String challengeCancelInd;
 
+    @Column(name = "three_ri_ind")
+    private String threeRIInd;
+
     @Enumerated(EnumType.STRING)
     private Phase phase;
 

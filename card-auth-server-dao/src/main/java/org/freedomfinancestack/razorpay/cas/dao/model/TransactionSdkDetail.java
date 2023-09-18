@@ -22,6 +22,9 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "sdk_transaction_id")
     private String sdkTransactionId;
 
+    @Column(name = "acs_ui_type")
+    private String acsUiType;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
     @MapsId

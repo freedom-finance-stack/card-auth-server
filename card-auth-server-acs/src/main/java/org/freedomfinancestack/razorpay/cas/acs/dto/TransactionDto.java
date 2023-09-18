@@ -8,8 +8,4 @@ import lombok.Data;
 @Data
 public class TransactionDto {
     Transaction transaction;
-    AREQ areq;
-    ARES ares;
-    CREQ creq;
-    CRES cres;
 }

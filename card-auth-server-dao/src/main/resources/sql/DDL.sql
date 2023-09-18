@@ -17,6 +17,7 @@ CREATE TABLE `transaction`
     `transaction_status_reason` varchar(80),
     `phase`                     ENUM ('AREQ','ARES','AERROR','CREQ','CRES','RREQ','CDRES','CVREQ','ERROR') NOT NULL,
     `threeds_session_data`      varchar(1024),
+    `three_ri_ind`              varchar(2),
     `auth_value`                varchar(200),
     `eci`                       varchar(3),
     `device_channel`            varchar(10),
@@ -47,6 +48,7 @@ CREATE TABLE `transaction_sdk_detail`
 (
     `transaction_id`     varchar(36) PRIMARY KEY,
     `sdk_transaction_id` varchar(36),
+    `acs_ui_type`          char(2),
     `created_at`         timestamp NOT NULL,
     `modified_at`        timestamp,
     `deleted_at`         timestamp
@@ -64,8 +66,8 @@ CREATE TABLE `transaction_merchant`
     `deleted_at`            timestamp
 );
 
-DROP TABLE IF EXISTS `transaction_message_type_detail`;
-CREATE TABLE `transaction_message_type_detail`
+DROP TABLE IF EXISTS `transaction_message_log`;
+CREATE TABLE `transaction_message_log`
 (
     `id`                 varchar(36) PRIMARY KEY,
     `transaction_id`     varchar(36) NOT NULL,
@@ -77,7 +79,7 @@ CREATE TABLE `transaction_message_type_detail`
 );
 
 /* Create Index on transaction_id */
-CREATE INDEX `transaction_message_type_detail_transaction_id_idx` ON `transaction_message_type_detail` (`transaction_id`);
+CREATE INDEX `transaction_message_type_detail_transaction_id_idx` ON transaction_message_log (`transaction_id`);
 
 DROP TABLE IF EXISTS `transaction_reference_detail`;
 CREATE TABLE `transaction_reference_detail`
@@ -86,7 +88,8 @@ CREATE TABLE `transaction_reference_detail`
     `threeds_server_transaction_id`   varchar(36),
     `threeds_server_reference_number` varchar(36),
     `ds_transaction_id`               varchar(36),
-    `ds_url`                          varchar(200),
+    `ds_url`                          varchar(2048),
+    `notification_url`                varchar(256),
     `created_at`                      timestamp NOT NULL,
     `modified_at`                     timestamp NOT NULL,
     `deleted_at`                      timestamp default NULL
@@ -316,7 +319,7 @@ CREATE TABLE `otp_transaction_detail`
 );
 
 
-# Purposed tables for OTP
+#  Purposed tables for OTP
 #  OTP : ID , Value, Valid_till, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
 #  NOTIFICATION : CHANNEL, DESTINATION, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
 #  OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID

@@ -19,12 +19,7 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
-import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
-import org.freedomfinancestack.razorpay.cas.dao.model.TransactionBrowserDetail;
-import org.freedomfinancestack.razorpay.cas.dao.model.TransactionCardDetail;
-import org.freedomfinancestack.razorpay.cas.dao.model.TransactionMerchant;
-import org.freedomfinancestack.razorpay.cas.dao.model.TransactionPurchaseDetail;
-import org.freedomfinancestack.razorpay.cas.dao.model.TransactionReferenceDetail;
+import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -87,6 +82,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = createTransactionFromAreq(areq);
         transaction.setTransactionCardDetail(buildTransactionCardDetail(areq));
         transaction.setTransactionBrowserDetail(buildTransactionBrowserDetail(areq));
+        transaction.setTransactionSdkDetail(buildTransactionSDKDetail(areq));
         transaction.setTransactionReferenceDetail(buildTransactionReferenceDetail(areq));
         transaction.setTransactionMerchant(buildTransactionMerchant(areq));
         transaction.setTransactionPurchaseDetail(buildTransactionPurchaseDetail(areq));
@@ -99,6 +95,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .id(areq.getTransactionId())
                 .interactionCount(0)
                 .phase(Phase.AREQ)
+                .threeRIInd(areq.getThreeRIInd())
                 .transactionStatus(TransactionStatus.CREATED);
 
         // Set default message version
@@ -124,6 +121,7 @@ public class TransactionServiceImpl implements TransactionService {
                 log.debug(e.getMessage());
             }
         }
+
         if (areq.getDeviceChannel().equals(DeviceChannel.APP.getChannel())) {
             if (appDeviceInfo.equals(appDeviceInfoAndroid)) {
                 transactionBuilder.deviceName(InternalConstants.ANDROID);
@@ -180,11 +178,16 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
+    private TransactionSdkDetail buildTransactionSDKDetail(AREQ areq) {
+        return TransactionSdkDetail.builder().sdkTransactionId(areq.getSdkTransID()).build();
+    }
+
     private TransactionReferenceDetail buildTransactionReferenceDetail(AREQ areq) {
         return new TransactionReferenceDetail(
                 areq.getThreeDSServerTransID(),
                 areq.getThreeDSServerRefNumber(),
                 areq.getDsTransID(),
-                areq.getDsURL());
+                areq.getDsURL(),
+                areq.getNotificationURL());
     }
 }

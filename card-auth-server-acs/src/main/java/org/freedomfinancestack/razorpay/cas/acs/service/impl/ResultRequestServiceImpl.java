@@ -6,7 +6,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationExce
 import org.freedomfinancestack.razorpay.cas.acs.gateway.DsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpStatusCodeException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
-import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ResultResponseValidator;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
@@ -30,17 +30,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ResultRequestServiceImpl implements ResultRequestService {
     private final RReqMapper rReqMapper;
     private final DsGatewayService dsGatewayService;
-    private final TransactionMessageTypeService transactionMessageTypeService;
+    private final TransactionMessageLogService transactionMessageLogService;
     private final ResultResponseValidator resultResponseValidator;
 
     public ResultRequestServiceImpl(
             RReqMapper rReqMapper,
             @Qualifier("gatewayService") DsGatewayService dsGatewayService,
-            TransactionMessageTypeService transactionMessageTypeService,
+            TransactionMessageLogService transactionMessageLogService,
             ResultResponseValidator resultResponseValidator) {
         this.rReqMapper = rReqMapper;
         this.dsGatewayService = dsGatewayService;
-        this.transactionMessageTypeService = transactionMessageTypeService;
+        this.transactionMessageLogService = transactionMessageLogService;
         this.resultResponseValidator = resultResponseValidator;
     }
 
@@ -70,14 +70,14 @@ public class ResultRequestServiceImpl implements ResultRequestService {
             throws GatewayHttpStatusCodeException, InvalidStateTransactionException,
                     ValidationException {
         RREQ rreq = rReqMapper.toRreq(transaction);
-        transactionMessageTypeService.createAndSave(rreq, transaction.getId());
+        transactionMessageLogService.createAndSave(rreq, transaction.getId());
         try {
             RRES rres =
                     dsGatewayService.sendRReq(
                             Network.getNetwork(
                                     transaction.getTransactionCardDetail().getNetworkCode()),
                             rreq);
-            transactionMessageTypeService.createAndSave(rres, transaction.getId());
+            transactionMessageLogService.createAndSave(rres, transaction.getId());
             resultResponseValidator.validateRequest(rres, rreq);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RRES_RECEIVED);
         } catch (ValidationException e) {

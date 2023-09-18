@@ -53,6 +53,7 @@ public class CustomRetryTemplateBuilder {
     private Classifier<Throwable, RetryPolicy> configureStatusCodeBasedRetryPolicy() {
         // one execution + 3 retries
         SimpleRetryPolicy simpleRetryPolicy = new SimpleRetryPolicy(1 + this.retryMaxAttempts);
+
         NeverRetryPolicy neverRetryPolicy = new NeverRetryPolicy();
 
         return throwable -> {
