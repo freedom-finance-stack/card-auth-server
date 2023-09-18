@@ -44,7 +44,7 @@ public class ChallengeRequestValidator {
      */
     public void validateRequest(CREQ incomingCreq, AREQ areq, CRES cres)
             throws ValidationException {
-        if (incomingCreq == null || areq == null) {
+        if (incomingCreq == null || areq == null || cres == null) {
             throw new ValidationException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Transaction data missing");
         }

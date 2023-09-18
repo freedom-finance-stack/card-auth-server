@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -44,6 +48,19 @@ public class ChallengeRequestController {
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @Operation(summary = "Handles browser Challenge Request generating user's browser")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     public String handleChallengeRequest(
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
@@ -66,12 +83,15 @@ public class ChallengeRequestController {
             throw new RuntimeException("Transaction not recognized");
         }
         if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
-            model.addAttribute("erro", cdRes.getEncryptedErro());
+            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
         } else {
-            model.addAttribute("cRes", cdRes.getEncryptedCRes());
+            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
         }
-        model.addAttribute("threeDSSessionData", cdRes.getThreeDSSessionData());
-        model.addAttribute("notificationUrl", cdRes.getNotificationUrl());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_THREEDS_SESSION_DATA,
+                cdRes.getThreeDSSessionData());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL, cdRes.getNotificationUrl());
         return "threeDSecureResponseSubmit";
     }
 
@@ -96,6 +116,19 @@ public class ChallengeRequestController {
             method = RequestMethod.GET,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    @Operation(summary = "Handles browser validation Challenge Request generating user's browser")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to Areq Schema")
+            })
     public String handleChallengeValidationRequest(CVReq cVReq, Model model) {
         CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(cVReq);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {

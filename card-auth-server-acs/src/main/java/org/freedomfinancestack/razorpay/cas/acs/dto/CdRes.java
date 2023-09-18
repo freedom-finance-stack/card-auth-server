@@ -29,6 +29,7 @@ public class CdRes extends ThreeDSObject implements Serializable {
     String resendBlocked;
     String attemptLeft;
     boolean challengeCompleted;
+
     // optional fields only used in case of error
     boolean isError;
 

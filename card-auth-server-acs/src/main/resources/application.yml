@@ -3,12 +3,11 @@ app:
   port: 8080
   hostname: https://cas_acs/
   acs:
-    referenceNumber: 12345678901234567890
+    referenceNumber: "12345678901234567890"
     operatorId:
       visa: 123456789012345
       mastercard: 123456789012345
       amex: 123456789012345
-
 
 gateway:
   ds:
@@ -24,6 +23,7 @@ gateway:
           password: password
         retryable:
           maxAttempts: 2
+          backOffPeriod: 1000   #ms
       MASTERCARD_DS:
         url: https://sample.site/
         useSSL: false
@@ -34,6 +34,7 @@ gateway:
           password: password
         retryable:
           maxAttempts: 2
+          backOffPeriod: 1000
 
 spring:
   application:

@@ -24,7 +24,7 @@
         </noscript>
         <input type="hidden" name="cres" th:if="${cRes}" th:value="${cRes}">
         <input type="hidden" name="threeDSSessionData" th:if="${threeDSSessionData}" th:value="${threeDSSessionData}">
-        <input type="hidden" name="erro" th:value="${erro}">
+        <input type="hidden" name="erro" th:if="${erro}" th:value="${erro}">
     </form>
 </div>
 </body>

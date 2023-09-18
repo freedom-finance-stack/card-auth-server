@@ -7,12 +7,22 @@ import javax.validation.constraints.NotNull;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.*;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
+import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -22,6 +32,10 @@ import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
+import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
+import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
+import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -35,7 +49,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.decodeBase64;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.fromJson;
 
@@ -92,7 +105,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             transactionMessageTypeService.createAndSave(cReq, cReq.getAcsTransID());
 
             // 4:  State transition
-            if (YES.equals(cReq.getResendChallenge())) {
+            if (InternalConstants.YES.equals(cReq.getResendChallenge())) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
             } else {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
@@ -136,6 +149,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     AuthenticationService authenticationService =
                             authenticationServiceLocator.locateTransactionAuthenticationService(
                                     transaction, authConfigDto.getChallengeAuthTypeConfig());
+
                     authenticationService.preAuthenticate(
                             AuthenticationDto.builder()
                                     .authConfigDto(authConfigDto)
@@ -195,6 +209,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             // save CDres and Transaction
             if (transaction != null) {
                 updateEci(transaction, aReq);
+
                 if (sendRres) {
                     resultRequestService.processRreq(transaction);
                 }
@@ -261,7 +276,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             Transaction transaction,
             String errorDetail)
             throws InvalidStateTransactionException {
+
         generateErrorResponse(cdRes, error, transaction, errorDetail);
+
         if (null != transaction) {
             transaction.setErrorCode(internalErrorCode.getCode());
             transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());

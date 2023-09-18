@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.acs.gateway;
+package org.freedomfinancestack.razorpay.cas.acs.gateway.ds;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;

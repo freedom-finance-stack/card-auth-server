@@ -2,10 +2,10 @@ package org.freedomfinancestack.razorpay.cas.dao.statemachine;
 
 public class StateMachine {
 
-    public static <S extends State<S, E>, E> void Trigger(StateMachineEntity<S, E> entity, E event)
+    public static <E> void Trigger(StateMachineEntity<E> entity, E event)
             throws InvalidStateTransactionException {
-        S state = entity.GetState();
-        S nextState = state.nextState(event);
+        State<E> state = entity.GetState();
+        State<E> nextState = state.nextState(event);
         if (nextState != null) {
             entity.SetState(nextState);
         }
