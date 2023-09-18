@@ -13,6 +13,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -221,5 +224,24 @@ public class Util {
         int min = (int) Math.pow(10, digits - 1);
         int max = (int) Math.pow(10, digits) - 1;
         return random.nextInt(max - min + 1) + min;
+    }
+
+    public static ThreeDSErrorResponse generateErrorResponse(
+            ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
+        ThreeDSErrorResponse errorObj = new ThreeDSErrorResponse();
+        if (error != null) {
+            errorObj.setErrorCode(error.getErrorCode());
+            errorObj.setErrorComponent(error.getErrorComponent());
+            errorObj.setErrorDescription(error.getErrorDescription());
+            errorObj.setErrorDetail(errorDetail);
+        }
+        if (null != transaction) {
+            errorObj.setMessageVersion(transaction.getMessageVersion());
+            errorObj.setAcsTransID(transaction.getId());
+            errorObj.setDsTransID(transaction.getTransactionReferenceDetail().getDsTransactionId());
+            errorObj.setThreeDSServerTransID(
+                    transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+        }
+        return errorObj;
     }
 }

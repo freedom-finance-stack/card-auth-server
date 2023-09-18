@@ -35,7 +35,7 @@ public class InstitutionAcsUrlServiceImpl implements InstitutionAcsUrlService {
     /**
      * @param institutionAcsUrlPK The {@link InstitutionAcsUrlPK} object representing the primary
      *     key of the InstitutionAcsUrl entity to be fetched.
-     * @return
+     * @return InstitutionAcsUrl
      * @throws ACSDataAccessException
      * @throws DataNotFoundException
      */

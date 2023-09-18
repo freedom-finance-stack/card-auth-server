@@ -1,7 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DSConnectionException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
 /**
@@ -20,8 +18,6 @@ public interface ResultRequestService {
      * current Hibernate session.
      *
      * @param transaction The Transaction object
-     * @throws DSConnectionException If there is an error while connecting to the data store.
-     * @throws ValidationException If the transaction is not valid.
      */
-    void sendRreq(Transaction transaction) throws DSConnectionException, ValidationException;
+    void processRreq(Transaction transaction);
 }

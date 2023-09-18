@@ -1,7 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.dao.enums;
 
-import java.util.Objects;
-
 import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
 import org.freedomfinancestack.razorpay.cas.dao.statemachine.State;
 
@@ -27,6 +25,8 @@ public enum Phase implements State<Phase.PhaseEvent> {
             switch (event) {
                 case CREQ_RECEIVED:
                     return Phase.CREQ;
+                case ERROR_OCCURRED:
+                    return Phase.ERROR;
             }
             throw new InvalidStateTransactionException(this.toString(), event.toString());
         }
@@ -94,18 +94,10 @@ public enum Phase implements State<Phase.PhaseEvent> {
         public Phase nextState(PhaseEvent event) throws InvalidStateTransactionException {
             switch (event) {
                 case RREQ_FAILED:
-                    return Phase.CRES;
                 case RRES_RECEIVED:
-                    return Phase.RRES;
-            }
-            throw new InvalidStateTransactionException(this.toString(), event.toString());
-        }
-    },
-    RRES {
-        @Override
-        public Phase nextState(PhaseEvent event) throws InvalidStateTransactionException {
-            if (Objects.requireNonNull(event) == PhaseEvent.CHALLENGE_COMPLETED) {
-                return Phase.CRES;
+                    return Phase.CRES;
+                case ERROR_OCCURRED:
+                    return Phase.ERROR;
             }
             throw new InvalidStateTransactionException(this.toString(), event.toString());
         }
@@ -113,7 +105,19 @@ public enum Phase implements State<Phase.PhaseEvent> {
     CRES {
         @Override
         public Phase nextState(PhaseEvent event) throws InvalidStateTransactionException {
+            if (PhaseEvent.ERROR_OCCURRED == event) {
+                return Phase.ERROR;
+            }
+            throw new InvalidStateTransactionException(this.toString(), event.toString());
+        }
+    },
+    ERROR {
+        @Override
+        public Phase nextState(PhaseEvent event) throws InvalidStateTransactionException {
             // final state can't move anywhere
+            if (PhaseEvent.ERROR_OCCURRED == event) {
+                return Phase.ERROR;
+            }
             throw new InvalidStateTransactionException(this.toString(), event.toString());
         }
     };

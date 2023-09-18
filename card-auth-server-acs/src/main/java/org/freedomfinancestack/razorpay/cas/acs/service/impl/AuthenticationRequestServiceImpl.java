@@ -103,7 +103,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
 
             // update Ids in transaction
             transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetworkCode());
-
             transaction.setCardRangeId(cardRange.getId());
             transaction.setInstitutionId(cardRange.getInstitution().getId());
 

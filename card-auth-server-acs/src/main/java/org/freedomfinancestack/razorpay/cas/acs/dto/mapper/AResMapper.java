@@ -115,16 +115,6 @@ public interface AResMapper {
         return transStatusReason;
     }
 
-    default String getAuthType(Transaction transaction) {
-        if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
-                        transaction.getTransactionStatus())
-                || TransactionStatus.CHALLENGE_REQUIRED.equals(
-                        transaction.getTransactionStatus())) {
-            return "02"; // hard coded to Dynamic
-        }
-        return "";
-    }
-
     default String getOperatorId(Transaction transaction, AppConfiguration appConfiguration) {
 
         String operatorId = "";

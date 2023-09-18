@@ -1,6 +1,8 @@
-CREATE DATABASE IF NOT EXISTS `cas_db`;
+CREATE
+    DATABASE IF NOT EXISTS `cas_db`;
 
-USE `cas_db`;
+USE
+    `cas_db`;
 
 DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE `transaction`
@@ -11,9 +13,9 @@ CREATE TABLE `transaction`
     `message_category`          ENUM ('PA', 'NPA', 'PVPA', 'PVNPA', 'NW', 'TW', 'IT', 'AT', 'AW', 'DI', 'II' ),
     `message_version`           varchar(10),
     `challenge_mandated`        bool,
-    `transaction_status`        ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLENGE_REQUIRED','CHALLENGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL')                           NOT NULL,
+    `transaction_status`        ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLENGE_REQUIRED','CHALLENGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL') NOT NULL,
     `transaction_status_reason` varchar(80),
-    `phase`                     ENUM ('AREQ','ARES','CREQ','RETRY_CREQ','CRES','RREQ','REDIRECT','RESEND_OTP','AUTH_INITIATE','GENERATE_OTP','AUTH_RESULT','SEAMLESS_GENERATE_OTP','VERIFY_OTP','RRES','ERROR') NOT NULL,
+    `phase`                     ENUM ('AREQ','ARES','AERROR','CREQ','CRES','RREQ','CDRES','CVREQ','ERROR')                                                                            NOT NULL,
     `threeds_session_data`      varchar(1024),
     `auth_value`                varchar(200),
     `eci`                       varchar(3),
@@ -22,7 +24,7 @@ CREATE TABLE `transaction`
     `interaction_count`         int,
     `challenge_cancel_ind`      varchar(2),
     `error_code`                varchar(20),
-    `created_at`                timestamp                                                                                                                                                                       NOT NULL,
+    `created_at`                timestamp                                                                                                                                             NOT NULL,
     `modified_at`               timestamp,
     `deleted_at`                timestamp
 );
@@ -71,7 +73,6 @@ CREATE TABLE `transaction_message_type_detail`
     `created_at`     timestamp   NOT NULL,
     `modified_at`    timestamp,
     `deleted_at`     timestamp
-
 );
 
 /* Create Index on transaction_id */
@@ -193,6 +194,7 @@ CREATE TABLE `hsm_config`
 DROP TABLE IF EXISTS `card_range`;
 CREATE TABLE `card_range`
 (
+
     `id`                 varchar(36) PRIMARY KEY,
     `institution_id`     varchar(36),
     `start_range`        decimal(25),
@@ -223,7 +225,6 @@ CREATE TABLE `card_range_group`
     `created_by`  varchar(40) NOT NULL,
     `modified_by` varchar(40),
     `deleted_by`  varchar(40)
-
 );
 
 DROP TABLE IF EXISTS `feature`;
@@ -242,6 +243,7 @@ CREATE TABLE `feature`
     `deleted_at`  timestamp,
     `deleted_by`  varchar(40)
 );
+
 CREATE INDEX feature_entity_type_entity_id_name ON feature (name, entity_type, entity_id);
 
 DROP TABLE IF EXISTS `cardholder`;
