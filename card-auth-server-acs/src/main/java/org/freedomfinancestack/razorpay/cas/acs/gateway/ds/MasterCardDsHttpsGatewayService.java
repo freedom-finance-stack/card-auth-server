@@ -26,12 +26,12 @@ public class MasterCardDsHttpsGatewayService extends HttpsGatewayService {
     }
 
     @Override
-    RestTemplate getRestTemplate() {
+    public RestTemplate getRestTemplate() {
         return this.masterCardDsRestTemplate;
     }
 
     @Override
-    RetryTemplate getRetryTemplate() {
+    public RetryTemplate getRetryTemplate() {
         return new CustomRetryTemplateBuilder()
                 .withRetryMaxAttempts(serviceConfig.getRetryable().getMaxAttempts())
                 .withBackOffPeriod(serviceConfig.getRetryable().getBackOffPeriod())
@@ -42,7 +42,7 @@ public class MasterCardDsHttpsGatewayService extends HttpsGatewayService {
     }
 
     @Override
-    DsGatewayConfig.ServiceConfig getServiceConfig() {
+    public DsGatewayConfig.ServiceConfig getServiceConfig() {
         return this.serviceConfig;
     }
 }
