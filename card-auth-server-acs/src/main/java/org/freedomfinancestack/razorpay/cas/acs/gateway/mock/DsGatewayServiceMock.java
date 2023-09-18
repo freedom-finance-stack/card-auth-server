@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.mock;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
-import org.freedomfinancestack.razorpay.cas.acs.gateway.DsGatewayService;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.RRES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;

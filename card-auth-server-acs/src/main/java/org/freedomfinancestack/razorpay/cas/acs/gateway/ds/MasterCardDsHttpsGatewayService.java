@@ -1,5 +1,9 @@
-package org.freedomfinancestack.razorpay.cas.acs.gateway;
+package org.freedomfinancestack.razorpay.cas.acs.gateway.ds;
 
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.config.CustomRetryTemplateBuilder;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.config.DsGatewayConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -22,15 +26,15 @@ public class MasterCardDsHttpsGatewayService extends HttpsGatewayService {
     }
 
     @Override
-    RestTemplate getRestTemplate() {
+    public RestTemplate getRestTemplate() {
         return this.masterCardDsRestTemplate;
     }
 
     @Override
-    RetryTemplate getRetryTemplate() {
+    public RetryTemplate getRetryTemplate() {
         return new CustomRetryTemplateBuilder()
                 .withRetryMaxAttempts(serviceConfig.getRetryable().getMaxAttempts())
-                .withHttpStatus(HttpStatus.TOO_MANY_REQUESTS)
+                .withBackOffPeriod(serviceConfig.getRetryable().getBackOffPeriod())
                 .withHttpStatus(HttpStatus.BAD_GATEWAY)
                 .withHttpStatus(HttpStatus.GATEWAY_TIMEOUT)
                 .withHttpStatus(HttpStatus.SERVICE_UNAVAILABLE)
@@ -38,7 +42,7 @@ public class MasterCardDsHttpsGatewayService extends HttpsGatewayService {
     }
 
     @Override
-    DsGatewayConfig.ServiceConfig getServiceConfig() {
+    public DsGatewayConfig.ServiceConfig getServiceConfig() {
         return this.serviceConfig;
     }
 }

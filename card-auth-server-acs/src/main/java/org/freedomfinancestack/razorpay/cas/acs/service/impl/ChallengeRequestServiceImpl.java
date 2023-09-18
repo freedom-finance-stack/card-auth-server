@@ -4,14 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.validation.constraints.NotNull;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CdResMapperImpl;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.*;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
+import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -20,6 +29,9 @@ import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeValidationRe
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
+import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
+import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
@@ -30,7 +42,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.decodeBase64;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.fromJson;
 
@@ -124,9 +135,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
                         transaction,
                         "Challenge resend threshold exceeded");
+
             } else {
                 AuthConfigDto authConfigDto = getAuthConfig(transaction);
-                if (cReq.getResendChallenge().equals(YES)) {
+                if (cReq.getResendChallenge().equals(InternalConstants.YES)) {
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 } else {
                     handleSendChallenge(challengeFlowDto, transaction, authConfigDto);

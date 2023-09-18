@@ -1,10 +1,11 @@
-package org.freedomfinancestack.razorpay.cas.acs.gateway;
+package org.freedomfinancestack.razorpay.cas.acs.gateway.ds;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.entity.ContentType;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.RRES;
@@ -52,6 +53,9 @@ public class DsGatewayServiceImpl implements DsGatewayService {
         Map<String, Object> queryParamMap = new HashMap<>();
         headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         try {
+            // in case of Result Request flow fails, then only we are sending error message to DS.
+            // As retry would be already done while sending RREQ we don't need, retry again in
+            // sending error message
             httpsGatewayService.sendRequest(
                     Util.toJson(errorResponse), HttpMethod.POST, headerMap, queryParamMap);
         } catch (JsonSyntaxException jsonSyntaxException) {

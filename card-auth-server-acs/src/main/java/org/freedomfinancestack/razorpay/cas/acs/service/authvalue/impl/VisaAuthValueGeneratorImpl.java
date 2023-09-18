@@ -90,11 +90,16 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
 
         String authMethod = getAuthenticationMethodCode(transaction);
 
-        LocalDateTime objPurchaseDate =
-                transaction.getTransactionPurchaseDetail().getPurchaseTimestamp().toLocalDateTime();
+        String purchaseDate = "";
+        if (transaction.getTransactionPurchaseDetail() != null
+                && transaction.getTransactionPurchaseDetail().getPurchaseTimestamp() != null) {
+            LocalDateTime objPurchaseDate =
+                    transaction
+                            .getTransactionPurchaseDetail()
+                            .getPurchaseTimestamp()
+                            .toLocalDateTime();
 
-        String purchaseDate = String.valueOf(objPurchaseDate.getDayOfYear());
-        if (purchaseDate.length() < 3) {
+            purchaseDate = String.valueOf(objPurchaseDate.getDayOfYear());
             purchaseDate =
                     Util.padString(
                             purchaseDate,
@@ -103,19 +108,25 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
                             InternalConstants.PAD_LEFT);
         }
 
-        long purchaseAmountLong =
-                Long.parseLong(transaction.getTransactionPurchaseDetail().getPurchaseAmount());
-        String purchaseAmountHexString = Long.toHexString(purchaseAmountLong).toUpperCase();
-        purchaseAmountHexString =
-                Util.padString(
-                        purchaseAmountHexString,
-                        10,
-                        InternalConstants.PADDED_SYMBOL_0,
-                        InternalConstants.PAD_LEFT); // HexDump.zeropad(hexString, 10);
+        String purchaseAmountHexString = "";
+        if (transaction.getTransactionPurchaseDetail() != null
+                && transaction.getTransactionPurchaseDetail().getPurchaseAmount() != null) {
+            long purchaseAmountLong =
+                    Long.parseLong(transaction.getTransactionPurchaseDetail().getPurchaseAmount());
+            purchaseAmountHexString = Long.toHexString(purchaseAmountLong).toUpperCase();
+            purchaseAmountHexString =
+                    Util.padString(
+                            purchaseAmountHexString,
+                            10,
+                            InternalConstants.PADDED_SYMBOL_0,
+                            InternalConstants.PAD_LEFT); // HexDump.zeropad(hexString, 10);
+        }
 
         String strSupplementalData =
                 purchaseAmountHexString
-                        + transaction.getTransactionPurchaseDetail().getPurchaseCurrency()
+                        + (transaction.getTransactionPurchaseDetail().getPurchaseCurrency() == null
+                                ? ""
+                                : transaction.getTransactionPurchaseDetail().getPurchaseCurrency())
                         + purchaseDate;
 
         String cavvVersion = VISAConstant.CAVV_VERSION_7 + VISAConstant.PROTOCOL_VERSION_EMV_2_1_0;
@@ -163,7 +174,6 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         String authenticationAmount = getAuthenticationAmount(transaction);
         String authenticationCurrency =
                 transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
-
         String authenticationDate = getAuthenticationDate();
 
         return authenticationAmount + authenticationCurrency + authenticationDate;
@@ -176,6 +186,9 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
     }
 
     private String getAuthenticationAmount(Transaction transaction) {
+        if (Util.isNullorBlank(transaction.getTransactionPurchaseDetail().getPurchaseAmount())) {
+            return "";
+        }
         return Util.padString(
                 transaction.getTransactionPurchaseDetail().getPurchaseAmount(),
                 12,

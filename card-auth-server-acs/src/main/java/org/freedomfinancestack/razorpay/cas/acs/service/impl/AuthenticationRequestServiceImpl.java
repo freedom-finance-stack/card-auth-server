@@ -180,6 +180,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             transaction,
                             AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
+
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
         } catch (Exception ex) {
             // updating transaction with error and updating DB

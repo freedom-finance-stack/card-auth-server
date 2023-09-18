@@ -133,7 +133,6 @@ public enum
             "TRANSACTION ID NOT FOUND",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
-
     INVALID_CONFIG(
             "8003",
             "CONFIG ERROR IN ACS",

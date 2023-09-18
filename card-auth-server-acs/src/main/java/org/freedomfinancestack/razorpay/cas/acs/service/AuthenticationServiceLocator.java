@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.model.ChallengeAuthTypeConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationServiceLocator {
-    private final AuthenticationService otpAuthenticationService;
+    private final @Qualifier("OTPAuthenticationService") AuthenticationService
+            otpAuthenticationService;
 
     public AuthenticationService locateTransactionAuthenticationService(
             Transaction transaction, ChallengeAuthTypeConfig authConfig)

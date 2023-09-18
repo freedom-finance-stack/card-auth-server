@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway;
 
 import java.util.Map;
 
+import org.freedomfinancestack.razorpay.cas.acs.gateway.config.DsGatewayConfig;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpStatusCodeException;
 import org.springframework.http.*;
 import org.springframework.retry.support.RetryTemplate;
@@ -9,11 +10,11 @@ import org.springframework.web.client.RestTemplate;
 
 public abstract class HttpsGatewayService {
 
-    abstract RestTemplate getRestTemplate();
+    public abstract RestTemplate getRestTemplate();
 
-    abstract RetryTemplate getRetryTemplate();
+    public abstract RetryTemplate getRetryTemplate();
 
-    abstract DsGatewayConfig.ServiceConfig getServiceConfig();
+    public abstract DsGatewayConfig.ServiceConfig getServiceConfig();
 
     public String sendRequest(
             String requestBody,
