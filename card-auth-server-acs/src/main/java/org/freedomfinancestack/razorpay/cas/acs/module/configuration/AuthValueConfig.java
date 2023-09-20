@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.module.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import lombok.Getter;
@@ -22,14 +21,4 @@ import lombok.Setter;
 @Setter
 public class AuthValueConfig {
     private String masterCardAcsKey;
-
-    /**
-     * Returns the acsKey used to calculate Master Card IAV calculation.
-     *
-     * @return The configured {@link String} object.
-     */
-    @Bean
-    public String getAcsKey() {
-        return masterCardAcsKey;
-    }
 }

@@ -33,7 +33,7 @@ public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
         String iav = null;
 
         try {
-            String acsKey = authValueConfig.getAcsKey();
+            String acsKey = authValueConfig.getMasterCardAcsKey();
 
             String dsTransId = transaction.getTransactionReferenceDetail().getDsTransactionId();
 
