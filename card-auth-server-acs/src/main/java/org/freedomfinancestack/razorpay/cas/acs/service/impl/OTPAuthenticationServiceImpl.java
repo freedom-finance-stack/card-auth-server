@@ -22,6 +22,8 @@ public class OTPAuthenticationServiceImpl implements AuthenticationService {
     public AuthResponse authenticate(AuthenticationDto authentication) throws ThreeDSException {
         // otp fetch from DB
         // validation
-        return null;
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setAuthenticated(true);
+        return authResponse;
     }
 }

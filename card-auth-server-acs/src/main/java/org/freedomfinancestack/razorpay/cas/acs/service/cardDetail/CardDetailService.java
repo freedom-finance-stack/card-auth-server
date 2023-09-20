@@ -81,12 +81,12 @@ public class CardDetailService {
         CardDetailFetcherService cardDetailFetcherService =
                 cardDetailFetcherFactory.getCardDetailFetcher(cardDetailsStoreType);
         cardDetailFetcherService.validateCardDetails(cardDetailResponse);
-        TransactionCardHolderDetail transactionCardHolderDetail = new TransactionCardHolderDetail();
-
-        TransactionCardHolderDetail.builder()
-                .mobileNumber(cardDetailResponse.getCardDetailDto().getMobileNumber())
-                .emailId(cardDetailResponse.getCardDetailDto().getEmailId())
-                .name(cardDetailResponse.getCardDetailDto().getName());
+        TransactionCardHolderDetail transactionCardHolderDetail =
+                TransactionCardHolderDetail.builder()
+                        .mobileNumber(cardDetailResponse.getCardDetailDto().getMobileNumber())
+                        .emailId(cardDetailResponse.getCardDetailDto().getEmailId())
+                        .name(cardDetailResponse.getCardDetailDto().getName())
+                        .build();
         transaction.setTransactionCardHolderDetail(transactionCardHolderDetail);
     }
 }

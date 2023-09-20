@@ -28,7 +28,7 @@ public class InternalConstants {
             "we have sent you a text message with a code ";
     public static final String CHALLENGE_INFORMATION_MOBILE_TEXT =
             "to your registered mobile number %s";
-    public static final String AND = "and";
+    public static final String AND = " and ";
 
     public static final String CHALLENGE_INFORMATION_EMAIL_TEXT =
             "to your registered email address %s";

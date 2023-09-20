@@ -138,14 +138,17 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
             } else {
                 AuthConfigDto authConfigDto = getAuthConfig(transaction);
-                if (cReq.getResendChallenge().equals(InternalConstants.YES)) {
+                if (cReq.getResendChallenge() != null
+                        && cReq.getResendChallenge().equals(InternalConstants.YES)) {
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 } else {
+                    StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 }
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
+            log.error("Exception occurred", ex);
             // don't send Rres for ParseException
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
@@ -154,6 +157,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transaction,
                     ex.getMessage());
         } catch (ThreeDSException ex) {
+            log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
@@ -162,6 +166,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transaction,
                     ex.getMessage());
         } catch (InvalidStateTransactionException e) {
+            log.error("Exception occurred", e);
             challengeFlowDto.setSendRreq(true);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
@@ -170,6 +175,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transaction,
                     e.getMessage());
         } catch (ACSException ex) {
+            log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
@@ -178,6 +184,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transaction,
                     ex.getMessage());
         } catch (Exception ex) {
+            log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
@@ -278,6 +285,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
         } catch (ParseException | TransactionDataNotValidException ex) {
             // don't send Rres for ParseException
+            log.error("Exception occurred", ex);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
                     ex.getThreeDSecureErrorCode(),
@@ -286,6 +294,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     ex.getMessage());
         } catch (ThreeDSException ex) {
             challengeFlowDto.setSendRreq(true);
+            log.error("Exception occurred", ex);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
                     ex.getThreeDSecureErrorCode(),
@@ -293,6 +302,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transaction,
                     ex.getMessage());
         } catch (InvalidStateTransactionException e) {
+            log.error("Exception occurred", e);
             challengeFlowDto.setSendRreq(true);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
@@ -301,6 +311,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transaction,
                     e.getMessage());
         } catch (ACSException ex) {
+            log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
@@ -309,6 +320,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transaction,
                     ex.getMessage());
         } catch (Exception ex) {
+            log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
@@ -379,6 +391,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         if (authResponse.isAuthenticated()) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
+            updateEci(transaction);
             transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
 
             CRES cres = cResMapper.toCres(transaction);

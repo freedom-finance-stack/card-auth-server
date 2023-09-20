@@ -89,6 +89,8 @@ public class ChallengeRequestController {
     }
 
     private static String createCdRes(Model model, CdRes cdRes) {
+        CVReq cVReq = new CVReq();
+        model.addAttribute("cVReq", cVReq);
         model.addAttribute("cdRes", cdRes);
         return "acsOtp";
     }
@@ -106,7 +108,7 @@ public class ChallengeRequestController {
      */
     @RequestMapping(
             value = "/challenge/browser/validate",
-            method = RequestMethod.GET,
+            method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     @Operation(summary = "Handles browser validation Challenge Request generating user's browser")
@@ -122,7 +124,8 @@ public class ChallengeRequestController {
                         responseCode = "400",
                         description = "Bad Request or Request not according to Areq Schema")
             })
-    public String handleChallengeValidationRequest(CVReq cVReq, Model model) {
+    public String handleChallengeValidationRequest(
+            Model model, @ModelAttribute("cVReq") CVReq cVReq) {
         CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(cVReq);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
