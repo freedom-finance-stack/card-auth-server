@@ -33,7 +33,7 @@ public class CardDetail extends BaseEntity<String> {
     @Column(name = "card_expiry")
     private String cardExpiry;
 
-    private Boolean blocked;
+    private boolean blocked;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cardholder_id", referencedColumnName = "id")

@@ -438,7 +438,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             ChallengeFlowDto challengeFlowDto, Transaction transaction, AuthConfigDto authConfigDto)
             throws InvalidStateTransactionException, ThreeDSException {
         transaction.setResendCount(transaction.getResendCount() + 1);
-        if (transaction.getResendCount() - 1
+        if (transaction.getResendCount()
                 > authConfigDto.getChallengeAttemptConfig().getResendThreshold()) {
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_ATTEMPT_EXHAUSTED);
             transaction.setErrorCode(
@@ -450,11 +450,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             .getTransactionStatusReason()
                             .getCode());
             challengeFlowDto.setSendRreq(true);
-            generateErrorResponse(
-                    challengeFlowDto.getCdRes(),
-                    ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                    transaction,
-                    "Challenge resend threshold exceeded");
+            CRES cres = cResMapper.toCres(transaction);
+            challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64(cres));
+            transactionMessageLogService.createAndSave(cres, transaction.getId());
         } else {
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
             handleSendChallenge(challengeFlowDto, transaction, authConfigDto);

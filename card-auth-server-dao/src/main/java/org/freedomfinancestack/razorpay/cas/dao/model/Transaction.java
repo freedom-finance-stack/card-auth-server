@@ -74,10 +74,10 @@ public class Transaction extends BaseEntity<String>
     private String deviceName;
 
     @Column(name = "interaction_count")
-    private Integer interactionCount;
+    private int interactionCount;
 
     @Column(name = "resend_count")
-    private Integer resendCount;
+    private int resendCount;
 
     @Column(name = "error_code")
     private String errorCode;

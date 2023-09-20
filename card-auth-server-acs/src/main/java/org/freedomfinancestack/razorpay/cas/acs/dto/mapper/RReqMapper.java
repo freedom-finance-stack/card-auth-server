@@ -66,9 +66,6 @@ public interface RReqMapper {
     }
 
     default String getInteractionCounter(Transaction transaction) {
-        if (transaction.getInteractionCount() == null) {
-            return "00";
-        }
         return "0" + transaction.getInteractionCount();
     }
 
