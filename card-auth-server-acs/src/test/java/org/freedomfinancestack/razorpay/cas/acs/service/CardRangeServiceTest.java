@@ -13,7 +13,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
-import org.freedomfinancestack.razorpay.cas.dao.model.Network;
 import org.freedomfinancestack.razorpay.cas.dao.repository.CardRangeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -133,7 +132,7 @@ public class CardRangeServiceTest {
         cardRange.setInstitution(institution);
         cardRange.setStatus(status);
         institution.setStatus(institutionStatus);
-        cardRange.setNetwork(Network.builder().code((byte) 1).build());
+        cardRange.setNetworkCode((byte) 1);
         return cardRange;
     }
 
@@ -148,7 +147,7 @@ public class CardRangeServiceTest {
             cardRange.setInstitution(institution);
         }
         if (hasNetwork) {
-            cardRange.setNetwork(Network.builder().code((byte) 1).build());
+            cardRange.setNetworkCode((byte) 1);
         }
         return cardRange;
     }

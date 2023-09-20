@@ -6,6 +6,8 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessExcep
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
+import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.freedomfinancestack.razorpay.cas.dao.model.TransactionCardHolderDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,19 +50,29 @@ public class CardDetailService {
      * Validates the card details by fetching the card details from store using {@link
      * CardDetailsRequest} based on the specified {@link CardDetailsStore} type.
      *
+     * @param transaction to store the card detail response to transaction
      * @param cardDetailsRequest the card detail response to validate
      * @param cardDetailsStoreType the type of card details store
      * @throws DataNotFoundException if the card details are not found
      * @throws CardBlockedException if the card is blocked
      * @throws ACSDataAccessException if there is an error while fetching card details
      */
-    public void validateCardDetails(
-            CardDetailsRequest cardDetailsRequest, CardDetailsStore cardDetailsStoreType)
+    public void validateAndUpdateCardDetails(
+            Transaction transaction,
+            CardDetailsRequest cardDetailsRequest,
+            CardDetailsStore cardDetailsStoreType)
             throws DataNotFoundException, CardBlockedException, ACSDataAccessException {
         CardDetailResponse cardDetailResponse =
                 getCardDetails(cardDetailsRequest, cardDetailsStoreType);
         CardDetailFetcherService cardDetailFetcherService =
                 cardDetailFetcherFactory.getCardDetailFetcher(cardDetailsStoreType);
         cardDetailFetcherService.validateCardDetails(cardDetailResponse);
+        TransactionCardHolderDetail transactionCardHolderDetail = new TransactionCardHolderDetail();
+
+        TransactionCardHolderDetail.builder()
+                .mobileNumber(cardDetailResponse.getCardDetailDto().getMobileNumber())
+                .emailId(cardDetailResponse.getCardDetailDto().getEmailId())
+                .name(cardDetailResponse.getCardDetailDto().getName());
+        transaction.setTransactionCardHolderDetail(transactionCardHolderDetail);
     }
 }

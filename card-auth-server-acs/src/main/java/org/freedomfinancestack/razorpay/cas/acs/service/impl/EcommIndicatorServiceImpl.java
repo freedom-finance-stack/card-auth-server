@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
  * the outcome of an authentication request and is used in 3D Secure transactions to convey the
  * result of the authentication.
  *
+ * @author jaydeepRadadiya
  * @version 1.0.0
  * @since 1.0.0
- * @author jaydeepRadadiya
  */
 @Service
 public class EcommIndicatorServiceImpl implements ECommIndicatorService {
@@ -32,13 +32,12 @@ public class EcommIndicatorServiceImpl implements ECommIndicatorService {
      */
     @Override
     public String generateECI(GenerateECIRequest generateECIRequest) {
-
+        Network network = Network.getNetwork(generateECIRequest.getNetworkCode());
         TransactionStatus transactionStatus = generateECIRequest.getTransactionStatus();
-        Network network = generateECIRequest.getNetwork().getName();
         if (generateECIRequest.getTransactionStatus() == TransactionStatus.CREATED) {
             transactionStatus = TransactionStatus.SUCCESS;
         }
-        if (Network.MASTERCARD == generateECIRequest.getNetwork().getName()) {
+        if (Network.MASTERCARD == network) {
             if (ThreeRIInd.RECURRING_TRANSACTION
                     .getValue()
                     .equals(generateECIRequest.getThreeRIInd())) {

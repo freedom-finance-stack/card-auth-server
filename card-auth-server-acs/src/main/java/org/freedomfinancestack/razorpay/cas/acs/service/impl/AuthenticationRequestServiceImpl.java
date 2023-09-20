@@ -102,7 +102,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             cardRangeService.validateRange(cardRange);
 
             // update Ids in transaction
-            transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetwork().getCode());
+            transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetworkCode());
             transaction.setCardRangeId(cardRange.getId());
             transaction.setInstitutionId(cardRange.getInstitution().getId());
 
@@ -112,10 +112,11 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             new InstitutionAcsUrlPK(
                                     cardRange.getInstitution().getId(),
                                     areq.getDeviceChannel(),
-                                    cardRange.getNetwork().getCode()));
+                                    cardRange.getNetworkCode()));
 
             // fetch Card and User details and validate details
-            cardDetailService.validateCardDetails(
+            cardDetailService.validateAndUpdateCardDetails(
+                    transaction,
                     new CardDetailsRequest(
                             cardRange.getInstitution().getId(), areq.getAcctNumber()),
                     cardRange.getCardDetailsStore());
@@ -169,7 +170,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     eCommIndicatorService.generateECI(
                             new GenerateECIRequest(
                                             transaction.getTransactionStatus(),
-                                            cardRange.getNetwork(),
+                                            cardRange.getNetworkCode(),
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);
@@ -208,7 +209,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     eCommIndicatorService.generateECI(
                             new GenerateECIRequest(
                                             transaction.getTransactionStatus(),
-                                            cardRange.getNetwork(),
+                                            cardRange.getNetworkCode(),
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);

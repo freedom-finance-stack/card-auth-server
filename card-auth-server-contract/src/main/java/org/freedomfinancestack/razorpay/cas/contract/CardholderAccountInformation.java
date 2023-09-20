@@ -3,56 +3,38 @@ package org.freedomfinancestack.razorpay.cas.contract;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.utils.Util;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class CardholderAccountInformation implements Validatable {
 
-    @JsonProperty("chAccAgeInd")
     private String chAccAgeInd;
 
-    @JsonProperty("chAccDate")
     private String chAccDate;
 
-    @JsonProperty("chAccChangeInd")
     private String chAccChangeInd;
 
-    @JsonProperty("chAccChange")
     private String chAccChange;
 
-    @JsonProperty("chAccPwChangeInd")
     private String chAccPwChangeInd;
 
-    @JsonProperty("chAccPwChange")
     private String chAccPwChange;
 
-    @JsonProperty("shipAddressUsageInd")
     private String shipAddressUsageInd;
 
-    @JsonProperty("shipAddressUsage")
     private String shipAddressUsage;
 
-    @JsonProperty("txnActivityDay")
     private String txnActivityDay;
 
-    @JsonProperty("txnActivityYear")
     private String txnActivityYear;
 
-    @JsonProperty("provisionAttemptsDay")
     private String provisionAttemptsDay;
 
-    @JsonProperty("nbPurchaseAccount")
     private String nbPurchaseAccount;
 
-    @JsonProperty("suspiciousAccActivity")
     private String suspiciousAccActivity;
 
-    @JsonProperty("shipNameIndicator")
     private String shipNameIndicator;
 
-    @JsonProperty("paymentAccInd")
     private String paymentAccInd;
 
-    @JsonProperty("paymentAccAge")
     private String paymentAccAge;
 
     public int getLength() {
