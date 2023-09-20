@@ -23,6 +23,7 @@ public class InternalConstants {
     public static final String PAD_LEFT = "LEFT";
     public static final String PAD_RIGHT = "RIGHT";
     public static final String NO_OP_HSM = "NoOpHSM";
+    public static final Character SYMBOL_F = 'F';
 
     public static final String CHALLENGE_INFORMATION_TEXT =
             "we have sent you a text message with a code ";
