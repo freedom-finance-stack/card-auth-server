@@ -508,7 +508,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     }
 
     private CREQ parseEncryptedRequest(String strCReq) throws ParseException {
-        if (null == strCReq || strCReq.contains(" ")) {
+        if (Util.isNullorBlank(strCReq) || strCReq.contains(" ")) {
             throw new ParseException(
                     ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR);
