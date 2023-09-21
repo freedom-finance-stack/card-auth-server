@@ -75,6 +75,7 @@ public class ChallengeRequestController {
         if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
             throw new RuntimeException("Transaction not recognized");
         }
+
         if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
             model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
         } else {
@@ -126,6 +127,7 @@ public class ChallengeRequestController {
             })
     public String handleChallengeValidationRequest(
             Model model, @ModelAttribute("cVReq") CVReq cVReq) {
+
         CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(cVReq);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);

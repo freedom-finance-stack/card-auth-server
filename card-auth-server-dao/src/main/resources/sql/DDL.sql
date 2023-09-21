@@ -317,6 +317,7 @@ CREATE TABLE `otp_transaction_detail`
 
 
 #  Purposed tables for OTP
+
 #  OTP : ID , Value, Valid_till, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
 #  NOTIFICATION : CHANNEL, DESTINATION, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
 #  OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID

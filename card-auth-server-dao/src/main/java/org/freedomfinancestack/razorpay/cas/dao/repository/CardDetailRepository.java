@@ -17,4 +17,5 @@ public interface CardDetailRepository extends BaseRepository<CardDetail, String>
             "update CardDetail r set r.blocked = true where r.cardNumber = ?1 and r.institutionId"
                     + " = ?2")
     void blockCard(String cardNumber, String institutionId);
+
 }
