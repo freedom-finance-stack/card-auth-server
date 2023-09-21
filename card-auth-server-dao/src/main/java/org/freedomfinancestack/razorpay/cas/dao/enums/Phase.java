@@ -65,6 +65,7 @@ public enum Phase implements State<Phase.PhaseEvent> {
                 case RESEND_CHALLENGE:
                     return Phase.CREQ;
                 case CANCEL_CHALLENGE:
+                case AUTH_ATTEMPT_EXHAUSTED:
                 case ERROR_OCCURRED:
                     return Phase.RREQ;
             }
@@ -115,10 +116,8 @@ public enum Phase implements State<Phase.PhaseEvent> {
         @Override
         public Phase nextState(PhaseEvent event) throws InvalidStateTransactionException {
             // final state can't move anywhere
-            if (PhaseEvent.ERROR_OCCURRED == event) {
-                return Phase.ERROR;
-            }
-            throw new InvalidStateTransactionException(this.toString(), event.toString());
+            log.error("INVALID TRANSITION, ERROR IS FINAL STATE");
+            return Phase.ERROR;
         }
     };
 

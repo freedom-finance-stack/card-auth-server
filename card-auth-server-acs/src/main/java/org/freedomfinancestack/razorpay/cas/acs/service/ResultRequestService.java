@@ -19,5 +19,5 @@ public interface ResultRequestService {
      *
      * @param transaction The Transaction object
      */
-    void processRreq(Transaction transaction);
+    boolean processRreq(Transaction transaction);
 }

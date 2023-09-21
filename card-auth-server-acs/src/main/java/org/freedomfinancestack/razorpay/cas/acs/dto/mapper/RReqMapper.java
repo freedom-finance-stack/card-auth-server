@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -19,11 +20,16 @@ import org.mapstruct.Mapping;
 @Mapper(
         uses = {HelperMapper.class},
         componentModel = "spring",
-        imports = {TransactionStatus.class, MessageCategory.class, Network.class})
+        imports = {
+            TransactionStatus.class,
+            MessageCategory.class,
+            Network.class,
+            MessageType.class
+        })
 public interface RReqMapper {
 
     /**
-     * Creates a Result Request (RREQ) from Transaction objects to communication to DS. it uses
+     * Creates a Result Request (AREQ) from Transaction objects to communication to DS. it uses
      * MapStruct, which provides annotations to specify which
      *
      * @param transaction The {@link Transaction} object representing the transaction details.
@@ -46,6 +52,7 @@ public interface RReqMapper {
             source = "transaction.transactionReferenceDetail.dsTransactionId")
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageCategory", source = "transaction.messageCategory")
+    @Mapping(target = "messageType", expression = "java(MessageType.RReq.toString())")
     // todo add acsRenderingType, messageExtension, sdkTransactionId and WhiteListStatus for App
     // Based flow
     RREQ toRreq(Transaction transaction);

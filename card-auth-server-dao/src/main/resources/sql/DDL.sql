@@ -1,8 +1,6 @@
-CREATE
-    DATABASE IF NOT EXISTS `cas_db`;
+CREATE DATABASE IF NOT EXISTS `cas_db`;
 
-USE
-    `cas_db`;
+USE `cas_db`;
 
 DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE `transaction`
@@ -21,7 +19,8 @@ CREATE TABLE `transaction`
     `eci`                       varchar(3),
     `device_channel`            varchar(10),
     `device_name`               varchar(20),
-    `interaction_count`         int,
+    `interaction_count`         int DEFAULT 0,
+    `resend_count`              int DEFAULT 0,
     `challenge_cancel_ind`      varchar(2),
     `error_code`                varchar(20),
     `created_at`                timestamp                                                                                                                                             NOT NULL,
@@ -194,7 +193,6 @@ CREATE TABLE `hsm_config`
 DROP TABLE IF EXISTS `card_range`;
 CREATE TABLE `card_range`
 (
-
     `id`                 varchar(36) PRIMARY KEY,
     `institution_id`     varchar(36),
     `start_range`        decimal(25),
@@ -243,6 +241,7 @@ CREATE TABLE `feature`
     `deleted_at`  timestamp,
     `deleted_by`  varchar(40)
 );
+CREATE INDEX feature_entity_type_entity_id_name ON feature (name, entity_type, entity_id);
 
 CREATE INDEX feature_entity_type_entity_id_name ON feature (name, entity_type, entity_id);
 
@@ -315,7 +314,8 @@ CREATE TABLE `otp_transaction_detail`
 
 
 # Purposed tables for OTP
-#  OTP : ID , Value, Valid_till, Attempt, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
+#  OTP : ID , Value, Valid_till, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
 #  NOTIFICATION : CHANNEL, DESTINATION, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
-#  OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID, RESEND_COUNT
+#  OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID
+
 

@@ -39,7 +39,7 @@ public class CRES extends ThreeDSObject {
 
     private String challengeInfoTextIndicator;
 
-    private ChallengeSelectInfo challengeSelectInfo[];
+    private ChallengeSelectInfo[] challengeSelectInfo;
 
     private String expandInfoLabel;
 
@@ -52,7 +52,7 @@ public class CRES extends ThreeDSObject {
 
     private Image issuerImage;
 
-    private List messageExtension;
+    private List<MessageExtension> messageExtension;
 
     private String oobAppLabel;
 

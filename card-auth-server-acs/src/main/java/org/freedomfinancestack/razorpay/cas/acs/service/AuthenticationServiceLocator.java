@@ -19,13 +19,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationServiceLocator {
-
     private final @Qualifier("OTPAuthenticationService") AuthenticationService
             otpAuthenticationService;
 
     public AuthenticationService locateTransactionAuthenticationService(
-            Transaction transaction, String purchaseAmount, ChallengeAuthTypeConfig authConfig)
+            Transaction transaction, ChallengeAuthTypeConfig authConfig)
             throws InvalidAuthTypeException {
+        String purchaseAmount = null;
+        if (transaction.getTransactionPurchaseDetail() != null
+                && !Util.isNullorBlank(
+                        transaction.getTransactionPurchaseDetail().getPurchaseAmount())) {
+            purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
+        }
         if (authConfig.getThresholdAuthType() != null
                 && !Util.isNullorBlank(purchaseAmount)
                 && new BigDecimal(purchaseAmount).compareTo(authConfig.getThreshold()) >= 0) {

@@ -47,6 +47,20 @@ public class CardDetailService {
     }
 
     /**
+     * block card provided in {@link CardDetailsRequest} and {@link CardDetailsStore} type.
+     *
+     * @param cardDetailsRequest the card details request
+     * @param type the type of card details store
+     * @throws ACSDataAccessException if there is an error while fetching card details
+     */
+    public void blockCard(CardDetailsRequest cardDetailsRequest, CardDetailsStore type)
+            throws ACSDataAccessException {
+        CardDetailFetcherService cardDetailFetcherService =
+                cardDetailFetcherFactory.getCardDetailFetcher(type);
+        cardDetailFetcherService.blockCard(cardDetailsRequest);
+    }
+
+    /**
      * Validates the card details by fetching the card details from store using {@link
      * CardDetailsRequest} based on the specified {@link CardDetailsStore} type.
      *

@@ -25,13 +25,16 @@ public class CdRes extends ThreeDSObject implements Serializable {
     String schemaName;
     boolean jsEnableIndicator;
     String challengeText;
+    String challengeInfoText;
     String resendBlocked;
     String attemptLeft;
+    boolean challengeCompleted;
 
     // optional fields only used in case of error
     boolean isError;
 
     String encryptedCRes;
+    String threeDSSessionData;
     String encryptedErro;
     String notificationUrl;
 

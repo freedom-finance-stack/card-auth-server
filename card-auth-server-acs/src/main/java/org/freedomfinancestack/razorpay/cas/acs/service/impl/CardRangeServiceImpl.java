@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CardRangeServiceImpl implements CardRangeService {
-    // todo rename to cardRangeService
     private final CardRangeRepository cardRangeRepository;
 
     /**

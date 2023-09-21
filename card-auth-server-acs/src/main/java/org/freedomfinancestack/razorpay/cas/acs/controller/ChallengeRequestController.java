@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
-import org.freedomfinancestack.razorpay.cas.acs.dto.ValidateChallengeResponse;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -73,23 +72,31 @@ public class ChallengeRequestController {
             // todo unhandled exception and if challengeResponse is null
             throw new RuntimeException(e);
         }
-
-        if (cdRes.isError()) {
-            if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
-                throw new RuntimeException("Transaction not recognized");
-            }
-            if (Util.isNullorBlank(cdRes.getEncryptedCRes())) {
-                model.addAttribute(
-                        InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
-            } else {
-                model.addAttribute(
-                        InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
-            }
-            model.addAttribute(
-                    InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL, cdRes.getNotificationUrl());
-            return "threeDSecureResponseSubmit";
+        if (cdRes.isChallengeCompleted() || cdRes.isError()) {
+            return createCresAndErrorMessageResponse(model, cdRes);
         }
-        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_RESPONSE, cdRes);
+        return createCdRes(model, cdRes);
+    }
+
+    private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes) {
+        if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
+            throw new RuntimeException("Transaction not recognized");
+        }
+        if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
+            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
+        } else {
+            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
+        }
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_THREEDS_SESSION_DATA,
+                cdRes.getThreeDSSessionData());
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL, cdRes.getNotificationUrl());
+        return "threeDSecureResponseSubmit";
+    }
+
+    private static String createCdRes(Model model, CdRes cdRes) {
+        model.addAttribute("cdRes", cdRes);
         return "acsOtp";
     }
 
@@ -97,7 +104,7 @@ public class ChallengeRequestController {
      * Handles Challenge Validation Request (ValidateCReq) received from the client browser for OTP
      * verification and generates CRes for the Browser.
      *
-     * @param CVReq The {@link CVReq} object representing the * Challenge Validation Request message
+     * @param cVReq The {@link CVReq} object representing the * Challenge Validation Request message
      *     received from the browser.
      * @param model The {@link Model} object representing the UI Model for HTML template data
      *     binding.
@@ -122,17 +129,11 @@ public class ChallengeRequestController {
                         responseCode = "400",
                         description = "Bad Request or Request not according to Areq Schema")
             })
-    public String handleChallengeValidationRequest(CVReq CVReq, Model model) {
-        ValidateChallengeResponse validateChallengeResponse =
-                challengeRequestService.processBrwChallengeValidationRequest(CVReq);
-        model.addAttribute(
-                InternalConstants.MODEL_ATTRIBUTE_CRES, validateChallengeResponse.getCRes());
-        model.addAttribute(
-                InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL,
-                validateChallengeResponse.getNotificationUrl());
-        model.addAttribute(
-                InternalConstants.MODEL_ATTRIBUTE_THREEDS_SESSION_DATA,
-                validateChallengeResponse.getThreeDSSessionData());
-        return "threeDSecureResponseSubmit";
+    public String handleChallengeValidationRequest(CVReq cVReq, Model model) {
+        CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(cVReq);
+        if (cdRes.isChallengeCompleted() || cdRes.isError()) {
+            return createCresAndErrorMessageResponse(model, cdRes);
+        }
+        return createCdRes(model, cdRes);
     }
 }

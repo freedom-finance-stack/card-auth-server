@@ -73,6 +73,9 @@ public class Transaction extends BaseEntity<String>
     @Column(name = "interaction_count")
     private Integer interactionCount;
 
+    @Column(name = "resend_count")
+    private Integer resendCount;
+
     @Column(name = "error_code")
     private String errorCode;
 
