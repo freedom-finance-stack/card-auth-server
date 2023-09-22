@@ -43,6 +43,5 @@ public class ChallengeValidationRequestValidator {
                 incomingCvreq.getTransactionId(),
                 notNull(),
                 lengthValidator(LengthValidator.DataLengthType.FIXED, 36));
-
     }
 }

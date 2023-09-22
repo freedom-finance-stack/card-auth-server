@@ -2,11 +2,11 @@ package org.freedomfinancestack.razorpay.cas.dao.model;
 
 import javax.persistence.*;
 
+import org.freedomfinancestack.extensions.stateMachine.State;
+import org.freedomfinancestack.extensions.stateMachine.StateMachineEntity;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.State;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.StateMachineEntity;
 import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;

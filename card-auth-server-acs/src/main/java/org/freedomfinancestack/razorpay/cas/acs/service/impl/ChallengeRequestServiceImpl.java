@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.validation.constraints.NotNull;
 
+import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
+import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
@@ -34,8 +36,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
@@ -438,7 +438,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             ChallengeFlowDto challengeFlowDto, Transaction transaction, AuthConfigDto authConfigDto)
             throws InvalidStateTransactionException, ThreeDSException {
         transaction.setResendCount(transaction.getResendCount() + 1);
-        if (transaction.getResendCount()  > authConfigDto.getChallengeAttemptConfig().getResendThreshold()) {
+        if (transaction.getResendCount()
+                > authConfigDto.getChallengeAttemptConfig().getResendThreshold()) {
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_ATTEMPT_EXHAUSTED);
             transaction.setErrorCode(
                     InternalErrorCode.CHALLENGE_RESEND_THRESHOLD_EXCEEDED.getCode());

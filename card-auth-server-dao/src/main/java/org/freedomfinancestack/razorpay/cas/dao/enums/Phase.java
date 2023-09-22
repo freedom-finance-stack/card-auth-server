@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.dao.enums;
 
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.State;
+import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
+import org.freedomfinancestack.extensions.stateMachine.State;
 
 import lombok.extern.slf4j.Slf4j;
 
