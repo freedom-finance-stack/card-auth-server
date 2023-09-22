@@ -128,6 +128,7 @@ public enum Phase implements State<Phase.PhaseEvent> {
         RESEND_CHALLENGE,
         VALIDATION_REQ_RECEIVED,
         AUTH_ATTEMPT_EXHAUSTED,
+        TIMEOUT,
         INVALID_AUTH_VAL,
         AUTH_VAL_VERIFIED,
         CANCEL_CHALLENGE,

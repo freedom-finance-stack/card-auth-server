@@ -172,7 +172,17 @@ public enum
             "8010",
             "challenge resend threshold exceeded",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.EXCEED_MAX_CHALLANGES);
+            TransactionStatusReason.EXCEED_MAX_CHALLANGES),
+    TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ(
+            "8011",
+            "transaction timed out waiting for CREQ",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+    TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION(
+            "8013",
+            "transaction timed out for challenge completion",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT);
 
     private final String code;
 

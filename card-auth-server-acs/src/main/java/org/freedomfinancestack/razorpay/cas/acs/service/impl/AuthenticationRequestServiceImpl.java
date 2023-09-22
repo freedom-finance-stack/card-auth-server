@@ -17,11 +17,13 @@ import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogSer
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
+import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -61,6 +63,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
     private final InstitutionAcsUrlService institutionAcsUrlService;
+    private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -180,7 +183,9 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             transaction,
                             AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
-
+            transactionTimeoutServiceLocator
+                    .locateService(MessageType.AReq)
+                    .scheduleTask(transaction.getId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
         } catch (Exception ex) {
             // updating transaction with error and updating DB

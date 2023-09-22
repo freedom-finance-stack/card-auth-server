@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -263,5 +264,11 @@ public class Util {
                 && !transaction
                         .getTransactionStatus()
                         .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
+    }
+
+    public static void updateTransaction(Transaction transaction, InternalErrorCode errorCode) {
+        transaction.setTransactionStatus(errorCode.getTransactionStatus());
+        transaction.setTransactionStatusReason(errorCode.getCode());
+        transaction.setErrorCode(errorCode.getCode());
     }
 }
