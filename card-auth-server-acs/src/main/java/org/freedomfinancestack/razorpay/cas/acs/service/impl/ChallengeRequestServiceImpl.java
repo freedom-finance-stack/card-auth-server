@@ -438,7 +438,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             ChallengeFlowDto challengeFlowDto, Transaction transaction, AuthConfigDto authConfigDto)
             throws InvalidStateTransactionException, ThreeDSException {
         transaction.setResendCount(transaction.getResendCount() + 1);
-        if (transaction.getResendCount()  > authConfigDto.getChallengeAttemptConfig().getResendThreshold()) {
+        if (transaction.getResendCount()
+                > authConfigDto.getChallengeAttemptConfig().getResendThreshold()) {
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_ATTEMPT_EXHAUSTED);
             transaction.setErrorCode(
                     InternalErrorCode.CHALLENGE_RESEND_THRESHOLD_EXCEEDED.getCode());
