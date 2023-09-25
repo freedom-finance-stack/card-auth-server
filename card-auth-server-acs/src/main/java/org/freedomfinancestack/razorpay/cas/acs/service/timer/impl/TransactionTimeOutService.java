@@ -27,7 +27,7 @@ public class TransactionTimeOutService {
     private final ECommIndicatorService eCommIndicatorService;
     private final ResultRequestService resultRequestService;
 
-    void performTimeOutWatingForCreq(String transactionId) {
+    void performTimeOutWaitingForCreq(String transactionId) {
         try {
             // todo add mutex
             Transaction transaction = transactionService.findById(transactionId);
@@ -54,7 +54,7 @@ public class TransactionTimeOutService {
     }
 
     void performTimeOutWaitingForChallengeCompletion(String transactionId) {
-        // todo add mutex
+        // todo get mutex
         try {
             Transaction transaction = transactionService.findById(transactionId);
             if (!Util.isChallengeCompleted(transaction)) {
@@ -63,6 +63,8 @@ public class TransactionTimeOutService {
                         transaction,
                         ChallengeCancelIndicator.TRANSACTION_TIMED_OUT,
                         InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION);
+            } else {
+                // todo release mutex
             }
         } catch (ACSDataAccessException | InvalidStateTransactionException e) {
             log.error(
@@ -80,9 +82,10 @@ public class TransactionTimeOutService {
             throws ACSDataAccessException, InvalidStateTransactionException {
         transaction.setChallengeCancelInd(challengeCancelIndicator.getIndicator());
         Util.updateTransaction(transaction, errorCode);
-        transaction = transactionService.saveOrUpdate(transaction);
         updateEci(transaction);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
+        transaction = transactionService.saveOrUpdate(transaction);
+        // todo release mutex before RReq.
         resultRequestService.processRreq(transaction);
     }
 

@@ -18,7 +18,6 @@ public class TimerTask implements Runnable {
     public void run() {
         log.info("Processing timer task for transaction id : {}", transactionId);
         transactionTimerService.performTask(transactionId);
-        transactionTimerService.cancelTask(transactionId);
         log.info("Completed timer task for transaction id : {}", transactionId);
     }
 }

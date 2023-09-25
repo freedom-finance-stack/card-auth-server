@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.razorpay.cas.acs.service.timer.impl.AReqTransactionTimerService.getAreqTaskIdentifier;
+import static org.freedomfinancestack.razorpay.cas.acs.service.timer.impl.AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY;
+import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskIdentifier;
 
 @Service("cReqTransactionTimerService")
 @RequiredArgsConstructor
@@ -21,17 +22,22 @@ public class CReqTransactionTimerService implements TransactionTimerService {
     private final AReqTransactionTimerService aReqTransactionTimeoutService;
     private final AppConfiguration appConfiguration;
     private final TransactionTimeOutService transactionTimeOutService;
+    public static String CREQ_TIMER_TASK_IDENTIFIER_KEY = "CREQ_TIMER_TASK";
 
     @Override
     public void scheduleTask(String transactionId) {
         log.info("Scheduling timer task for transactionId: {}", transactionId);
+        // deleting Areq task if exist
+        aReqTransactionTimeoutService.cancelTask(
+                generateTaskIdentifier(AREQ_TIMER_TASK_IDENTIFIER_KEY, (transactionId)));
 
-        aReqTransactionTimeoutService.cancelTask(getAreqTaskIdentifier(transactionId));
-
-        TimerTask task = new TimerTask(getCreqTaskIdentifier(transactionId), this);
+        TimerTask task =
+                new TimerTask(
+                        generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
+                        this);
         try {
             timerService.scheduleTimeoutTask(
-                    getCreqTaskIdentifier(transactionId),
+                    generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
                     task,
                     appConfiguration.getAcs().getTimeout().getChallengeCompletion(),
                     TimeUnit.SECONDS);
@@ -43,7 +49,9 @@ public class CReqTransactionTimerService implements TransactionTimerService {
 
     @Override
     public void cancelTask(String transactionId) {
-        boolean isRemoved = timerService.removeTimeoutTask(getCreqTaskIdentifier(transactionId));
+        boolean isRemoved =
+                timerService.removeTimeoutTask(
+                        generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId));
         if (!isRemoved) {
             log.info("Task not found for transactionId: {}", transactionId);
         }
@@ -52,10 +60,7 @@ public class CReqTransactionTimerService implements TransactionTimerService {
 
     @Override
     public void performTask(String transactionId) {
-        transactionTimeOutService.performTimeOutWaitingForChallengeCompletion(transactionId);
-    }
-
-    private static String getCreqTaskIdentifier(String transactionId) {
-        return "CREQ[" + transactionId + "]";
+        transactionTimeOutService.performTimeOutWaitingForChallengeCompletion(
+                generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId));
     }
 }

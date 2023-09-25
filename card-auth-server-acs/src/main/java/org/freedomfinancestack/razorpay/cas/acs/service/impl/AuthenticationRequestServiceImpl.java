@@ -183,10 +183,12 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             transaction,
                             AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
-            transactionTimeoutServiceLocator
-                    .locateService(MessageType.AReq)
-                    .scheduleTask(transaction.getId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
+            if (transaction.isChallengeMandated()) {
+                transactionTimeoutServiceLocator
+                        .locateService(MessageType.AReq)
+                        .scheduleTask(transaction.getId());
+            }
         } catch (Exception ex) {
             // updating transaction with error and updating DB
             // throw ThreeDSException again so that it returns to client with error message, it is

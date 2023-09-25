@@ -27,6 +27,8 @@ public enum Phase implements State<Phase.PhaseEvent> {
                     return Phase.CREQ;
                 case ERROR_OCCURRED:
                     return Phase.ERROR;
+                case TIMEOUT:
+                    return Phase.RREQ;
             }
             throw new InvalidStateTransactionException(this.toString(), event.toString());
         }
@@ -50,6 +52,7 @@ public enum Phase implements State<Phase.PhaseEvent> {
                 case TRANSACTION_FAILED:
                 case CANCEL_CHALLENGE:
                 case ERROR_OCCURRED:
+                case TIMEOUT:
                     return Phase.RREQ;
             }
             throw new InvalidStateTransactionException(this.toString(), event.toString());
@@ -67,6 +70,7 @@ public enum Phase implements State<Phase.PhaseEvent> {
                 case CANCEL_CHALLENGE:
                 case AUTH_ATTEMPT_EXHAUSTED:
                 case ERROR_OCCURRED:
+                case TIMEOUT:
                     return Phase.RREQ;
             }
             throw new InvalidStateTransactionException(this.toString(), event.toString());
@@ -85,6 +89,7 @@ public enum Phase implements State<Phase.PhaseEvent> {
                 case AUTH_ATTEMPT_EXHAUSTED:
                 case CANCEL_CHALLENGE:
                 case ERROR_OCCURRED:
+                case TIMEOUT:
                     return Phase.RREQ;
             }
             throw new InvalidStateTransactionException(this.toString(), event.toString());

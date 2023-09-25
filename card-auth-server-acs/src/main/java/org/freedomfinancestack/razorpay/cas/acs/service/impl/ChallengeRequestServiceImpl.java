@@ -94,7 +94,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     public CdRes processBrwChallengeRequestHandler(
             @NotNull final String strCReq, final String threeDSSessionData)
-            throws ACSDataAccessException, InvalidStateTransactionException {
+            throws ACSDataAccessException, InvalidStateTransactionException,
+                    OperationNotSupportedException {
         // todo handle browser refresh, timeout and multiple request from different states,
         // whitelisting allowed,
         // todo dynamic configurable UI
@@ -133,11 +134,21 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (!Util.isNullorBlank(cReq.getChallengeCancel())) {
                 handleCancelChallenge(challengeFlowDto, transaction);
             } else if (Util.isChallengeCompleted(transaction)) {
-                generateErrorResponse(
-                        challengeFlowDto.getCdRes(),
-                        ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                        transaction,
-                        "Challenge resend threshold exceeded");
+                if (transaction
+                        .getTransactionStatusReason()
+                        .equals(TransactionStatusReason.TRANSACTION_TIMEOUT.getCode())) {
+                    generateErrorResponse(
+                            challengeFlowDto.getCdRes(),
+                            ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT,
+                            transaction,
+                            "Timeout expiry reached for the transaction");
+                } else {
+                    generateErrorResponse(
+                            challengeFlowDto.getCdRes(),
+                            ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                            transaction,
+                            "Challenge resend threshold exceeded");
+                }
 
             } else {
                 AuthConfigDto authConfigDto = getAuthConfig(transaction);
@@ -146,7 +157,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 } else {
                     transactionTimeoutServiceLocator
-                            .locateService(MessageType.AReq)
+                            .locateService(MessageType.CReq)
                             .scheduleTask(transaction.getId());
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(challengeFlowDto, transaction, authConfigDto);
@@ -202,6 +213,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             // save CDres and Transaction
             if (transaction != null) {
                 if (Util.isChallengeCompleted(transaction)) {
+                    transactionTimeoutServiceLocator
+                            .locateService(MessageType.CReq)
+                            .cancelTask(transaction.getId());
                     challengeFlowDto.getCdRes().setChallengeCompleted(true);
                     challengeFlowDto.getCdRes().setThreeDSSessionData(threeDSSessionData);
                 }
@@ -243,7 +257,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     }
 
     private CdRes processBrwChallengeValidationReq(CVReq cvReq)
-            throws ACSDataAccessException, InvalidStateTransactionException {
+            throws ACSDataAccessException, InvalidStateTransactionException,
+                    OperationNotSupportedException {
         // todo combine ChallengeValidationReq and ChallengeReq
         Transaction transaction = null;
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
@@ -274,12 +289,21 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (cvReq.isCancelChallenge()) {
                 handleCancelChallenge(challengeFlowDto, transaction);
             } else if (Util.isChallengeCompleted(transaction)) {
-                // todo handle timeout case
-                generateErrorResponse(
-                        challengeFlowDto.getCdRes(),
-                        ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                        transaction,
-                        "Challenge resend threshold exceeded");
+                if (transaction
+                        .getTransactionStatusReason()
+                        .equals(TransactionStatusReason.TRANSACTION_TIMEOUT.getCode())) {
+                    generateErrorResponse(
+                            challengeFlowDto.getCdRes(),
+                            ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT,
+                            transaction,
+                            "Timeout expiry reached for the transaction");
+                } else {
+                    generateErrorResponse(
+                            challengeFlowDto.getCdRes(),
+                            ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                            transaction,
+                            "Challenge resend threshold exceeded");
+                }
             } else {
                 AuthConfigDto authConfigDto = getAuthConfig(transaction);
                 if (cvReq.isResendChallenge()) {
@@ -342,6 +366,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 if (Util.isChallengeCompleted(transaction)) {
                     log.info(
                             "Challenge is marked completed for transaction{}", transaction.getId());
+                    transactionTimeoutServiceLocator
+                            .locateService(MessageType.CReq)
+                            .cancelTask(transaction.getId());
                     challengeFlowDto.getCdRes().setChallengeCompleted(true);
                     challengeFlowDto.getCdRes().setThreeDSSessionData(threeDsSessionData);
                 }

@@ -268,7 +268,23 @@ public class Util {
 
     public static void updateTransaction(Transaction transaction, InternalErrorCode errorCode) {
         transaction.setTransactionStatus(errorCode.getTransactionStatus());
-        transaction.setTransactionStatusReason(errorCode.getCode());
+        transaction.setTransactionStatusReason(errorCode.getTransactionStatusReason().getCode());
         transaction.setErrorCode(errorCode.getCode());
+    }
+
+    public static String getIdFromTaskIdentifier(String key, String input) {
+        String pattern = key + "\\[(.*?)\\]";
+        Pattern regexPattern = Pattern.compile(pattern);
+        Matcher matcher = regexPattern.matcher(input);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            // If no match is found, return null or an empty string, depending on your preference
+            return null;
+        }
+    }
+
+    public static String generateTaskIdentifier(String key, String id) {
+        return key + "[" + id + "]";
     }
 }
