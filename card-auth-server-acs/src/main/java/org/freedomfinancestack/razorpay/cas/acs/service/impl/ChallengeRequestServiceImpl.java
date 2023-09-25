@@ -156,12 +156,12 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         && cReq.getResendChallenge().equals(InternalConstants.YES)) {
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 } else {
-                    transactionTimeoutServiceLocator
-                            .locateService(MessageType.CReq)
-                            .scheduleTask(transaction.getId());
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 }
+                transactionTimeoutServiceLocator
+                        .locateService(MessageType.CReq)
+                        .scheduleTask(transaction.getId());
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
@@ -307,6 +307,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             } else {
                 AuthConfigDto authConfigDto = getAuthConfig(transaction);
                 if (cvReq.isResendChallenge()) {
+                    transactionTimeoutServiceLocator
+                            .locateService(MessageType.CReq)
+                            .scheduleTask(transaction.getId());
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 } else {
                     handleChallengeValidation(cvReq, transaction, authConfigDto, challengeFlowDto);

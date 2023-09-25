@@ -10,7 +10,7 @@ app:
       amex: 123456789012345
     timeout:
       challengeRequest:  30 #sec
-      challengeCompletion: 600 #sec
+      challengeCompletion: 180 #sec
 
 gateway:
   ds:
@@ -43,9 +43,9 @@ spring:
   application:
     name: Card Auth Server ACS
   datasource:
-    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_db}
+    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_acs}
     username: ${ACS_MYSQL_USER:root}
-    password: ${ACS_MYSQL_PASSWORD:password}
+    password: ${ACS_MYSQL_PASSWORD:Mysql@123}
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true
