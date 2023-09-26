@@ -15,9 +15,14 @@ import org.freedomfinancestack.razorpay.cas.dao.model.TransactionCardHolderDetai
 import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionRepository;
 import org.springframework.stereotype.Service;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code CdResMapperImpl} class provides method to populate CDRES object (challenge display
+ * response) from the given transaction.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +30,15 @@ public class CdResMapperImpl {
 
     private final InstitutionRepository institutionRepository;
 
-    public void generateCDres(CdRes cdRes, Transaction transaction) throws DataNotFoundException {
+    /**
+     * Updates the CDRES object (challenge display response) from the given transaction.
+     *
+     * @param cdRes the CDRES object which is passed as reference and will be update
+     * @param transaction Transaction object to read data inorder to update CDRES
+     * @throws DataNotFoundException
+     */
+    public void generateCDres(@NonNull final CdRes cdRes, final Transaction transaction)
+            throws DataNotFoundException {
         cdRes.setTransactionId(transaction.getId());
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());

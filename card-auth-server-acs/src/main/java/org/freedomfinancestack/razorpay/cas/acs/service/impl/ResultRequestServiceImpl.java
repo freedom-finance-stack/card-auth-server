@@ -25,6 +25,14 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Implementation of {@link ResultRequestService}, which is responsible for to send Result Requests
+ * to the DS.
+ *
+ * @author jaydeepRadadiya
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Service
 @Slf4j
 public class ResultRequestServiceImpl implements ResultRequestService {

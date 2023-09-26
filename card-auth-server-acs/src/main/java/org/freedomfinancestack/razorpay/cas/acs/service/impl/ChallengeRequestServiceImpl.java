@@ -47,6 +47,13 @@ import lombok.extern.slf4j.Slf4j;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.decodeBase64;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.fromJson;
 
+/**
+ * The {@code ChallengeRequestServiceImpl} class is an implementation of the {@link
+ * ChallengeRequestService}
+ *
+ * @author jaydeepRadadiya
+ * @version 1.0.0
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -522,7 +529,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     private void handleCancelChallenge(ChallengeFlowDto challengeFlowDto, Transaction transaction)
             throws InvalidStateTransactionException {
-
         StateMachine.Trigger(transaction, Phase.PhaseEvent.CANCEL_CHALLENGE);
 
         transaction.setInteractionCount(transaction.getInteractionCount() + 1);
