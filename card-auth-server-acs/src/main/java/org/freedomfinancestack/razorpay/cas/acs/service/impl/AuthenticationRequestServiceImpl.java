@@ -12,7 +12,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestSer
 import org.freedomfinancestack.razorpay.cas.acs.service.CardRangeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.InstitutionAcsUrlService;
-import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
@@ -54,7 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationRequestServiceImpl implements AuthenticationRequestService {
 
     private final TransactionService transactionService;
-    private final TransactionMessageTypeService transactionMessageTypeService;
+    private final TransactionMessageLogService transactionMessageLogService;
     private final CardRangeService cardRangeService;
     private final CardDetailService cardDetailService;
     private final AuthValueGeneratorService authValueGeneratorService;
@@ -87,7 +87,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
             // log incoming request in DB
-            transactionMessageTypeService.createAndSave(areq, areq.getTransactionId());
+            transactionMessageLogService.createAndSave(areq, areq.getTransactionId());
             // validate areq
             areqValidator.validateRequest(areq);
 
@@ -174,11 +174,13 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);
+            ares =
+                    aResMapper.toAres(
+                            areq,
+                            transaction,
+                            AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
+            transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
 
-            AResMapperParams aResMapperParams = AResMapperParams.builder().build();
-            ares = aResMapper.toAres(areq, transaction, acsUrl, aResMapperParams);
-
-            transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
         } catch (Exception ex) {
             // updating transaction with error and updating DB

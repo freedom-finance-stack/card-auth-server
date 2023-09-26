@@ -89,10 +89,11 @@
     <p><span th:text="${cdRes.challengeText}"></span></p>
     <p>You have <strong th:text="${cdRes.attemptLeft}"></strong> attempts left.</p>
     <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post"
-          th:object=”${cVReq}”>
+          th:object="${cVReq}">
         <label for="otp">Verification Code</label>
-        <input type="text" id="otp" name="otp" th:field=”*{authVal}” required>
-        <input type="hidden" name="transactionId" th:value="${response.transactionId}" th:field=”*{transactionId}”>
+        <input type="text" id="otp" name="otp" th:field="*{authVal}" required>
+        <input type="hidden" name="transactionId" th:value="${cdRes.transactionId}">
+<!--        <input type="hidden" name="resendChallenge" value="true">-->
         <button type="submit">Submit</button>
     </form>
     <p class="alert"> <span th:text="${cdRes.challengeInfoText}"> incorrect otp </span> </p>

@@ -42,11 +42,6 @@ public class ChallengeValidationRequestValidator {
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                 incomingCvreq.getTransactionId(),
                 notNull(),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 36));
-
-        Validation.validate(
-                ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
-                incomingCvreq.getAuthVal(),
-                notNull());
+                lengthValidator(LengthValidator.DataLengthType.FIXED, 36));
     }
 }

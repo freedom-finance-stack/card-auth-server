@@ -2,11 +2,9 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.InvalidStateTransactionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -65,13 +63,8 @@ public class ChallengeRequestController {
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model) {
-        CdRes cdRes = null;
-        try {
-            cdRes = challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
-        } catch (ACSDataAccessException | InvalidStateTransactionException e) {
-            // todo unhandled exception and if challengeResponse is null
-            throw new RuntimeException(e);
-        }
+        CdRes cdRes =
+                challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
         }
@@ -82,6 +75,7 @@ public class ChallengeRequestController {
         if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
             throw new RuntimeException("Transaction not recognized");
         }
+
         if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
             model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
         } else {
@@ -96,6 +90,8 @@ public class ChallengeRequestController {
     }
 
     private static String createCdRes(Model model, CdRes cdRes) {
+        CVReq cVReq = new CVReq();
+        model.addAttribute("cVReq", cVReq);
         model.addAttribute("cdRes", cdRes);
         return "acsOtp";
     }
@@ -113,7 +109,7 @@ public class ChallengeRequestController {
      */
     @RequestMapping(
             value = "/challenge/browser/validate",
-            method = RequestMethod.GET,
+            method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     @Operation(summary = "Handles browser validation Challenge Request generating user's browser")
@@ -129,7 +125,9 @@ public class ChallengeRequestController {
                         responseCode = "400",
                         description = "Bad Request or Request not according to Areq Schema")
             })
-    public String handleChallengeValidationRequest(CVReq cVReq, Model model) {
+    public String handleChallengeValidationRequest(
+            Model model, @ModelAttribute("cVReq") CVReq cVReq) {
+
         CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(cVReq);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
