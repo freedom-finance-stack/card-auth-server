@@ -12,10 +12,10 @@ import lombok.Data;
 @Data
 public class ChallengeAuthTypeConfig implements IFeature {
 
-    @SerializedName(value = "threshold")
+    @SerializedName(value = "purchase_amount_threshold")
     BigDecimal threshold;
 
-    @SerializedName(value = "threshold_auth_type")
+    @SerializedName(value = "above_threshold_auth_type")
     AuthType thresholdAuthType;
 
     @SerializedName(value = "default_auth_type")

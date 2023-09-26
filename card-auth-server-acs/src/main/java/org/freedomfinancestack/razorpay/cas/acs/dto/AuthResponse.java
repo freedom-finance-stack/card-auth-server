@@ -1,3 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto;
 
-public class AuthResponse {}
+import lombok.Data;
+
+@Data
+public class AuthResponse {
+    boolean authenticated;
+    String displayMessage;
+}

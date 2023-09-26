@@ -1,16 +1,12 @@
 package org.freedomfinancestack.razorpay.cas.contract;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 @Data
 public class Phone implements Validatable {
 
-    @JsonProperty("cc")
     private String cc;
 
-    @JsonProperty("subscriber")
     private String subscriber;
 
     public boolean isValid() {

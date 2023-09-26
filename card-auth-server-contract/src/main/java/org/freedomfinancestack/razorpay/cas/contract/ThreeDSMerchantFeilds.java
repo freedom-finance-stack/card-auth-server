@@ -3,38 +3,27 @@ package org.freedomfinancestack.razorpay.cas.contract;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.utils.Util;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 @Data
 public class ThreeDSMerchantFeilds implements Validatable {
 
-    @JsonProperty("shipIndicator")
     private String shipIndicator;
 
-    @JsonProperty("deliveryTimeframe")
     private String deliveryTimeframe;
 
-    @JsonProperty("deliveryEmailAddress")
     private String deliveryEmailAddress;
 
-    @JsonProperty("reorderItemsInd")
     private String reorderItemsInd;
 
-    @JsonProperty("preOrderPurchaseInd")
     private String preOrderPurchaseInd;
 
-    @JsonProperty("preOrderDate")
     private String preOrderDate;
 
-    @JsonProperty("giftCardAmount")
     private String giftCardAmount;
 
-    @JsonProperty("giftCardCurr")
     private String giftCardCurr;
 
-    @JsonProperty("giftCardCount")
     private String giftCardCount;
 
     public int getLength() {

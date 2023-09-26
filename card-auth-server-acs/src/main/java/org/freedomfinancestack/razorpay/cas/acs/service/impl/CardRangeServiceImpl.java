@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CardRangeServiceImpl implements CardRangeService {
-    // todo rename to cardRangeService
     private final CardRangeRepository cardRangeRepository;
 
     /**
@@ -95,7 +94,7 @@ public class CardRangeServiceImpl implements CardRangeService {
             throw new TransactionDataNotValidException(InternalErrorCode.INSTITUTION_INACTIVE);
         }
 
-        if (cardRange.getNetwork() == null) {
+        if (cardRange.getNetworkCode() == null || cardRange.getNetworkCode() == 0) {
             log.error("Network not found for card range: " + cardRange.getId());
             throw new DataNotFoundException(
                     ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,

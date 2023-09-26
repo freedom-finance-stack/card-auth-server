@@ -9,11 +9,14 @@ import lombok.Data;
 @Data
 public class ChallengeAttemptConfig implements IFeature {
 
-    @SerializedName(value = "attempt_allowed")
-    int attemptAllowed;
+    @SerializedName(value = "attempt_threshold")
+    int attemptThreshold;
 
-    @SerializedName(value = "block_on_exceed_otp_attempt")
-    boolean blockOnExceedOtpAttempt;
+    @SerializedName(value = "resend_threshold")
+    int resendThreshold;
+
+    @SerializedName(value = "block_on_exceed_attempt")
+    boolean blockOnExceedAttempt;
 
     @SerializedName(value = "whitelisting_allowed")
     boolean whitelistingAllowed;

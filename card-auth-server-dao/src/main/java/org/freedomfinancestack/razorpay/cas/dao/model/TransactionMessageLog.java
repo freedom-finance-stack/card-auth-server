@@ -11,13 +11,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "transaction_message_type_detail")
+@Table(name = "transaction_message_log")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 @Builder
-public class TransactionMessageTypeDetail extends BaseEntity<String> {
+public class TransactionMessageLog extends BaseEntity<String> {
     @Id
     @Column(name = "id")
     private String id;
@@ -31,7 +31,7 @@ public class TransactionMessageTypeDetail extends BaseEntity<String> {
     @Column(name = "message_type")
     private MessageType messageType;
 
-    public TransactionMessageTypeDetail(String message, MessageType messageType) {
+    public TransactionMessageLog(String message, MessageType messageType) {
         this.message = message;
         this.messageType = messageType;
     }

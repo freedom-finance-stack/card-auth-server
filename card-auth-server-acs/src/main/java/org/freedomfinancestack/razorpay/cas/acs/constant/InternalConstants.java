@@ -23,7 +23,18 @@ public class InternalConstants {
     public static final String PAD_LEFT = "LEFT";
     public static final String PAD_RIGHT = "RIGHT";
     public static final String NO_OP_HSM = "NoOpHSM";
+    public static final Character SYMBOL_F = 'F';
 
+    public static final String CHALLENGE_INFORMATION_TEXT =
+            "we have sent you a text message with a code ";
+    public static final String CHALLENGE_INFORMATION_MOBILE_TEXT =
+            "to your registered mobile number %s";
+    public static final String AND = " and ";
+
+    public static final String CHALLENGE_INFORMATION_EMAIL_TEXT =
+            "to your registered email address %s";
+
+    public static final String CHALLENGE_INCORRECT_OTP_TEXT = "you have entered incorrect OTP";
     public static final String MODEL_ATTRIBUTE_CRES = "cRes";
     public static final String MODEL_ATTRIBUTE_ERRO = "erro";
     public static final String MODEL_ATTRIBUTE_NOTIFICATION_URL = "notificationUrl";

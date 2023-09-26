@@ -34,6 +34,11 @@ public class ExternalApiCardDetailFetcherServiceImpl implements CardDetailFetche
         return null;
     }
 
+    @Override
+    public void blockCard(CardDetailsRequest cardDetailsRequest) throws ACSDataAccessException {
+        log.info("Block card details using External API");
+    }
+
     public void validateCardDetails(CardDetailResponse cardDetailDto)
             throws CardBlockedException, DataNotFoundException {
         log.info("Validating card details from ACS");

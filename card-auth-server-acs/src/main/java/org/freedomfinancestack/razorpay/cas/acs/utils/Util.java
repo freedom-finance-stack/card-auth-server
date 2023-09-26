@@ -13,6 +13,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
+import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -119,6 +123,27 @@ public class Util {
     }
 
     /**
+     * Encode base64 data to string.
+     *
+     * @param data String data
+     * @return encoded string
+     */
+    public static String encodeBase64(String data) {
+        return Base64.getEncoder().encodeToString(data.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Encode base64 data to string.
+     *
+     * @param data String data
+     * @return encoded string
+     */
+    public static String encodeBase64(Object data) {
+        String errorRes = Util.toJson(data);
+        return Base64.getEncoder().encodeToString(errorRes.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
      * Pads the input string with the specified padding character to achieve the desired length.
      *
      * @param input the input string to be padded
@@ -211,5 +236,32 @@ public class Util {
         int min = (int) Math.pow(10, digits - 1);
         int max = (int) Math.pow(10, digits) - 1;
         return random.nextInt(max - min + 1) + min;
+    }
+
+    public static ThreeDSErrorResponse generateErrorResponse(
+            ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
+        ThreeDSErrorResponse errorObj = new ThreeDSErrorResponse();
+        if (error != null) {
+            errorObj.setErrorCode(error.getErrorCode());
+            errorObj.setErrorComponent(error.getErrorComponent());
+            errorObj.setErrorDescription(error.getErrorDescription());
+            errorObj.setErrorDetail(errorDetail);
+        }
+        if (null != transaction) {
+            errorObj.setMessageVersion(transaction.getMessageVersion());
+            errorObj.setAcsTransID(transaction.getId());
+            errorObj.setDsTransID(transaction.getTransactionReferenceDetail().getDsTransactionId());
+            errorObj.setThreeDSServerTransID(
+                    transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+        }
+        return errorObj;
+    }
+
+    public static boolean isChallengeCompleted(Transaction transaction) {
+        return !transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED)
+                && !transaction.getTransactionStatus().equals(TransactionStatus.CREATED)
+                && !transaction
+                        .getTransactionStatus()
+                        .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
     }
 }
