@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InstitutionRequestDto {
-
+public class InstitutionDto {
     private String institutionId;
 
     private String institutionName;
@@ -19,3 +18,4 @@ public class InstitutionRequestDto {
 
     private String timezone;
 }
+

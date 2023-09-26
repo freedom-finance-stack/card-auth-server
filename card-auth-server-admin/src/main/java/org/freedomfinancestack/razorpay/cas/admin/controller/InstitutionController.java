@@ -3,10 +3,9 @@ package org.freedomfinancestack.razorpay.cas.admin.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.freedomfinancestack.razorpay.cas.admin.dto.GetInstitutionRequestDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.GetInstitutionResponseDto;
-import org.freedomfinancestack.razorpay.cas.admin.dto.InstitutionRequestDto;
-import org.freedomfinancestack.razorpay.cas.admin.dto.InstitutionResponseDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionRequestDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionResponseDto;
 import org.freedomfinancestack.razorpay.cas.admin.service.InstitutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +40,13 @@ public class InstitutionController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public InstitutionResponseDto handleCreateInstitutionOperation(
-            @RequestBody @NonNull InstitutionRequestDto institutionRequestDto,
+    public CreateInstitutionResponseDto handleCreateInstitutionOperation(
+            @RequestBody @NonNull CreateInstitutionRequestDto createInstitutionRequestDto,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             @RequestHeader HttpHeaders headers) {
 
-        return institutionService.processCreateInstitutionOperation(institutionRequestDto);
+        return institutionService.processCreateInstitutionOperation(createInstitutionRequestDto);
     }
 
     @GetMapping(
