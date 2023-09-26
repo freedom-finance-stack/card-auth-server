@@ -32,6 +32,7 @@ public class TransactionTimeoutServiceLocator {
                 break;
             case CReq:
                 transactionTimerService = cReqTransactionTimeoutService;
+                break;
             default:
                 throw new OperationNotSupportedException(
                         InternalErrorCode.INVALID_CONFIG, "Invalid messageType Type");
