@@ -1,15 +1,16 @@
 package org.freedomfinancestack.razorpay.cas.admin.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class InstitutionResponseDto {
+public class InstitutionMetaDto {
+    private byte[] logoData;
 
-    private boolean isSuccess;
+    private String logoFilename;
+
+    private String logoFileType;
 }

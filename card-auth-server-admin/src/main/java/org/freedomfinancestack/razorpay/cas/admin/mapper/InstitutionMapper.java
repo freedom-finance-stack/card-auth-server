@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.admin.mapper;
 
-import org.freedomfinancestack.razorpay.cas.admin.dto.InstitutionRequestDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.InstitutionDto;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.mapstruct.Mapper;
@@ -21,5 +21,5 @@ public interface InstitutionMapper {
     @Mapping(target = "timezone", source = "timezone")
     @Mapping(target = "createdBy", expression = "java(String.valueOf(\"dev-user\"))")
     @Mapping(target = "status", expression = "java(InstitutionStatus.ACTIVE)")
-    Institution toInstitutionModel(@NonNull final InstitutionRequestDto institutionRequestDto);
+    Institution toInstitutionModel(@NonNull final InstitutionDto institutionDto);
 }
