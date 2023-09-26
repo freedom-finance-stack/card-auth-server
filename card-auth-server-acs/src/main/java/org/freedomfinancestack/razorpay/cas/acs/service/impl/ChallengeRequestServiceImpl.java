@@ -63,7 +63,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final TransactionMessageLogService transactionMessageLogService;
     private final ChallengeRequestValidator challengeRequestValidator;
     private final FeatureService featureService;
-    private final FeatureService.AuthenticationServiceLocator authenticationServiceLocator;
+    private final AuthenticationServiceLocator authenticationServiceLocator;
     private final CdResMapperImpl cdResMapper;
     private final ResultRequestService resultRequestService;
     private final ECommIndicatorService eCommIndicatorService;
