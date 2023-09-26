@@ -9,7 +9,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
 /**
  * The {@code FeatureService} interface is responsible for fetching the authentication configuration
  * for a given set of card range, ground and institution ids. If config exist under multiple ids
- * provided it will give precedence in following order CardRange > CardRangeGroup > Institution.
+ * provided it will give precedence in following order CardRange, CardRangeGroup, Institution.
  *
  * @author jaydeepRadadiya
  * @version 1.0.0
