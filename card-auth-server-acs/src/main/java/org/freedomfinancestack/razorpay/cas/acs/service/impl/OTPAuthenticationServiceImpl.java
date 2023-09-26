@@ -8,6 +8,15 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * The {@code OTPAuthenticationServiceImpl} class is an implementation of the {@link
+ * AuthenticationService} interface. This service is responsible for authenticating the user using
+ * the One Time Password (OTP) and generating the Authentication Response.
+ *
+ * @author jaydeepRadadiya
+ * @since 1.0.0
+ * @version 1.0.0
+ */
 @Service("OTPAuthenticationService")
 @Slf4j
 public class OTPAuthenticationServiceImpl implements AuthenticationService {
