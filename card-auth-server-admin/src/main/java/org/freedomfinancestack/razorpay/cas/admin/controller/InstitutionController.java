@@ -3,6 +3,8 @@ package org.freedomfinancestack.razorpay.cas.admin.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.freedomfinancestack.razorpay.cas.admin.dto.GetInstitutionRequestDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.GetInstitutionResponseDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.InstitutionRequestDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.InstitutionResponseDto;
 import org.freedomfinancestack.razorpay.cas.admin.service.InstitutionService;
@@ -46,4 +48,8 @@ public class InstitutionController {
 
         return institutionService.processCreateInstitutionOperation(institutionRequestDto);
     }
+
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    private GetInstitutionResponseDto
 }

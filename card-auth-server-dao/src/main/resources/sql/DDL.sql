@@ -315,6 +315,52 @@ CREATE TABLE `otp_transaction_detail`
     `deleted_at`          timestamp default NULL
 );
 
+DROP TABLE IF EXISTS `admin_user`;
+CREATE TABLE `admin_user`
+{
+    `id`               varchar(36)                PRIMARY KEY,
+    `username`         varchar(50)                NOT NULL,
+    `email_id`         varchar(100)               NOT NULL,
+    `mobile_number`    varchar(20)                DEFAULT NULL,
+    `password`         varchar(50)                NOT NULL,
+    `status`           ENUM('ACTIVE', 'INACTIVE') NOT NULL,
+    `last_login_dttm`  timestamp                  DEFAULT NULL,
+    -- `last_logout_dttm` timestamp                  DEFAULT NULL,
+    `created_at`       timestamp                  NOT NULL,
+    `modified_at`      timestamp                  NOT NULL,
+    `deleted_at`       timestamp                  DEFAULT NULL,
+    `created_by`       varchar(40)                NOT NULL,
+    `modified_by`      varchar(40)                NOT NULL,
+    `deleted_by`       varchar(40)                DEFAULT NULL
+}
+
+DROP TABLE IF EXISTS `admin_user_institution`;
+CREATE TABLE `admin_user_institution`
+{
+    `id`             varchar(36) PRIMARY KEY,
+    `user_id`        varchar(36) NOT NULL,
+    `institution_id` varchar(36) DEFAULT NULL,
+    `created_at`     timestamp   NOT NULL,
+    `modified_at`    timestamp   NOT NULL,
+    `deleted_at`     timestamp   DEFAULT NULL,
+}
+
+DROP TABLE IF EXISTS `institution_meta`;
+CREATE TABLE `institution_meta`
+{
+    `id`             varchar(36) PRIMARY KEY,
+    `institution_id` varchar(36) NOT NULL,
+    `logo_data`      bolb        NOT NULL,
+    `logo_filename`  varchar(50) NOT NULL,
+    `logo_file_type` varchar(50) NOT NULL,
+    `created_at`     timestamp   NOT NULL,
+    `modified_at`    timestamp   NOT NULL,
+    `deleted_at`     timestamp   DEFAULT NULL,
+    `created_by`     varchar(40) NOT NULL,
+    `modified_by`    varchar(40) NOT NULL,
+    `deleted_by`     varchar(40) DEFAULT NULL
+}
+
 
 #  Purposed tables for OTP
 
