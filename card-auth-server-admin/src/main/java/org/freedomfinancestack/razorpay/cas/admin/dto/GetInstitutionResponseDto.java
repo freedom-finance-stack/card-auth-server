@@ -8,17 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetInstitutionResponseDto {
-    private String institutionId;
+    private InstitutionDto institutionDto;
 
-    private String institutionName;
-
-    private String shortName;
-
-    private String messageVersion;
-
-    private Short isoCountryCode;
-
-    private String timezone;
-
-    private boolean fetchMeta;
+    private InstitutionMeta institutionMetaDto;
 }

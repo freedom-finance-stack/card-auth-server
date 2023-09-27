@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InstitutionMetaDto {
-    private byte[] logoData;
+public class InstitutionMeta {
+    private String logoData;
 
     private String logoFilename;
-
-    private String logoFileType;
 }

@@ -18,4 +18,3 @@ public class InstitutionDto {
 
     private String timezone;
 }
-

@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Where(clause = "deleted_at is null")
 public class Institution extends BaseEntity<String> {
+
     @Id private String id;
 
     @Column(name = "name")
@@ -39,9 +40,17 @@ public class Institution extends BaseEntity<String> {
     @Column(name = "created_by", nullable = false)
     private String createdBy;
 
-    @Column(name = "modified_by")
+    @Column(name = "modified_by", nullable = false)
     private String modifiedBy;
 
     @Column(name = "deleted_by")
     private String deletedBy;
+
+    @OneToOne(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private InstitutionMeta institutionMeta;
+
+    public void setInstitutionMeta(InstitutionMeta institutionMeta) {
+        this.institutionMeta = institutionMeta;
+        institutionMeta.setInstitution(this);
+    }
 }

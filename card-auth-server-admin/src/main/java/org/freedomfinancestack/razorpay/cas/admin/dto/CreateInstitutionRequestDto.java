@@ -1,6 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.admin.dto;
 
-import org.springframework.web.multipart.MultipartFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +9,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateInstitutionRequestDto {
 
-    private InstitutionDto institutionDto;
+    //    private String institutionId;
 
-    private MultipartFile logo;
+    private String institutionName;
 
+    private String institutionShortName;
+
+    private Short isoCountryCode;
+
+    private String timezone;
+
+    private String messageVersion;
+
+    private InstitutionMeta institutionMeta;
+
+    //    private InstitutionDto institutionDto;
+
+    //    private InstitutionMetaDto institutionMetaDto;
 }

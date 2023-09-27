@@ -2,8 +2,8 @@ package org.freedomfinancestack.razorpay.cas.admin.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 
-import org.freedomfinancestack.razorpay.cas.admin.dto.GetInstitutionResponseDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionRequestDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionResponseDto;
 import org.freedomfinancestack.razorpay.cas.admin.service.InstitutionService;
@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,15 +39,11 @@ public class InstitutionController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public CreateInstitutionResponseDto handleCreateInstitutionOperation(
-            @RequestBody @NonNull CreateInstitutionRequestDto createInstitutionRequestDto,
+            @RequestBody @NotNull CreateInstitutionRequestDto createInstitutionRequestDto,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             @RequestHeader HttpHeaders headers) {
 
         return institutionService.processCreateInstitutionOperation(createInstitutionRequestDto);
     }
-
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    private GetInstitutionResponseDto
 }

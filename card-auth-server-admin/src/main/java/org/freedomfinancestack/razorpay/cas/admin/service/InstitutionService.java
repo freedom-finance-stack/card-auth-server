@@ -1,8 +1,10 @@
 package org.freedomfinancestack.razorpay.cas.admin.service;
 
+import org.freedomfinancestack.razorpay.cas.admin.constants.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionRequestDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionResponseDto;
 import org.freedomfinancestack.razorpay.cas.admin.mapper.InstitutionMapper;
+import org.freedomfinancestack.razorpay.cas.admin.utils.Util;
 import org.freedomfinancestack.razorpay.cas.admin.validation.InstitutionValidator;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionRepository;
@@ -26,8 +28,18 @@ public class InstitutionService {
             @NonNull final CreateInstitutionRequestDto createInstitutionRequestDto) {
 
         institutionValidator.validateInstitutionRequest(createInstitutionRequestDto);
+
         Institution institution =
-                InstitutionMapper.INSTANCE.toInstitutionModel(createInstitutionRequestDto.getInstitutionDto());
+                InstitutionMapper.INSTANCE.toInstitutionModel(createInstitutionRequestDto);
+
+        String institutionId = Util.generateRandomStringID(InternalConstants.DEFAULT_LENGTH);
+
+        institution.setId(institutionId);
+
+        if (institution.getInstitutionMeta() != null) {
+            institution.getInstitutionMeta().setInstitution(institution);
+        }
+        
         institutionRepository.save(institution);
 
         return CreateInstitutionResponseDto.builder().isSuccess(true).build();
