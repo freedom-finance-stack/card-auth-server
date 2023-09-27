@@ -8,6 +8,9 @@ app:
       visa: 123456789012345
       mastercard: 123456789012345
       amex: 123456789012345
+    timeout:
+      challengeRequest:  30 #sec
+      challengeCompletion: 180 #sec
 
 gateway:
   ds:

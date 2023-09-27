@@ -3,13 +3,13 @@ package org.freedomfinancestack.razorpay.cas.acs.exception.threeds;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
-public class InvalidAuthTypeException extends ThreeDSException {
+public class OperationNotSupportedException extends ThreeDSException {
 
-    public InvalidAuthTypeException(InternalErrorCode internalErrorCode, String message) {
+    public OperationNotSupportedException(InternalErrorCode internalErrorCode, String message) {
         super(ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, internalErrorCode, message);
     }
 
-    public InvalidAuthTypeException(InternalErrorCode internalErrorCode) {
+    public OperationNotSupportedException(InternalErrorCode internalErrorCode) {
         super(
                 ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                 internalErrorCode,

@@ -3,7 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service;
 import java.math.BigDecimal;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.InvalidAuthTypeException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.OperationNotSupportedException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.model.ChallengeAuthTypeConfig;
@@ -24,7 +24,7 @@ public class AuthenticationServiceLocator {
 
     public AuthenticationService locateTransactionAuthenticationService(
             Transaction transaction, ChallengeAuthTypeConfig authConfig)
-            throws InvalidAuthTypeException {
+            throws OperationNotSupportedException {
         String purchaseAmount = null;
         if (transaction.getTransactionPurchaseDetail() != null
                 && !Util.isNullorBlank(
@@ -40,7 +40,8 @@ public class AuthenticationServiceLocator {
         }
     }
 
-    public AuthenticationService locateService(AuthType authType) throws InvalidAuthTypeException {
+    public AuthenticationService locateService(AuthType authType)
+            throws OperationNotSupportedException {
         AuthenticationService authenticationService = null;
 
         switch (authType) {
@@ -51,7 +52,7 @@ public class AuthenticationServiceLocator {
                 //                authenticationService = passwordAuthenticationServiceImpl;
                 //                break;
             default:
-                throw new InvalidAuthTypeException(
+                throw new OperationNotSupportedException(
                         InternalErrorCode.INVALID_CONFIG, "Invalid Auth Type");
         }
         return authenticationService;

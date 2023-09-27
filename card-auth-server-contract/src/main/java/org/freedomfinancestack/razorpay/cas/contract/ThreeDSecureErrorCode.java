@@ -25,7 +25,7 @@ public enum ThreeDSecureErrorCode {
     TRANSACTION_DATA_NOT_VALID("305", "A", "Transaction data not valid"),
     MCC_NOT_VALID_FOR_PAYMENT_SYSTEM("306", "A", "MCC not Valid for Payment System"),
     SERIAL_NUMBER_NOT_VALID("307", "A", "Serial Number not valid"),
-    TRANSACTION_TIMED_OUT("402", "A", "Transaction timed out"),
+    TRANSACTION_TIMED_OUT("402", "A", "Transaction timed-out"),
     TRANSACTION_TIMEOUT("4010", "TRANSACTION TIMEOUT"),
     TRANSIENT_SYSTEM_FAILURE(
             "403", "A", "Transient system failure"), // todo  a slowly processing back-end system.

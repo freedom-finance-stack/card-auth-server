@@ -19,10 +19,12 @@ INSERT INTO `card_detail` VALUES ('15', '1', 'R6','I1','7654320530000246','0535'
 INSERT INTO `card_detail` VALUES ('16', '1', 'R6','I1','7654320530000261','0535', 1, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('17', '1', 'R6','I1','7654320530000279','0535', 1, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('18', '1', 'R6','I1','7654320530046371','0535', 1, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('19', '1', 'R7','I1','4030000000000018','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;
 INSERT INTO `card_range` VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R7', 'I1', 4030000000000000, 4030000000000100, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'Visa Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R5', 'I1', 5116000000000000, 5516000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'MasterCard Testing', 'ACS', 2, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R2', 'I1', 7654310400000000, 7654310499999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R3', 'I1', 7654350700000000, 7654350799999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
@@ -50,6 +52,19 @@ INSERT INTO `institution_acs_url` VALUES ('I1', '02', 2, 'https://ec2-52-66-119-
 INSERT INTO `institution_acs_url` VALUES ('I1', '01', 2, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v1/transaction/challenge/app', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;
 
-LOCK TABLES `network` WRITE;
-INSERT INTO `network` VALUES ('01',1,'VISA',NOW(),'dev-user',NOW(),'dev-user',NULL,NULL),('02',2,'MASTERCARD',NOW(),'dev-user',NOW(),'dev-user',NULL,NULL);
+LOCK TABLES `feature` WRITE;
+INSERT INTO `feature` VALUES ('1', 'INSTITUTION', 'I1', 1, 'CHALLENGE_AUTH_TYPE', '{
+    "purchase_amount_threshold" : 20000,
+    "above_threshold_auth_type" :  "OTP",
+    "default_auth_type" :  "OTP"
+}', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
+
+INSERT INTO `feature` VALUES ('2', 'INSTITUTION', 'I1', 1, 'CHALLENGE_ATTEMPT', '{
+    "attempt_threshold": 3,
+    "resend_threshold": 3,
+    "block_on_exceed_attempt": true,
+    "whitelisting_allowed": true
+}', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
+
+INSERT INTO `feature` VALUES ('3', 'INSTITUTION', 'I1', 1, 'OTP', '{ "length" : 4}', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
 UNLOCK TABLES;
