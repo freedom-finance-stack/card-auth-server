@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -16,11 +17,13 @@ import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogSer
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
+import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -28,7 +31,6 @@ import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrlPK;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.StateMachine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -61,6 +63,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
     private final InstitutionAcsUrlService institutionAcsUrlService;
+    private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -180,8 +183,12 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             transaction,
                             AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
-
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
+            if (transaction.isChallengeMandated()) {
+                transactionTimeoutServiceLocator
+                        .locateService(MessageType.AReq)
+                        .scheduleTask(transaction.getId());
+            }
         } catch (Exception ex) {
             // updating transaction with error and updating DB
             // throw ThreeDSException again so that it returns to client with error message, it is

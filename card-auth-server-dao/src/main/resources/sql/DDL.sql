@@ -246,8 +246,6 @@ CREATE TABLE `feature`
 );
 CREATE INDEX feature_entity_type_entity_id_name ON feature (name, entity_type, entity_id);
 
-CREATE INDEX feature_entity_type_entity_id_name ON feature (name, entity_type, entity_id);
-
 DROP TABLE IF EXISTS `cardholder`;
 CREATE TABLE `cardholder`
 (
@@ -316,10 +314,10 @@ CREATE TABLE `otp_transaction_detail`
 );
 
 
-#  Purposed tables for OTP
+-- Purposed tables for OTP
 
-#  OTP : ID , Value, Valid_till, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
-#  NOTIFICATION : CHANNEL, DESTINATION, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
-#  OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID
+-- OTP : ID , Value, Valid_till, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
+-- NOTIFICATION : CHANNEL, DESTINATION, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
+-- OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID
 
 

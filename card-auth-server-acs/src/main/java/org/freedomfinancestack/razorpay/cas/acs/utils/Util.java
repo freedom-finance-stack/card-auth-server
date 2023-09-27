@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -263,5 +264,27 @@ public class Util {
                 && !transaction
                         .getTransactionStatus()
                         .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
+    }
+
+    public static void updateTransaction(Transaction transaction, InternalErrorCode errorCode) {
+        transaction.setTransactionStatus(errorCode.getTransactionStatus());
+        transaction.setTransactionStatusReason(errorCode.getTransactionStatusReason().getCode());
+        transaction.setErrorCode(errorCode.getCode());
+    }
+
+    public static String getIdFromTaskIdentifier(String key, String input) {
+        String pattern = key + "\\[(.*?)\\]";
+        Pattern regexPattern = Pattern.compile(pattern);
+        Matcher matcher = regexPattern.matcher(input);
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            // If no match is found, return null or an empty string, depending on your preference
+            return null;
+        }
+    }
+
+    public static String generateTaskIdentifier(String key, String id) {
+        return key + "[" + id + "]";
     }
 }

@@ -33,8 +33,8 @@ public class CdResMapperImpl {
     /**
      * Updates the CDRES object (challenge display response) from the given transaction.
      *
-     * @param cdRes
-     * @param transaction
+     * @param cdRes the CDRES object which is passed as reference and will be update
+     * @param transaction Transaction object to read data inorder to update CDRES
      * @throws DataNotFoundException
      */
     public void generateCDres(@NonNull final CdRes cdRes, final Transaction transaction)
