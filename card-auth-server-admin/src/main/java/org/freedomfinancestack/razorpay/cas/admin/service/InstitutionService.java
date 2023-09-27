@@ -39,7 +39,7 @@ public class InstitutionService {
         if (institution.getInstitutionMeta() != null) {
             institution.getInstitutionMeta().setInstitution(institution);
         }
-        
+
         institutionRepository.save(institution);
 
         return CreateInstitutionResponseDto.builder().isSuccess(true).build();
