@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication(
         scanBasePackages = {
@@ -18,6 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = {"org.freedomfinancestack.razorpay.cas.dao.repository"})
 @EntityScan(basePackages = {"org.freedomfinancestack.razorpay.cas.dao.model"})
 @EnableConfigurationProperties
+@EnableRetry
 public class AcsAppServer {
     public static void main(String[] args) {
         ConfigurableApplicationContext configurableApplicationContext =

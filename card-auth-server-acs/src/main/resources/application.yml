@@ -8,6 +8,36 @@ app:
       visa: 123456789012345
       mastercard: 123456789012345
       amex: 123456789012345
+    timeout:
+      challengeRequest:  30 #sec
+      challengeCompletion: 180 #sec
+
+gateway:
+  ds:
+    mock: true
+    services:
+      VISA_DS:
+        url: https://sample.site/
+        useSSL: false
+        connectTimeout : 5000
+        readTimeout : 5000
+        keyStore:
+          path: classpath:acs/sample.p12
+          password: password
+        retryable:
+          maxAttempts: 2
+          backOffPeriod: 1000   #ms
+      MASTERCARD_DS:
+        url: https://sample.site/
+        useSSL: false
+        connectTimeout: 5000
+        readTimeout: 5000
+        keyStore:
+          path: classpath:acs/sample.p12
+          password: password
+        retryable:
+          maxAttempts: 2
+          backOffPeriod: 1000
 
 spring:
   application:
@@ -74,8 +104,14 @@ hsm:
       port: 8080
       timeout: 1
 
+auth-value:
+  master-card-acs-key: ${MC_ACS_KEY:B039878C1F96D212F509B2DC4CC8CD1BB039878C1F96D212F509B2DC4CC8CD1B}
 
-
+task:
+  scheduler:
+    corePoolSize: 5
+    maxPoolSize: 10
+    keepAliveTime: 60000 #mili
 
 
 

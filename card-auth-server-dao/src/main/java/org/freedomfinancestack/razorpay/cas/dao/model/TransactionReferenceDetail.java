@@ -29,6 +29,12 @@ public class TransactionReferenceDetail extends BaseEntity<String> {
     @Column(name = "ds_transaction_id")
     private String dsTransactionId;
 
+    @Column(name = "ds_url")
+    private String dsUrl;
+
+    @Column(name = "notification_url")
+    private String notificationUrl;
+
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
     @MapsId
@@ -37,9 +43,14 @@ public class TransactionReferenceDetail extends BaseEntity<String> {
     public TransactionReferenceDetail(
             String threedsServerTransactionId,
             String threedsServerReferenceNumber,
-            String dsTransactionId) {
+            String dsTransactionId,
+            String dsUrl,
+            String notificationUrl) {
+
         this.threedsServerTransactionId = threedsServerTransactionId;
         this.threedsServerReferenceNumber = threedsServerReferenceNumber;
         this.dsTransactionId = dsTransactionId;
+        this.dsUrl = dsUrl;
+        this.notificationUrl = notificationUrl;
     }
 }

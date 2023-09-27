@@ -6,7 +6,9 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import lombok.Getter;
 
 @Getter
-public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piyush
+public enum
+        InternalErrorCode { // todo get this file reviewed by Ashish and Piyush and revisit error
+    // codes
 
     // Error code for card USER
     CARD_USER_NOT_FOUND(
@@ -124,7 +126,8 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8001",
             "Can't parse Creq message",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+            TransactionStatusReason.INVALID_TRANSACTION),
+
     TRANSACTION_NOT_FOUND(
             "8002",
             "TRANSACTION ID NOT FOUND",
@@ -139,7 +142,47 @@ public enum InternalErrorCode { // todo get this file reviewed by Ashish and Piy
             "8004",
             "CANCELED BY CARD HOLDER",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.LOW_CONFIDENCE);
+            TransactionStatusReason.LOW_CONFIDENCE),
+    NO_CHANNEL_FOUND_FOR_OTP(
+            "8005",
+            "NO CHANNEL FOUND FOR OTP",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.CARDHOLDER_NOT_ENROLLED_IN_SERVICE),
+    INVALID_STATE_TRANSITION(
+            "8006",
+            "invalid state transition",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
+    EXCEED_MAX_ALLOWED_ATTEMPTS(
+            "8007",
+            "attempts exceeded",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.EXCEED_MAX_CHALLANGES),
+    INVALID_RRES(
+            "8008",
+            "invalid RRes received from DS",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.INVALID_TRANSACTION),
+    CONNECTION_TO_DS_FAILED(
+            "8009",
+            "can't connect to DS to send RReq",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+    CHALLENGE_RESEND_THRESHOLD_EXCEEDED(
+            "8010",
+            "challenge resend threshold exceeded",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.EXCEED_MAX_CHALLANGES),
+    TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ(
+            "8011",
+            "transaction timed out waiting for CREQ",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+    TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION(
+            "8013",
+            "transaction timed out for challenge completion",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT);
 
     private final String code;
 

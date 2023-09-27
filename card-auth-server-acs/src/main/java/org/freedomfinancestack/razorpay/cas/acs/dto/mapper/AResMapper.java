@@ -9,7 +9,6 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
-import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -62,9 +61,9 @@ public interface AResMapper {
     @Mapping(
             target = "acsURL",
             expression =
-                    "java(!transaction.getTransactionStatus()."
-                            + "equals(TransactionStatus.SUCCESS) && institutionAcsUrl != null ? "
-                            + "institutionAcsUrl.getChallengeUrl() : null)")
+                    "java(!transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)"
+                            + " && aResMapperParams.getAcsUrl() != null ? "
+                            + "aResMapperParams.getAcsUrl() : null)")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -83,13 +82,11 @@ public interface AResMapper {
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
-    ARES toAres(
-            AREQ areq,
-            Transaction transaction,
-            InstitutionAcsUrl institutionAcsUrl,
-            AResMapperParams aResMapperParams);
+    ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
+        AResMapperParams aResMapperParams;
+
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
                 && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
@@ -113,16 +110,6 @@ public interface AResMapper {
             }
         }
         return transStatusReason;
-    }
-
-    default String getAuthType(Transaction transaction) {
-        if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
-                        transaction.getTransactionStatus())
-                || TransactionStatus.CHALLENGE_REQUIRED.equals(
-                        transaction.getTransactionStatus())) {
-            return "02"; // hard coded to Dynamic
-        }
-        return "";
     }
 
     default String getOperatorId(Transaction transaction, AppConfiguration appConfiguration) {

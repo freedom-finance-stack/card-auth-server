@@ -29,6 +29,7 @@ public class AppConfiguration {
     public static class AcsProperties {
         private String referenceNumber;
         private OperatorIdProperties operatorId;
+        private TimeoutConfig timeout;
 
         @Getter
         @Setter
@@ -36,6 +37,13 @@ public class AppConfiguration {
             private String visa;
             private String mastercard;
             private String amex;
+        }
+
+        @Getter
+        @Setter
+        public static class TimeoutConfig {
+            private int challengeRequest;
+            private int challengeCompletion;
         }
     }
 }

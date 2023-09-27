@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -12,15 +13,17 @@ import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestSer
 import org.freedomfinancestack.razorpay.cas.acs.service.CardRangeService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.InstitutionAcsUrlService;
-import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageTypeService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
+import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -28,7 +31,6 @@ import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrlPK;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
-import org.freedomfinancestack.razorpay.cas.dao.statemachine.StateMachine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -54,13 +56,14 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationRequestServiceImpl implements AuthenticationRequestService {
 
     private final TransactionService transactionService;
-    private final TransactionMessageTypeService transactionMessageTypeService;
+    private final TransactionMessageLogService transactionMessageLogService;
     private final CardRangeService cardRangeService;
     private final CardDetailService cardDetailService;
     private final AuthValueGeneratorService authValueGeneratorService;
     private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
     private final InstitutionAcsUrlService institutionAcsUrlService;
+    private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -87,7 +90,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
             // log incoming request in DB
-            transactionMessageTypeService.createAndSave(areq, areq.getTransactionId());
+            transactionMessageLogService.createAndSave(areq, areq.getTransactionId());
             // validate areq
             areqValidator.validateRequest(areq);
 
@@ -102,7 +105,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             cardRangeService.validateRange(cardRange);
 
             // update Ids in transaction
-            transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetwork().getCode());
+            transaction.getTransactionCardDetail().setNetworkCode(cardRange.getNetworkCode());
             transaction.setCardRangeId(cardRange.getId());
             transaction.setInstitutionId(cardRange.getInstitution().getId());
 
@@ -112,10 +115,11 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             new InstitutionAcsUrlPK(
                                     cardRange.getInstitution().getId(),
                                     areq.getDeviceChannel(),
-                                    cardRange.getNetwork().getCode()));
+                                    cardRange.getNetworkCode()));
 
             // fetch Card and User details and validate details
-            cardDetailService.validateCardDetails(
+            cardDetailService.validateAndUpdateCardDetails(
+                    transaction,
                     new CardDetailsRequest(
                             cardRange.getInstitution().getId(), areq.getAcctNumber()),
                     cardRange.getCardDetailsStore());
@@ -169,16 +173,22 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     eCommIndicatorService.generateECI(
                             new GenerateECIRequest(
                                             transaction.getTransactionStatus(),
-                                            cardRange.getNetwork(),
+                                            cardRange.getNetworkCode(),
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);
-
-            AResMapperParams aResMapperParams = AResMapperParams.builder().build();
-            ares = aResMapper.toAres(areq, transaction, acsUrl, aResMapperParams);
-
-            transactionMessageTypeService.createAndSave(ares, areq.getTransactionId());
+            ares =
+                    aResMapper.toAres(
+                            areq,
+                            transaction,
+                            AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
+            transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
+            if (transaction.isChallengeMandated()) {
+                transactionTimeoutServiceLocator
+                        .locateService(MessageType.AReq)
+                        .scheduleTask(transaction.getId());
+            }
         } catch (Exception ex) {
             // updating transaction with error and updating DB
             // throw ThreeDSException again so that it returns to client with error message, it is
@@ -208,7 +218,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     eCommIndicatorService.generateECI(
                             new GenerateECIRequest(
                                             transaction.getTransactionStatus(),
-                                            cardRange.getNetwork(),
+                                            cardRange.getNetworkCode(),
                                             transaction.getMessageCategory())
                                     .setThreeRIInd(areq.getThreeRIInd()));
             transaction.setEci(eci);

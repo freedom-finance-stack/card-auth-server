@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.acs.dto;
 
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
-import org.freedomfinancestack.razorpay.cas.dao.model.Network;
 
 import lombok.Data;
 
@@ -22,7 +21,7 @@ public class GenerateECIRequest {
     /** The transaction status for which ECI is to be generated. */
     TransactionStatus transactionStatus;
     /** The network associated with the transaction. */
-    Network network;
+    byte networkCode;
     /** The message category for the transaction. */
     MessageCategory messageCategory;
     /**
@@ -35,13 +34,15 @@ public class GenerateECIRequest {
      * Constructs a {@code GenerateECIRequest} with the required parameters.
      *
      * @param transactionStatus The transaction status for which ECI is to be generated.
-     * @param network The network associated with the transaction.
+     * @param networkCode The network associated with the transaction.
      * @param messageCategory The message category for the transaction.
      */
     public GenerateECIRequest(
-            TransactionStatus transactionStatus, Network network, MessageCategory messageCategory) {
+            TransactionStatus transactionStatus,
+            byte networkCode,
+            MessageCategory messageCategory) {
         this.transactionStatus = transactionStatus;
-        this.network = network;
+        this.networkCode = networkCode;
         this.messageCategory = messageCategory;
     }
 

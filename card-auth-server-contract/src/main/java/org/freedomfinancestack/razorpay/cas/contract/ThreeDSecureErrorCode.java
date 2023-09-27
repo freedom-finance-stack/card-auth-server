@@ -25,18 +25,14 @@ public enum ThreeDSecureErrorCode {
     TRANSACTION_DATA_NOT_VALID("305", "A", "Transaction data not valid"),
     MCC_NOT_VALID_FOR_PAYMENT_SYSTEM("306", "A", "MCC not Valid for Payment System"),
     SERIAL_NUMBER_NOT_VALID("307", "A", "Serial Number not valid"),
-    TRANSACTION_TIMED_OUT("402", "A", "Transaction timed out"),
+    TRANSACTION_TIMED_OUT("402", "A", "Transaction timed-out"),
     TRANSACTION_TIMEOUT("4010", "TRANSACTION TIMEOUT"),
     TRANSIENT_SYSTEM_FAILURE(
             "403", "A", "Transient system failure"), // todo  a slowly processing back-end system.
     PERMANENT_SYSTEM_FAILURE(
             "404", "A", "Permanent system failure"), // todo  a critical database cannot be accessed
     SYSTEM_CONNECTION_FAILURE("405", "A", "System Connection failure"),
-    ACS_TECHNICAL_ERROR("406", "A", "ACS Technical failure"),
-    ACS_REFRESH_FAILURE("1000", "A", "Refresh Failure"),
-
-    SESSION_EXPIRED("ACCU700", "A", "Session - Session is Expired"),
-    MESSAGE_HASH_NOT_MATCHED("ACCU600", "A", "AccuRequestId - hash messages do not match");
+    ACS_TECHNICAL_ERROR("406", "A", "ACS Technical failure");
 
     /*REQUIRED_ELEMENT_MISSING("03", "Required element missing"),
     DATA_ELEMENT_NOT_RECOGNISED("04","Data element not recognised"),
