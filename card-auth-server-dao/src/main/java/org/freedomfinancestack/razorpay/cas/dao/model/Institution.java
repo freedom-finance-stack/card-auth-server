@@ -5,10 +5,7 @@ import javax.persistence.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
 import org.hibernate.annotations.Where;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "institution")
@@ -33,6 +30,9 @@ public class Institution extends BaseEntity<String> {
     @Column(name = "timezone")
     private String timezone;
 
+    @Column(name = "message_version")
+    private String messageVersion;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private InstitutionStatus status;
@@ -48,9 +48,4 @@ public class Institution extends BaseEntity<String> {
 
     @OneToOne(mappedBy = "institution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private InstitutionMeta institutionMeta;
-
-    public void setInstitutionMeta(InstitutionMeta institutionMeta) {
-        this.institutionMeta = institutionMeta;
-        institutionMeta.setInstitution(this);
-    }
 }

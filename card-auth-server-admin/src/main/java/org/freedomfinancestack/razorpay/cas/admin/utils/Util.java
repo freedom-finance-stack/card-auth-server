@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.admin.utils;
 
+import java.sql.Timestamp;
 import java.util.Random;
 
 import org.freedomfinancestack.razorpay.cas.admin.constants.InternalConstants;
@@ -25,10 +26,10 @@ public class Util {
         return stringBuilder.toString();
     }
 
-    public static byte[] mapBase64StringToByteArray(String base64String) {
-        if (base64String != null) {
-            return java.util.Base64.getDecoder().decode(base64String);
-        }
-        return null;
+    public static Timestamp getCurrentTimestamp() {
+        long currentTimeMillis = System.currentTimeMillis();
+
+        // Create a Timestamp object using the current time
+        return new Timestamp(currentTimeMillis);
     }
 }

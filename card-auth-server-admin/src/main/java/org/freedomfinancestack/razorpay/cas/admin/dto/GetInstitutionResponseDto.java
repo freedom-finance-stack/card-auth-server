@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InstitutionMeta {
-    private String logoData;
+public class GetInstitutionResponseDto {
 
-    private String logoFilename;
+    private InstitutionData institutionData;
+
+    private InstitutionMetaData institutionMetaData;
 }

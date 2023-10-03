@@ -2,20 +2,15 @@ package org.freedomfinancestack.razorpay.cas.admin.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 
-import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionRequestDto;
-import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionResponseDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.*;
 import org.freedomfinancestack.razorpay.cas.admin.service.InstitutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,12 +33,47 @@ public class InstitutionController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CreateInstitutionResponseDto handleCreateInstitutionOperation(
-            @RequestBody @NotNull CreateInstitutionRequestDto createInstitutionRequestDto,
+    public DefaultSuccessResponse handleCreateInstitutionOperation(
+            @RequestBody @NonNull InstitutionRequestDto institutionRequestDto,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             @RequestHeader HttpHeaders headers) {
+        return institutionService.processCreateInstitutionOperation(institutionRequestDto);
+    }
 
-        return institutionService.processCreateInstitutionOperation(createInstitutionRequestDto);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public GetInstitutionResponseDto handleGetInstitutionOperation(
+            @RequestParam(name = "institution_id") String institutionId,
+            @RequestParam(name = "fetch_meta", required = false) Boolean fetchMeta,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            @RequestHeader HttpHeaders headers) {
+        GetInstitutionRequestDto getInstitutionRequestDto = new GetInstitutionRequestDto();
+        getInstitutionRequestDto.setInstitution_id(institutionId);
+        if (fetchMeta == null) {
+            fetchMeta = false;
+        }
+        getInstitutionRequestDto.setFetch_meta(fetchMeta);
+        return institutionService.processGetInstitutionOperation(getInstitutionRequestDto);
+    }
+
+    @PatchMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public DefaultSuccessResponse handlePatchInstitutionOperation(
+            @RequestBody @NonNull InstitutionRequestDto institutionRequestDto,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            @RequestHeader HttpHeaders headers) {
+        return institutionService.processPatchInstitutionOperation(institutionRequestDto);
+    }
+
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public DefaultSuccessResponse handleDeleteInstitutionOperation(
+            @RequestParam(name = "institution_id") String institutionId,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            @RequestHeader HttpHeaders headers) {
+        return institutionService.processDeleteInstitutionOperation(institutionId);
     }
 }
