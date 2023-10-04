@@ -41,7 +41,7 @@ import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.rule
  */
 @Slf4j
 @Component(value = "authenticationRequestValidator")
-public class AuthenticationRequestValidator extends ThreeDSValidator<AREQ> {
+public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
 
     /**
      * Validates the authentication request (AREQ).
