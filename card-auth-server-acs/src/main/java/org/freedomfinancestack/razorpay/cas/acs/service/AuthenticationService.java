@@ -1,35 +1,37 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
-import org.freedomfinancestack.razorpay.cas.contract.AREQ;
-import org.freedomfinancestack.razorpay.cas.contract.ARES;
 
 /**
- * The {@code AuthenticationService} interface represents a service responsible for processing
- * authentication requests (AReq) and generating authentication response (ARes) for 3D Secure
- * transactions. The service handles the validation of AReq, communication with the ACS (Access
- * Control Server), and generation of the appropriate ARes based on the transaction status and other
- * parameters.
+ * AuthenticationService interface This interface provides methods for authenticating users using
+ * various methods such as OTP, password, and OOB. Implementing classes must provide the necessary
+ * logic for each authentication method.
  *
+ * @author jaydeepRadadiya
  * @version 1.0.0
  * @since 1.0.0
- * @author ankitchoudhary2209
  */
+// todo rename to ChallengeAuthenticationService
 public interface AuthenticationService {
 
     /**
-     * Processes the authentication request (AReq) and generates the corresponding authentication
-     * response (ARes).
+     * Performs pre-authentication operations before the actual authentication process.
      *
-     * @param areq The {@link AREQ} object representing the incoming authentication request (AReq).
-     * @return The {@link ARES} object representing the authentication response (ARes) for the given
-     *     AReq.
-     * @throws ThreeDSException If any error occurs during the processing of the AReq, and the
-     *     response needs to be sent as "Erro" message type.
-     * @throws ACSDataAccessException If there is an exception specific to the ACS (Access Control
-     *     Server) functionality that does not require sending "Erro" message type as the response.
+     * @param authenticationDto The AuthenticationDto containing the necessary data for
+     *     authentication.
+     * @throws ThreeDSException If an exception occurs during the pre-authentication process.
      */
-    ARES processAuthenticationRequest(final AREQ areq)
-            throws ThreeDSException, ACSDataAccessException;
+    void preAuthenticate(AuthenticationDto authenticationDto) throws ThreeDSException;
+
+    /**
+     * Authenticates a user using the specified authentication method.
+     *
+     * @param authenticationDto The AuthenticationDto containing the necessary data for
+     *     authentication.
+     * @return An AuthResponse indicating the result of the authentication process.
+     * @throws ThreeDSException If an exception occurs during the authentication process.
+     */
+    AuthResponse authenticate(AuthenticationDto authenticationDto) throws ThreeDSException;
 }

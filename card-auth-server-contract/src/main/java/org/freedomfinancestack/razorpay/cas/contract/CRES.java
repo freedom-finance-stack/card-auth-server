@@ -6,8 +6,6 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
 import lombok.Data;
 
-import static org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant.MESSAGE_TYPE_CRES;
-
 @Data
 public class CRES extends ThreeDSObject {
 
@@ -22,7 +20,7 @@ public class CRES extends ThreeDSObject {
 
     private String challengeCompletionInd;
 
-    private String messageType = MESSAGE_TYPE_CRES;
+    private String messageType = MessageType.CRes.toString();
 
     private String messageVersion;
 
@@ -41,7 +39,7 @@ public class CRES extends ThreeDSObject {
 
     private String challengeInfoTextIndicator;
 
-    private ChallengeSelectInfo challengeSelectInfo[];
+    private ChallengeSelectInfo[] challengeSelectInfo;
 
     private String expandInfoLabel;
 
@@ -54,7 +52,7 @@ public class CRES extends ThreeDSObject {
 
     private Image issuerImage;
 
-    private List messageExtension;
+    private List<MessageExtension> messageExtension;
 
     private String oobAppLabel;
 

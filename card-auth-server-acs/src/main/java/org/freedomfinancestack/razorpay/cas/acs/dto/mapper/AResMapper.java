@@ -5,6 +5,7 @@ import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfigur
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -23,7 +24,12 @@ import org.mapstruct.Mapping;
 @Mapper(
         uses = {HelperMapper.class},
         componentModel = "spring",
-        imports = {TransactionStatus.class, MessageCategory.class, Network.class})
+        imports = {
+            TransactionStatus.class,
+            MessageCategory.class,
+            Network.class,
+            MessageType.class
+        })
 public interface AResMapper {
 
     /**
@@ -52,7 +58,12 @@ public interface AResMapper {
             expression = "java(this.helperMapper.appConfiguration.getAcs().getReferenceNumber())")
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(target = "eci", source = "transaction.eci")
-    @Mapping(target = "acsURL", source = "aResMapperParams.acsUrl")
+    @Mapping(
+            target = "acsURL",
+            expression =
+                    "java(!transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)"
+                            + " && aResMapperParams.getAcsUrl() != null ? "
+                            + "aResMapperParams.getAcsUrl() : null)")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -68,11 +79,14 @@ public interface AResMapper {
     @Mapping(target = "broadInfo", expression = "java(null)")
     @Mapping(target = "sdkEphemPubKey", expression = "java(null)")
     @Mapping(target = "cardholderInfo", expression = "java(null)")
+    @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
     ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
+        AResMapperParams aResMapperParams;
+
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
                 && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
@@ -96,16 +110,6 @@ public interface AResMapper {
             }
         }
         return transStatusReason;
-    }
-
-    default String getAuthType(Transaction transaction) {
-        if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
-                        transaction.getTransactionStatus())
-                || TransactionStatus.CHALLENGE_REQUIRED.equals(
-                        transaction.getTransactionStatus())) {
-            return "02"; // hard coded to Dynamic
-        }
-        return "";
     }
 
     default String getOperatorId(Transaction transaction, AppConfiguration appConfiguration) {

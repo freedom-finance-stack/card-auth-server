@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <link href="css/styles.css" rel="stylesheet"/>
     <title>Transaction Processing...</title>
 </head>
 
 <body onload="submitForm();">
 <div style="text-align: center;">
-    <form action="${notificationUrl}" method="post" name="CResForm">
+    <form action="#" th:action="${notificationUrl}" method="post" name="CResForm">
         <noscript>
             <br> <br>
             <div style="text-align: center;">
@@ -23,8 +21,9 @@
                 <input type="submit" value="Submit">
             </div>
         </noscript>
-        <input type="hidden" name="cres" th:field="${cRes}">
-        <input type="hidden" name="threeDSSessionData" th:field="${threeDSSessionData}">
+        <input type="hidden" name="cres" th:if="${cRes}" th:value="${cRes}">
+        <input type="hidden" name="threeDSSessionData" th:if="${threeDSSessionData}" th:value="${threeDSSessionData}">
+        <input type="hidden" name="erro" th:if="${erro}" th:value="${erro}">
     </form>
 </div>
 </body>

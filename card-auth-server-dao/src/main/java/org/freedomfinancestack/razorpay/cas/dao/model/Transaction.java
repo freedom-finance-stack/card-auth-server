@@ -2,6 +2,8 @@ package org.freedomfinancestack.razorpay.cas.dao.model;
 
 import javax.persistence.*;
 
+import org.freedomfinancestack.extensions.stateMachine.State;
+import org.freedomfinancestack.extensions.stateMachine.StateMachineEntity;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -19,11 +21,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 @Builder
-public class Transaction extends BaseEntity<String> {
+public class Transaction extends BaseEntity<String>
+        implements StateMachineEntity<Phase.PhaseEvent> {
     @Id private String id;
 
     @Column(name = "institution_id")
     private String institutionId;
+
+    @Column(name = "card_range_id")
+    private String cardRangeId;
 
     @Column(name = "message_version")
     private String messageVersion;
@@ -42,6 +48,12 @@ public class Transaction extends BaseEntity<String> {
 
     @Column(name = "transaction_status_reason")
     private String transactionStatusReason;
+
+    @Column(name = "challenge_cancel_ind")
+    private String challengeCancelInd;
+
+    @Column(name = "three_ri_ind")
+    private String threeRIInd;
 
     @Enumerated(EnumType.STRING)
     private Phase phase;
@@ -62,7 +74,10 @@ public class Transaction extends BaseEntity<String> {
     private String deviceName;
 
     @Column(name = "interaction_count")
-    private Integer interactionCount;
+    private int interactionCount;
+
+    @Column(name = "resend_count")
+    private int resendCount;
 
     @Column(name = "error_code")
     private String errorCode;
@@ -85,6 +100,9 @@ public class Transaction extends BaseEntity<String> {
     @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private TransactionSdkDetail transactionSdkDetail;
 
+    @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private TransactionCardHolderDetail transactionCardHolderDetail;
+
     public void setTransactionReferenceDetail(
             TransactionReferenceDetail transactionReferenceDetail) {
         this.transactionReferenceDetail = transactionReferenceDetail;
@@ -106,6 +124,12 @@ public class Transaction extends BaseEntity<String> {
         transactionSdkDetail.setTransaction(this);
     }
 
+    public void setTransactionCardHolderDetail(
+            TransactionCardHolderDetail transactionCardHolderDetail) {
+        this.transactionCardHolderDetail = transactionCardHolderDetail;
+        transactionCardHolderDetail.setTransaction(this);
+    }
+
     public void setTransactionPurchaseDetail(TransactionPurchaseDetail transactionPurchaseDetail) {
         this.transactionPurchaseDetail = transactionPurchaseDetail;
         transactionPurchaseDetail.setTransaction(this);
@@ -114,5 +138,20 @@ public class Transaction extends BaseEntity<String> {
     public void setTransactionBrowserDetail(TransactionBrowserDetail transactionBrowserDetail) {
         this.transactionBrowserDetail = transactionBrowserDetail;
         transactionBrowserDetail.setTransaction(this);
+    }
+
+    @Override
+    public String EntityName() {
+        return "transaction";
+    }
+
+    @Override
+    public void SetState(State<Phase.PhaseEvent> state) {
+        this.setPhase((Phase) state);
+    }
+
+    @Override
+    public Phase GetState() {
+        return this.getPhase();
     }
 }

@@ -24,7 +24,7 @@ public class ARES extends ThreeDSObject {
 
     private String dsTransID;
 
-    private String messageType = EMVCOConstant.MESSAGE_TYPE_ARES;
+    private String messageType = MessageType.ARes.toString();
 
     private String messageVersion = EMVCOConstant.MESSAGE_TYPE_VERSION;
 
@@ -60,7 +60,7 @@ public class ARES extends ThreeDSObject {
 
     private String eci;
 
-    private List messageExtension;
+    private List<MessageExtension> messageExtension;
 
     private String transStatusReason;
 

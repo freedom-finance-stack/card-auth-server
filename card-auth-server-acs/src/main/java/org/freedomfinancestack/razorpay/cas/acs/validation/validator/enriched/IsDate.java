@@ -35,7 +35,6 @@ public class IsDate implements Validator<String> {
     private boolean isValidDateFormat(String value, String dateFormat) {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         sdf.setLenient(false);
-
         try {
             Date parsedDate = sdf.parse(value);
             String formattedDate = sdf.format(parsedDate);

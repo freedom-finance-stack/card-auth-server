@@ -1,10 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureName;
 import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;
@@ -22,15 +21,18 @@ import lombok.NoArgsConstructor;
 public class Feature extends BaseEntity<String> {
     @Id private String id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "entity_type")
-    private String entityType;
+    private FeatureEntityType entityType;
 
     @Column(name = "entity_id", nullable = false)
     private String entityId;
 
     private boolean active;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "name")
+    private FeatureName name;
 
     private String properties;
 

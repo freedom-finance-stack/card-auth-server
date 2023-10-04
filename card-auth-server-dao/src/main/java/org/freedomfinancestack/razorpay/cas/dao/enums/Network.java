@@ -10,15 +10,15 @@ public enum Network {
     DISCOVER(4, "DISCOVER"),
     RUPAY(5, "RUPAY");
 
-    private final int value;
-    private final String description;
+    private final byte value;
+    private final String name;
 
-    Network(int value, String description) {
-        this.value = value;
-        this.description = description;
+    Network(int value, String name) {
+        this.value = (byte) value;
+        this.name = name;
     }
 
-    public static Network getNetwork(int id) {
+    public static Network getNetwork(byte id) {
         for (Network value : Network.values()) {
             if (value.getValue() == id) {
                 return value;
