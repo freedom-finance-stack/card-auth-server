@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.admin.module;
 
-import org.freedomfinancestack.razorpay.cas.admin.module.config.ConfigProvider;
+import org.freedomfinancestack.razorpay.cas.admin.module.configuration.AppConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
@@ -10,13 +10,15 @@ import org.springframework.context.annotation.Primary;
 import io.undertow.conduits.GzipStreamSourceConduit;
 import io.undertow.server.handlers.encoding.RequestEncodingHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Primary
 @Configuration
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AppModule {
 
-    private final ConfigProvider configProvider;
+    private final AppConfiguration appConfiguration;
 
     @Bean
     public UndertowServletWebServerFactory undertowServletWebServerFactory() {
@@ -29,7 +31,7 @@ public class AppModule {
                                     new RequestEncodingHandler(handler)
                                             .addEncoding("gzip", GzipStreamSourceConduit.WRAPPER));
                 });
-        undertowServletWebServerFactory.setPort(configProvider.getServerPort());
+        undertowServletWebServerFactory.setPort(appConfiguration.getPort());
         return undertowServletWebServerFactory;
     }
 }
