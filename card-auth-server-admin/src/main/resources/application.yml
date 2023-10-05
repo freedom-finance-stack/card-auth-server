@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_db}
     username: ${ACS_MYSQL_USER:root}
-    password: ${ACS_MYSQL_PASSWORD:password}
+    password: ${ACS_MYSQL_PASSWORD:Nahis@131201012022}
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true
@@ -75,6 +75,12 @@ task:
     corePoolSize: 5
     maxPoolSize: 10
     keepAliveTime: 60000 #mili
+
+
+admin-metadata:
+  supported-message-versions: ["2.0.0"]
+
+
 
 
 
