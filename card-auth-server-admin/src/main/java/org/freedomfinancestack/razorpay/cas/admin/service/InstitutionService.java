@@ -1,6 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.admin.service;
 
-import org.freedomfinancestack.razorpay.cas.admin.constants.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionRequestDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionResponseDto;
 import org.freedomfinancestack.razorpay.cas.admin.mapper.InstitutionMapper;
@@ -32,7 +31,7 @@ public class InstitutionService {
         Institution institution =
                 InstitutionMapper.INSTANCE.toInstitutionModel(createInstitutionRequestDto);
 
-        String institutionId = Util.generateRandomStringID(InternalConstants.DEFAULT_LENGTH);
+        String institutionId = Util.generateUUID();
 
         institution.setId(institutionId);
 
