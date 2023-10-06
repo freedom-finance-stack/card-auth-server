@@ -1,6 +1,6 @@
-package org.freedomfinancestack.razorpay.cas.admin.exception.acs;
+package org.freedomfinancestack.razorpay.cas.admin.exception.admin;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.admin.exception.InternalErrorCode;
 
 /**
  * This class represents exceptions specific to the ACS (Access Control Server) functionality. These
@@ -32,28 +32,30 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
  * @since ACS 1.0.0
  * @author jaydeepRadadiya
  */
-public class ACSException extends Exception {
+public class ACSAdminException extends Exception {
 
     private static final long serialVersionUID = -3009383961775806469L;
 
     private InternalErrorCode internalErrorCode;
 
-    public ACSException(InternalErrorCode internalErrorCode, String message, Throwable cause) {
+    private String message;
+
+    public ACSAdminException(InternalErrorCode internalErrorCode, String message, Throwable cause) {
         super(message, cause);
         this.internalErrorCode = internalErrorCode;
     }
 
-    public ACSException(InternalErrorCode internalErrorCode, String message) {
+    public ACSAdminException(InternalErrorCode internalErrorCode, String message) {
         super(message);
         this.internalErrorCode = internalErrorCode;
     }
 
-    public ACSException(InternalErrorCode internalErrorCode, Throwable cause) {
+    public ACSAdminException(InternalErrorCode internalErrorCode, Throwable cause) {
         super(internalErrorCode.getDefaultErrorMessage(), cause);
         this.internalErrorCode = internalErrorCode;
     }
 
-    public ACSException(InternalErrorCode internalErrorCode) {
+    public ACSAdminException(InternalErrorCode internalErrorCode) {
         super(internalErrorCode.getDefaultErrorMessage());
         this.internalErrorCode = internalErrorCode;
     }

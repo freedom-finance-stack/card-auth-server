@@ -1,6 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.admin.dto;
-
-import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
+package org.freedomfinancestack.razorpay.cas.admin.dto.institution;
 
 public class InstitutionData {
     public String id;
@@ -14,5 +12,5 @@ public class InstitutionData {
 
     public String messageVersion;
 
-    public InstitutionStatus status;
+    public String status;
 }

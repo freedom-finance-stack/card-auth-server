@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InstitutionMetaData {
-    private String logoData;
+public class MetaDataResponse {
+    private String[] supportedMessageVersions;
 
-    private String logoFilename;
+    private Short[] isoCountryCode;
+
+    private String[] supportedTimezone;
 }

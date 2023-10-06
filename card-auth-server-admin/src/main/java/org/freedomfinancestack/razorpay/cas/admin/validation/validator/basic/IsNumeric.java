@@ -1,9 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.admin.validation.validator.basic;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.admin.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.admin.exception.admin.RequestValidationException;
+import org.freedomfinancestack.razorpay.cas.admin.utils.Util;
+import org.freedomfinancestack.razorpay.cas.admin.validation.validator.Validator;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,13 +17,13 @@ public class IsNumeric implements Validator<String> {
     }
 
     @Override
-    public void validate(String value) throws ValidationException {
+    public void validate(String value) throws RequestValidationException {
         if (Util.isNullorBlank(value)) {
             return;
         }
         if (!value.matches("[0-9]+")) {
-            throw new ValidationException(
-                    ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
+            throw new RequestValidationException(
+                    InternalErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
         }
     }
 }

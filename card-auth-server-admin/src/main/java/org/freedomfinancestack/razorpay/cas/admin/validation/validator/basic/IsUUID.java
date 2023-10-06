@@ -2,10 +2,10 @@ package org.freedomfinancestack.razorpay.cas.admin.validation.validator.basic;
 
 import java.util.UUID;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.admin.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.admin.exception.admin.RequestValidationException;
+import org.freedomfinancestack.razorpay.cas.admin.utils.Util;
+import org.freedomfinancestack.razorpay.cas.admin.validation.validator.Validator;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -19,15 +19,15 @@ public class IsUUID implements Validator<String> {
     }
 
     @Override
-    public void validate(String value) throws ValidationException {
+    public void validate(String value) throws RequestValidationException {
         if (Util.isNullorBlank(value)) {
             return;
         }
         try {
             UUID.fromString(value);
         } catch (IllegalArgumentException exception) {
-            throw new ValidationException(
-                    ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
+            throw new RequestValidationException(
+                    InternalErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
         }
     }
 }

@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.admin.dto;
+package org.freedomfinancestack.razorpay.cas.admin.dto.institution;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

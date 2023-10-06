@@ -1,17 +1,19 @@
 package org.freedomfinancestack.razorpay.cas.admin.service;
 
 import org.freedomfinancestack.razorpay.cas.admin.dto.*;
+import org.freedomfinancestack.razorpay.cas.admin.dto.institution.GetInstitutionRequestDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.institution.InstitutionRequestDto;
+import org.springframework.http.ResponseEntity;
 
 public interface InstitutionService {
 
-    DefaultSuccessResponse processCreateInstitutionOperation(
+    ResponseEntity<?> processCreateInstitutionOperation(
             InstitutionRequestDto institutionRequestDto);
 
-    GetInstitutionResponseDto processGetInstitutionOperation(
+    ResponseEntity<?> processGetInstitutionOperation(
             GetInstitutionRequestDto getInstitutionRequestDto);
 
-    DefaultSuccessResponse processPatchInstitutionOperation(
-            InstitutionRequestDto institutionRequestDto);
+    ResponseEntity<?> processPatchInstitutionOperation(InstitutionRequestDto institutionRequestDto);
 
-    DefaultSuccessResponse processDeleteInstitutionOperation(String institutionId);
+    ResponseEntity<?> processDeleteInstitutionOperation(String institutionId);
 }

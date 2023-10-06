@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.admin.mapper;
 
-import org.freedomfinancestack.razorpay.cas.admin.dto.GetInstitutionResponseDto;
-import org.freedomfinancestack.razorpay.cas.admin.dto.InstitutionRequestDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.institution.GetInstitutionResponseDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.institution.InstitutionRequestDto;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.mapstruct.*;
@@ -42,7 +42,10 @@ public interface InstitutionMapper {
         @Mapping(source = "institution.shortName", target = "institutionData.institutionShortName"),
         @Mapping(source = "institution.isoCountryCode", target = "institutionData.isoCountryCode"),
         @Mapping(source = "institution.timezone", target = "institutionData.timezone"),
-        @Mapping(source = "institution.status", target = "institutionData.status"),
+        @Mapping(
+                source = "institution.status",
+                target = "institutionData.status",
+                qualifiedByName = "mapInstitutionStatusToString"),
         @Mapping(source = "institution.messageVersion", target = "institutionData.messageVersion"),
         @Mapping(
                 source = "institution.institutionMeta",
@@ -61,7 +64,10 @@ public interface InstitutionMapper {
         @Mapping(target = "timezone", source = "institutionData.timezone"),
         @Mapping(target = "messageVersion", source = "institutionData.messageVersion"),
         @Mapping(target = "modifiedBy", expression = "java(String.valueOf(\"dev-user-modified\"))"),
-        @Mapping(target = "status", source = "institutionData.status"),
+        @Mapping(
+                target = "status",
+                source = "institutionData.status",
+                qualifiedByName = "mapStringToInstitutionStatus"),
         @Mapping(target = "institutionMeta", source = "institutionRequestDto.institutionMetaData"),
         @Mapping(
                 target = "institutionMeta.modifiedBy",
@@ -94,5 +100,15 @@ public interface InstitutionMapper {
             return java.util.Base64.getEncoder().encodeToString(byteArray);
         }
         return null;
+    }
+
+    @Named("mapInstitutionStatusToString")
+    default String mapInstitutionStatusToString(InstitutionStatus institutionStatus) {
+        return institutionStatus != null ? institutionStatus.toString() : null;
+    }
+
+    @Named("mapStringToInstitutionStatus")
+    default InstitutionStatus mapStringToInstitutionStatus(String status) {
+        return status != null ? InstitutionStatus.valueOf(status) : null;
     }
 }

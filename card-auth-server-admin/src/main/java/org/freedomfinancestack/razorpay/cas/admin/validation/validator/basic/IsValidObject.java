@@ -1,9 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.admin.validation.validator.basic;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.admin.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.admin.exception.admin.RequestValidationException;
+import org.freedomfinancestack.razorpay.cas.admin.utils.Util;
+import org.freedomfinancestack.razorpay.cas.admin.validation.validator.Validator;
 import org.freedomfinancestack.razorpay.cas.contract.Validatable;
 
 public class IsValidObject<T extends Validatable> implements Validator<T> {
@@ -13,13 +13,13 @@ public class IsValidObject<T extends Validatable> implements Validator<T> {
     }
 
     @Override
-    public void validate(Validatable value) throws ValidationException {
+    public void validate(Validatable value) throws RequestValidationException {
         if (Util.isNullorBlank(value)) {
             return;
         }
         if (!value.isValid()) {
-            throw new ValidationException(
-                    ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
+            throw new RequestValidationException(
+                    InternalErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
         }
     }
 }

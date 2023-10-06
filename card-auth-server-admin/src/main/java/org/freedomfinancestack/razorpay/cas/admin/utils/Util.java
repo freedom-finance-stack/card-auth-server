@@ -1,35 +1,36 @@
 package org.freedomfinancestack.razorpay.cas.admin.utils;
 
 import java.sql.Timestamp;
-import java.util.Random;
-
-import org.freedomfinancestack.razorpay.cas.admin.constants.InternalConstants;
+import java.util.UUID;
 
 public class Util {
-
-    public static String generateRandomStringID(Integer length) {
-        //        need to handle exception handling here
-        //        if (length <= 0) {
-        //            throw new exception
-        //        }
-
-        long currentTimestamp = System.currentTimeMillis();
-        Random random = new Random(currentTimestamp);
-        StringBuilder stringBuilder = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            int randomIndex = random.nextInt(InternalConstants.CHARACTERS.length());
-            char randomChar = InternalConstants.CHARACTERS.charAt(randomIndex);
-            stringBuilder.append(randomChar);
-        }
-
-        return stringBuilder.toString();
-    }
 
     public static Timestamp getCurrentTimestamp() {
         long currentTimeMillis = System.currentTimeMillis();
 
         // Create a Timestamp object using the current time
         return new Timestamp(currentTimeMillis);
+    }
+
+    /**
+     * Generates a random UUID (Universally Unique Identifier).
+     *
+     * @return the random UUID as a string
+     */
+    public static String generateUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    /**
+     * Checks if the given object is null or its string representation is blank.
+     *
+     * @param object the object to check
+     * @return {@code true} if the object is null or its string representation is blank, {@code
+     *     false} otherwise
+     */
+    public static boolean isNullorBlank(Object object) {
+        if (null == object) {
+            return true;
+        } else return "".equals(object.toString());
     }
 }

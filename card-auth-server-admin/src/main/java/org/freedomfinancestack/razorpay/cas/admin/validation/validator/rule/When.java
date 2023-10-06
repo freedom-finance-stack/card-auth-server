@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.admin.validation.validator.rule;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validator;
+import org.freedomfinancestack.razorpay.cas.admin.exception.admin.RequestValidationException;
+import org.freedomfinancestack.razorpay.cas.admin.validation.validator.Validator;
 
 public class When<T> implements Validator<T> {
     private final boolean condition;
@@ -28,7 +28,7 @@ public class When<T> implements Validator<T> {
     }
 
     @Override
-    public void validate(T value) throws ValidationException {
+    public void validate(T value) throws RequestValidationException {
         if (condition) {
             this.ifValidationRule.validate(value);
         } else if (this.elseValidationRule != null) {
