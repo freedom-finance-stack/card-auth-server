@@ -1,6 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.admin.exception.admin;
 
+import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.razorpay.cas.admin.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.admin.exception.ValidationErrorCodeMapper;
 
 public class RequestValidationException extends ACSAdminException {
     public RequestValidationException(InternalErrorCode internalErrorCode, String message) {
@@ -18,5 +20,12 @@ public class RequestValidationException extends ACSAdminException {
 
     protected RequestValidationException(InternalErrorCode internalErrorCode) {
         super(internalErrorCode);
+    }
+
+    public RequestValidationException(ValidationException validationException) {
+        super(
+                ValidationErrorCodeMapper.mapValidationToInternal(
+                        validationException.getValidationErrorCode()),
+                validationException.getMessage());
     }
 }

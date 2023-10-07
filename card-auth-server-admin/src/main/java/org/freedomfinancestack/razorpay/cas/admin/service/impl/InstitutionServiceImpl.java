@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Optional;
 import javax.transaction.Transactional;
 
+import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.razorpay.cas.admin.dto.*;
 import org.freedomfinancestack.razorpay.cas.admin.dto.institution.GetInstitutionRequestDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.institution.GetInstitutionResponseDto;
@@ -66,18 +67,21 @@ public class InstitutionServiceImpl implements InstitutionService {
 
             return new ResponseEntity<>(
                     DefaultSuccessResponse.builder().isSuccess(true).build(), HttpStatus.OK);
-        } catch (RequestValidationException | ACSAdminDataAccessException ex) {
+        } catch (ValidationException ex) {
+            log.error(
+                    " Message {}, Internal Error code {}",
+                    ex.getMessage(),
+                    ex.getValidationErrorCode().getErrorCode());
+            return globalExceptionHandler.handleRequestValidationException(
+                    new RequestValidationException(ex));
+        } catch (ACSAdminDataAccessException ex) {
             log.error(
                     " Message {}, Internal Error code {}",
                     ex.getMessage(),
                     ex.getErrorCode().getCode());
-            if (ex instanceof ACSAdminDataAccessException) {
-                return globalExceptionHandler.handleACSAdminDataAccessException(
-                        (ACSAdminDataAccessException) ex);
-            } else {
-                return globalExceptionHandler.handleRequestValidationException(
-                        (RequestValidationException) ex);
-            }
+
+            return globalExceptionHandler.handleACSAdminDataAccessException(ex);
+
         } catch (Exception ex) {
             log.error(" Message {}, Error string {}", ex.getMessage(), ex.toString());
             return globalExceptionHandler.handleException(ex);
@@ -99,18 +103,19 @@ public class InstitutionServiceImpl implements InstitutionService {
                             institution, getInstitutionRequestDto.isFetch_meta()),
                     HttpStatus.OK);
 
-        } catch (RequestValidationException | ACSAdminDataAccessException ex) {
+        } catch (ValidationException ex) {
+            log.error(
+                    " Message {}, Internal Error code {}",
+                    ex.getMessage(),
+                    ex.getValidationErrorCode().getErrorCode());
+            return globalExceptionHandler.handleRequestValidationException(
+                    new RequestValidationException(ex));
+        } catch (ACSAdminDataAccessException ex) {
             log.error(
                     " Message {}, Internal Error code {}",
                     ex.getMessage(),
                     ex.getErrorCode().getCode());
-            if (ex instanceof ACSAdminDataAccessException) {
-                return globalExceptionHandler.handleACSAdminDataAccessException(
-                        (ACSAdminDataAccessException) ex);
-            } else {
-                return globalExceptionHandler.handleRequestValidationException(
-                        (RequestValidationException) ex);
-            }
+            return globalExceptionHandler.handleACSAdminDataAccessException(ex);
         } catch (DataNotFoundException ex) {
             log.warn(
                     " Message {}, Internal Error code {}",
@@ -142,9 +147,14 @@ public class InstitutionServiceImpl implements InstitutionService {
                 }
                 saveOrUpdate(institution);
             }
-        } catch (RequestValidationException
-                | ACSAdminDataAccessException
-                | DataNotFoundException ex) {
+        } catch (ValidationException ex) {
+            log.error(
+                    " Message {}, Internal Error code {}",
+                    ex.getMessage(),
+                    ex.getValidationErrorCode().getErrorCode());
+            return globalExceptionHandler.handleRequestValidationException(
+                    new RequestValidationException(ex));
+        } catch (ACSAdminDataAccessException | DataNotFoundException ex) {
             log.error(
                     " Message {}, Internal Error code {}",
                     ex.getMessage(),
@@ -152,9 +162,6 @@ public class InstitutionServiceImpl implements InstitutionService {
             if (ex instanceof ACSAdminDataAccessException) {
                 return globalExceptionHandler.handleACSAdminDataAccessException(
                         (ACSAdminDataAccessException) ex);
-            } else if (ex instanceof RequestValidationException) {
-                return globalExceptionHandler.handleRequestValidationException(
-                        (RequestValidationException) ex);
             } else {
                 return globalExceptionHandler.handleDataNotFoundException(
                         (DataNotFoundException) ex);
@@ -187,9 +194,14 @@ public class InstitutionServiceImpl implements InstitutionService {
                 }
                 saveOrUpdate(institution);
             }
-        } catch (RequestValidationException
-                | ACSAdminDataAccessException
-                | DataNotFoundException ex) {
+        } catch (ValidationException ex) {
+            log.error(
+                    " Message {}, Internal Error code {}",
+                    ex.getMessage(),
+                    ex.getValidationErrorCode().getErrorCode());
+            return globalExceptionHandler.handleRequestValidationException(
+                    new RequestValidationException(ex));
+        } catch (ACSAdminDataAccessException | DataNotFoundException ex) {
             log.error(
                     " Message {}, Internal Error code {}",
                     ex.getMessage(),
@@ -197,9 +209,6 @@ public class InstitutionServiceImpl implements InstitutionService {
             if (ex instanceof ACSAdminDataAccessException) {
                 return globalExceptionHandler.handleACSAdminDataAccessException(
                         (ACSAdminDataAccessException) ex);
-            } else if (ex instanceof RequestValidationException) {
-                return globalExceptionHandler.handleRequestValidationException(
-                        (RequestValidationException) ex);
             } else {
                 return globalExceptionHandler.handleDataNotFoundException(
                         (DataNotFoundException) ex);
