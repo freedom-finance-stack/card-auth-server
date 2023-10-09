@@ -37,66 +37,62 @@ public class ResultResponseValidator {
             throw new ACSValidationException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Transaction data missing");
         }
-        validateResultRequest(incomingRres, rreq);
+
+        try {
+            validateResultRequest(incomingRres, rreq);
+        } catch (ValidationException vex) {
+            throw new ACSValidationException(vex);
+        }
     }
 
-    private void validateResultRequest(RRES incomingRres, RREQ rreq) throws ACSValidationException {
+    private void validateResultRequest(RRES incomingRres, RREQ rreq) throws ValidationException {
+
         validateMandatoryFields(incomingRres, rreq);
         validateOptionalFields(incomingRres, rreq);
     }
 
-    private void validateMandatoryFields(RRES incomingRres, RREQ rreq)
-            throws ACSValidationException {
+    private void validateMandatoryFields(RRES incomingRres, RREQ rreq) throws ValidationException {
 
-        try {
-            Validation.validate(
-                    ThreeDSDataElement.MESSAGE_TYPE.getFieldName(),
-                    incomingRres.getMessageType(),
-                    notNull(),
-                    isIn(new String[] {MessageType.RRes.toString()}));
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_TYPE.getFieldName(),
+                incomingRres.getMessageType(),
+                notNull(),
+                isIn(new String[] {MessageType.RRes.toString()}));
 
-            Validation.validate(
-                    ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
-                    incomingRres.getMessageVersion(),
-                    notNull(),
-                    isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
+                incomingRres.getMessageVersion(),
+                notNull(),
+                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
 
-            Validation.validate(
-                    ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
-                    incomingRres.getThreeDSServerTransID(),
-                    isIn(new String[] {rreq.getThreeDSServerTransID()}));
+        Validation.validate(
+                ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
+                incomingRres.getThreeDSServerTransID(),
+                isIn(new String[] {rreq.getThreeDSServerTransID()}));
 
-            Validation.validate(
-                    ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
-                    incomingRres.getAcsTransID(),
-                    notNull(),
-                    isIn(new String[] {rreq.getAcsTransID()}));
+        Validation.validate(
+                ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
+                incomingRres.getAcsTransID(),
+                notNull(),
+                isIn(new String[] {rreq.getAcsTransID()}));
 
-            Validation.validate(
-                    ThreeDSDataElement.DS_TRANS_ID.getFieldName(),
-                    incomingRres.getDsTransID(),
-                    notNull(),
-                    isIn(new String[] {rreq.getDsTransID()}));
+        Validation.validate(
+                ThreeDSDataElement.DS_TRANS_ID.getFieldName(),
+                incomingRres.getDsTransID(),
+                notNull(),
+                isIn(new String[] {rreq.getDsTransID()}));
 
-            Validation.validate(
-                    ThreeDSDataElement.RESULTS_STATUS.getFieldName(),
-                    incomingRres.getResultsStatus(),
-                    notNull(),
-                    isIn(ThreeDSDataElement.RESULTS_STATUS.getAcceptedValues()));
-        } catch (ValidationException ex) {
-            throw new ACSValidationException(ex);
-        }
+        Validation.validate(
+                ThreeDSDataElement.RESULTS_STATUS.getFieldName(),
+                incomingRres.getResultsStatus(),
+                notNull(),
+                isIn(ThreeDSDataElement.RESULTS_STATUS.getAcceptedValues()));
     }
 
-    protected void validateOptionalFields(RRES incomingRres, RREQ rreq)
-            throws ACSValidationException {
-        try {
-            Validation.validate(
-                    ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
-                    incomingRres.getMessageExtension(),
-                    isListValid(isValidObject()));
-        } catch (ValidationException ex) {
-            throw new ACSValidationException(ex);
-        }
+    protected void validateOptionalFields(RRES incomingRres, RREQ rreq) throws ValidationException {
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
+                incomingRres.getMessageExtension(),
+                isListValid(isValidObject()));
     }
 }
