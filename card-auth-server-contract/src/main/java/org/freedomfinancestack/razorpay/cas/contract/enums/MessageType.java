@@ -21,6 +21,7 @@ public enum MessageType {
     public String toString() {
         return stringValue;
     }
+
     // Method to fetch MessageType enum from a string value
     public static MessageType fromStringValue(String value) {
         for (MessageType messageType : MessageType.values()) {

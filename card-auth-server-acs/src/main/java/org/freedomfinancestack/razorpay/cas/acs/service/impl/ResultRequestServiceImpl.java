@@ -20,7 +20,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +74,8 @@ public class ResultRequestServiceImpl implements ResultRequestService {
     }
 
     private void handleRreq(Transaction transaction)
-            throws GatewayHttpStatusCodeException, InvalidStateTransactionException,
+            throws GatewayHttpStatusCodeException,
+                    InvalidStateTransactionException,
                     ValidationException {
         RREQ rreq = rReqMapper.toRreq(transaction);
         transactionMessageLogService.createAndSave(rreq, transaction.getId());
@@ -95,7 +95,7 @@ public class ResultRequestServiceImpl implements ResultRequestService {
             throw e;
         } catch (GatewayHttpStatusCodeException e) {
             transaction.setTransactionStatus(TransactionStatus.UNABLE_TO_AUTHENTICATE);
-            if (e.getStatusCode().series() == HttpStatus.Series.CLIENT_ERROR) {
+            if (e.getHttpStatus().is4xxClientError()) {
                 transaction.setErrorCode(InternalErrorCode.CONNECTION_TO_DS_FAILED.getCode());
                 sendDsErrorResponse(
                         transaction, ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT, e.getMessage());

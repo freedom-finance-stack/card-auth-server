@@ -1,12 +1,12 @@
 package org.freedomfinancestack.razorpay.cas.dao.repository;
 
-import javax.transaction.Transactional;
-
 import org.freedomfinancestack.razorpay.cas.dao.model.BaseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import jakarta.transaction.Transactional;
 
 @NoRepositoryBean
 public interface BaseRepository<T extends BaseEntity, ID> extends JpaRepository<T, ID> {

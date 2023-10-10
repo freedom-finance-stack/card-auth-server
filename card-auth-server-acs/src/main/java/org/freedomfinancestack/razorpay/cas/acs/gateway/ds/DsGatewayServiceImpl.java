@@ -3,7 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.ds;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.entity.ContentType;
+import org.apache.hc.core5.http.ContentType;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;

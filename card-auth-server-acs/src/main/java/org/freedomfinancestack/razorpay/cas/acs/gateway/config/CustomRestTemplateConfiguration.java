@@ -3,12 +3,18 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.io.SocketConfig;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +31,11 @@ public class CustomRestTemplateConfiguration {
 
     @Bean("visaDsRestTemplate")
     public RestTemplate visaRestTemplate()
-            throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
-                    CertificateException, IOException {
+            throws KeyManagementException,
+                    NoSuchAlgorithmException,
+                    KeyStoreException,
+                    CertificateException,
+                    IOException {
         DsGatewayConfig.ServiceConfig visaConfig =
                 dsGatewayConfig.getServices().get(ClientType.VISA_DS);
 
@@ -35,31 +44,52 @@ public class CustomRestTemplateConfiguration {
 
     @Bean("masterCardDsRestTemplate")
     public RestTemplate masterCardRestTemplate()
-            throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
-                    CertificateException, IOException {
+            throws KeyManagementException,
+                    NoSuchAlgorithmException,
+                    KeyStoreException,
+                    CertificateException,
+                    IOException {
         DsGatewayConfig.ServiceConfig masterCardConfig =
                 dsGatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
         return getRestTemplate(masterCardConfig);
     }
 
     private RestTemplate getRestTemplate(DsGatewayConfig.ServiceConfig config)
-            throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException,
-                    CertificateException, IOException {
-        HttpClientBuilder httpClient = HttpClients.custom();
-        if (config.isUseSSL()) {
-            SSLContext sslContext =
-                    new SSLContextBuilder()
-                            .loadTrustMaterial(
-                                    config.getKeyStore().getPath().getURL(),
-                                    config.getKeyStore().getPassword().toCharArray())
-                            .build();
-            SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
-            httpClient.setSSLSocketFactory(sslConFactory);
-        }
+            throws KeyManagementException,
+                    NoSuchAlgorithmException,
+                    KeyStoreException,
+                    CertificateException,
+                    IOException {
+        SSLContext sslContext =
+                new SSLContextBuilder()
+                        .loadTrustMaterial(
+                                config.getKeyStore().getPath().getURL(),
+                                config.getKeyStore().getPassword().toCharArray())
+                        .build();
+        final SSLConnectionSocketFactory sslsf =
+                new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+
+        HttpClientConnectionManager connectionManager =
+                PoolingHttpClientConnectionManagerBuilder.create()
+                        .setSSLSocketFactory(sslsf)
+                        .setDefaultSocketConfig(
+                                SocketConfig.custom()
+                                        .setSoTimeout(config.getReadTimeout(), TimeUnit.SECONDS)
+                                        .build())
+                        .setDefaultConnectionConfig(
+                                ConnectionConfig.custom()
+                                        .setConnectTimeout(
+                                                config.getConnectTimeout(), TimeUnit.SECONDS)
+                                        .build())
+                        .build();
+
+        final CloseableHttpClient httpClient =
+                HttpClients.custom().setConnectionManager(connectionManager).build();
+
         HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory(httpClient.build());
-        requestFactory.setConnectTimeout(config.getConnectTimeout());
-        requestFactory.setReadTimeout(config.getReadTimeout());
+                new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(httpClient);
+
         return new RestTemplate(requestFactory);
     }
 }

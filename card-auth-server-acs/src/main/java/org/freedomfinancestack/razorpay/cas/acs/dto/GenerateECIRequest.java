@@ -20,10 +20,13 @@ import lombok.Data;
 public class GenerateECIRequest {
     /** The transaction status for which ECI is to be generated. */
     TransactionStatus transactionStatus;
+
     /** The network associated with the transaction. */
     byte networkCode;
+
     /** The message category for the transaction. */
     MessageCategory messageCategory;
+
     /**
      * Optional field - The ThreeRIInd (3DS Requestor Authentication Indicator) to be set in the
      * request.

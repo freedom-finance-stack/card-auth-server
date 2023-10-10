@@ -38,7 +38,8 @@ public abstract class HttpsGatewayService {
             return responseEntity.getBody();
         } else {
             throw new GatewayHttpStatusCodeException(
-                    responseEntity.getStatusCode(), responseEntity.getBody());
+                    HttpStatus.valueOf(responseEntity.getStatusCode().value()),
+                    responseEntity.getBody());
         }
     }
 

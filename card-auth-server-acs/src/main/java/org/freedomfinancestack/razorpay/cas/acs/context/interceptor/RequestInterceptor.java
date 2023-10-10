@@ -1,14 +1,14 @@
 package org.freedomfinancestack.razorpay.cas.acs.context.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.freedomfinancestack.razorpay.cas.acs.context.RequestContext;
 import org.freedomfinancestack.razorpay.cas.acs.context.RequestContextHolder;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component("requestInterceptor")
 public class RequestInterceptor implements AsyncHandlerInterceptor {

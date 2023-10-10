@@ -1,13 +1,12 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import javax.persistence.*;
-
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardRangeStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.hibernate.annotations.Where;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
