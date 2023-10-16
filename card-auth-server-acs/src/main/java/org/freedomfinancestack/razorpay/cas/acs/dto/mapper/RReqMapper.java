@@ -41,9 +41,9 @@ public interface RReqMapper {
             target = "threeDSServerTransID",
             source = "transaction.transactionReferenceDetail.threedsServerTransactionId")
     @Mapping(target = "authenticationValue", source = "transaction.authValue")
+    @Mapping(target = "authenticationType", expression = "java(getAuthType(transaction))")
     @Mapping(target = "transStatusReason", source = "transaction.transactionStatusReason")
     @Mapping(target = "transStatus", source = "transaction.transactionStatus.status")
-    @Mapping(target = "authenticationType", expression = "java(getAuthType(transaction))")
     @Mapping(target = "interactionCounter", expression = "java(getInteractionCounter(transaction))")
     @Mapping(target = "authenticationMethod", expression = "java(getAuthMethod(transaction))")
     @Mapping(target = "challengeCancel", source = "transaction.challengeCancelInd")
@@ -58,15 +58,17 @@ public interface RReqMapper {
     RREQ toRreq(Transaction transaction);
 
     default String getAuthType(Transaction transaction) {
-        if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
-                transaction.getTransactionStatus())) {
-            return "04";
+        if (transaction.getAuthenticationType() == null) {
+            return "";
         }
-        return "02";
+        return "0" + transaction.getAuthenticationType();
     }
 
     default String getInteractionCounter(Transaction transaction) {
-        return "0" + transaction.getInteractionCount();
+        if (transaction.getInteractionCount() < 10) {
+            return "0" + transaction.getInteractionCount();
+        }
+        return String.valueOf(transaction.getInteractionCount());
     }
 
     default String getAuthMethod(Transaction transaction) {

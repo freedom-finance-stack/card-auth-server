@@ -1,7 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.validation.constraints.NotNull;
 
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
@@ -33,7 +31,6 @@ import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
-import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
@@ -158,7 +155,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
 
             } else {
-                AuthConfigDto authConfigDto = getAuthConfig(transaction);
+                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
                 if (cReq.getResendChallenge() != null
                         && cReq.getResendChallenge().equals(InternalConstants.YES)) {
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
@@ -312,7 +309,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             "Challenge resend threshold exceeded");
                 }
             } else {
-                AuthConfigDto authConfigDto = getAuthConfig(transaction);
+                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
                 if (cvReq.isResendChallenge()) {
                     transactionTimeoutServiceLocator
                             .locateService(MessageType.CReq)
@@ -407,14 +404,16 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     }
 
     private void updateEci(Transaction transaction) {
-        GenerateECIRequest generateECIRequest =
-                new GenerateECIRequest(
-                        transaction.getTransactionStatus(),
-                        transaction.getTransactionCardDetail().getNetworkCode(),
-                        transaction.getMessageCategory());
-        generateECIRequest.setThreeRIInd(transaction.getThreeRIInd());
-        String eci = eCommIndicatorService.generateECI(generateECIRequest);
-        transaction.setEci(eci);
+        if (!Util.isNullorBlank(transaction.getId())) {
+            GenerateECIRequest generateECIRequest =
+                    new GenerateECIRequest(
+                            transaction.getTransactionStatus(),
+                            transaction.getTransactionCardDetail().getNetworkCode(),
+                            transaction.getMessageCategory());
+            generateECIRequest.setThreeRIInd(transaction.getThreeRIInd());
+            String eci = eCommIndicatorService.generateECI(generateECIRequest);
+            transaction.setEci(eci);
+        }
     }
 
     private void handleChallengeValidation(
@@ -552,13 +551,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
         }
         return transaction;
-    }
-
-    private AuthConfigDto getAuthConfig(Transaction transaction) throws ACSDataAccessException {
-        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
-        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
-        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
-        return featureService.getAuthenticationConfig(entityIdsByType);
     }
 
     private CREQ parseEncryptedRequest(String strCReq) throws ParseException {

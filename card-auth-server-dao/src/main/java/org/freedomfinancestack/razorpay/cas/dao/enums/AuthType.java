@@ -1,7 +1,17 @@
 package org.freedomfinancestack.razorpay.cas.dao.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum AuthType {
-    OTP,
-    PASSWORD,
-    OOB;
+    OTP(2),
+    PASSWORD(1),
+    NetBankingOOB(3),
+    Decoupled(4);
+
+    private final int value;
+
+    AuthType(int value) {
+        this.value = value;
+    }
 }

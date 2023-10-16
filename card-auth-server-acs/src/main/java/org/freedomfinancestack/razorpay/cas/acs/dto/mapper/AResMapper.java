@@ -71,6 +71,7 @@ public interface AResMapper {
             target = "transStatusReason",
             expression = "java(getTransStatusReason(areq, transaction))")
     @Mapping(target = "authenticationValue", source = "transaction.authValue")
+    @Mapping(target = "authenticationType", expression = "java(getAuthType(transaction))")
     @Mapping(target = "threeDSServerTransID", source = "areq.threeDSServerTransID")
     @Mapping(target = "dsReferenceNumber", source = "areq.dsReferenceNumber")
     @Mapping(target = "dsTransID", source = "areq.dsTransID")
@@ -86,7 +87,6 @@ public interface AResMapper {
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
         AResMapperParams aResMapperParams;
-
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
                 && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
@@ -113,9 +113,11 @@ public interface AResMapper {
     }
 
     default String getOperatorId(Transaction transaction, AppConfiguration appConfiguration) {
-
         String operatorId = "";
-        if (Network.VISA.getValue()
+        if (transaction.getTransactionCardDetail() == null
+                || transaction.getTransactionCardDetail().getNetworkCode() == null) {
+            operatorId = "";
+        } else if (Network.VISA.getValue()
                 == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
             operatorId = appConfiguration.getAcs().getOperatorId().getVisa();
         } else if (Network.MASTERCARD.getValue()
@@ -126,5 +128,12 @@ public interface AResMapper {
             operatorId = appConfiguration.getAcs().getOperatorId().getAmex();
         }
         return operatorId;
+    }
+
+    default String getAuthType(Transaction transaction) {
+        if (transaction.getAuthenticationType() == null) {
+            return "";
+        }
+        return "0" + transaction.getAuthenticationType();
     }
 }
