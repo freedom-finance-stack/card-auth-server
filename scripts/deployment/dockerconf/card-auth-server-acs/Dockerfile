@@ -23,7 +23,7 @@ RUN  apk update \
 RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazoncorretto.rsa.pub \
     && echo "https://apk.corretto.aws/" >> /etc/apk/repositories \
     && apk update
-RUN apk add --update amazon-corretto-11
+RUN apk add --update amazon-corretto-17
 
 #Install Supervisord
 RUN apk add --update supervisor
