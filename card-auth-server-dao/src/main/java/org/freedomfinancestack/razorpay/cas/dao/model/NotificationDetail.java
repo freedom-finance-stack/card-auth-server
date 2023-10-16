@@ -1,10 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import org.freedomfinancestack.razorpay.cas.dao.enums.NotificationStatus;
 import org.hibernate.annotations.Where;
 
 import lombok.AllArgsConstructor;
@@ -13,24 +11,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "otp")
+@Table(name = "notification_detail")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Where(clause = "deleted_at is null")
-public class Otp extends BaseEntity<String> {
+public class NotificationDetail extends BaseEntity<String> {
     @Id private String id;
 
     private String channel;
 
-    @Column(name = "otp_information_id", nullable = false)
-    private String otpInformationId;
+    private String entity_type;
+
+    @Column(name = "entity_id", nullable = false)
+    private String entity_id;
 
     private String destination;
 
-    @Column(name = "otp_status")
-    private String otpStatus;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus status;
 
     private String response;
 
