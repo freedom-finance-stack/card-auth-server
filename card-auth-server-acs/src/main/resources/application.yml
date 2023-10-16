@@ -14,10 +14,10 @@ app:
 
 gateway:
   ds:
-    mock: true
+    mock: false
     services:
       VISA_DS:
-        url: https://sample.site/
+        url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
         useSSL: false
         connectTimeout : 5000
         readTimeout : 5000
@@ -28,7 +28,7 @@ gateway:
           maxAttempts: 2
           backOffPeriod: 1000   #ms
       MASTERCARD_DS:
-        url: https://sample.site/
+        url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
         useSSL: false
         connectTimeout: 5000
         readTimeout: 5000
