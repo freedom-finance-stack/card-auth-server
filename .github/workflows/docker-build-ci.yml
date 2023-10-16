@@ -2,14 +2,12 @@ name: Docker Build and Push to DockerHub
 
 on:
   pull_request:
-    types:
-      - labeled
 
 jobs:
   cancel:
     runs-on: ubuntu-latest
     name: Cancel Previous Runs
-    if: always()
+    if: ${{ github.event.label.name == 'DockerBuild' }}
     steps:
       - uses: styfle/cancel-workflow-action@d57d93c3a8110b00c3a2c0b64b8516013c9fd4c9
         if: github.ref != 'refs/heads/master'
