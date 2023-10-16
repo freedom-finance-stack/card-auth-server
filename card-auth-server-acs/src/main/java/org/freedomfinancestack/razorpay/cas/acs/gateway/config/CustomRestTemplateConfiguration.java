@@ -9,8 +9,8 @@ import javax.net.ssl.SSLContext;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
-import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.core5.http.io.SocketConfig;
@@ -60,18 +60,9 @@ public class CustomRestTemplateConfiguration {
                     KeyStoreException,
                     CertificateException,
                     IOException {
-        SSLContext sslContext =
-                new SSLContextBuilder()
-                        .loadTrustMaterial(
-                                config.getKeyStore().getPath().getURL(),
-                                config.getKeyStore().getPassword().toCharArray())
-                        .build();
-        final SSLConnectionSocketFactory sslsf =
-                new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
 
-        HttpClientConnectionManager connectionManager =
+        PoolingHttpClientConnectionManagerBuilder clientConnectionManagerBuilder =
                 PoolingHttpClientConnectionManagerBuilder.create()
-                        .setSSLSocketFactory(sslsf)
                         .setDefaultSocketConfig(
                                 SocketConfig.custom()
                                         .setSoTimeout(config.getReadTimeout(), TimeUnit.SECONDS)
@@ -80,11 +71,24 @@ public class CustomRestTemplateConfiguration {
                                 ConnectionConfig.custom()
                                         .setConnectTimeout(
                                                 config.getConnectTimeout(), TimeUnit.SECONDS)
-                                        .build())
-                        .build();
+                                        .build());
+        if (config.isUseSSL()) {
+            SSLContext sslContext =
+                    new SSLContextBuilder()
+                            .loadTrustMaterial(
+                                    config.getKeyStore().getPath().getURL(),
+                                    config.getKeyStore().getPassword().toCharArray())
+                            .build();
+            final SSLConnectionSocketFactory sslsf =
+                    new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+            clientConnectionManagerBuilder.setSSLSocketFactory(sslsf);
+        }
+
+        PoolingHttpClientConnectionManager clientConnectionManager =
+                clientConnectionManagerBuilder.build();
 
         final CloseableHttpClient httpClient =
-                HttpClients.custom().setConnectionManager(connectionManager).build();
+                HttpClients.custom().setConnectionManager(clientConnectionManager).build();
 
         HttpComponentsClientHttpRequestFactory requestFactory =
                 new HttpComponentsClientHttpRequestFactory();
