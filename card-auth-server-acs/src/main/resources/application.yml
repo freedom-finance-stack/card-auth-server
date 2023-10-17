@@ -9,7 +9,7 @@ app:
       mastercard: 123456789012345
       amex: 123456789012345
     timeout:
-      challengeRequest:  30 #sec
+      challengeRequest: 30 #sec
       challengeCompletion: 180 #sec
 
 gateway:
@@ -19,8 +19,8 @@ gateway:
       VISA_DS:
         url: https://sample.site/
         useSSL: false
-        connectTimeout : 5000
-        readTimeout : 5000
+        connectTimeout: 5000
+        readTimeout: 5000
         keyStore:
           path: classpath:acs/sample.p12
           password: password
@@ -113,5 +113,12 @@ task:
     maxPoolSize: 10
     keepAliveTime: 60000 #mili
 
-
-
+external-libs:
+  security:
+    SecurityModuleAWS:
+      enabled: false
+    SecurityModuleAzure:
+      enabled: false
+  request-parsing:
+    RequestParsingModuleAWS:
+      enabled: false

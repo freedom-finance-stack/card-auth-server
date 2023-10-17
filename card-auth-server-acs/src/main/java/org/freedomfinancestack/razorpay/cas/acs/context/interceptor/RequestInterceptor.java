@@ -3,15 +3,22 @@ package org.freedomfinancestack.razorpay.cas.acs.context.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.freedomfinancestack.extensions.externallibs.config.RequestInterceptorConfig;
 import org.freedomfinancestack.razorpay.cas.acs.context.RequestContext;
 import org.freedomfinancestack.razorpay.cas.acs.context.RequestContextHolder;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import lombok.RequiredArgsConstructor;
+
 @Component("requestInterceptor")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RequestInterceptor implements AsyncHandlerInterceptor {
+
+    private final RequestInterceptorConfig requestInterceptorConfig;
 
     @Override
     public boolean preHandle(
@@ -22,6 +29,8 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
 
         RequestContext requestContext = new RequestContext(Util.generateUUID());
         RequestContextHolder.set(requestContext);
+
+        requestInterceptorConfig.processRequest(httpServletRequest);
 
         return AsyncHandlerInterceptor.super.preHandle(
                 httpServletRequest, httpServletResponse, handler);
