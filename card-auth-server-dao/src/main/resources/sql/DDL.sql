@@ -25,7 +25,7 @@ CREATE TABLE `transaction`
     `resend_count`              int DEFAULT 0,
     `challenge_cancel_ind`      varchar(2),
     `error_code`                varchar(20),
-    `created_at`                timestamp,                                                                                                                                  NOT NULL,
+    `created_at`                timestamp  NOT NULL,
     `modified_at`               timestamp,
     `deleted_at`                timestamp
 );

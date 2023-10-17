@@ -1,8 +1,11 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -47,12 +50,23 @@ public class CustomRestTemplateConfiguration {
                     CertificateException, IOException {
         HttpClientBuilder httpClient = HttpClients.custom();
         if (config.isUseSSL()) {
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+
+            // Load the public key from PEM and convert it to X.509 certificate
+            String pemPublicKey = config.getKeyStore().getPath();
+
+            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+            X509Certificate cert =
+                    (X509Certificate)
+                            certFactory.generateCertificate(
+                                    new ByteArrayInputStream(pemPublicKey.getBytes()));
+
+            // Add the certificate to the keystore using your key identifier as the alias
+            keyStore.setCertificateEntry(config.getKeyStore().getPassword(), cert);
+
             SSLContext sslContext =
-                    new SSLContextBuilder()
-                            .loadTrustMaterial(
-                                    config.getKeyStore().getPath().getURL(),
-                                    config.getKeyStore().getPassword().toCharArray())
-                            .build();
+                    new SSLContextBuilder().loadTrustMaterial(keyStore, null).build();
+
             SSLConnectionSocketFactory sslConFactory = new SSLConnectionSocketFactory(sslContext);
             httpClient.setSSLSocketFactory(sslConFactory);
         }

@@ -12,7 +12,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ public class DsGatewayConfig {
     @Getter
     @Setter
     public static class KeyStoreConfig {
-        private Resource path;
+        private String path;
         private String password;
     }
 

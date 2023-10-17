@@ -1,5 +1,10 @@
 app:
   port: 8080
+  acs:
+    referenceNumber: "12345678901234567890"
+    timeout:
+      challengeRequest:  10 #sec
+      challengeCompletion: 180 #sec
 
 spring:
   datasource:
