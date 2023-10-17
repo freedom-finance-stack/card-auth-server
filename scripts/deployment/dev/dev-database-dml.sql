@@ -43,7 +43,7 @@ INSERT INTO `cardholder` VALUES ('1','9988776655','dev-user@mail.com','01-01-202
 UNLOCK TABLES;
 
 LOCK TABLES `institution` WRITE;
-INSERT INTO `institution` VALUES ('I1','HDFC Bank','HDFC',356,'Asia/Kolkata','ACTIVE',NOW(),'dev-user',NOW(),'dev-user',NULL,NULL);
+INSERT INTO `institution` VALUES ('I1','HDFC Bank','HDFC',356,'Asia/Kolkata','ACTIVE',NOW(),'dev-user',NOW(),'dev-user',NULL,NULL, '2.2.0');
 UNLOCK TABLES;
 
 LOCK TABLES `institution_acs_url` WRITE;

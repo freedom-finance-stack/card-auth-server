@@ -15,6 +15,7 @@ hsm:
       port: 8080
       timeout: 1
 
+
 gateway:
   ds:
     mock: false
@@ -41,3 +42,9 @@ gateway:
         retryable:
           maxAttempts: 2
           backOffPeriod: 1000
+
+external-libs:
+  security:
+    SecurityModuleAWS:
+      enabled: false # permitted values are Boolean - "true" or "false"
+

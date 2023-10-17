@@ -20,6 +20,7 @@ public class InstitutionMeta extends BaseEntity<String> {
     @Column(name = "institution_id")
     private String id;
 
+    @Lob
     @Column(name = "logo_data")
     private byte[] logoData;
 

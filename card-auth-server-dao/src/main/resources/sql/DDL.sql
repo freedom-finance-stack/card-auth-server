@@ -164,7 +164,8 @@ CREATE TABLE `institution`
     `modified_at`      timestamp,
     `modified_by`      varchar(40),
     `deleted_at`       timestamp default NULL,
-    `deleted_by`       varchar(40)
+    `deleted_by`       varchar(40),
+    `message_version`       varchar(10) default NULL
 );
 
 DROP TABLE IF EXISTS `hsm_config`;
