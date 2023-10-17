@@ -15,3 +15,8 @@ hsm:
       ip: "127.0.0.1"
       port: 8080
       timeout: 1
+
+external-libs:
+  security:
+    SecurityModuleAWS:
+      enabled: false # permitted values are Boolean - "true" or "false"

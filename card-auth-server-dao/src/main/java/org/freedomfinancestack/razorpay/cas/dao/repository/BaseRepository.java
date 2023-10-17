@@ -11,7 +11,7 @@ import jakarta.transaction.Transactional;
 @NoRepositoryBean
 public interface BaseRepository<T extends BaseEntity, ID> extends JpaRepository<T, ID> {
 
-    @Query("update #{#entityName} e set e.deleted_at= now() where e.id = ?1")
+    @Query("update #{#entityName} e set e.deletedAt= now() where e.id = ?1")
     @Modifying
     @Transactional
     void softDeleteById(ID id);

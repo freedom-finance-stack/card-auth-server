@@ -10,7 +10,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
@@ -79,7 +79,7 @@ public class TransactionServiceImpl implements TransactionService {
         transactionRepository.softDeleteById(id);
     }
 
-    public Transaction create(AREQ areq) throws ValidationException {
+    public Transaction create(AREQ areq) throws ACSValidationException {
         Transaction transaction = createTransactionFromAreq(areq);
         transaction.setTransactionCardDetail(buildTransactionCardDetail(areq));
         transaction.setTransactionBrowserDetail(buildTransactionBrowserDetail(areq));
@@ -140,7 +140,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private TransactionPurchaseDetail buildTransactionPurchaseDetail(AREQ areq)
-            throws ValidationException {
+            throws ACSValidationException {
         TransactionPurchaseDetail transactionPurchaseDetail =
                 TransactionPurchaseDetail.builder()
                         .purchaseAmount(areq.getPurchaseAmount())
@@ -155,7 +155,7 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionPurchaseDetail.setPurchaseTimestamp(time);
             }
         } catch (ParseException e) {
-            throw new ValidationException(
+            throw new ACSValidationException(
                     ThreeDSecureErrorCode.INVALID_FORMAT_VALUE, "Invalid PurchaseDate");
         }
         if (!Util.isNullorBlank(areq.getPurchaseExponent())) {

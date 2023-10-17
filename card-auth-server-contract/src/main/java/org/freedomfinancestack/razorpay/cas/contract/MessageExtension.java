@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.contract;
 
 import java.util.Map;
 
+import org.freedomfinancestack.extensions.validation.validator.Validatable;
 import org.freedomfinancestack.razorpay.cas.contract.utils.Util;
 
 import lombok.Data;

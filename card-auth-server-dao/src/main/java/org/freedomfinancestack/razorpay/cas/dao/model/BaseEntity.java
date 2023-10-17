@@ -22,7 +22,7 @@ public abstract class BaseEntity<T> implements Serializable {
     private Timestamp modifiedAt;
 
     @Column(name = "deleted_at")
-    private Timestamp deleted_at;
+    private Timestamp deletedAt;
 
     public abstract T getId();
 }
