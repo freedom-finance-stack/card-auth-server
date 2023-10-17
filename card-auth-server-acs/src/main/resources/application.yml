@@ -22,8 +22,8 @@ gateway:
         connectTimeout : 5000
         readTimeout : 5000
         keyStore:
-          path: classpath:acs/sample.p12
-          password: password
+          key: ${VISA_DS_KEYSTORE_KEY:}
+          identifier: ${VISA_DS_KEYSTORE_KEY_IDENTIFIER:}
         retryable:
           maxAttempts: 2
           backOffPeriod: 1000   #ms
@@ -33,8 +33,8 @@ gateway:
         connectTimeout: 5000
         readTimeout: 5000
         keyStore:
-          path: classpath:acs/sample.p12
-          password: password
+          key: ${MASTERCARD_DS_KEYSTORE_KEY:}
+          identifier: ${MASTERCARD_DS_KEYSTORE_KEY_IDENTIFIER:}
         retryable:
           maxAttempts: 2
           backOffPeriod: 1000

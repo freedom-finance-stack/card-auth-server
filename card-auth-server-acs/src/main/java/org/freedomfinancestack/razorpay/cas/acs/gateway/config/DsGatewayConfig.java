@@ -42,8 +42,8 @@ public class DsGatewayConfig {
     @Getter
     @Setter
     public static class KeyStoreConfig {
-        private String path;
-        private String password;
+        private String key;
+        private String identifier;
     }
 
     @Getter

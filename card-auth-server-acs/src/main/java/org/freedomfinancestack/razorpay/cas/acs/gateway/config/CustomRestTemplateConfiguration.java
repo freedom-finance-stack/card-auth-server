@@ -53,7 +53,7 @@ public class CustomRestTemplateConfiguration {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 
             // Load the public key from PEM and convert it to X.509 certificate
-            String pemPublicKey = config.getKeyStore().getPath();
+            String pemPublicKey = config.getKeyStore().getKey();
 
             CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
             X509Certificate cert =
@@ -62,7 +62,7 @@ public class CustomRestTemplateConfiguration {
                                     new ByteArrayInputStream(pemPublicKey.getBytes()));
 
             // Add the certificate to the keystore using your key identifier as the alias
-            keyStore.setCertificateEntry(config.getKeyStore().getPassword(), cert);
+            keyStore.setCertificateEntry(config.getKeyStore().getIdentifier(), cert);
 
             SSLContext sslContext =
                     new SSLContextBuilder().loadTrustMaterial(keyStore, null).build();
