@@ -1,10 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.context.interceptor;
 
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.freedomfinancestack.extensions.externallibs.security.SecurityModuleAWS;
+import org.freedomfinancestack.extensions.externallibs.config.RequestInterceptorConfig;
 import org.freedomfinancestack.razorpay.cas.acs.context.RequestContext;
 import org.freedomfinancestack.razorpay.cas.acs.context.RequestContextHolder;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -19,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RequestInterceptor implements AsyncHandlerInterceptor {
 
-    private final Optional<SecurityModuleAWS> securityModuleAWSLib;
+    private final RequestInterceptorConfig requestInterceptorConfig;
 
     @Override
     public boolean preHandle(
@@ -31,15 +30,7 @@ public class RequestInterceptor implements AsyncHandlerInterceptor {
         RequestContext requestContext = new RequestContext(Util.generateUUID());
         RequestContextHolder.set(requestContext);
 
-        /*
-         External SecurityModuleAWS Library Module is called here
-         Perform action depending on response from this function.
-        */
-        if (securityModuleAWSLib.isPresent()) {
-            final SecurityModuleAWS securityModuleAWS = securityModuleAWSLib.get();
-            boolean isVerified = securityModuleAWS.verifyRequest(httpServletRequest);
-            /* Business logic for what to do if request is not verified. */
-        }
+        requestInterceptorConfig.processRequest(httpServletRequest);
 
         return AsyncHandlerInterceptor.super.preHandle(
                 httpServletRequest, httpServletResponse, handler);
