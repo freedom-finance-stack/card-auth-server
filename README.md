@@ -20,8 +20,8 @@ The simplest way to set up Card Auth Server is to create a managed deployment wi
 
 #### Prerequiste
 We need to install below libraries
-* Java - `version "11.0.16" 2022-07-19 LTS`
-* Maven - `Apache Maven 3.8.6`
+* Java - `version "17.0.8" 2023-07-18 LTS`
+* Maven - `Apache Maven 3.9.5`
 * Mysql Server - `8.0.32`
 * Java IDE(Intellij/Eclipse etc)
 
