@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
@@ -29,9 +29,9 @@ public interface TransactionService {
      *
      * @param areq The AREQ (Authentication Request) to be used for creating the Transaction.
      * @return The newly created Transaction object.
-     * @throws ValidationException If the AREQ fails validation.
+     * @throws ACSValidationException If the AREQ fails validation.
      */
-    Transaction create(AREQ areq) throws ValidationException;
+    Transaction create(AREQ areq) throws ACSValidationException;
     /**
      * Finds a Transaction object by its ID in the database and returns it.
      *

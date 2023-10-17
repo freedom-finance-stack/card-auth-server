@@ -146,6 +146,24 @@
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache-commons.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -261,6 +279,23 @@
                         <phase>process-sources</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourcepath>${project.build.directory}/delombok</sourcepath>
+                    <doclint>none</doclint>
+                </configuration>
             </plugin>
         </plugins>
     </build>

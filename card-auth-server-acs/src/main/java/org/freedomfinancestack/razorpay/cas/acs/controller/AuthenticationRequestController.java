@@ -19,15 +19,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * The {@code ACSController} class is a REST controller responsible for handling Authentication
- * Request (AReq) from the 3DS Server.
+ * The {@link AuthenticationRequestController} class is a REST controller responsible for handling
+ * Authentication Request {@link AREQ} from the 3DS Server.
  *
  * @version 1.0.0
  * @since 1.0.0
  * @author ankitchoudhary2209, jaydeepRadadiya
  */
+@Slf4j
 @RestController("acsController")
 @RequestMapping("/v1/transaction")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

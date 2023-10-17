@@ -2,11 +2,12 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import java.util.Arrays;
 
+import org.freedomfinancestack.extensions.validation.exception.ValidationException;
+import org.freedomfinancestack.extensions.validation.validator.Validation;
+import org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validation;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.LengthValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
@@ -14,18 +15,18 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.IsIP.isIP;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.IsNumeric.isNumeric;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.IsUUID.isUUID;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.IsValidObject.isValidObject;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.NotNull.notNull;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.IsDate.isDate;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.IsIn.isIn;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.LengthValidator.lengthValidator;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.NotIn.notIn;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.RegexValidator.regexValidator;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.rule.IsListValid.isListValid;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.rule.When.when;
+import static org.freedomfinancestack.extensions.validation.validator.basic.IsIP.isIP;
+import static org.freedomfinancestack.extensions.validation.validator.basic.IsNumeric.isNumeric;
+import static org.freedomfinancestack.extensions.validation.validator.basic.IsUUID.isUUID;
+import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.IsDate.isDate;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.NotIn.notIn;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.RegexValidator.regexValidator;
+import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
+import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
 
 /**
  * The {@code AuthenticationRequestValidator} class is responsible for validating the Authentication
@@ -50,7 +51,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
      * @throws ValidationException If the request fails validation.
      */
     @Override
-    public void validateRequest(AREQ request) throws ValidationException {
+    public void validateRequest(AREQ request) throws ACSValidationException {
         validateAuthenticationRequest(request);
     }
 
@@ -60,10 +61,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
      * @param request The authentication request (AREQ) to be validated.
      * @throws ValidationException If the request fails validation.
      */
-    private void validateAuthenticationRequest(AREQ request) throws ValidationException {
-        validateMandatoryFields(request);
-        validateConditionalFields(request);
-        validateOptionalFields(request);
+    private void validateAuthenticationRequest(AREQ request) throws ACSValidationException {
+        try {
+            validateMandatoryFields(request);
+            validateConditionalFields(request);
+            validateOptionalFields(request);
+        } catch (ValidationException vex) {
+            throw new ACSValidationException(vex);
+        }
     }
 
     private void validateMandatoryFields(AREQ request) throws ValidationException {
@@ -90,7 +95,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 lengthValidator(LengthValidator.DataLengthType.VARIABLE, 8),
                 isIn(
                         ThreeDSDataElement.MESSAGE_VERSION
-                                .getAcceptedValues())); // todo handle exception for message version
+                                .getAcceptedValues())); // todo handle exception for message
+        // version
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_COMPIND.getFieldName(),
@@ -363,7 +369,6 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
     private void validateConditionalFields(AREQ request) throws ValidationException {
 
         // Conditional Fields
-
         Validation.validate(
                 ThreeDSDataElement.MCC.getFieldName(),
                 request.getMcc(),
@@ -488,6 +493,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
     protected void validateOptionalFields(AREQ request) throws ValidationException {
 
         // Optional Fields
+
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_AUTHENTICATION_INFO.getFieldName(),
                 request.getThreeDSRequestorAuthenticationInfo(),
