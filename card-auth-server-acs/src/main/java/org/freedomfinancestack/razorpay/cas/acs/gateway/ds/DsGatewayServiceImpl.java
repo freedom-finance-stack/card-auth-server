@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.entity.ContentType;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
@@ -27,7 +27,7 @@ public class DsGatewayServiceImpl implements DsGatewayService {
     private final VisaDsHttpsGatewayService visaDsHttpsGatewayService;
     private final MasterCardDsHttpsGatewayService masterCardDsHttpsGatewayService;
 
-    public RRES sendRReq(final Network network, final RREQ rReq) throws ValidationException {
+    public RRES sendRReq(final Network network, final RREQ rReq) throws ACSValidationException {
         HttpsGatewayService httpsGatewayService = getHttpsGatewayService(network);
         Map<String, String> headerMap = new HashMap<>();
         Map<String, Object> queryParamMap = new HashMap<>();
@@ -39,7 +39,7 @@ public class DsGatewayServiceImpl implements DsGatewayService {
                             Util.toJson(rReq), HttpMethod.POST, headerMap, queryParamMap);
             rres = Util.fromJson(strRres, RRES.class);
         } catch (JsonSyntaxException jsonSyntaxException) {
-            throw new ValidationException(
+            throw new ACSValidationException(
                     ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
                     "invalid RRES received from DS");
         }
@@ -47,7 +47,7 @@ public class DsGatewayServiceImpl implements DsGatewayService {
     }
 
     public void sendError(final Network network, final ThreeDSErrorResponse errorResponse)
-            throws ValidationException {
+            throws ACSValidationException {
         HttpsGatewayService httpsGatewayService = getHttpsGatewayService(network);
         Map<String, String> headerMap = new HashMap<>();
         Map<String, Object> queryParamMap = new HashMap<>();
@@ -59,7 +59,7 @@ public class DsGatewayServiceImpl implements DsGatewayService {
             httpsGatewayService.sendRequest(
                     Util.toJson(errorResponse), HttpMethod.POST, headerMap, queryParamMap);
         } catch (JsonSyntaxException jsonSyntaxException) {
-            throw new ValidationException(
+            throw new ACSValidationException(
                     ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
                     "invalid RRES received from DS");
         }

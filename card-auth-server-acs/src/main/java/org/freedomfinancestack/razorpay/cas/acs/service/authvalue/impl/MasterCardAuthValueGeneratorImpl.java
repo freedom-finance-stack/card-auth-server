@@ -9,7 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.MasterCardConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AuthValueConfig;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGenerator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -29,7 +29,7 @@ public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
 
     @Override
     public String createAuthValue(Transaction transaction)
-            throws ACSException, ValidationException {
+            throws ACSException, ACSValidationException {
         String iav = null;
 
         try {
