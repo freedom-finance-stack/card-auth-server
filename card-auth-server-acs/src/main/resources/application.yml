@@ -22,7 +22,7 @@ gateway:
         connectTimeout : 5000
         readTimeout : 5000
         keyStore:
-          key: ${VISA_DS_KEYSTORE_KEY:}
+          path: ${VISA_DS_KEYSTORE_PATH:}
           identifier: ${VISA_DS_KEYSTORE_KEY_IDENTIFIER:}
         retryable:
           maxAttempts: 2
@@ -33,7 +33,7 @@ gateway:
         connectTimeout: 5000
         readTimeout: 5000
         keyStore:
-          key: ${MASTERCARD_DS_KEYSTORE_KEY:}
+          path: ${MASTERCARD_DS_KEYSTORE_PATH:}
           identifier: ${MASTERCARD_DS_KEYSTORE_KEY_IDENTIFIER:}
         retryable:
           maxAttempts: 2

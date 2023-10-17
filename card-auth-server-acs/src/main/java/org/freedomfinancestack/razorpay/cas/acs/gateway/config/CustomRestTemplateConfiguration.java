@@ -1,10 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 
-import java.io.ByteArrayInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 
@@ -12,6 +11,10 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,14 +56,7 @@ public class CustomRestTemplateConfiguration {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 
             // Load the public key from PEM and convert it to X.509 certificate
-            String pemPublicKey = config.getKeyStore().getKey();
-
-            CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-            X509Certificate cert =
-                    (X509Certificate)
-                            certFactory.generateCertificate(
-                                    new ByteArrayInputStream(pemPublicKey.getBytes()));
-
+            X509Certificate cert = loadX509CertificateFromPEM(config.getKeyStore().getPath());
             // Add the certificate to the keystore using your key identifier as the alias
             keyStore.setCertificateEntry(config.getKeyStore().getIdentifier(), cert);
 
@@ -75,5 +71,17 @@ public class CustomRestTemplateConfiguration {
         requestFactory.setConnectTimeout(config.getConnectTimeout());
         requestFactory.setReadTimeout(config.getReadTimeout());
         return new RestTemplate(requestFactory);
+    }
+
+    private X509Certificate loadX509CertificateFromPEM(String pemFilePath)
+            throws CertificateException, IOException {
+        // Read the content of the PEM file
+        try (FileReader fileReader = new FileReader(pemFilePath);
+                PEMParser pemParser = new PEMParser(fileReader)) {
+            X509CertificateHolder certHolder = (X509CertificateHolder) pemParser.readObject();
+            return new JcaX509CertificateConverter()
+                    .setProvider(new BouncyCastleProvider())
+                    .getCertificate(certHolder);
+        }
     }
 }

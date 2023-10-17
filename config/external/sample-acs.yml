@@ -14,3 +14,30 @@ hsm:
       ip: "127.0.0.1"
       port: 8080
       timeout: 1
+
+gateway:
+  ds:
+    mock: false
+    services:
+      VISA_DS:
+        url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
+        useSSL: false
+        connectTimeout : 5000
+        readTimeout : 5000
+        keyStore:
+          path: /home/ec2-user/Downloads/code-setup/ds_keystore.pem
+          identifier: 468c93e9-5d5a-40b5-8d2a-db356af9de96
+        retryable:
+          maxAttempts: 2
+          backOffPeriod: 1000   #ms
+      MASTERCARD_DS:
+        url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
+        useSSL: false
+        connectTimeout: 5000
+        readTimeout: 5000
+        keyStore:
+          path: /home/ec2-user/Downloads/code-setup/ds_keystore.pem
+          identifier: 468c93e9-5d5a-40b5-8d2a-db356af9de96
+        retryable:
+          maxAttempts: 2
+          backOffPeriod: 1000
