@@ -2,10 +2,11 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import java.util.Arrays;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.extensions.validation.exception.ValidationException;
+import org.freedomfinancestack.extensions.validation.validator.Validation;
+import org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validation;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.LengthValidator;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
@@ -14,14 +15,14 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
+import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
+import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
 import static org.freedomfinancestack.razorpay.cas.acs.validation.AuthenticationRequestValidator.validateDeviceChannelAndMessageCategory;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.IsValidObject.isValidObject;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.NotNull.notNull;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.IsIn.isIn;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.LengthValidator.lengthValidator;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.rule.IsListValid.isListValid;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.rule.When.when;
 
 /**
  * Validates the challenge request (CREQ)
@@ -42,12 +43,16 @@ public class ChallengeRequestValidator {
      * @throws ValidationException If the request fails validation.
      */
     public void validateRequest(CREQ incomingCreq, Transaction transaction)
-            throws ValidationException {
+            throws ACSValidationException {
         if (incomingCreq == null) {
-            throw new ValidationException(
+            throw new ACSValidationException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Transaction data missing");
         }
-        validateChallengeRequest(incomingCreq, transaction);
+        try {
+            validateChallengeRequest(incomingCreq, transaction);
+        } catch (ValidationException vex) {
+            throw new ACSValidationException(vex);
+        }
     }
 
     private void validateChallengeRequest(CREQ incomingCreq, Transaction transaction)

@@ -3,8 +3,8 @@ package org.freedomfinancestack.razorpay.cas.acs.service.authvalue;
 import java.util.Objects;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl.MasterCardAuthValueGeneratorImpl;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl.VisaAuthValueGeneratorImpl;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
@@ -39,7 +39,7 @@ public class AuthValueGeneratorService {
             log.error(
                     "getAuthValueGenerator() Error occurred while fetching correct auth value"
                             + " generator");
-            throw new ValidationException(
+            throw new ACSValidationException(
                     ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID, "Scheme not valid");
         }
 
@@ -51,7 +51,7 @@ public class AuthValueGeneratorService {
 
         if (authValueGenerator == null) {
             log.error("getAuthValue() Error occurred as auth value generator is empty or null");
-            throw new ValidationException(
+            throw new ACSValidationException(
                     ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID, "Scheme not valid");
         }
         return authValueGenerator.createAuthValue(transaction);
