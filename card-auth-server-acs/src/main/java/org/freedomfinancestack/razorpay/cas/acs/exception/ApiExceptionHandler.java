@@ -138,6 +138,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<ThreeDSErrorResponse> buildResponseEntity(
             ThreeDSErrorResponse apiError) {
-        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.getHttpStatus()));
+        return new ResponseEntity<>(apiError, HttpStatusCode.valueOf(apiError.getHttpStatus()));
     }
 }
