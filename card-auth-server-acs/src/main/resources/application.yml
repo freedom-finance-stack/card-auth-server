@@ -18,7 +18,7 @@ gateway:
     services:
       VISA_DS:
         url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
-        useSSL: true
+        useSSL: false
         connectTimeout: 5000
         responseTimeout: 5000
         keyStore:
@@ -33,12 +33,12 @@ gateway:
           backOffPeriod: 1000   #ms
       MASTERCARD_DS:
         url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
-        useSSL: true
+        useSSL: false
         connectTimeout: 5000
         responseTimeout: 5000
         keyStore:
           path: ${MASTERCARD_DS_KEYSTORE_PATH:/Users/jaydeep.radadiya/Downloads/crt/cert.p12}
-          password: : ${MASTERCARD_DS_KEYSTORE_KEY_IDENTIFIER:ffsAcsPassword}
+          password: ${MASTERCARD_DS_KEYSTORE_KEY_IDENTIFIER:ffsAcsPassword}
         retryable:
           maxAttempts: 2
           backOffPeriod: 1000
