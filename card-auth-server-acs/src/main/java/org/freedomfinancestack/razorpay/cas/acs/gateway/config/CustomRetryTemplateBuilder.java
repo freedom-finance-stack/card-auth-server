@@ -73,7 +73,7 @@ public class CustomRetryTemplateBuilder {
                 GatewayHttpStatusCodeException httpException =
                         (GatewayHttpStatusCodeException) throwable;
                 return getRetryPolicyForStatus(
-                        httpException.getStatusCode(), simpleRetryPolicy, neverRetryPolicy);
+                        httpException.getHttpStatus(), simpleRetryPolicy, neverRetryPolicy);
             }
             return neverRetryPolicy;
         };

@@ -1,7 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import javax.validation.constraints.NotNull;
-
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
@@ -37,6 +35,7 @@ import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,7 +97,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     public CdRes processBrwChallengeRequestHandler(
             @NotNull final String strCReq, final String threeDSSessionData)
-            throws ACSDataAccessException, InvalidStateTransactionException,
+            throws ACSDataAccessException,
+                    InvalidStateTransactionException,
                     OperationNotSupportedException {
         // todo handle browser refresh, timeout and multiple request from different states,
         // whitelisting allowed,
@@ -261,7 +261,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     }
 
     private CdRes processBrwChallengeValidationReq(CVReq cvReq)
-            throws ACSDataAccessException, InvalidStateTransactionException,
+            throws ACSDataAccessException,
+                    InvalidStateTransactionException,
                     OperationNotSupportedException {
         // todo combine ChallengeValidationReq and ChallengeReq
         Transaction transaction = null;

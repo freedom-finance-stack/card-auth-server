@@ -34,7 +34,7 @@ public class DsGatewayConfig {
         private String url;
         private boolean useSSL = false;
         private Integer connectTimeout = 3000;
-        private Integer readTimeout = 3000;
+        private Integer responseTimeout = 3000;
         private KeyStoreConfig keyStore;
         private RetryConfig retryable;
     }
