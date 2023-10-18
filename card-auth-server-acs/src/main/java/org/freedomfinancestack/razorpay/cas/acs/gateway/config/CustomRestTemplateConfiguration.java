@@ -1,8 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
 import javax.net.ssl.KeyManagerFactory;
