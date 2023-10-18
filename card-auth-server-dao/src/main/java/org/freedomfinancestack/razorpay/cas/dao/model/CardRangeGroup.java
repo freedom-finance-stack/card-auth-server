@@ -1,9 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import javax.persistence.*;
-
 import org.hibernate.annotations.Where;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

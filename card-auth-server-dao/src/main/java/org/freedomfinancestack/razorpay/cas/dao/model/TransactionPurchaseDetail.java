@@ -1,10 +1,10 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
 import java.sql.Timestamp;
-import javax.persistence.*;
 
 import org.hibernate.annotations.Where;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity

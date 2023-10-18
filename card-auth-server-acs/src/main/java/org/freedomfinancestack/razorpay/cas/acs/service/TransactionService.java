@@ -23,6 +23,7 @@ public interface TransactionService {
      * @throws ACSDataAccessException If there is an error while accessing the data store.
      */
     Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException;
+
     /**
      * Creates a new Transaction object based on the provided AREQ (Authentication Request) and
      * returns it.
@@ -32,6 +33,7 @@ public interface TransactionService {
      * @throws ACSValidationException If the AREQ fails validation.
      */
     Transaction create(AREQ areq) throws ACSValidationException;
+
     /**
      * Finds a Transaction object by its ID in the database and returns it.
      *

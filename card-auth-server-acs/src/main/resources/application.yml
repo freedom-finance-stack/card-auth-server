@@ -69,10 +69,13 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: false
-      graphite:
+  graphite:
+    metrics:
+      export:
         enabled: false
 
 logging:
@@ -81,6 +84,8 @@ logging:
     org.springframework: INFO
     org.freedomfinancestack: INFO
 #    org.hibernate.type.descriptor.sql: TRACE
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 swagger:
   contact-name: Freedom Finance Stack

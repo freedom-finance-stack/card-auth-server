@@ -2,10 +2,11 @@ app:
   acs:
     referenceNumber: "99995678901234567890"
 
-metrics:
-  export:
-    prometheus:
-      enabled: true
+management:
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 hsm:
   enabled_gateway: "NoOpHSM"

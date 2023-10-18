@@ -67,6 +67,7 @@ public class LoggerAspect {
             "!("
                     + "execution(* org.freedomfinancestack.razorpay.cas.dao.enums..*(..))"
                     + ")"; // Added repository as example, need change it once we have use case
+
     /***
      * This contains all the packages which should
      *  generate at INFO level

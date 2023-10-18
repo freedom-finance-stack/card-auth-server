@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.admin.service.impl;
 
 import java.sql.Timestamp;
 import java.util.Optional;
-import javax.transaction.Transactional;
 
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.razorpay.cas.admin.dto.*;
@@ -27,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
