@@ -3,6 +3,8 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 
@@ -10,10 +12,10 @@ import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
-import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.core5.util.Timeout;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -39,7 +41,7 @@ public class CustomRestTemplateConfiguration {
         DsGatewayConfig.ServiceConfig visaConfig =
                 dsGatewayConfig.getServices().get(ClientType.VISA_DS);
 
-        return getRestTemplate(visaConfig);
+        return getRestTemplate(Network.VISA, visaConfig);
     }
 
     @Bean("masterCardDsRestTemplate")
@@ -52,26 +54,31 @@ public class CustomRestTemplateConfiguration {
                     UnrecoverableKeyException {
         DsGatewayConfig.ServiceConfig masterCardConfig =
                 dsGatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
-        return getRestTemplate(masterCardConfig);
+        return getRestTemplate(Network.MASTERCARD, masterCardConfig);
     }
 
-    private RestTemplate getRestTemplate(DsGatewayConfig.ServiceConfig config)
+    private RestTemplate getRestTemplate(Network network, DsGatewayConfig.ServiceConfig config)
             throws NoSuchAlgorithmException,
                     KeyStoreException,
                     CertificateException,
                     IOException,
                     UnrecoverableKeyException,
                     KeyManagementException {
-
-        SSLConnectionSocketFactory sslConFactory =
-                new SSLConnectionSocketFactory(
-                        createSSLContext(
-                                String.valueOf(config.getKeyStore().getPath()),
-                                config.getKeyStore().getIdentifier()));
-        HttpClientConnectionManager connectionManager =
-                PoolingHttpClientConnectionManagerBuilder.create()
-                        .setSSLSocketFactory(sslConFactory)
-                        .build();
+        PoolingHttpClientConnectionManagerBuilder connectionManagerBuilder =
+                PoolingHttpClientConnectionManagerBuilder.create();
+        if (config.isUseSSL()) {
+            createTrustStore(
+                    network,
+                    config.getTrustStore().getSrcPath(),
+                    config.getTrustStore().getDestPath(),
+                    config.getTrustStore().getPassword());
+            SSLConnectionSocketFactory sslConFactory =
+                    new SSLConnectionSocketFactory(
+                            createSSLContext(
+                                    String.valueOf(config.getKeyStore().getPath()),
+                                    config.getKeyStore().getPassword()));
+            connectionManagerBuilder.setSSLSocketFactory(sslConFactory);
+        }
 
         RequestConfig requestConfig =
                 RequestConfig.custom()
@@ -81,9 +88,10 @@ public class CustomRestTemplateConfiguration {
 
         CloseableHttpClient httpClient =
                 HttpClients.custom()
-                        .setConnectionManager(connectionManager)
+                        .setConnectionManager(connectionManagerBuilder.build())
                         .setDefaultRequestConfig(requestConfig)
                         .build();
+
         ClientHttpRequestFactory requestFactory =
                 new HttpComponentsClientHttpRequestFactory(httpClient);
         return new RestTemplate(requestFactory);
@@ -96,6 +104,7 @@ public class CustomRestTemplateConfiguration {
                     CertificateException,
                     UnrecoverableKeyException,
                     KeyManagementException {
+
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         try (InputStream keyStoreStream = new FileInputStream(keyStorePath)) {
             keyStore.load(keyStoreStream, keyStorePassword.toCharArray());
@@ -109,5 +118,28 @@ public class CustomRestTemplateConfiguration {
         sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
 
         return sslContext;
+    }
+
+    public static void createTrustStore(
+            Network network,
+            String trustStoreSourcePath,
+            String truststoreDestPath,
+            String trustStorePassword)
+            throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+        FileInputStream truststoreFile = new FileInputStream(truststoreDestPath);
+        KeyStore truststore = KeyStore.getInstance(KeyStore.getDefaultType());
+        truststore.load(truststoreFile, trustStorePassword.toCharArray());
+
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        try (InputStream caCertFile = new FileInputStream(trustStoreSourcePath)) {
+            X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
+            truststore.setCertificateEntry(
+                    network.getName() + "_DSCert", caCert); // Provide an alias for the certificate
+            // Save the updated truststore
+            try (FileOutputStream truststoreOutputStream =
+                    new FileOutputStream(truststoreDestPath)) {
+                truststore.store(truststoreOutputStream, trustStorePassword.toCharArray());
+            }
+        }
     }
 }

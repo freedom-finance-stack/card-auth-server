@@ -36,6 +36,7 @@ public class DsGatewayConfig {
         private Integer connectTimeout = 3000;
         private Integer responseTimeout = 3000;
         private KeyStoreConfig keyStore;
+        private TrustStoreConfig trustStore;
         private RetryConfig retryable;
     }
 
@@ -43,7 +44,15 @@ public class DsGatewayConfig {
     @Setter
     public static class KeyStoreConfig {
         private String path;
-        private String identifier;
+        private String password;
+    }
+
+    @Getter
+    @Setter
+    public static class TrustStoreConfig {
+        private String srcPath;
+        private String destPath;
+        private String password;
     }
 
     @Getter

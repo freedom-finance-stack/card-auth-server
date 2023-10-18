@@ -13,6 +13,7 @@ ENV CARD_AUTH_ACS_SERVER_PORT=$CAS_ACS_SERVER_PORT
 # for running java -jar command use --spring.config.additional-location to provide external config file path
 ENV EXTERNAL_CONFIG_FILE_PATH /opt/card-auth-server/cas-acs/bin/config/acs.yml
 
+
 RUN  apk update \
   && apk upgrade \
   && apk add ca-certificates \
