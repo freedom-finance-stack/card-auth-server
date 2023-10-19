@@ -3,8 +3,6 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 
@@ -126,20 +124,22 @@ public class CustomRestTemplateConfiguration {
             String truststoreDestPath,
             String trustStorePassword)
             throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
-//        FileInputStream truststoreFile = new FileInputStream(truststoreDestPath);
-//        KeyStore truststore = KeyStore.getInstance(KeyStore.getDefaultType());
-//        truststore.load(truststoreFile, trustStorePassword.toCharArray());
-//
-//        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-//        try (InputStream caCertFile = new FileInputStream(trustStoreSourcePath)) {
-//            X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
-//            truststore.setCertificateEntry(
-//                    network.getName() + "_DSCert", caCert); // Provide an alias for the certificate
-//            // Save the updated truststore
-//            try (FileOutputStream truststoreOutputStream =
-//                    new FileOutputStream(truststoreDestPath)) {
-//                truststore.store(truststoreOutputStream, trustStorePassword.toCharArray());
-//            }
-//        }
+        //        FileInputStream truststoreFile = new FileInputStream(truststoreDestPath);
+        //        KeyStore truststore = KeyStore.getInstance(KeyStore.getDefaultType());
+        //        truststore.load(truststoreFile, trustStorePassword.toCharArray());
+        //
+        //        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        //        try (InputStream caCertFile = new FileInputStream(trustStoreSourcePath)) {
+        //            X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
+        //            truststore.setCertificateEntry(
+        //                    network.getName() + "_DSCert", caCert); // Provide an alias for the
+        // certificate
+        //            // Save the updated truststore
+        //            try (FileOutputStream truststoreOutputStream =
+        //                    new FileOutputStream(truststoreDestPath)) {
+        //                truststore.store(truststoreOutputStream,
+        // trustStorePassword.toCharArray());
+        //            }
+        //        }
     }
 }
