@@ -58,6 +58,7 @@ public class TransactionTimeOutService {
         try {
             log.info("performTimeOutWaitingForChallengeCompletion ");
             Transaction transaction = transactionService.findById(transactionId);
+            log.info("performTimeOutWaitingForChallengeCompletion 2");
             log.info(
                     "transaction status"
                             + transaction.getTransactionStatus()
@@ -79,6 +80,8 @@ public class TransactionTimeOutService {
                             + " transactionId: {} ",
                     transactionId,
                     e);
+        } catch (Exception e) {
+            log.error("Error while performing timer task waiting for challenge completion", e);
         }
     }
 
