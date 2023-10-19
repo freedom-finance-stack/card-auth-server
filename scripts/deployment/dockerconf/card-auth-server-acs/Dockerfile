@@ -25,6 +25,7 @@ RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazo
     && echo "https://apk.corretto.aws/" >> /etc/apk/repositories \
     && apk update
 RUN apk add --update amazon-corretto-17
+RUN export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which java))))"
 
 #Install Supervisord
 RUN apk add --update supervisor
@@ -38,7 +39,7 @@ ENV CAS_ACS_LOG_DIRECTORY ${GLOBAL_LOG_DIRECTORY}/cas-acs-logs
 ENV CAS_ACS_SUPERVISOR_LOG_DIRECTORY ${GLOBAL_LOG_DIRECTORY}/supervisor
 ENV CAS_ACS_BASE_DIRECTORY /opt/card-auth-server/cas-acs
 ENV CAS_ACS_BIN_DIRECTORY ${CAS_ACS_BASE_DIRECTORY}/bin
-ENV CAS_ACS_CA_CERTS_DIRECTORY ${CAS_ACS_BASE_DIRECTORY}/ca-certs
+RUN chmod 777 /usr/lib/jvm/java-17-amazon-corretto/lib/security/cacerts
 
 # copying jar to bin
 COPY card-auth-server-acs/target/card-auth-server-acs.jar $CAS_ACS_BIN_DIRECTORY/jar/card-auth-server-acs.jar
