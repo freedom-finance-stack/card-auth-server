@@ -57,6 +57,7 @@ public class TransactionTimeOutService {
         // todo get mutex
         try {
             Transaction transaction = transactionService.findById(transactionId);
+            log.info("transaction status" + transaction.getTransactionStatus() + " challenge completed : " + Util.isChallengeCompleted(transaction));
             if (!Util.isChallengeCompleted(transaction)) {
                 log.info("Timeout : Challenge not completed for transactionId: {}", transactionId);
                 timeOutTransaction(
@@ -64,6 +65,7 @@ public class TransactionTimeOutService {
                         ChallengeCancelIndicator.TRANSACTION_TIMED_OUT,
                         InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION);
             } else {
+                log.info("release mutex");
                 // todo release mutex
             }
         } catch (ACSDataAccessException | InvalidStateTransactionException e) {
