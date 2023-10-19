@@ -12,11 +12,6 @@ app:
       challengeRequest: 30 #sec
       challengeCompletion: 180 #sec
 
-javax:
-  net:
-    ssl:
-      trustStore: /opt/card-auth-server/cas-acs/bin/config/ul-ts-3ds-ca.crt
-      password: changeit
 
 gateway:
   ds:
@@ -24,11 +19,11 @@ gateway:
     services:
       VISA_DS:
         url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
-        useSSL: false
+        useSSL: true
         connectTimeout: 5000
         responseTimeout: 5000
         keyStore:
-          path: ${VISA_DS_KEYSTORE_PATH:/Users/jaydeep.radadiya/Downloads/crt/cert.p12}
+          path: ${VISA_DS_KEYSTORE_PATH:/Users/jaydeep.radadiya/Downloads/crt/cert1910.p12}
           password: ${VISA_DS_KEYSTORE_KEY_IDENTIFIER:ffsAcsPassword}
         trustStore:
           srcPath: /Users/jaydeep.radadiya/Downloads/crt/ul-ts-3ds-ca.crt

@@ -3,6 +3,8 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import javax.net.ssl.*;
 
 import org.apache.hc.client5.http.config.RequestConfig;
@@ -24,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class CustomRestTemplateConfiguration {
-    public static final String SSL_java_protocol_handler_pkgs = "sun.net.www.protocol";
     private final DsGatewayConfig dsGatewayConfig;
 
     @Bean("visaDsRestTemplate")
@@ -63,6 +64,7 @@ public class CustomRestTemplateConfiguration {
                     KeyManagementException {
         PoolingHttpClientConnectionManagerBuilder connectionManagerBuilder =
                 PoolingHttpClientConnectionManagerBuilder.create();
+
         if (config.isUseSSL()) {
             createTrustStore(
                     network,
@@ -94,14 +96,13 @@ public class CustomRestTemplateConfiguration {
         return new RestTemplate(requestFactory);
     }
 
-    public static SSLContext createSSLContext1(String keyStorePath, String keyStorePassword)
+    public static SSLContext createSSLContext(String keyStorePath, String keyStorePassword)
             throws KeyStoreException,
                     IOException,
                     NoSuchAlgorithmException,
                     CertificateException,
                     UnrecoverableKeyException,
                     KeyManagementException {
-
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         try (InputStream keyStoreStream = new FileInputStream(keyStorePath)) {
             keyStore.load(keyStoreStream, keyStorePassword.toCharArray());
@@ -117,35 +118,49 @@ public class CustomRestTemplateConfiguration {
         return sslContext;
     }
 
-    public static SSLContext createSSLContext(String keyStorePath, String keyStorePassword)
-            throws NoSuchAlgorithmException,
-                    KeyStoreException,
-                    KeyManagementException,
-                    UnrecoverableKeyException,
-                    IOException,
-                    CertificateException {
-        System.setProperty("jav.protocol.handler.pkgs", SSL_java_protocol_handler_pkgs);
-
-        // Create KeyStore object
-        KeyStore oKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        InputStream oFIS = new FileInputStream(keyStorePath);
-        oKeyStore.load(oFIS, keyStorePassword.toCharArray());
-
-        // Create KeyManagerFactory object
-        KeyManagerFactory oKeyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-        oKeyManagerFactory.init(oKeyStore, keyStorePassword.toCharArray());
-        KeyManager[] km = oKeyManagerFactory.getKeyManagers();
-
-        // Create TrustManagerFactory
-        TrustManagerFactory oTrustManagerFactory = TrustManagerFactory.getInstance("SunX509");
-        oTrustManagerFactory.init(oKeyStore);
-        TrustManager[] tm = oTrustManagerFactory.getTrustManagers();
-
-        // Initialize moSSLContext
-        SSLContext sslContext = SSLContext.getInstance("TLSV1.2");
-        sslContext.init(km, tm, null);
-        return sslContext;
-    }
+    //    public static SSLContext createSSLContext2(String keyStorePath, String keyStorePassword)
+    //            throws NoSuchAlgorithmException,
+    //                    KeyStoreException,
+    //                    KeyManagementException,
+    //                    UnrecoverableKeyException,
+    //                    IOException,
+    //                    CertificateException {
+    //
+    //        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+    //        try (InputStream in = new FileInputStream(keyStorePath)) {
+    //            keystore.load(in, keyStorePassword.toCharArray());
+    //        }
+    //
+    //        KeyManagerFactory keyManagerFactory =
+    //                KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+    //        keyManagerFactory.init(keystore, keyStorePassword.toCharArray());
+    //
+    //
+    //        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+    //        InputStream in = new FileInputStream("/path/to/your_certificate.cert");
+    //        X509Certificate cert = (X509Certificate) certFactory.generateCertificate(in);
+    //        in.close();
+    //
+    //        // Verify the server's certificate against your custom certificate
+    //        for (X509Certificate serverCert : certs) {
+    //            if (serverCert.equals(cert)) {
+    //                return;
+    //            }
+    //        }
+    //
+    //
+    //        TrustManagerFactory trustManagerFactory =
+    //                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+    //        trustManagerFactory.init(keystore);
+    //
+    //        SSLContext sslContext = SSLContext.getInstance("TLS");
+    //        sslContext.init(
+    //                keyManagerFactory.getKeyManagers(),
+    //                trustManagerFactory.getTrustManagers(),
+    //                new SecureRandom());
+    //
+    //        return sslContext;
+    //    }
 
     public static void createTrustStore(
             Network network,
@@ -153,22 +168,20 @@ public class CustomRestTemplateConfiguration {
             String truststoreDestPath,
             String trustStorePassword)
             throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
-        //        FileInputStream truststoreFile = new FileInputStream(truststoreDestPath);
-        //        KeyStore truststore = KeyStore.getInstance(KeyStore.getDefaultType());
-        //        truststore.load(truststoreFile, trustStorePassword.toCharArray());
-        //
-        //        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        //        try (InputStream caCertFile = new FileInputStream(trustStoreSourcePath)) {
-        //            X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
-        //            truststore.setCertificateEntry(
-        //                    network.getName() + "_DSCert", caCert); // Provide an alias for the
-        // certificate
-        //            // Save the updated truststore
-        //            try (FileOutputStream truststoreOutputStream =
-        //                    new FileOutputStream(truststoreDestPath)) {
-        //                truststore.store(truststoreOutputStream,
-        // trustStorePassword.toCharArray());
-        //            }
-        //        }
+        FileInputStream truststoreFile = new FileInputStream(truststoreDestPath);
+        KeyStore truststore = KeyStore.getInstance(KeyStore.getDefaultType());
+        truststore.load(truststoreFile, trustStorePassword.toCharArray());
+
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        try (InputStream caCertFile = new FileInputStream(trustStoreSourcePath)) {
+            X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
+            truststore.setCertificateEntry(
+                    network.getName() + "_DSCert", caCert); // Provide an alias for the certificate
+            // Save the updated truststore
+            try (FileOutputStream truststoreOutputStream =
+                    new FileOutputStream(truststoreDestPath)) {
+                truststore.store(truststoreOutputStream, trustStorePassword.toCharArray());
+            }
+        }
     }
 }
