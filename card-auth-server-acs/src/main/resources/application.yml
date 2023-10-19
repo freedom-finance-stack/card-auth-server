@@ -15,7 +15,7 @@ app:
 javax:
   net:
     ssl:
-      trustStore: /opt/card-auth-server/cas-acs/ul-ts-3ds-ca.crt
+      trustStore: /opt/card-auth-server/cas-acs/bin/config/ul-ts-3ds-ca.crt
       password: changeit
 
 gateway:
