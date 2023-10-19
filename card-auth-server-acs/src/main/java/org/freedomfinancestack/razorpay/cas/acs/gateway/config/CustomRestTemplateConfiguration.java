@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class CustomRestTemplateConfiguration {
-    public final static String SSL_java_protocol_handler_pkgs = "sun.net.www.protocol";
+    public static final String SSL_java_protocol_handler_pkgs = "sun.net.www.protocol";
     private final DsGatewayConfig dsGatewayConfig;
 
     @Bean("visaDsRestTemplate")
@@ -112,22 +112,28 @@ public class CustomRestTemplateConfiguration {
         keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
 
         SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(keyManagerFactory.getKeyManagers(),  null, null);
+        sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
 
         return sslContext;
     }
 
-    public static SSLContext createSSLContext(String keyStorePath, String keyStorePassword) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnrecoverableKeyException, IOException, CertificateException {
+    public static SSLContext createSSLContext(String keyStorePath, String keyStorePassword)
+            throws NoSuchAlgorithmException,
+                    KeyStoreException,
+                    KeyManagementException,
+                    UnrecoverableKeyException,
+                    IOException,
+                    CertificateException {
         System.setProperty("jav.protocol.handler.pkgs", SSL_java_protocol_handler_pkgs);
 
-        //Create KeyStore object
+        // Create KeyStore object
         KeyStore oKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
         InputStream oFIS = new FileInputStream(keyStorePath);
         oKeyStore.load(oFIS, keyStorePassword.toCharArray());
 
-        //Create KeyManagerFactory object
+        // Create KeyManagerFactory object
         KeyManagerFactory oKeyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-        oKeyManagerFactory.init(oKeyStore , keyStorePassword.toCharArray());
+        oKeyManagerFactory.init(oKeyStore, keyStorePassword.toCharArray());
         KeyManager[] km = oKeyManagerFactory.getKeyManagers();
 
         // Create TrustManagerFactory
@@ -137,10 +143,9 @@ public class CustomRestTemplateConfiguration {
 
         // Initialize moSSLContext
         SSLContext sslContext = SSLContext.getInstance("TLSV1.2");
-        sslContext.init(km,  tm, null);
-        return  sslContext;
+        sslContext.init(km, tm, null);
+        return sslContext;
     }
-
 
     public static void createTrustStore(
             Network network,
