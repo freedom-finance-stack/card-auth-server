@@ -19,7 +19,7 @@ gateway:
     services:
       VISA_DS:
         url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
-        useSSL: true
+        useSSL: false
         connectTimeout: 5000
         responseTimeout: 5000
         keyStore:
