@@ -57,7 +57,11 @@ public class TransactionTimeOutService {
         // todo get mutex
         try {
             Transaction transaction = transactionService.findById(transactionId);
-            log.info("transaction status" + transaction.getTransactionStatus() + " challenge completed : " + Util.isChallengeCompleted(transaction));
+            log.info(
+                    "transaction status"
+                            + transaction.getTransactionStatus()
+                            + " challenge completed : "
+                            + Util.isChallengeCompleted(transaction));
             if (!Util.isChallengeCompleted(transaction)) {
                 log.info("Timeout : Challenge not completed for transactionId: {}", transactionId);
                 timeOutTransaction(
