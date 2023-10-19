@@ -38,6 +38,7 @@ ENV CAS_ACS_LOG_DIRECTORY ${GLOBAL_LOG_DIRECTORY}/cas-acs-logs
 ENV CAS_ACS_SUPERVISOR_LOG_DIRECTORY ${GLOBAL_LOG_DIRECTORY}/supervisor
 ENV CAS_ACS_BASE_DIRECTORY /opt/card-auth-server/cas-acs
 ENV CAS_ACS_BIN_DIRECTORY ${CAS_ACS_BASE_DIRECTORY}/bin
+ENV CAS_ACS_CA_CERTS_DIRECTORY ${CAS_ACS_BASE_DIRECTORY}/ca-certs
 
 # copying jar to bin
 COPY card-auth-server-acs/target/card-auth-server-acs.jar $CAS_ACS_BIN_DIRECTORY/jar/card-auth-server-acs.jar
