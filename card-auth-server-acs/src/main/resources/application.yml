@@ -1,7 +1,7 @@
 # use while deployment -Dspring.profiles.active=local This will load the application.properties and the application-local.properties with the latter overriding properties from the first.
 app:
   port: 8080
-  hostname: https://cas_acs/
+  hostname: http://localhost:8080/
   acs:
     referenceNumber: "12345678901234567890"
     operatorId:

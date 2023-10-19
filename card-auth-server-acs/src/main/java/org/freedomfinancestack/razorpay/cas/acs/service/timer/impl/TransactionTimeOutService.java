@@ -56,6 +56,7 @@ public class TransactionTimeOutService {
     void performTimeOutWaitingForChallengeCompletion(String transactionId) {
         // todo get mutex
         try {
+            log.info( "performTimeOutWaitingForChallengeCompletion ");
             Transaction transaction = transactionService.findById(transactionId);
             log.info(
                     "transaction status"

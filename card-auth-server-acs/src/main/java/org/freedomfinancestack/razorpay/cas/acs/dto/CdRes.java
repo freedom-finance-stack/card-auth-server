@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 public class CdRes extends ThreeDSObject implements Serializable {
     String transactionId;
     String institutionName;
+    String validationUrl;
     String schemaName;
     boolean jsEnableIndicator;
     String challengeText;

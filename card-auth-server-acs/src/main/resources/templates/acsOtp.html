@@ -88,7 +88,7 @@
     <h2>Enter Verification Code</h2>
     <p><span th:text="${cdRes.challengeText}"></span></p>
     <p>You have <strong th:text="${cdRes.attemptLeft}"></strong> attempts left.</p>
-    <form action="#" th:action="@{/v1/transaction/challenge/browser/validate}" method="post"
+    <form action="#" th:action="${cdRes.validationUrl}" method="post"
           th:object="${cVReq}">
         <label for="otp">Verification Code</label>
         <input type="text" id="otp" name="otp" th:field="*{authVal}" required>
