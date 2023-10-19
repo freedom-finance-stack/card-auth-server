@@ -3,8 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.config;
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.*;
 
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -25,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class CustomRestTemplateConfiguration {
-
+    public final static String SSL_java_protocol_handler_pkgs = "sun.net.www.protocol";
     private final DsGatewayConfig dsGatewayConfig;
 
     @Bean("visaDsRestTemplate")
@@ -95,7 +94,7 @@ public class CustomRestTemplateConfiguration {
         return new RestTemplate(requestFactory);
     }
 
-    public static SSLContext createSSLContext(String keyStorePath, String keyStorePassword)
+    public static SSLContext createSSLContext1(String keyStorePath, String keyStorePassword)
             throws KeyStoreException,
                     IOException,
                     NoSuchAlgorithmException,
@@ -113,10 +112,35 @@ public class CustomRestTemplateConfiguration {
         keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
 
         SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
+        sslContext.init(keyManagerFactory.getKeyManagers(),  null, null);
 
         return sslContext;
     }
+
+    public static SSLContext createSSLContext(String keyStorePath, String keyStorePassword) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, UnrecoverableKeyException, IOException, CertificateException {
+        System.setProperty("jav.protocol.handler.pkgs", SSL_java_protocol_handler_pkgs);
+
+        //Create KeyStore object
+        KeyStore oKeyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        InputStream oFIS = new FileInputStream(keyStorePath);
+        oKeyStore.load(oFIS, keyStorePassword.toCharArray());
+
+        //Create KeyManagerFactory object
+        KeyManagerFactory oKeyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+        oKeyManagerFactory.init(oKeyStore , keyStorePassword.toCharArray());
+        KeyManager[] km = oKeyManagerFactory.getKeyManagers();
+
+        // Create TrustManagerFactory
+        TrustManagerFactory oTrustManagerFactory = TrustManagerFactory.getInstance("SunX509");
+        oTrustManagerFactory.init(oKeyStore);
+        TrustManager[] tm = oTrustManagerFactory.getTrustManagers();
+
+        // Initialize moSSLContext
+        SSLContext sslContext = SSLContext.getInstance("TLSV1.2");
+        sslContext.init(km,  tm, null);
+        return  sslContext;
+    }
+
 
     public static void createTrustStore(
             Network network,
