@@ -42,5 +42,6 @@ public class InternalConstants {
     public static final String MODEL_ATTRIBUTE_THREEDS_SESSION_DATA = "threeDSSessionData";
     public static final String MODEL_ATTRIBUTE_CHALLENGE_RESPONSE = "challengeResponse";
 
-    public static final String CHALLENGE_BRW_VALIDATION_URL = "v1/transaction/challenge/browser/validate";
+    public static final String CHALLENGE_BRW_VALIDATION_URL =
+            "v1/transaction/challenge/browser/validate";
 }
