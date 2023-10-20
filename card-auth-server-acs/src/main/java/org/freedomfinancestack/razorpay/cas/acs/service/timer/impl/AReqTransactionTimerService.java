@@ -54,10 +54,15 @@ public class AReqTransactionTimerService implements TransactionTimerService {
     }
 
     @Override
-    public void performTask(String transactionId) {
-        log.info("AREQ Timer Task picked up for transactionId: {}", transactionId);
-        transactionTimeOutService.performTimeOutWaitingForCreq(
-                getIdFromTaskIdentifier(AREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId));
-        log.info("AREQ Timer Task completed for transactionId: {}", transactionId);
+    public void performTask(String timerTaskId) {
+        log.info("AREQ Timer Task picked up for transactionId: {}", timerTaskId);
+        try {
+            transactionTimeOutService.performTimeOutWaitingForCreq(
+                    getIdFromTaskIdentifier(AREQ_TIMER_TASK_IDENTIFIER_KEY, timerTaskId));
+        } catch (Exception e) {
+            log.error("Error while performing timer task waiting for challenge request", e);
+        }
+
+        log.info("AREQ Timer Task completed for transactionId: {}", timerTaskId);
     }
 }

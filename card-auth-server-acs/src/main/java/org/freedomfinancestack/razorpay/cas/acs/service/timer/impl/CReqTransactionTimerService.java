@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.razorpay.cas.acs.service.timer.impl.AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskIdentifier;
+import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.getIdFromTaskIdentifier;
 
 @Service("cReqTransactionTimerService")
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class CReqTransactionTimerService implements TransactionTimerService {
                         this);
         try {
             timerService.scheduleTimeoutTask(
-                    generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
+                    task.getTimerTaskId(),
                     task,
                     appConfiguration.getAcs().getTimeout().getChallengeCompletion(),
                     TimeUnit.SECONDS);
@@ -59,8 +60,12 @@ public class CReqTransactionTimerService implements TransactionTimerService {
     }
 
     @Override
-    public void performTask(String transactionId) {
-        transactionTimeOutService.performTimeOutWaitingForChallengeCompletion(
-                generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId));
+    public void performTask(String timerTaskId) {
+        try {
+            transactionTimeOutService.performTimeOutWaitingForChallengeCompletion(
+                    getIdFromTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, timerTaskId));
+        } catch (Exception e) {
+            log.error("Error while performing timer task waiting for challenge completion", e);
+        }
     }
 }
