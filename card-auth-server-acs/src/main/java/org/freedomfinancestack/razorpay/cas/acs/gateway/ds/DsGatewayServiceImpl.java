@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.hc.core5.http.ContentType;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.mock.DsGatewayServiceMock;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.RRES;
@@ -20,15 +21,21 @@ import com.google.gson.JsonSyntaxException;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Service("gatewayService")
 @RequiredArgsConstructor
 public class DsGatewayServiceImpl implements DsGatewayService {
 
     private final VisaDsHttpsGatewayService visaDsHttpsGatewayService;
     private final MasterCardDsHttpsGatewayService masterCardDsHttpsGatewayService;
+    private final DsGatewayServiceMock dsGatewayServiceMock;
 
     public RRES sendRReq(final Network network, final RREQ rReq) throws ACSValidationException {
         HttpsGatewayService httpsGatewayService = getHttpsGatewayService(network);
+        if (httpsGatewayService
+                .getServiceConfig()
+                .isMock()) { // todo dynemic injections on mock bean
+            return dsGatewayServiceMock.sendRReq(network, rReq);
+        }
         Map<String, String> headerMap = new HashMap<>();
         Map<String, Object> queryParamMap = new HashMap<>();
         headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
@@ -49,6 +56,10 @@ public class DsGatewayServiceImpl implements DsGatewayService {
     public void sendError(final Network network, final ThreeDSErrorResponse errorResponse)
             throws ACSValidationException {
         HttpsGatewayService httpsGatewayService = getHttpsGatewayService(network);
+        if (httpsGatewayService.getServiceConfig().isMock()) {
+            dsGatewayServiceMock.sendError(network, errorResponse);
+            return;
+        }
         Map<String, String> headerMap = new HashMap<>();
         Map<String, Object> queryParamMap = new HashMap<>();
         headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());

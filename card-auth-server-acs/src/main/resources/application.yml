@@ -14,35 +14,56 @@ app:
 
 
 gateway:
-  ds:
-    mock: false
-    services:
-      VISA_DS:
-        url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
-        useSSL: false
-        connectTimeout: 5000
-        responseTimeout: 5000
-        keyStore:
-          path: ${VISA_DS_KEYSTORE_PATH:/Users/jaydeep.radadiya/Downloads/crt/cert1910.p12}
-          password: ${VISA_DS_KEYSTORE_KEY_IDENTIFIER:ffsAcsPassword}
-        trustStore:
-          srcPath: /Users/jaydeep.radadiya/Downloads/crt/ul-ts-3ds-ca.crt
-          destPath: /Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/lib/security/cacerts
-          password: ${VISA_DS_KEYSTORE_KEY_IDENTIFIER:changeit}
-        retryable:
-          maxAttempts: 2
-          backOffPeriod: 1000   #ms
-      MASTERCARD_DS:
-        url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
-        useSSL: false
-        connectTimeout: 5000
-        responseTimeout: 5000
-        keyStore:
-          path: ${MASTERCARD_DS_KEYSTORE_PATH:/Users/jaydeep.radadiya/Downloads/crt/cert.p12}
-          password: ${MASTERCARD_DS_KEYSTORE_KEY_IDENTIFIER:ffsAcsPassword}
-        retryable:
-          maxAttempts: 2
-          backOffPeriod: 1000
+  services:
+    VISA_DS:
+      mock: false
+      url: https://simulator-3ds.selftestplatform.com/v2.2.0/ds/4401
+      useSSL: false
+      connectTimeout: 5000
+      responseTimeout: 5000
+      keyStore:
+        path: ${VISA_DS_KEYSTORE_PATH:/Users/jaydeep.radadiya/Downloads/crt/cert1910.p12}
+        password: ${VISA_DS_KEYSTORE_KEY_IDENTIFIER:ffsAcsPassword}
+      trustStore:
+        srcPath: /Users/jaydeep.radadiya/Downloads/crt/ul-ts-3ds-ca.crt
+        destPath: /Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/lib/security/cacerts
+        password: ${VISA_DS_KEYSTORE_KEY_IDENTIFIER:changeit}
+      retryable:
+        maxAttempts: 2
+        backOffPeriod: 1000   #ms
+    MASTERCARD_DS:
+      mock: true
+      url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/ds/4401
+      useSSL: false
+      connectTimeout: 5000
+      responseTimeout: 5000
+      keyStore:
+        path: ${MASTERCARD_DS_KEYSTORE_PATH:/Users/jaydeep.radadiya/Downloads/crt/cert.p12}
+        password: ${MASTERCARD_DS_KEYSTORE_KEY_IDENTIFIER:ffsAcsPassword}
+      trustStore:
+        srcPath: /Users/jaydeep.radadiya/Downloads/crt/ul-ts-3ds-ca.crt
+        destPath: /Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/lib/security/cacerts
+        password: ${VISA_DS_KEYSTORE_KEY_IDENTIFIER:changeit}
+      retryable:
+        maxAttempts: 2
+        backOffPeriod: 1000
+    UL_TEST_PORTAL: #needed to testing portal, please keep mock as true in production
+      mock: true
+      url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/info/4401
+      useSSL: false
+      connectTimeout: 5000
+      responseTimeout: 5000
+      keyStore:
+        path: ${UL_TEST_PORTAL_KEYSTORE_PATH:/Users/jaydeep.radadiya/Downloads/crt/cert.p12}
+        password: ${UL_TEST_PORTAL_KEYSTORE_PASSWORD:ffsAcsPassword}
+      trustStore:
+        srcPath: /Users/jaydeep.radadiya/Downloads/crt/ul-ts-3ds-ca.crt
+        destPath: /Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/lib/security/cacerts
+        password: ${UL_TEST_PORTAL_TRSTORE_PASSWORD:changeit}
+      retryable:
+        maxAttempts: 1
+        backOffPeriod: 1000
+
 
 spring:
   application:

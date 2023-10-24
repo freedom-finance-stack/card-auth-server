@@ -14,7 +14,6 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuil
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.core5.util.Timeout;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
-import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -26,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class CustomRestTemplateConfiguration {
-    private final DsGatewayConfig dsGatewayConfig;
+    private final GatewayConfig gatewayConfig;
 
     @Bean("visaDsRestTemplate")
     public RestTemplate visaRestTemplate()
@@ -36,10 +35,9 @@ public class CustomRestTemplateConfiguration {
                     CertificateException,
                     IOException,
                     UnrecoverableKeyException {
-        DsGatewayConfig.ServiceConfig visaConfig =
-                dsGatewayConfig.getServices().get(ClientType.VISA_DS);
-
-        return getRestTemplate(Network.VISA, visaConfig);
+        GatewayConfig.ServiceConfig visaConfig =
+                gatewayConfig.getServices().get(ClientType.VISA_DS);
+        return getRestTemplate(ClientType.VISA_DS, visaConfig);
     }
 
     @Bean("masterCardDsRestTemplate")
@@ -50,12 +48,25 @@ public class CustomRestTemplateConfiguration {
                     CertificateException,
                     IOException,
                     UnrecoverableKeyException {
-        DsGatewayConfig.ServiceConfig masterCardConfig =
-                dsGatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
-        return getRestTemplate(Network.MASTERCARD, masterCardConfig);
+        GatewayConfig.ServiceConfig masterCardConfig =
+                gatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
+        return getRestTemplate(ClientType.MASTERCARD_DS, masterCardConfig);
     }
 
-    private RestTemplate getRestTemplate(Network network, DsGatewayConfig.ServiceConfig config)
+    @Bean("ulTestRestTemplate")
+    public RestTemplate ulTestRestTemplate()
+            throws KeyManagementException,
+                    NoSuchAlgorithmException,
+                    KeyStoreException,
+                    CertificateException,
+                    IOException,
+                    UnrecoverableKeyException {
+        GatewayConfig.ServiceConfig ulTestConfig =
+                gatewayConfig.getServices().get(ClientType.UL_TEST_PORTAL);
+        return getRestTemplate(ClientType.UL_TEST_PORTAL, ulTestConfig);
+    }
+
+    private RestTemplate getRestTemplate(ClientType clientType, GatewayConfig.ServiceConfig config)
             throws NoSuchAlgorithmException,
                     KeyStoreException,
                     CertificateException,
@@ -67,7 +78,7 @@ public class CustomRestTemplateConfiguration {
 
         if (config.isUseSSL()) {
             createTrustStore(
-                    network,
+                    clientType,
                     config.getTrustStore().getSrcPath(),
                     config.getTrustStore().getDestPath(),
                     config.getTrustStore().getPassword());
@@ -118,52 +129,8 @@ public class CustomRestTemplateConfiguration {
         return sslContext;
     }
 
-    //    public static SSLContext createSSLContext2(String keyStorePath, String keyStorePassword)
-    //            throws NoSuchAlgorithmException,
-    //                    KeyStoreException,
-    //                    KeyManagementException,
-    //                    UnrecoverableKeyException,
-    //                    IOException,
-    //                    CertificateException {
-    //
-    //        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-    //        try (InputStream in = new FileInputStream(keyStorePath)) {
-    //            keystore.load(in, keyStorePassword.toCharArray());
-    //        }
-    //
-    //        KeyManagerFactory keyManagerFactory =
-    //                KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-    //        keyManagerFactory.init(keystore, keyStorePassword.toCharArray());
-    //
-    //
-    //        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-    //        InputStream in = new FileInputStream("/path/to/your_certificate.cert");
-    //        X509Certificate cert = (X509Certificate) certFactory.generateCertificate(in);
-    //        in.close();
-    //
-    //        // Verify the server's certificate against your custom certificate
-    //        for (X509Certificate serverCert : certs) {
-    //            if (serverCert.equals(cert)) {
-    //                return;
-    //            }
-    //        }
-    //
-    //
-    //        TrustManagerFactory trustManagerFactory =
-    //                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-    //        trustManagerFactory.init(keystore);
-    //
-    //        SSLContext sslContext = SSLContext.getInstance("TLS");
-    //        sslContext.init(
-    //                keyManagerFactory.getKeyManagers(),
-    //                trustManagerFactory.getTrustManagers(),
-    //                new SecureRandom());
-    //
-    //        return sslContext;
-    //    }
-
     public static void createTrustStore(
-            Network network,
+            ClientType clientType,
             String trustStoreSourcePath,
             String truststoreDestPath,
             String trustStorePassword)
@@ -176,7 +143,7 @@ public class CustomRestTemplateConfiguration {
         try (InputStream caCertFile = new FileInputStream(trustStoreSourcePath)) {
             X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
             truststore.setCertificateEntry(
-                    network.getName() + "_DSCert", caCert); // Provide an alias for the certificate
+                    clientType.name() + "_DSCert", caCert); // Provide an alias for the certificate
             // Save the updated truststore
             try (FileOutputStream truststoreOutputStream =
                     new FileOutputStream(truststoreDestPath)) {

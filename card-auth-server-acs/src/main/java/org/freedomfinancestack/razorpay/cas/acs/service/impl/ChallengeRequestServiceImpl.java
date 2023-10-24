@@ -15,6 +15,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.*;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ProprietaryULTest.PlrqService;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
@@ -69,6 +70,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final AuthValueGeneratorService authValueGeneratorService;
     private final ChallengeValidationRequestValidator challengeValidationRequestValidator;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
+    private final PlrqService plrqService;
 
     @Override
     public CdRes processBrwChallengeRequest(
@@ -524,6 +526,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         .build());
         log.info("Sent challenge for transaction {}", transaction.getId());
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
+        plrqService.sendPlrq(
+                transaction.getId(), transaction.getAuthValue(), transaction.getMessageVersion());
         cdResMapper.generateCDres(challengeFlowDto.getCdRes(), transaction);
     }
 
