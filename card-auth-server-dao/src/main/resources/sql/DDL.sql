@@ -347,6 +347,7 @@ DROP TABLE IF EXISTS `institution_meta`;
 CREATE TABLE `institution_meta`
 (
     `institution_id` varchar(36) PRIMARY KEY,
+    FOREIGN KEY (institution_id) REFERENCES institution(id),
     `logo_data`      blob NOT NULL,
     `logo_filename`  varchar(50) NOT NULL,
     `created_at`     timestamp   NOT NULL,
