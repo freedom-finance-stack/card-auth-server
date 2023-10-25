@@ -43,10 +43,12 @@ public class PlrqService extends HttpsGatewayService {
     public void sendPlrq(String transactionId, String authVal, String messageVersion)
             throws ACSValidationException {
         if (serviceConfig.isMock()) {
+            log.info("Mocking PLRQ");
             return;
         }
         Plrq plrq = createPlrqBrw(transactionId, authVal, messageVersion);
         try {
+            log.info("Sending PLRQ: " + Util.toJson(plrq));
             String strPlrs = sendRequest(Util.toJson(plrq), HttpMethod.POST, null, null);
             log.info("PLRS response: " + strPlrs);
         } catch (Exception exception) {

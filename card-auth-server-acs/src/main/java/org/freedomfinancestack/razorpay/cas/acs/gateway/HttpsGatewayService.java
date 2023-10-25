@@ -24,7 +24,7 @@ public abstract class HttpsGatewayService {
             Map<String, Object> queryParam) {
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Content-Type", "application/json; charset=utf-8");
         if (headerMap != null) {
             headers.setAll(headerMap);
         }
