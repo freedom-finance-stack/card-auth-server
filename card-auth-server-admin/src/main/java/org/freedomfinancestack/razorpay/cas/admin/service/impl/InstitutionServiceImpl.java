@@ -59,9 +59,9 @@ public class InstitutionServiceImpl implements InstitutionService {
 
             institution.setId(institutionId);
 
-            //            if (institution.getInstitutionMeta() != null) {
-            //                institution.getInstitutionMeta().setInstitution(institution);
-            //            }
+            if (institution.getInstitutionMeta() != null) {
+                institution.getInstitutionMeta().setInstitution(institution);
+            }
 
             saveOrUpdate(institution);
 
@@ -142,9 +142,9 @@ public class InstitutionServiceImpl implements InstitutionService {
             if (institution != null) {
                 InstitutionMapper.INSTANCE.updatedInstitutionModel(
                         institutionRequestDto, institution);
-                //                if (institution.getInstitutionMeta() != null) {
-                //                    institution.getInstitutionMeta().setInstitution(institution);
-                //                }
+                if (institution.getInstitutionMeta() != null) {
+                    institution.getInstitutionMeta().setInstitution(institution);
+                }
                 saveOrUpdate(institution);
             }
         } catch (ValidationException ex) {
@@ -188,10 +188,10 @@ public class InstitutionServiceImpl implements InstitutionService {
                 InstitutionMapper.INSTANCE.deleteInstitutionModel(institutionId, institution);
                 Timestamp now = Util.getCurrentTimestamp();
                 institution.setDeletedAt(now);
-                //                if (institution.getInstitutionMeta() != null) {
-                //                    institution.getInstitutionMeta().setInstitution(institution);
-                //                    institution.getInstitutionMeta().setDeletedAt(now);
-                //                }
+                if (institution.getInstitutionMeta() != null) {
+                    institution.getInstitutionMeta().setInstitution(institution);
+                    institution.getInstitutionMeta().setDeletedAt(now);
+                }
                 saveOrUpdate(institution);
             }
         } catch (ValidationException ex) {

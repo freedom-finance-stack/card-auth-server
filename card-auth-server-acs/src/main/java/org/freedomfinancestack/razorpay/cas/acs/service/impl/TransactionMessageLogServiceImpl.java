@@ -34,10 +34,11 @@ public class TransactionMessageLogServiceImpl implements TransactionMessageLogSe
 
     private final TransactionMessageLogRepository transactionMessageLogRepository;
 
-    public TransactionMessageLog create(ThreeDSObject message, String transactionId) {
+    public TransactionMessageLog create(ThreeDSObject threeDSObject, String transactionId) {
 
         TransactionMessageLog transactionMessageLog =
-                new TransactionMessageLog(Util.toJson(message), message.getThreeDSMessageType());
+                new TransactionMessageLog(
+                        Util.toJson(threeDSObject), threeDSObject.getThreeDSMessageType());
         transactionMessageLog.setId(Util.generateUUID());
         transactionMessageLog.setTransactionId(transactionId);
         return transactionMessageLog;
