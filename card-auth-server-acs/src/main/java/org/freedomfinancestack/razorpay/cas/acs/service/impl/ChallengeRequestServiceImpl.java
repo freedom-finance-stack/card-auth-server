@@ -293,9 +293,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             // 3: if resend challenge
             // 4: else perform validation
 
-            if (cvReq.isCancelChallenge()) {
-                handleCancelChallenge(challengeFlowDto, transaction);
-            } else if (Util.isChallengeCompleted(transaction)) {
+            if (Util.isChallengeCompleted(transaction)) {
                 if (transaction
                         .getTransactionStatusReason()
                         .equals(TransactionStatusReason.TRANSACTION_TIMEOUT.getCode())) {
@@ -311,6 +309,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             transaction,
                             "Challenge resend threshold exceeded");
                 }
+            } else if (cvReq.isCancelChallenge()) {
+                handleCancelChallenge(challengeFlowDto, transaction);
             } else {
                 AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
                 if (cvReq.isResendChallenge()) {

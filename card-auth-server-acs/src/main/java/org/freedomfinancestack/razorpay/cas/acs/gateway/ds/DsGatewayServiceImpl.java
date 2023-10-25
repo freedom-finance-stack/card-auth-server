@@ -20,9 +20,11 @@ import org.springframework.stereotype.Service;
 import com.google.gson.JsonSyntaxException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service("gatewayService")
 @RequiredArgsConstructor
+@Slf4j
 public class DsGatewayServiceImpl implements DsGatewayService {
 
     private final VisaDsHttpsGatewayService visaDsHttpsGatewayService;
@@ -44,7 +46,9 @@ public class DsGatewayServiceImpl implements DsGatewayService {
             String strRres =
                     httpsGatewayService.sendRequestWithRetry(
                             Util.toJson(rReq), HttpMethod.POST, headerMap, queryParamMap);
+            log.info("Result response received from DS{}", strRres);
             rres = Util.fromJson(strRres, RRES.class);
+            log.info("Result response received from DS{}", rres);
         } catch (JsonSyntaxException jsonSyntaxException) {
             throw new ACSValidationException(
                     ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
