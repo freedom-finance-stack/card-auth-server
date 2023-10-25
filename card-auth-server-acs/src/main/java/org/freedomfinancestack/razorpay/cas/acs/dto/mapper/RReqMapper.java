@@ -51,7 +51,9 @@ public interface RReqMapper {
             target = "dsTransID",
             source = "transaction.transactionReferenceDetail.dsTransactionId")
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
-    @Mapping(target = "messageCategory", source = "transaction.messageCategory")
+    @Mapping(
+            target = "messageCategory",
+            expression = "java(transaction.getMessageCategory().getCategory())")
     @Mapping(target = "messageType", expression = "java(MessageType.RReq.toString())")
     // todo add acsRenderingType, messageExtension, sdkTransactionId and WhiteListStatus for App
     // Based flow
