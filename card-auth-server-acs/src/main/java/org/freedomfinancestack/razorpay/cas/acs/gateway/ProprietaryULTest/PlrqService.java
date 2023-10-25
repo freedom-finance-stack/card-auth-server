@@ -56,7 +56,7 @@ public class PlrqService extends HttpsGatewayService {
             log.info("Sending PLRQ: " + Util.toJson(plrq));
             Map<String, String> headerMap = new HashMap<>();
             Map<String, Object> queryParamMap = new HashMap<>();
-            headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+            headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
             String strPlrs =
                     sendRequest(Util.toJson(plrq), HttpMethod.POST, headerMap, queryParamMap);
             log.info("PLRS response: " + strPlrs);

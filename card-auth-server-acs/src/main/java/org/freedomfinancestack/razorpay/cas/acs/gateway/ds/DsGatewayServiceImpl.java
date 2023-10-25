@@ -40,7 +40,7 @@ public class DsGatewayServiceImpl implements DsGatewayService {
         }
         Map<String, String> headerMap = new HashMap<>();
         Map<String, Object> queryParamMap = new HashMap<>();
-        headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+        headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
         RRES rres = null;
         try {
             String strRres =
@@ -66,7 +66,7 @@ public class DsGatewayServiceImpl implements DsGatewayService {
         }
         Map<String, String> headerMap = new HashMap<>();
         Map<String, Object> queryParamMap = new HashMap<>();
-        headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+        headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
         try {
             // in case of Result Request flow fails, then only we are sending error message to DS.
             // As retry would be already done while sending RREQ we don't need, retry again in
