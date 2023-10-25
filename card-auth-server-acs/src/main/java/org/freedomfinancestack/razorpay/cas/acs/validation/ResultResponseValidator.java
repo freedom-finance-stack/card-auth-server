@@ -57,7 +57,7 @@ public class ResultResponseValidator {
                 ThreeDSDataElement.MESSAGE_TYPE.getFieldName(),
                 incomingRres.getMessageType(),
                 notNull(),
-                isIn(new String[] {MessageType.RRes.toString()}));
+                isIn(new String[] {MessageType.RRes.toString(), MessageType.Erro.toString()}));
 
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
