@@ -16,7 +16,7 @@ app:
 gateway:
   services:
     VISA_DS:
-      mock: false
+      mock: true
       url: https://simulator-3ds.selftestplatform.com/v2.2.0/ds/4401
       useSSL: false
       connectTimeout: 5000
