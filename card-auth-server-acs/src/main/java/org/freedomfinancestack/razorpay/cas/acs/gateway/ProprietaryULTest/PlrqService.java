@@ -1,5 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.ProprietaryULTest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.hc.core5.http.ContentType;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
@@ -19,9 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -57,7 +57,8 @@ public class PlrqService extends HttpsGatewayService {
             Map<String, String> headerMap = new HashMap<>();
             Map<String, Object> queryParamMap = new HashMap<>();
             headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-            String strPlrs = sendRequest(Util.toJson(plrq), HttpMethod.POST, headerMap, queryParamMap);
+            String strPlrs =
+                    sendRequest(Util.toJson(plrq), HttpMethod.POST, headerMap, queryParamMap);
             log.info("PLRS response: " + strPlrs);
         } catch (Exception exception) {
             log.error("Error while sending PLRQ", exception);
