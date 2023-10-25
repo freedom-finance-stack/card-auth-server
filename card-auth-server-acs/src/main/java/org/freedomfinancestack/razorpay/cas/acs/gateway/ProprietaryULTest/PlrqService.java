@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.ProprietaryULTest;
 
+import org.apache.hc.core5.http.ContentType;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
@@ -10,6 +11,7 @@ import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfigur
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.support.RetryTemplate;
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -49,7 +54,10 @@ public class PlrqService extends HttpsGatewayService {
         Plrq plrq = createPlrqBrw(transactionId, otpAuthVal, messageVersion);
         try {
             log.info("Sending PLRQ: " + Util.toJson(plrq));
-            String strPlrs = sendRequest(Util.toJson(plrq), HttpMethod.POST, null, null);
+            Map<String, String> headerMap = new HashMap<>();
+            Map<String, Object> queryParamMap = new HashMap<>();
+            headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+            String strPlrs = sendRequest(Util.toJson(plrq), HttpMethod.POST, headerMap, queryParamMap);
             log.info("PLRS response: " + strPlrs);
         } catch (Exception exception) {
             log.error("Error while sending PLRQ", exception);

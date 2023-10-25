@@ -27,7 +27,6 @@ public abstract class HttpsGatewayService {
             Map<String, Object> queryParam) {
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
         if (headerMap != null) {
             headers.setAll(headerMap);
         }
@@ -35,6 +34,8 @@ public abstract class HttpsGatewayService {
             queryParam = new HashMap<>();
         }
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+        log.info("Gateway request sent url {}, method {}, entity {}",
+                this.getServiceConfig().getUrl(), method, entity);
         ResponseEntity<String> responseEntity =
                 this.getRestTemplate()
                         .exchange(

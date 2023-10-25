@@ -5,7 +5,7 @@ app:
     referenceNumber: "12345678901234567890"
     timeout:
       challengeRequest:  10 #sec
-      challengeCompletion: 180 #sec
+      challengeCompletion: 600 #sec
 
 spring:
   datasource:

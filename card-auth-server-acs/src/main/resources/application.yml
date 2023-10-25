@@ -10,7 +10,7 @@ app:
       amex: 123456789012345
     timeout:
       challengeRequest: 30 #sec
-      challengeCompletion: 180 #sec
+      challengeCompletion: 600 #sec
 
 
 gateway:
