@@ -9,6 +9,9 @@ import org.springframework.http.*;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public abstract class HttpsGatewayService {
 
     public abstract RestTemplate getRestTemplate();
@@ -41,6 +44,7 @@ public abstract class HttpsGatewayService {
                                 String.class,
                                 queryParam);
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            log.info("Gateway response received {}", responseEntity.getBody());
             return responseEntity.getBody();
         } else {
             throw new GatewayHttpStatusCodeException(

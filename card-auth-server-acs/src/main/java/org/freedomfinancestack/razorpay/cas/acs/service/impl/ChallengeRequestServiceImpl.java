@@ -445,7 +445,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
             updateEci(transaction);
             transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
-
             CRES cres = cResMapper.toCres(transaction);
             challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64(cres));
 
