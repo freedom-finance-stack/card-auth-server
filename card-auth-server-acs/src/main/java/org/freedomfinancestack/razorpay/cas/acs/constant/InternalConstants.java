@@ -37,7 +37,11 @@ public class InternalConstants {
     public static final String CHALLENGE_INCORRECT_OTP_TEXT = "you have entered incorrect OTP";
     public static final String MODEL_ATTRIBUTE_CRES = "cRes";
     public static final String MODEL_ATTRIBUTE_ERRO = "erro";
+
     public static final String MODEL_ATTRIBUTE_NOTIFICATION_URL = "notificationUrl";
     public static final String MODEL_ATTRIBUTE_THREEDS_SESSION_DATA = "threeDSSessionData";
     public static final String MODEL_ATTRIBUTE_CHALLENGE_RESPONSE = "challengeResponse";
+
+    public static final String CHALLENGE_BRW_VALIDATION_URL =
+            "v1/transaction/challenge/browser/validate";
 }

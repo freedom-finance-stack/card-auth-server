@@ -3,7 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.ds;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.config.CustomRetryTemplateBuilder;
-import org.freedomfinancestack.razorpay.cas.acs.gateway.config.DsGatewayConfig;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -15,14 +15,14 @@ import org.springframework.web.client.RestTemplate;
 public class MasterCardDsHttpsGatewayService extends HttpsGatewayService {
 
     private final RestTemplate masterCardDsRestTemplate;
-    private final DsGatewayConfig.ServiceConfig serviceConfig;
+    private final GatewayConfig.ServiceConfig serviceConfig;
 
     @Autowired
     public MasterCardDsHttpsGatewayService(
             @Qualifier("masterCardDsRestTemplate") RestTemplate masterCardDsRestTemplate,
-            DsGatewayConfig dsGatewayConfig) {
+            GatewayConfig gatewayConfig) {
         this.masterCardDsRestTemplate = masterCardDsRestTemplate;
-        this.serviceConfig = dsGatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
+        this.serviceConfig = gatewayConfig.getServices().get(ClientType.MASTERCARD_DS);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class MasterCardDsHttpsGatewayService extends HttpsGatewayService {
     }
 
     @Override
-    public DsGatewayConfig.ServiceConfig getServiceConfig() {
+    public GatewayConfig.ServiceConfig getServiceConfig() {
         return this.serviceConfig;
     }
 }

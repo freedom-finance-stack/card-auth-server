@@ -5,6 +5,7 @@ import java.util.Map;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
+import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
 /**
  * The {@code FeatureService} interface is responsible for fetching the authentication configuration
@@ -17,4 +18,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
 public interface FeatureService {
     AuthConfigDto getAuthenticationConfig(Map<FeatureEntityType, String> entityIdsByType)
             throws ACSDataAccessException;
+
+    AuthConfigDto getAuthenticationConfig(Transaction transaction) throws ACSDataAccessException;
 }

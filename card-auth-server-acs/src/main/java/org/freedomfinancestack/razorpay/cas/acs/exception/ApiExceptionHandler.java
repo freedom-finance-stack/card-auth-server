@@ -8,6 +8,7 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.CollectionUtils;
@@ -30,7 +31,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
             HttpRequestMethodNotSupportedException ex,
             HttpHeaders headers,
-            HttpStatus status,
+            HttpStatusCode httpStatusCode,
             WebRequest request) {
         log.error(ex.getMessage(), ex);
         Set<HttpMethod> supportedMethods = ex.getSupportedHttpMethods();
@@ -39,80 +40,80 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         }
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
-                        status.value(),
+                        httpStatusCode.value(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
                         "Request method '" + ex.getMethod() + "' not supported",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, status, request);
+        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleMissingPathVariable(
             MissingPathVariableException ex,
             HttpHeaders headers,
-            HttpStatus status,
+            HttpStatusCode httpStatusCode,
             WebRequest request) {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
-                        status.value(),
+                        httpStatusCode.value(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
                         "Request has missing path variable",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, status, request);
+        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             HttpHeaders headers,
-            HttpStatus status,
+            HttpStatusCode httpStatusCode,
             WebRequest request) {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
-                        status.value(),
+                        httpStatusCode.value(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
                         "Request has invalid method argument",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, status, request);
+        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex,
             HttpHeaders headers,
-            HttpStatus status,
+            HttpStatusCode httpStatusCode,
             WebRequest request) {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
-                        status.value(),
+                        httpStatusCode.value(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
                         "Request message not readable",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, status, request);
+        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
             MissingServletRequestParameterException ex,
             HttpHeaders headers,
-            HttpStatus status,
+            HttpStatusCode httpStatusCode,
             WebRequest request) {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
-                        status.value(),
+                        httpStatusCode.value(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
                         "Request parameter missing",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, status, request);
+        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
     }
 
     @ExceptionHandler(Throwable.class)
@@ -137,6 +138,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<ThreeDSErrorResponse> buildResponseEntity(
             ThreeDSErrorResponse apiError) {
-        return new ResponseEntity<>(apiError, HttpStatus.valueOf(apiError.getHttpStatus()));
+        return new ResponseEntity<>(apiError, HttpStatusCode.valueOf(apiError.getHttpStatus()));
     }
 }

@@ -52,7 +52,7 @@ public class ARES extends ThreeDSObject {
 
     private String authenticationMethod;
 
-    private String authenticationType; // todo check in challenge flow, if this field is required
+    private String authenticationType;
 
     private String authenticationValue;
 

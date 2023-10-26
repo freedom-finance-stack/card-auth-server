@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.contract;
 
+import org.freedomfinancestack.extensions.validation.validator.Validatable;
+
 import lombok.Data;
 
 @Data

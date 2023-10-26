@@ -23,7 +23,8 @@ JAVA_OPTS="$JAVA_EXTRA_OPTS $JAVA_GC_OPTS -Djava.net.preferIPv4Stack=true
           -Dsun.jnu.encoding=UTF-8
           -Dfile.encoding=UTF-8
           -Duser.timezone=UTC
-          --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED"
+          --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
+          --add-opens java.base/java.time=ALL-UNNAMED"
 
 # Starting Card Auth Server ACS Service
 echo "Starting Card Auth Server ACS Service..."

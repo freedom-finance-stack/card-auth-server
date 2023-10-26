@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
@@ -53,6 +54,8 @@ public interface CResMapper {
     CRES toCres(Transaction transaction);
 
     default String getChallengeCompletionInd(Transaction transaction) {
-        return String.valueOf(Util.isChallengeCompleted(transaction));
+        return Util.isChallengeCompleted(transaction)
+                ? InternalConstants.YES
+                : InternalConstants.NO;
     }
 }

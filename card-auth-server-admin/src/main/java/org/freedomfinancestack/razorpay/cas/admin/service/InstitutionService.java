@@ -1,46 +1,19 @@
 package org.freedomfinancestack.razorpay.cas.admin.service;
 
-import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionRequestDto;
-import org.freedomfinancestack.razorpay.cas.admin.dto.CreateInstitutionResponseDto;
-import org.freedomfinancestack.razorpay.cas.admin.mapper.InstitutionMapper;
-import org.freedomfinancestack.razorpay.cas.admin.utils.Util;
-import org.freedomfinancestack.razorpay.cas.admin.validation.InstitutionValidator;
-import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
-import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.freedomfinancestack.razorpay.cas.admin.dto.*;
+import org.freedomfinancestack.razorpay.cas.admin.dto.institution.GetInstitutionRequestDto;
+import org.freedomfinancestack.razorpay.cas.admin.dto.institution.InstitutionRequestDto;
+import org.springframework.http.ResponseEntity;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+public interface InstitutionService {
 
-@Slf4j
-@Service("institutionService")
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class InstitutionService {
+    ResponseEntity<?> processCreateInstitutionOperation(
+            InstitutionRequestDto institutionRequestDto);
 
-    private final InstitutionValidator institutionValidator;
+    ResponseEntity<?> processGetInstitutionOperation(
+            GetInstitutionRequestDto getInstitutionRequestDto);
 
-    private final InstitutionRepository institutionRepository;
+    ResponseEntity<?> processPatchInstitutionOperation(InstitutionRequestDto institutionRequestDto);
 
-    public CreateInstitutionResponseDto processCreateInstitutionOperation(
-            @NonNull final CreateInstitutionRequestDto createInstitutionRequestDto) {
-
-        institutionValidator.validateInstitutionRequest(createInstitutionRequestDto);
-
-        Institution institution =
-                InstitutionMapper.INSTANCE.toInstitutionModel(createInstitutionRequestDto);
-
-        String institutionId = Util.generateUUID();
-
-        institution.setId(institutionId);
-
-        if (institution.getInstitutionMeta() != null) {
-            institution.getInstitutionMeta().setInstitution(institution);
-        }
-
-        institutionRepository.save(institution);
-
-        return CreateInstitutionResponseDto.builder().isSuccess(true).build();
-    }
+    ResponseEntity<?> processDeleteInstitutionOperation(String institutionId);
 }

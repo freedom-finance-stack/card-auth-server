@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import javax.persistence.*;
 
+import jakarta.persistence.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.NotificationStatus;
 import org.hibernate.annotations.Where;
 
@@ -33,7 +33,7 @@ public class NotificationDetail extends BaseEntity<String> {
     @Enumerated(EnumType.STRING)
     private NotificationStatus status;
 
-    private String response;
+    private String responses;
 
     private String provider;
 

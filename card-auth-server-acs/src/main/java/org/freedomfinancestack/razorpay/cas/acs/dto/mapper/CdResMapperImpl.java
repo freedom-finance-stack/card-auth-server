@@ -6,6 +6,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CdResMapperImpl {
 
+    private final AppConfiguration appConfiguration;
     private final InstitutionRepository institutionRepository;
 
     /**
@@ -40,6 +42,8 @@ public class CdResMapperImpl {
     public void generateCDres(@NonNull final CdRes cdRes, final Transaction transaction)
             throws DataNotFoundException {
         cdRes.setTransactionId(transaction.getId());
+        cdRes.setValidationUrl(
+                appConfiguration.getHostname() + InternalConstants.CHALLENGE_BRW_VALIDATION_URL);
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
         if (institution.isPresent()) {

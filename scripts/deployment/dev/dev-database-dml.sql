@@ -1,25 +1,26 @@
 USE `cas_db`;
 
 LOCK TABLES `card_detail` WRITE;
-INSERT INTO `card_detail` VALUES ('1', '1', 'R1','I1','4016000000000018','0525', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('2', '1', 'R2','I1','7654310438720050','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('3', '1', 'R3','I1','7654350720400013','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('4', '1', 'R5','I1','5116000000000018','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('5', '1', 'R2','I1','7654310438700047','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('6', '1', 'R2','I1','7654310438700062','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('7', '1', 'R2','I1','7654310438700070','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('8', '1', 'R2','I1','7654310438746321','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('9', '1', 'R2','I1','7654310438700096','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('10', '1', 'R2','I1','7654310438700112','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('11', '1', 'R2','I1','7654310438700047','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('12', '1', 'R2','I1','7654310438700187','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('13', '1', 'R2','I1','7654310438700203','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('14', '1', 'R6','I1','7654320530001871','0535', 1, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('15', '1', 'R6','I1','7654320530000246','0535', 1, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('16', '1', 'R6','I1','7654320530000261','0535', 1, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('17', '1', 'R6','I1','7654320530000279','0535', 1, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('18', '1', 'R6','I1','7654320530046371','0535', 1, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-INSERT INTO `card_detail` VALUES ('19', '1', 'R7','I1','4030000000000018','0535', 0, NULL,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('1', '1', 'R1','I1','4016000000000018','0525',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('2', '1', 'R2','I1','7654310438720050','0535',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('3', '1', 'R3','I1','7654350720400013','0535',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('4', '1', 'R5','I1','5116000000000018','0535',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('5', '1', 'R2','I1','7654310438700047','0535',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('6', '1', 'R2','I1','7654310438700062','0535',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('7', '1', 'R2','I1','7654310438700070','0535',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('8', '1', 'R2','I1','7654310438746321','0535',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('9', '1', 'R2','I1','7654310438700096','0535',  0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('10', '1', 'R2','I1','7654310438700112','0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('11', '1', 'R2','I1','7654310438700047','0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('12', '1', 'R2','I1','7654310438700187','0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('13', '1', 'R2','I1','7654310438700203','0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('14', '1', 'R6','I1','7654320530001871','0535', 1, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('15', '1', 'R6','I1','7654320530000246','0535', 1, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('16', '1', 'R6','I1','7654320530000261','0535', 1, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('17', '1', 'R6','I1','7654320530000279','0535', 1, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('18', '1', 'R6','I1','7654320530046371','0535', 1, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('19', '1', 'R7','I1','4030000000000018','0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('20', '1', 'R8','I1','765430270001402', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;
@@ -30,6 +31,7 @@ INSERT INTO `card_range` VALUES ('R2', 'I1', 7654310400000000, 7654310499999999,
 INSERT INTO `card_range` VALUES ('R3', 'I1', 7654350700000000, 7654350799999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R4', 'I1', 7654360800000000, 7654360899999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R6', 'I1', 7654320500000000, 7654320599999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R8', 'I1', 765430270000000,  765430279999999,   'ACTIVE', 'CREDIT', 'CHALLENGE',    '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
@@ -41,7 +43,7 @@ INSERT INTO `cardholder` VALUES ('1','9988776655','dev-user@mail.com','01-01-202
 UNLOCK TABLES;
 
 LOCK TABLES `institution` WRITE;
-INSERT INTO `institution` VALUES ('I1','HDFC Bank','HDFC',356,'Asia/Kolkata','ACTIVE',NOW(),'dev-user',NOW(),'dev-user',NULL,NULL);
+INSERT INTO `institution` VALUES ('I1','HDFC Bank','HDFC',356,'Asia/Kolkata','ACTIVE',NOW(),'dev-user',NOW(),'dev-user',NULL,NULL, '2.2.0');
 UNLOCK TABLES;
 
 LOCK TABLES `institution_acs_url` WRITE;

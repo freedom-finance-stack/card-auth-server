@@ -134,14 +134,29 @@ public class Util {
     }
 
     /**
-     * Encode base64 data to string.
+     * Creates base64 encoded string from object.
      *
-     * @param data String data
+     * @param data Object data
      * @return encoded string
      */
     public static String encodeBase64(Object data) {
-        String errorRes = Util.toJson(data);
-        return Base64.getEncoder().encodeToString(errorRes.getBytes(StandardCharsets.UTF_8));
+        String input = Util.toJson(data);
+        return Base64.getEncoder()
+                .withoutPadding()
+                .encodeToString(input.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Creates URL safe base64 encoded string without padding from object.
+     *
+     * @param data Object data
+     * @return encoded string
+     */
+    public static String encodeBase64Url(Object data) {
+        String input = Util.toJson(data);
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(input.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

@@ -4,7 +4,7 @@ import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionEx
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.RReqMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpStatusCodeException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
@@ -20,7 +20,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -75,8 +74,9 @@ public class ResultRequestServiceImpl implements ResultRequestService {
     }
 
     private void handleRreq(Transaction transaction)
-            throws GatewayHttpStatusCodeException, InvalidStateTransactionException,
-                    ValidationException {
+            throws GatewayHttpStatusCodeException,
+                    InvalidStateTransactionException,
+                    ACSValidationException {
         RREQ rreq = rReqMapper.toRreq(transaction);
         transactionMessageLogService.createAndSave(rreq, transaction.getId());
         try {
@@ -88,14 +88,14 @@ public class ResultRequestServiceImpl implements ResultRequestService {
             transactionMessageLogService.createAndSave(rres, transaction.getId());
             resultResponseValidator.validateRequest(rres, rreq);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RRES_RECEIVED);
-        } catch (ValidationException e) {
+        } catch (ACSValidationException e) {
             transaction.setTransactionStatus(e.getInternalErrorCode().getTransactionStatus());
             transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
             sendDsErrorResponse(transaction, e.getThreeDSecureErrorCode(), e.getMessage());
             throw e;
         } catch (GatewayHttpStatusCodeException e) {
             transaction.setTransactionStatus(TransactionStatus.UNABLE_TO_AUTHENTICATE);
-            if (e.getStatusCode().series() == HttpStatus.Series.CLIENT_ERROR) {
+            if (e.getHttpStatus().is4xxClientError()) {
                 transaction.setErrorCode(InternalErrorCode.CONNECTION_TO_DS_FAILED.getCode());
                 sendDsErrorResponse(
                         transaction, ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT, e.getMessage());

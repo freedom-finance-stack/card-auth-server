@@ -1,7 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import javax.persistence.*;
-
 import org.freedomfinancestack.extensions.stateMachine.State;
 import org.freedomfinancestack.extensions.stateMachine.StateMachineEntity;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
@@ -9,6 +7,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.hibernate.annotations.Where;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -78,6 +77,9 @@ public class Transaction extends BaseEntity<String>
 
     @Column(name = "resend_count")
     private int resendCount;
+
+    @Column(name = "authentication_type")
+    private Integer authenticationType;
 
     @Column(name = "error_code")
     private String errorCode;

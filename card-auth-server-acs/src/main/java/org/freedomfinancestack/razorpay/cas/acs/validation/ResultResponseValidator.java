@@ -1,17 +1,18 @@
 package org.freedomfinancestack.razorpay.cas.acs.validation;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
-import org.freedomfinancestack.razorpay.cas.acs.validation.validator.Validation;
+import org.freedomfinancestack.extensions.validation.exception.ValidationException;
+import org.freedomfinancestack.extensions.validation.validator.Validation;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.IsValidObject.isValidObject;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.basic.NotNull.notNull;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.enriched.IsIn.isIn;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.validator.rule.IsListValid.isListValid;
+import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
+import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 
 /**
  * Validates the result response (RRES).
@@ -31,25 +32,32 @@ public class ResultResponseValidator {
      * @param rreq the Result request (RREQ) used to get RRES_
      * @throws ValidationException If the request fails validation.
      */
-    public void validateRequest(RRES incomingRres, RREQ rreq) throws ValidationException {
+    public void validateRequest(RRES incomingRres, RREQ rreq) throws ACSValidationException {
         if (incomingRres == null || rreq == null) {
-            throw new ValidationException(
+            throw new ACSValidationException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Transaction data missing");
         }
-        validateResultRequest(incomingRres, rreq);
+
+        try {
+            validateResultRequest(incomingRres, rreq);
+        } catch (ValidationException vex) {
+            throw new ACSValidationException(vex);
+        }
     }
 
     private void validateResultRequest(RRES incomingRres, RREQ rreq) throws ValidationException {
+
         validateMandatoryFields(incomingRres, rreq);
         validateOptionalFields(incomingRres, rreq);
     }
 
     private void validateMandatoryFields(RRES incomingRres, RREQ rreq) throws ValidationException {
+
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_TYPE.getFieldName(),
                 incomingRres.getMessageType(),
                 notNull(),
-                isIn(new String[] {MessageType.RRes.toString()}));
+                isIn(new String[] {MessageType.RRes.toString(), MessageType.Erro.toString()}));
 
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),

@@ -1,9 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import javax.persistence.*;
-
 import org.hibernate.annotations.Where;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -20,6 +19,7 @@ public class InstitutionMeta extends BaseEntity<String> {
     @Column(name = "institution_id")
     private String id;
 
+    @Lob
     @Column(name = "logo_data")
     private byte[] logoData;
 

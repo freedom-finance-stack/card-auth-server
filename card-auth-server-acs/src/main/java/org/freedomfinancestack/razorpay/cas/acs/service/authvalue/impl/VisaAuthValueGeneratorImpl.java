@@ -12,7 +12,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.AuthenticationMethod;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.VISAConstant;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGenerator;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.CVVGenerationService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexUtil;
@@ -40,7 +40,7 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
 
     @Override
     public String createAuthValue(Transaction transaction)
-            throws ACSException, ValidationException {
+            throws ACSException, ACSValidationException {
 
         String pan = transaction.getTransactionCardDetail().getCardNumber();
 
@@ -203,12 +203,12 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
      * @return String: Authentication Result Code
      */
     private String getAuthenticationResultCode(@NonNull final TransactionStatus transactionStatus)
-            throws ValidationException {
+            throws ACSValidationException {
         VISAConstant.VISATransactionStatusInfo instance =
                 VISAConstant.VISATransactionStatusInfo.getInstance(transactionStatus);
 
         if (instance == null) {
-            throw new ValidationException(
+            throw new ACSValidationException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                     "Valid transaction status not found");
         }
