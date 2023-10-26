@@ -34,11 +34,6 @@ public abstract class HttpsGatewayService {
             queryParam = new HashMap<>();
         }
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
-        log.info(
-                "Gateway request sent url {}, method {}, entity {}",
-                this.getServiceConfig().getUrl(),
-                method,
-                entity);
         ResponseEntity<String> responseEntity =
                 this.getRestTemplate()
                         .exchange(
