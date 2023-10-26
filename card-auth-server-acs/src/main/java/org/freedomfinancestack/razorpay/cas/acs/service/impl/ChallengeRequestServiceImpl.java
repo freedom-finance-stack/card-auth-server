@@ -92,7 +92,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                             null,
                             "Unexpected error while validating challenge");
-            cdReqError.setEncryptedErro(Util.encodeBase64(errorObj));
+            cdReqError.setEncryptedErro(Util.encodeBase64Url(errorObj));
         }
         return cdReqError;
     }
@@ -257,7 +257,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                             null,
                             "Unexpected error while validating challenge");
-            cdReqError.setEncryptedErro(Util.encodeBase64(errorObj));
+            cdReqError.setEncryptedErro(Util.encodeBase64Url(errorObj));
         }
         return cdReqError;
     }
@@ -446,7 +446,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             updateEci(transaction);
             transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
             CRES cres = cResMapper.toCres(transaction);
-            challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64(cres));
+            challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
 
             transactionMessageLogService.createAndSave(cres, transaction.getId());
 
@@ -478,7 +478,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             cardRange.getCardDetailsStore());
                 }
                 CRES cres = cResMapper.toCres(transaction);
-                challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64(cres));
+                challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
                 transactionMessageLogService.createAndSave(cres, transaction.getId());
                 challengeFlowDto.setSendRreq(true);
             }
@@ -503,7 +503,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             .getCode());
             challengeFlowDto.setSendRreq(true);
             CRES cres = cResMapper.toCres(transaction);
-            challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64(cres));
+            challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
             transactionMessageLogService.createAndSave(cres, transaction.getId());
         } else {
             log.info(" ReSending challenge for transaction {}", transaction.getId());
@@ -544,7 +544,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
         challengeFlowDto.setSendRreq(true);
         CRES cres = cResMapper.toCres(transaction);
-        challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64(cres));
+        challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
         log.info("challenge cancelled for transaction {}", transaction.getId());
     }
 
@@ -603,6 +603,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         cdRes.setError(true);
         cdRes.setEncryptedCRes(null);
         ThreeDSErrorResponse errorObj = Util.generateErrorResponse(error, transaction, errorDetail);
-        cdRes.setEncryptedErro(Util.encodeBase64(errorObj));
+        cdRes.setEncryptedErro(Util.encodeBase64Url(errorObj));
     }
 }
