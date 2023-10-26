@@ -44,8 +44,7 @@ public class GatewayConfig {
     @Getter
     @Setter
     public static class TrustStoreConfig {
-        private String srcPath;
-        private String destPath;
+        private String path;
         private String password;
     }
 
@@ -55,17 +54,4 @@ public class GatewayConfig {
         private int maxAttempts = 2;
         private Long backOffPeriod;
     }
-
-    //    @Bean("gatewayService")
-    //    @ConditionalOnProperty(name = "gateway.ds.mock", havingValue = "true")
-    //    public DsGatewayService dsGatewayServiceMock() {
-    //        return new DsGatewayServiceMock();
-    //    }
-    //
-    //    @Bean("gatewayService")
-    //    @ConditionalOnProperty(name = "gateway.ds.mock", havingValue = "false")
-    //    public DsGatewayService dsGatewayService() {
-    //        return applicationContext.getBean(DsGatewayServiceImpl.class);
-    //    }
-
 }

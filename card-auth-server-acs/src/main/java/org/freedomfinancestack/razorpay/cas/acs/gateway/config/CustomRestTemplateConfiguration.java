@@ -14,6 +14,8 @@ import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuil
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.core5.util.Timeout;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -26,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomRestTemplateConfiguration {
     private final GatewayConfig gatewayConfig;
+    private final AppConfiguration appConfiguration;
 
     @Bean("visaDsRestTemplate")
     public RestTemplate visaRestTemplate()
@@ -79,8 +82,8 @@ public class CustomRestTemplateConfiguration {
         if (config.isUseSSL()) {
             createTrustStore(
                     clientType,
-                    config.getTrustStore().getSrcPath(),
-                    config.getTrustStore().getDestPath(),
+                    config.getTrustStore().getPath(),
+                    getCacertsPath(),
                     config.getTrustStore().getPassword());
             SSLConnectionSocketFactory sslConFactory =
                     new SSLConnectionSocketFactory(
@@ -150,5 +153,12 @@ public class CustomRestTemplateConfiguration {
                 truststore.store(truststoreOutputStream, trustStorePassword.toCharArray());
             }
         }
+    }
+
+    public String getCacertsPath() {
+        if (!Util.isNullorBlank(appConfiguration.getJava().getCacerts())) {
+            return appConfiguration.getJava().getCacerts();
+        }
+        return appConfiguration.getJava().getHome() + "/lib/security/cacerts";
     }
 }
