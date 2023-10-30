@@ -525,8 +525,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         .build());
         log.info("Sent challenge for transaction {}", transaction.getId());
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
-        plrqService.sendPlrq(
-                transaction.getId(), transaction.getAuthValue(), transaction.getMessageVersion());
         cdResMapper.generateCDres(challengeFlowDto.getCdRes(), transaction);
     }
 

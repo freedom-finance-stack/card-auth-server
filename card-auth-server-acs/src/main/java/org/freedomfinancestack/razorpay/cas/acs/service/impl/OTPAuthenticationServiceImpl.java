@@ -1,21 +1,12 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.freedomfinancestack.extensions.notification.NotificationService;
-import org.freedomfinancestack.extensions.notification.dto.EmailNotificationDto;
-import org.freedomfinancestack.extensions.notification.dto.SMSNotificationDto;
-import org.freedomfinancestack.extensions.notification.enums.NotificationChannelType;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
-import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ProprietaryULTest.PlrqService;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.OtpCommunicationConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationService;
 import org.freedomfinancestack.razorpay.cas.acs.service.OtpService;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.dao.model.OtpTransactionDetail;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
@@ -40,8 +31,8 @@ import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstant
 @RequiredArgsConstructor
 public class OTPAuthenticationServiceImpl implements AuthenticationService {
     private final OtpService otpService;
-    private final NotificationService notificationService;
     private final OtpCommunicationConfiguration otpCommunicationConfiguration;
+    private final PlrqService plrqService;
 
     @Override
     public void preAuthenticate(AuthenticationDto authentication) throws ThreeDSException {
@@ -58,54 +49,61 @@ public class OTPAuthenticationServiceImpl implements AuthenticationService {
 
         // send notification of otp
 
-        if (!Util.isNullorBlank(emailId)) {
-            Map<String, String> dataMap =
-                    new HashMap<>() {
-                        {
-                            put("otp", otp);
-                        }
-                    };
-            EmailNotificationDto emailMessage =
-                    EmailNotificationDto.builder()
-                            .to(Collections.singletonList(emailId))
-                            .from(otpCommunicationConfiguration.getEmail().getFrom())
-                            .subject(otpCommunicationConfiguration.getEmail().getSubjectText())
-                            .templateData(dataMap)
-                            .templateName(
-                                    otpCommunicationConfiguration.getEmail().getTemplateName())
-                            .build();
-            emailSent = notificationService.send(NotificationChannelType.EMAIL, emailMessage);
-            if (emailSent) {
-                log.info("Email Sent successfully");
-            } else {
-                log.error("Unable to send Email!!!");
-            }
-        }
+        //        if (!Util.isNullorBlank(emailId)) {
+        //            Map<String, String> dataMap =
+        //                    new HashMap<>() {
+        //                        {
+        //                            put("otp", otp);
+        //                        }
+        //                    };
+        //            EmailNotificationDto emailMessage =
+        //                    EmailNotificationDto.builder()
+        //                            .to(Collections.singletonList(emailId))
+        //                            .from(otpCommunicationConfiguration.getEmail().getFrom())
+        //
+        // .subject(otpCommunicationConfiguration.getEmail().getSubjectText())
+        //                            .templateData(dataMap)
+        //                            .templateName(
+        //
+        // otpCommunicationConfiguration.getEmail().getTemplateName())
+        //                            .build();
+        //            emailSent = notificationService.send(NotificationChannelType.EMAIL,
+        // emailMessage);
+        //            if (emailSent) {
+        //                log.info("Email Sent successfully");
+        //            } else {
+        //                log.error("Unable to send Email!!!");
+        //            }
+        //        }
+        //
+        //        if (!Util.isNullorBlank(mobileNumber)) {
+        //            SMSNotificationDto smsMessage =
+        //                    SMSNotificationDto.builder()
+        //                            .message(
+        //                                    String.format(
+        //
+        // otpCommunicationConfiguration.getSms().getContent(),
+        //                                            otp))
+        //                            .to(Collections.singletonList(mobileNumber))
+        //                            .priority(0)
+        //                            .build();
+        //            smsSent = notificationService.send(NotificationChannelType.SMS, smsMessage);
+        //            if (smsSent) {
+        //                log.info("SMS Sent successfully");
+        //            } else {
+        //                log.error("Unable to send SMS!!!");
+        //            }
+        //        }
+        //
+        //        if (!emailSent && !smsSent) {
+        //            log.error("Unable to send SMS and email!!! TransactionId: {}",
+        // transaction.getId());
+        //            // throw exception
+        //            transaction.setErrorCode(
+        //                    InternalErrorCode.TRANSACTION_TIMEOUT_OTP_SEND_ERROR.getCode());
+        //        }
 
-        if (!Util.isNullorBlank(mobileNumber)) {
-            SMSNotificationDto smsMessage =
-                    SMSNotificationDto.builder()
-                            .message(
-                                    String.format(
-                                            otpCommunicationConfiguration.getSms().getContent(),
-                                            otp))
-                            .to(Collections.singletonList(mobileNumber))
-                            .priority(0)
-                            .build();
-            smsSent = notificationService.send(NotificationChannelType.SMS, smsMessage);
-            if (smsSent) {
-                log.info("SMS Sent successfully");
-            } else {
-                log.error("Unable to send SMS!!!");
-            }
-        }
-
-        if (!emailSent && !smsSent) {
-            log.error("Unable to send SMS and email!!! TransactionId: {}", transaction.getId());
-            // throw exception
-            transaction.setErrorCode(
-                    InternalErrorCode.TRANSACTION_TIMEOUT_OTP_SEND_ERROR.getCode());
-        }
+        plrqService.sendPlrq(transaction.getId(), otp, transaction.getMessageVersion());
     }
 
     @Override
