@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.module.configuration;
 
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,11 +15,13 @@ public class OtpCommunicationConfiguration {
     private EmailProperties email;
 
     @Getter
+    @Setter
     public static class SmsProperties {
         private String content;
     }
 
     @Getter
+    @Setter
     public static class EmailProperties {
         private String from;
         private String templateName;
