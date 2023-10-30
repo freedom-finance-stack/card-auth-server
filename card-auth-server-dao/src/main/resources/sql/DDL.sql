@@ -358,6 +358,7 @@ CREATE TABLE `otp_transaction_detail`
     `modified_at`         timestamp   NOT NULL,
     `deleted_at`          timestamp default NULL
 );
+CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
 
 
 

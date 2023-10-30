@@ -16,11 +16,27 @@ app:
       challengeCompletion: 600 #sec
 
 
+notification:
+  sms:
+    enabledChannel: "dummy-sms-server"
+  email:
+    enabledChannel: "dummy-smtp-server"
+    simpleSMTP:
+      host: your-smtp-server.com
+      port: 587
+
+otp:
+  sms:
+    content: "Your One-Time Password (OTP) for verification is: %s. Please enter this OTP to complete your login. Do not share this OTP with anyone."
+  email:
+    from: acs@bank.com
+    templateName: acs.email.otp.sample
+    subjectText:  "Verification code"
 
 gateway:
   services:
     VISA_DS:
-      mock: false
+      mock: true
       url: https://sample-ds.com
       useSSL: false
       connectTimeout: 5000
@@ -35,7 +51,7 @@ gateway:
         maxAttempts: 2
         backOffPeriod: 1000   #ms
     MASTERCARD_DS:
-      mock: false
+      mock: true
       url: https://sample-ds.com
       useSSL: false
       connectTimeout: 5000
@@ -70,9 +86,9 @@ spring:
   application:
     name: Card Auth Server ACS
   datasource:
-    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_db}
+    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_acs}
     username: ${ACS_MYSQL_USER:root}
-    password: ${ACS_MYSQL_PASSWORD:password}
+    password: ${ACS_MYSQL_PASSWORD:Mysql@123}
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true

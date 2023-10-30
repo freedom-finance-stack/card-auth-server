@@ -27,5 +27,5 @@ public class OtpTransactionDetail extends BaseEntity<String> {
     private OtpVerificationStatus verificationStatus;
 
     @Column(name = "value")
-    private Integer value;
+    private String value;
 }
