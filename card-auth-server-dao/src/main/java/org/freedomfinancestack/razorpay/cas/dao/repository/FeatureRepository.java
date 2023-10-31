@@ -34,6 +34,9 @@ public interface FeatureRepository extends BaseRepository<Feature, String> {
                         case PASSWORD:
                             return Util.gson.fromJson(
                                     feature.getProperties(), PasswordConfig.class);
+                        case ACS_RENDERING_TYPE:
+                            return Util.gson.fromJson(
+                                    feature.getProperties(), RenderingTypeConfig.class);
                         default:
                             return null;
                     }

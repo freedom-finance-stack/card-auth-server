@@ -306,7 +306,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         validateDeviceChannelAndMessageCategory(
                                 ThreeDSDataElement.SDK_MAX_TIMEOUT, request),
                         notNull()),
-                lengthValidator(LengthValidator.DataLengthType.FIXED, 2));
+                lengthValidator(LengthValidator.DataLengthType.FIXED, 2),
+                notIn(EMVCOConstant.sdkMaxTimeoutList));
         Validation.validate(
                 ThreeDSDataElement.SDK_REFERENCE_NUMBER.getFieldName(),
                 request.getSdkReferenceNumber(),
