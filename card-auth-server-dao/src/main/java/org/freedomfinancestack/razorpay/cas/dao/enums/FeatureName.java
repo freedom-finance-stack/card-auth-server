@@ -6,6 +6,5 @@ public enum FeatureName {
     OTP,
     PASSWORD,
     OOB,
-
     ACS_RENDERING_TYPE;
 }
