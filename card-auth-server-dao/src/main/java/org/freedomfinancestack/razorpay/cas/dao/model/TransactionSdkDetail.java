@@ -18,11 +18,20 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "transaction_id")
     private String id;
 
-    @Column(name = "sdk_transaction_id")
-    private String sdkTransactionId;
+    @Column(name = "sdk_app_id")
+    private String sdkAppID;
+
+    @Column(name = "sdk_trans_id")
+    private String sdkTransId;
+
+    @Column(name = "sdk_reference_number")
+    private String sdkReferenceNumber;
 
     @Column(name = "acs_ui_type")
     private String acsUiType;
+
+    @Column(name = "device_info")
+    private String deviceInfo;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
