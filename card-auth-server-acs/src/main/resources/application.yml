@@ -16,14 +16,14 @@ app:
       challengeCompletion: 600 #sec
 
 
-notification:
-  sms:
-    enabledChannel: "dummy-sms-server"
-  email:
-    enabledChannel: "dummy-smtp-server"
-    simpleSMTP:
-      host: your-smtp-server.com
-      port: 587
+#notification:
+#  sms:
+#    enabledChannel: "dummy-sms-server"
+#  email:
+#    enabledChannel: "dummy-smtp-server"
+#    simpleSMTP:
+#      host: your-smtp-server.com
+#      port: 587
 
 otp:
   sms:

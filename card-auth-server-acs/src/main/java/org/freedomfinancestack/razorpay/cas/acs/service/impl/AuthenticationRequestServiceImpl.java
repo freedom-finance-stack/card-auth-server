@@ -22,6 +22,7 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
+import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrlPK;
@@ -125,16 +126,13 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             // Determine if challenge is required and update transaction accordingly
             challengeDetermineService.determineChallenge(
                     areq, transaction, cardRange.getRiskFlag());
+            AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
+            AuthType authType =
+                    AuthenticationServiceLocator.selectAuthType(
+                            transaction, authConfigDto.getChallengeAuthTypeConfig());
+            transaction.setAuthenticationType(authType.getValue());
 
-            if (transaction.isChallengeMandated()) {
-                // if challenge flow then get type of authentication ACS will use to complete
-                // challenge
-                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
-                AuthType authType =
-                        AuthenticationServiceLocator.selectAuthType(
-                                transaction, authConfigDto.getChallengeAuthTypeConfig());
-                transaction.setAuthenticationType(authType.getValue());
-            } else {
+            if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                 String eci =
                         eCommIndicatorService.generateECI(
                                 new GenerateECIRequest(
