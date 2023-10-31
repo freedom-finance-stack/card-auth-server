@@ -66,7 +66,7 @@ public class CardRangeServiceImpl implements CardRangeService {
             log.error("Card range not found for PAN: " + pan); // todo Noncompliance : Mask PAN
             throw new CardDetailsNotFoundException(
                     InternalErrorCode.CARD_RANGE_NOT_FOUND,
-                    InternalErrorCode.RANGE_GROUP_NOT_FOUND.getDefaultErrorMessage());
+                    InternalErrorCode.CARD_RANGE_NOT_FOUND.getDefaultErrorMessage());
         }
 
         return cardRange;

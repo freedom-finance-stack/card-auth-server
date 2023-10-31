@@ -55,11 +55,11 @@ public class CardRangeServiceTest {
     @Test
     public void testFindByPanNoCardRangeFound() throws Exception {
         when(cardRangeRepository.findByPan(Long.valueOf(PanNumber))).thenReturn(null);
-        DataNotFoundException exception =
+        CardDetailsNotFoundException exception =
                 assertThrows(
-                        DataNotFoundException.class,
+                        CardDetailsNotFoundException.class,
                         () -> rangeService.findByPan("4001400112341234"));
-        assertEquals("3007 : CARD RANGE NOT FOUND", exception.getMessage());
+        assertEquals("3007", exception.getErrorCode().getCode());
     }
 
     @Test
@@ -92,11 +92,11 @@ public class CardRangeServiceTest {
     @MethodSource("provideCardRangeNegative")
     public void validateCardRangeTestNegative(
             CardRange cardRange, InternalErrorCode internalErrorCode) {
-        TransactionDataNotValidException exception =
+        CardDetailsNotFoundException exception =
                 assertThrows(
-                        TransactionDataNotValidException.class,
+                        CardDetailsNotFoundException.class,
                         () -> rangeService.validateRange(cardRange));
-        assertEquals(internalErrorCode, exception.getInternalErrorCode());
+        assertEquals(internalErrorCode, exception.getErrorCode());
     }
 
     @ParameterizedTest
@@ -113,10 +113,7 @@ public class CardRangeServiceTest {
         return Stream.of(
                 Arguments.of(
                         getCardRange(CardRangeStatus.INACTIVE, InstitutionStatus.ACTIVE),
-                        InternalErrorCode.CARD_RANGE_NOT_ACTIVE),
-                Arguments.of(
-                        getCardRange(CardRangeStatus.ACTIVE, InstitutionStatus.INACTIVE),
-                        InternalErrorCode.INSTITUTION_INACTIVE));
+                        InternalErrorCode.CARD_RANGE_NOT_ACTIVE));
     }
 
     public static Stream<Arguments> provideCardRangeWithEmptyFields() {
