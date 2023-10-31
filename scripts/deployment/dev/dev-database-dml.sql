@@ -27,6 +27,22 @@ INSERT INTO `card_detail` VALUES ('23', '1', 'R8','I1','765430270001741', '0535'
 INSERT INTO `card_detail` VALUES ('24', '1', 'R8','I1','765430270001915', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('25', '1', 'R8','I1','765430270002103', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('26', '1', 'R8','I1','765430270002178', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('27', '1', 'R8','I1','765430270002707', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('28', '1', 'R8','I1','765430270002764', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('29', '1', 'R8','I1','765430270002905', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('30', '1', 'R8','I1','765430270002947', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('31', '1', 'R8','I1','765430270003028', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+
+INSERT INTO `card_detail` VALUES ('32', '1', 'R8','I1','765430270065647', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('33', '1', 'R8','I1','765430270065688', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('34', '1', 'R8','I1','765430270065720', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+
+INSERT INTO `card_detail` VALUES ('35', '1', 'R8','I1','765430270065761', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('36', '1', 'R8','I1','765430270065803', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('37', '1', 'R8','I1','765430270068435', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('38', '1', 'R8','I1','765430270068450', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+
+
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;

@@ -130,7 +130,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
             // validation Creq
             challengeRequestValidator.validateRequest(cReq, transaction);
-
+            transaction.setThreedsSessionData(threeDSSessionData);
             // 4 flows
             // 1: if Challenge cancelled by user
             // 2: If transaction status is incorrect
@@ -223,7 +223,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             .locateService(MessageType.CReq)
                             .cancelTask(transaction.getId());
                     challengeFlowDto.getCdRes().setChallengeCompleted(true);
-                    challengeFlowDto.getCdRes().setThreeDSSessionData(threeDSSessionData);
+                    challengeFlowDto
+                            .getCdRes()
+                            .setThreeDSSessionData(transaction.getThreedsSessionData());
                 }
                 updateEci(transaction);
                 if (challengeFlowDto.isSendRreq()) {
@@ -270,7 +272,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         Transaction transaction = null;
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         challengeFlowDto.setCdRes(new CdRes());
-        String threeDsSessionData = "";
 
         try {
             challengeValidationRequestValidator.validateRequest(cvReq);
@@ -283,7 +284,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     .setNotificationUrl(
                             transaction.getTransactionReferenceDetail().getNotificationUrl());
 
-            threeDsSessionData = transaction.getThreedsSessionData();
             // log cvreq
             transactionMessageLogService.createAndSave(cvReq, cvReq.getTransactionId());
 
@@ -380,7 +380,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             .locateService(MessageType.CReq)
                             .cancelTask(transaction.getId());
                     challengeFlowDto.getCdRes().setChallengeCompleted(true);
-                    challengeFlowDto.getCdRes().setThreeDSSessionData(threeDsSessionData);
+                    challengeFlowDto
+                            .getCdRes()
+                            .setThreeDSSessionData(transaction.getThreedsSessionData());
                 }
                 updateEci(transaction);
                 if (challengeFlowDto.isSendRreq()) {

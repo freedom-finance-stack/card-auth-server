@@ -359,12 +359,3 @@ CREATE TABLE `otp_transaction_detail`
     `deleted_at`          timestamp default NULL
 );
 CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
-
-
-
-#  Purposed tables for OTP
-
-#  OTP_TRANSACTION_DETAIL : ID ,TRANSACTION_ID, Value
-#  NOTIFICATION : CHANNEL, DESTINATION, REQUEST, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
-
-

@@ -91,8 +91,8 @@ public class ChallengeRequestController {
 
     private static String createCdRes(Model model, CdRes cdRes) {
         CVReq cVReq = new CVReq();
-        model.addAttribute("cVReq", cVReq);
-        model.addAttribute("cdRes", cdRes);
+        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_VALIDATION_REQUEST, cVReq);
+        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE, cdRes);
         return "acsOtp";
     }
 
