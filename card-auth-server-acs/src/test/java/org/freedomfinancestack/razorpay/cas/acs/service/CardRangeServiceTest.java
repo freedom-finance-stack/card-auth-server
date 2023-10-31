@@ -4,6 +4,7 @@ import java.util.stream.Stream;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.service.impl.CardRangeServiceImpl;
@@ -79,7 +80,10 @@ public class CardRangeServiceTest {
     }
 
     @Test
-    public void validateRangeTest() throws TransactionDataNotValidException, DataNotFoundException {
+    public void validateRangeTest()
+            throws TransactionDataNotValidException,
+                    DataNotFoundException,
+                    CardDetailsNotFoundException {
         CardRange cardRange = getCardRange(CardRangeStatus.ACTIVE, InstitutionStatus.ACTIVE);
         rangeService.validateRange(cardRange);
     }

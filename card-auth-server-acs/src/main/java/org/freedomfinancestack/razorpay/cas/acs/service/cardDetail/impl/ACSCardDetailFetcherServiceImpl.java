@@ -6,9 +6,9 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CardDetailsMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardDetail;
 import org.freedomfinancestack.razorpay.cas.dao.repository.CardDetailRepository;
@@ -67,12 +67,12 @@ public class ACSCardDetailFetcherServiceImpl implements CardDetailFetcherService
     }
 
     public void validateCardDetails(CardDetailResponse cardDetailResponse)
-            throws DataNotFoundException, CardBlockedException {
+            throws DataNotFoundException, CardBlockedException, CardDetailsNotFoundException {
         if (!cardDetailResponse.isSuccess() || cardDetailResponse.getCardDetailDto() == null) {
             log.error("Card Number not found");
-            throw new DataNotFoundException(
-                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
-                    InternalErrorCode.CARD_USER_NOT_FOUND);
+            throw new CardDetailsNotFoundException(
+                    InternalErrorCode.CARD_USER_NOT_FOUND,
+                    InternalErrorCode.CARD_USER_NOT_FOUND.getDefaultErrorMessage());
         } else if (cardDetailResponse.getCardDetailDto().isBlocked()) {
             throw new CardBlockedException(
                     InternalErrorCode.CARD_USER_BLOCKED, "Card Number is blocked");

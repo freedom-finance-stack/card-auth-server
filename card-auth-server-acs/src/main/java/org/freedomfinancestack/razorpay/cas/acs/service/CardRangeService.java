@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
@@ -24,7 +25,8 @@ public interface CardRangeService {
      * @throws DataNotFoundException
      * @throws ACSDataAccessException
      */
-    CardRange findByPan(String pan) throws DataNotFoundException, ACSDataAccessException;
+    CardRange findByPan(String pan)
+            throws DataNotFoundException, ACSDataAccessException, CardDetailsNotFoundException;
 
     /**
      * Validates the CardRange entity based on the given transaction data.
@@ -34,5 +36,7 @@ public interface CardRangeService {
      * @throws DataNotFoundException
      */
     void validateRange(CardRange cardRange)
-            throws TransactionDataNotValidException, DataNotFoundException;
+            throws TransactionDataNotValidException,
+                    DataNotFoundException,
+                    CardDetailsNotFoundException;
 }

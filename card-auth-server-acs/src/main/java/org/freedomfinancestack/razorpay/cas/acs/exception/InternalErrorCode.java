@@ -46,17 +46,18 @@ public enum
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     // Error code for Card Range
+    // NOTE: Using Attempt and Rejected status for above 2 error to create scenario for 3ds testing
     CARD_RANGE_NOT_ACTIVE(
             "3006",
             "CARD RANGE NOT ACTIVE",
-            TransactionStatus.FAILED,
+            TransactionStatus.REJECTED,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
-
     CARD_RANGE_NOT_FOUND(
             "3007",
             "CARD RANGE NOT FOUND",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatus.ATTEMPT,
             TransactionStatusReason.NO_CARD_RECORD),
+
     RANGE_GROUP_NOT_FOUND(
             "3008",
             "RANGE GROUP NOT FOUND",
