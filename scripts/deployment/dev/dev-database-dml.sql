@@ -41,6 +41,8 @@ INSERT INTO `card_detail` VALUES ('35', '1', 'R8','I1','765430270065761', '0535'
 INSERT INTO `card_detail` VALUES ('36', '1', 'R8','I1','765430270065803', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('37', '1', 'R8','I1','765430270068435', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('38', '1', 'R8','I1','765430270068450', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('39', '1', 'R2','I1','7654310438702845', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('40', '1', 'R2','I1','7654310438702803', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 
 
 UNLOCK TABLES;

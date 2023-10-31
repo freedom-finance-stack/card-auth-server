@@ -130,7 +130,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
             // validation Creq
             challengeRequestValidator.validateRequest(cReq, transaction);
-            transaction.setThreedsSessionData(threeDSSessionData);
+            transaction.setThreedsSessionData(
+                    Util.removeBase64Padding(
+                            threeDSSessionData)); // removing base64 padding because Padding not
+            // allowed in base64url encoded form parameter
+
             // 4 flows
             // 1: if Challenge cancelled by user
             // 2: If transaction status is incorrect

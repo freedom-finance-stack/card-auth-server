@@ -254,6 +254,10 @@ public class Util {
         return random.nextInt(max - min + 1) + min;
     }
 
+    public static String removeBase64Padding(String base64String) {
+        return base64String.replaceAll("=+$", "");
+    }
+
     public static ThreeDSErrorResponse generateErrorResponse(
             ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
         ThreeDSErrorResponse errorObj = new ThreeDSErrorResponse();
