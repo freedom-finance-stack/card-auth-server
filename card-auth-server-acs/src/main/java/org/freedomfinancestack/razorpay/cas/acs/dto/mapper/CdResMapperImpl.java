@@ -9,7 +9,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundEx
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -43,7 +42,8 @@ public class CdResMapperImpl {
     public void generateCDres(@NonNull final CdRes cdRes, final Transaction transaction)
             throws DataNotFoundException {
         cdRes.setTransactionId(transaction.getId());
-        cdRes.setValidationUrl(Util.getAcsUrl(appConfiguration.getHostname() , transaction.getDeviceChannel()));
+        cdRes.setValidationUrl(
+                Util.getAcsUrl(appConfiguration.getHostname(), transaction.getDeviceChannel()));
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
         if (institution.isPresent()) {

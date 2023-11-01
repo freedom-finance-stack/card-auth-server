@@ -260,8 +260,8 @@ public class Util {
     }
 
     public static String getAcsUrl(String hostName, String deviceChannel) {
-        if(DeviceChannel.APP.getChannel().equals(deviceChannel)){
-           return hostName + InternalConstants.CHALLENGE_APP_VALIDATION_URL;
+        if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
+            return hostName + InternalConstants.CHALLENGE_APP_VALIDATION_URL;
         }
         return hostName + InternalConstants.CHALLENGE_BRW_VALIDATION_URL;
     }

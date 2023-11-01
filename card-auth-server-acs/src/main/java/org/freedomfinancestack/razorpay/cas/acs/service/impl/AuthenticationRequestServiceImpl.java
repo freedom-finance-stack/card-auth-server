@@ -106,7 +106,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transaction.setCardRangeId(cardRange.getId());
             transaction.setInstitutionId(cardRange.getInstitution().getId());
 
-
             // fetch Card and User details and validate details
             cardDetailService.validateAndUpdateCardDetails(
                     transaction,

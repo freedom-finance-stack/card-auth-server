@@ -4,7 +4,6 @@ import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfigur
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
@@ -60,7 +59,9 @@ public interface AResMapper {
     @Mapping(target = "eci", source = "transaction.eci")
     @Mapping(
             target = "acsURL",
-            expression ="java(Util.getAcsUrl(this.helperMapper.appConfiguration.getHostname(), transaction.getDeviceChannel()))")
+            expression =
+                    "java(Util.getAcsUrl(this.helperMapper.appConfiguration.getHostname(),"
+                            + " transaction.getDeviceChannel()))")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -81,7 +82,6 @@ public interface AResMapper {
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
     ARES toAres(AREQ areq, Transaction transaction);
-
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
         String transStatusReason = "";
