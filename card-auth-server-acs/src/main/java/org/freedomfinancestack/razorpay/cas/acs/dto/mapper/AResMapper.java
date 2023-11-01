@@ -78,6 +78,16 @@ public interface AResMapper {
     @Mapping(target = "broadInfo", expression = "java(null)")
     @Mapping(target = "sdkEphemPubKey", expression = "java(null)")
     @Mapping(target = "cardholderInfo", expression = "java(null)")
+    @Mapping(
+            target = "whiteListStatus",
+            expression =
+                    "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
+                            + " areq.getThreeRIInd().equals(\"10\") ? \"N\" : \"\")")
+    @Mapping(
+            target = "whiteListStatusSource",
+            expression =
+                    "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
+                            + " areq.getThreeRIInd().equals(\"10\") ? \"03\" : \"\")")
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
