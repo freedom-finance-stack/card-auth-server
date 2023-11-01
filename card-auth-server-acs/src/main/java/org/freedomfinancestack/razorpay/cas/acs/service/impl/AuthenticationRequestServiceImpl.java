@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -25,7 +24,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
-import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrlPK;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -108,13 +106,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transaction.setCardRangeId(cardRange.getId());
             transaction.setInstitutionId(cardRange.getInstitution().getId());
 
-            // get acs url
-            acsUrl =
-                    institutionAcsUrlService.findById(
-                            new InstitutionAcsUrlPK(
-                                    cardRange.getInstitution().getId(),
-                                    areq.getDeviceChannel(),
-                                    cardRange.getNetworkCode()));
 
             // fetch Card and User details and validate details
             cardDetailService.validateAndUpdateCardDetails(
@@ -196,10 +187,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                         .setThreeRIInd(areq.getThreeRIInd()));
                 transaction.setEci(eci);
             }
-            String acsUrlStr = acsUrl == null ? "" : acsUrl.getChallengeUrl();
-            AResMapperParams aResMapperParams =
-                    AResMapperParams.builder().acsUrl(acsUrlStr).build();
-            ares = aResMapper.toAres(areq, transaction, aResMapperParams);
+            ares = aResMapper.toAres(areq, transaction);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
             if (transaction.isChallengeMandated()) {

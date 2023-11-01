@@ -1,9 +1,10 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
-import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
@@ -28,7 +29,8 @@ import org.mapstruct.Mapping;
             TransactionStatus.class,
             MessageCategory.class,
             Network.class,
-            MessageType.class
+            MessageType.class,
+            Util.class
         })
 public interface AResMapper {
 
@@ -40,8 +42,6 @@ public interface AResMapper {
      * @param areq The {@link AREQ} object representing the Authentication Request message received
      *     from the 3DS Server.
      * @param transaction The {@link Transaction} object representing the transaction details.
-     * @param aResMapperParams The {@link AResMapperParams} object containing additional parameters
-     *     for mapping.
      * @return The {@link ARES} object representing the Authentication Response message.
      */
     @Mapping(target = "acsChallengeMandated", source = "transaction.challengeMandated")
@@ -60,10 +60,7 @@ public interface AResMapper {
     @Mapping(target = "eci", source = "transaction.eci")
     @Mapping(
             target = "acsURL",
-            expression =
-                    "java(!transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)"
-                            + " && aResMapperParams.getAcsUrl() != null ? "
-                            + "aResMapperParams.getAcsUrl() : null)")
+            expression ="java(Util.getAcsUrl(this.helperMapper.appConfiguration.getHostname(), transaction.getDeviceChannel()))")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -83,10 +80,10 @@ public interface AResMapper {
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
-    ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
+    ARES toAres(AREQ areq, Transaction transaction);
+
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
-        AResMapperParams aResMapperParams;
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
                 && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
@@ -118,7 +115,7 @@ public interface AResMapper {
         String operatorId = "";
         if (transaction.getTransactionCardDetail() == null
                 || transaction.getTransactionCardDetail().getNetworkCode() == null) {
-            operatorId = "";
+            operatorId = "DEFAULT";
         } else if (Network.VISA.getValue()
                 == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
             operatorId = appConfiguration.getAcs().getOperatorId().getVisa();

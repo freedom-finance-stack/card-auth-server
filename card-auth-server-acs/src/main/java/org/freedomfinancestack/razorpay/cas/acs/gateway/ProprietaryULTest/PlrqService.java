@@ -12,6 +12,7 @@ import org.freedomfinancestack.razorpay.cas.acs.gateway.config.CustomRetryTempla
 import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -51,6 +52,7 @@ public class PlrqService extends HttpsGatewayService {
             log.info("Mocking PLRQ");
             return;
         }
+        //todo also create For APP
         Plrq plrq = createPlrqBrw(transactionId, otpAuthVal, messageVersion);
         try {
             log.info("Sending PLRQ: " + Util.toJson(plrq));
@@ -70,8 +72,7 @@ public class PlrqService extends HttpsGatewayService {
         pFormValuesBRW.cancelFormData = String.format(BRW_CANCEL_FORM_DATA, transactionId);
         pFormValuesBRW.correctFormData = String.format(BRW_FORM_DATA, transactionId, authVal);
         pFormValuesBRW.incorrectFormData = String.format(BRW_FORM_DATA, transactionId, "00000");
-        pFormValuesBRW.action =
-                appConfiguration.getHostname() + InternalConstants.CHALLENGE_BRW_VALIDATION_URL;
+        pFormValuesBRW.action = Util.getAcsUrl(appConfiguration.getHostname() , DeviceChannel.BRW.getChannel());
 
         Plrq plrq = new Plrq();
         plrq.acsTransID = transactionId;

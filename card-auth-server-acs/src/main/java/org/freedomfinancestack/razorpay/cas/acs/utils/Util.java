@@ -16,6 +16,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
@@ -256,6 +257,13 @@ public class Util {
 
     public static String removeBase64Padding(String base64String) {
         return base64String.replaceAll("=+$", "");
+    }
+
+    public static String getAcsUrl(String hostName, String deviceChannel) {
+        if(DeviceChannel.APP.getChannel().equals(deviceChannel)){
+           return hostName + InternalConstants.CHALLENGE_APP_VALIDATION_URL;
+        }
+        return hostName + InternalConstants.CHALLENGE_BRW_VALIDATION_URL;
     }
 
     public static ThreeDSErrorResponse generateErrorResponse(
