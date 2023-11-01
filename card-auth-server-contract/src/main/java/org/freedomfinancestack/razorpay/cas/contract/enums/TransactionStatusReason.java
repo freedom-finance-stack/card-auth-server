@@ -29,7 +29,7 @@ public enum TransactionStatusReason {
     TRI_TRANSACTION_NOT_SUPPORTED("21", "3RI transaction not supported"),
     // This is other than EMVCo
     USER_CANCELLED("22", "Cancelled by User"),
-    ACS_TECHNICAL_ISSUE("22", " ACS technical Issue"),
+    ACS_TECHNICAL_ISSUE("23", " ACS technical Issue"),
     AUTHENTICATION_ATTEMPTED_BUT_NOT_PERFORMED_BY_CARDHOLDER(
             "26", "Authentication attempted but not performed by the cardholder");
 
