@@ -97,6 +97,7 @@ public interface AResMapper {
         } else {
             // For 02-NPA, Conditional as defined by the DS.
             if (transaction.getTransactionCardDetail() != null
+                    && transaction.getTransactionCardDetail().getNetworkCode() != null
                     && Network.AMEX.getValue()
                             == transaction.getTransactionCardDetail().getNetworkCode()) {
                 if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
