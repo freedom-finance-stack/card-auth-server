@@ -60,7 +60,7 @@ public interface AResMapper {
     @Mapping(
             target = "acsURL",
             expression =
-                    "java(Util.getAcsUrl(this.helperMapper.appConfiguration.getHostname(),"
+                    "java(Util.getAcsChallengeUrl(this.helperMapper.appConfiguration.getHostname(),"
                             + " transaction.getDeviceChannel()))")
     @Mapping(
             target = "transStatus",

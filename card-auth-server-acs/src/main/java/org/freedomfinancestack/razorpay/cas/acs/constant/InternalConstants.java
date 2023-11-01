@@ -51,4 +51,7 @@ public class InternalConstants {
             "v1/transaction/challenge/browser/validate";
     public static final String CHALLENGE_APP_VALIDATION_URL =
             "v1/transaction/challenge/app/validate";
+
+    public static final String CHALLENGE_BRW_URL = "v1/transaction/challenge/browser";
+    public static final String CHALLENGE_APP_URL = "v1/transaction/challenge/app";
 }

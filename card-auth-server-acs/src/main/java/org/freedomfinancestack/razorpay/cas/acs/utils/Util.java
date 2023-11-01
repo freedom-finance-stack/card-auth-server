@@ -259,7 +259,14 @@ public class Util {
         return base64String.replaceAll("=+$", "");
     }
 
-    public static String getAcsUrl(String hostName, String deviceChannel) {
+    public static String getAcsChallengeUrl(String hostName, String deviceChannel) {
+        if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
+            return hostName + InternalConstants.CHALLENGE_APP_URL;
+        }
+        return hostName + InternalConstants.CHALLENGE_BRW_URL;
+    }
+
+    public static String getAcsChallengeValidationUrl(String hostName, String deviceChannel) {
         if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
             return hostName + InternalConstants.CHALLENGE_APP_VALIDATION_URL;
         }

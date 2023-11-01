@@ -43,7 +43,8 @@ public class CdResMapperImpl {
             throws DataNotFoundException {
         cdRes.setTransactionId(transaction.getId());
         cdRes.setValidationUrl(
-                Util.getAcsUrl(appConfiguration.getHostname(), transaction.getDeviceChannel()));
+                Util.getAcsChallengeValidationUrl(
+                        appConfiguration.getHostname(), transaction.getDeviceChannel()));
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
         if (institution.isPresent()) {
