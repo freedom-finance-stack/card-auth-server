@@ -82,12 +82,12 @@ public interface AResMapper {
             target = "whiteListStatus",
             expression =
                     "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
-                            + " areq.getThreeRIInd().equals(\"10\") ? \"N\" : \"\")")
+                            + " areq.getThreeRIInd().equals(\"10\") ? \"N\" : null)")
     @Mapping(
             target = "whiteListStatusSource",
             expression =
                     "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
-                            + " areq.getThreeRIInd().equals(\"10\") ? \"03\" : \"\")")
+                            + " areq.getThreeRIInd().equals(\"10\") ? \"03\" : null)")
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
