@@ -50,12 +50,12 @@ public enum
     CARD_RANGE_NOT_ACTIVE(
             "3006",
             "CARD RANGE NOT ACTIVE",
-            TransactionStatus.REJECTED,
+            TransactionStatus.ATTEMPT,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
     CARD_RANGE_NOT_FOUND(
             "3007",
             "CARD RANGE NOT FOUND",
-            TransactionStatus.ATTEMPT,
+            TransactionStatus.REJECTED,
             TransactionStatusReason.NO_CARD_RECORD),
 
     RANGE_GROUP_NOT_FOUND(
