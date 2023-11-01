@@ -51,7 +51,6 @@ public class CardRangeServiceImpl implements CardRangeService {
                     ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
                     InternalErrorCode.CARD_RANGE_NOT_FOUND);
         }
-
         CardRange cardRange;
         try {
             cardRange = cardRangeRepository.findByPan(Long.valueOf(pan));

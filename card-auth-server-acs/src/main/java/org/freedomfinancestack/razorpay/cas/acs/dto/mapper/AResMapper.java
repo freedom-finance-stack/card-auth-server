@@ -96,8 +96,9 @@ public interface AResMapper {
             transStatusReason = transaction.getTransactionStatusReason();
         } else {
             // For 02-NPA, Conditional as defined by the DS.
-            if (Network.AMEX.getValue()
-                    == transaction.getTransactionCardDetail().getNetworkCode()) {
+            if (transaction.getTransactionCardDetail() != null
+                    && Network.AMEX.getValue()
+                            == transaction.getTransactionCardDetail().getNetworkCode()) {
                 if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                     transaction.setTransactionStatusReason(
                             TransactionStatusReason.MEDIUM_CONFIDENCE.getCode());
