@@ -256,7 +256,10 @@ public class Util {
     }
 
     public static String removeBase64Padding(String base64String) {
-        return base64String.replaceAll("=+$", "");
+        if (base64String != null) {
+            return base64String.replaceAll("=+$", "");
+        }
+        return null;
     }
 
     public static String getAcsChallengeUrl(String hostName, String deviceChannel) {
