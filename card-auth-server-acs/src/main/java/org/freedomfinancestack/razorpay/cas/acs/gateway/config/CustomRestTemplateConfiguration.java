@@ -7,6 +7,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.*;
 
+import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -95,13 +96,20 @@ public class CustomRestTemplateConfiguration {
 
         RequestConfig requestConfig =
                 RequestConfig.custom()
-                        .setConnectTimeout(Timeout.ofMilliseconds(config.getConnectTimeout()))
                         .setResponseTimeout(Timeout.ofMilliseconds(config.getResponseTimeout()))
+                        .build();
+
+        ConnectionConfig connectionConfig =
+                ConnectionConfig.custom()
+                        .setConnectTimeout(Timeout.ofMilliseconds(config.getConnectTimeout()))
                         .build();
 
         CloseableHttpClient httpClient =
                 HttpClients.custom()
-                        .setConnectionManager(connectionManagerBuilder.build())
+                        .setConnectionManager(
+                                connectionManagerBuilder
+                                        .setDefaultConnectionConfig(connectionConfig)
+                                        .build())
                         .setDefaultRequestConfig(requestConfig)
                         .build();
 
@@ -110,7 +118,7 @@ public class CustomRestTemplateConfiguration {
         return new RestTemplate(requestFactory);
     }
 
-    public static SSLContext createSSLContext(String keyStorePath, String keyStorePassword)
+    private static SSLContext createSSLContext(String keyStorePath, String keyStorePassword)
             throws KeyStoreException,
                     IOException,
                     NoSuchAlgorithmException,
@@ -132,7 +140,7 @@ public class CustomRestTemplateConfiguration {
         return sslContext;
     }
 
-    public static void createTrustStore(
+    private static void createTrustStore(
             ClientType clientType,
             String trustStoreSourcePath,
             String truststoreDestPath,
@@ -155,7 +163,7 @@ public class CustomRestTemplateConfiguration {
         }
     }
 
-    public String getCacertsPath() {
+    private String getCacertsPath() {
         if (!Util.isNullorBlank(appConfiguration.getJava().getCacerts())) {
             return appConfiguration.getJava().getCacerts();
         }

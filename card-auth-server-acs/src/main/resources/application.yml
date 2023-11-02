@@ -27,7 +27,7 @@ app:
 
 otp:
   sms:
-    content: "Your One-Time Password (OTP) for verification is: %s. Please enter this OTP to complete your login. Do not share this OTP with anyone."
+    templateName: acs.sms.otp.sample
   email:
     from: acs@bank.com
     templateName: acs.email.otp.sample
@@ -36,7 +36,7 @@ otp:
 gateway:
   services:
     VISA_DS:
-      mock: true
+      mock: false
       url: https://sample-ds.com
       useSSL: false
       connectTimeout: 5000
@@ -51,7 +51,7 @@ gateway:
         maxAttempts: 2
         backOffPeriod: 1000   #ms
     MASTERCARD_DS:
-      mock: true
+      mock: false
       url: https://sample-ds.com
       useSSL: false
       connectTimeout: 5000

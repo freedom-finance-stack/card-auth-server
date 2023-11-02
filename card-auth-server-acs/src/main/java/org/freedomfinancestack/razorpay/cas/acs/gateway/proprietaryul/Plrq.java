@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.acs.gateway.ProprietaryULTest;
+package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
 
 import lombok.Data;
 

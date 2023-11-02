@@ -1,9 +1,10 @@
-package org.freedomfinancestack.razorpay.cas.acs.gateway.ProprietaryULTest;
+package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.hc.core5.http.ContentType;
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
@@ -11,7 +12,6 @@ import org.freedomfinancestack.razorpay.cas.acs.gateway.config.CustomRetryTempla
 import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -51,7 +51,6 @@ public class PlrqService extends HttpsGatewayService {
             log.info("Mocking PLRQ");
             return;
         }
-        // todo also create For APP
         Plrq plrq = createPlrqBrw(transactionId, otpAuthVal, messageVersion);
         try {
             log.info("Sending PLRQ: " + Util.toJson(plrq));
@@ -72,8 +71,7 @@ public class PlrqService extends HttpsGatewayService {
         pFormValuesBRW.correctFormData = String.format(BRW_FORM_DATA, transactionId, authVal);
         pFormValuesBRW.incorrectFormData = String.format(BRW_FORM_DATA, transactionId, "00000");
         pFormValuesBRW.action =
-                Util.getAcsChallengeValidationUrl(
-                        appConfiguration.getHostname(), DeviceChannel.BRW.getChannel());
+                appConfiguration.getHostname() + InternalConstants.CHALLENGE_BRW_VALIDATION_URL;
 
         Plrq plrq = new Plrq();
         plrq.acsTransID = transactionId;

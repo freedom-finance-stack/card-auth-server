@@ -17,7 +17,7 @@ public class OtpCommunicationConfiguration {
     @Getter
     @Setter
     public static class SmsProperties {
-        private String content;
+        private String templateName;
     }
 
     @Getter

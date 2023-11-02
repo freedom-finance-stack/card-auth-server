@@ -140,9 +140,12 @@ public interface AResMapper {
     }
 
     default String getAuthType(Transaction transaction) {
-        if (transaction.getAuthenticationType() == null) {
-            return "02"; // default Auth type to 2, this is needed as required by test portal
+        if (transaction == null || transaction.getAuthenticationType() == null) {
+            return "";
         }
-        return "0" + transaction.getAuthenticationType();
+        if (transaction.getAuthenticationType() < 10) {
+            return "0" + transaction.getAuthenticationType();
+        }
+        return String.valueOf(transaction.getAuthenticationType());
     }
 }
