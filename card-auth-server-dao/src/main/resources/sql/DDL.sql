@@ -20,11 +20,12 @@ CREATE TABLE `transaction`
     `eci`                       varchar(3),
     `device_channel`            varchar(10),
     `device_name`               varchar(20),
+    `authentication_type`       int,
     `interaction_count`         int DEFAULT 0,
     `resend_count`              int DEFAULT 0,
     `challenge_cancel_ind`      varchar(2),
     `error_code`                varchar(20),
-    `created_at`                timestamp                                                                                                                                             NOT NULL,
+    `created_at`                timestamp  NOT NULL,
     `modified_at`               timestamp,
     `deleted_at`                timestamp
 );

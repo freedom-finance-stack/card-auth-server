@@ -13,7 +13,7 @@ public enum
     // Error code for card USER
     CARD_USER_NOT_FOUND(
             "1001",
-            "CARD RANGE NOT FOUND",
+            "CARD NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.NO_CARD_RECORD),
     CARD_USER_BLOCKED(

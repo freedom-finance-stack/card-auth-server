@@ -25,6 +25,11 @@ public class AuthenticationServiceLocator {
     public AuthenticationService locateTransactionAuthenticationService(
             Transaction transaction, ChallengeAuthTypeConfig authConfig)
             throws OperationNotSupportedException {
+        return locateService(selectAuthType(transaction, authConfig));
+    }
+
+    public static AuthType selectAuthType(
+            Transaction transaction, ChallengeAuthTypeConfig authConfig) {
         String purchaseAmount = null;
         if (transaction.getTransactionPurchaseDetail() != null
                 && !Util.isNullorBlank(
@@ -34,9 +39,9 @@ public class AuthenticationServiceLocator {
         if (authConfig.getThresholdAuthType() != null
                 && !Util.isNullorBlank(purchaseAmount)
                 && new BigDecimal(purchaseAmount).compareTo(authConfig.getThreshold()) >= 0) {
-            return locateService(authConfig.getThresholdAuthType());
+            return authConfig.getThresholdAuthType();
         } else {
-            return locateService(authConfig.getDefaultAuthType());
+            return authConfig.getDefaultAuthType();
         }
     }
 

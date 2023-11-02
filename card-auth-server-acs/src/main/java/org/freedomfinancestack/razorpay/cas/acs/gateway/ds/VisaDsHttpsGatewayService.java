@@ -3,7 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.ds;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.config.CustomRetryTemplateBuilder;
-import org.freedomfinancestack.razorpay.cas.acs.gateway.config.DsGatewayConfig;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -15,14 +15,14 @@ import org.springframework.web.client.RestTemplate;
 public class VisaDsHttpsGatewayService extends HttpsGatewayService {
 
     private final RestTemplate visaDsRestTemplate;
-    private final DsGatewayConfig.ServiceConfig serviceConfig;
+    private final GatewayConfig.ServiceConfig serviceConfig;
 
     @Autowired
     public VisaDsHttpsGatewayService(
             @Qualifier("visaDsRestTemplate") RestTemplate visaDsRestTemplate,
-            DsGatewayConfig dsGatewayConfig) {
+            GatewayConfig gatewayConfig) {
         this.visaDsRestTemplate = visaDsRestTemplate;
-        this.serviceConfig = dsGatewayConfig.getServices().get(ClientType.VISA_DS);
+        this.serviceConfig = gatewayConfig.getServices().get(ClientType.VISA_DS);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class VisaDsHttpsGatewayService extends HttpsGatewayService {
     }
 
     @Override
-    public DsGatewayConfig.ServiceConfig getServiceConfig() {
+    public GatewayConfig.ServiceConfig getServiceConfig() {
         return this.serviceConfig;
     }
 }

@@ -23,6 +23,14 @@ public class AppConfiguration {
     private int port;
     private String hostname;
     private AcsProperties acs;
+    private JavaProperties java;
+
+    @Getter
+    @Setter
+    public static class JavaProperties {
+        private String home;
+        private String cacerts;
+    }
 
     @Getter
     @Setter

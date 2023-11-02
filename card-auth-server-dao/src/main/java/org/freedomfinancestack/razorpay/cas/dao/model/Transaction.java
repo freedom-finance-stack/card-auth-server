@@ -78,6 +78,9 @@ public class Transaction extends BaseEntity<String>
     @Column(name = "resend_count")
     private int resendCount;
 
+    @Column(name = "authentication_type")
+    private Integer authenticationType;
+
     @Column(name = "error_code")
     private String errorCode;
 

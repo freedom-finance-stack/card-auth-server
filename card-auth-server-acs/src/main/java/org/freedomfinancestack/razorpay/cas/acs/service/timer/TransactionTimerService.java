@@ -5,5 +5,5 @@ public interface TransactionTimerService {
 
     void cancelTask(String transactionId);
 
-    void performTask(String transactionId);
+    void performTask(String timerTaskId);
 }

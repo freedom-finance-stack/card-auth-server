@@ -13,6 +13,7 @@ ENV CARD_AUTH_ACS_SERVER_PORT=$CAS_ACS_SERVER_PORT
 # for running java -jar command use --spring.config.additional-location to provide external config file path
 ENV EXTERNAL_CONFIG_FILE_PATH /opt/card-auth-server/cas-acs/bin/config/acs.yml
 
+
 RUN  apk update \
   && apk upgrade \
   && apk add ca-certificates \
@@ -24,6 +25,11 @@ RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazo
     && echo "https://apk.corretto.aws/" >> /etc/apk/repositories \
     && apk update
 RUN apk add --update amazon-corretto-17
+
+ENV JAVA_HOME /usr/lib/jvm/java-17-amazon-corretto
+ENV CACERTS_PATH ${JAVA_HOME}/lib/security/cacerts
+RUN export JAVA_HOME
+RUN chmod 777 ${CACERTS_PATH}
 
 #Install Supervisord
 RUN apk add --update supervisor

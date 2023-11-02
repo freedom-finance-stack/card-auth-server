@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
@@ -29,6 +30,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FeatureServiceImpl implements FeatureService {
     private final FeatureRepository featureRepository;
+
+    @Override
+    public AuthConfigDto getAuthenticationConfig(Transaction transaction)
+            throws ACSDataAccessException {
+        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
+        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
+        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
+        return getAuthenticationConfig(entityIdsByType);
+    }
 
     // todo add cache
     @Override

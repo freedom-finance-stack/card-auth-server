@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.AResMapper;
@@ -9,12 +10,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
-import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestService;
-import org.freedomfinancestack.razorpay.cas.acs.service.CardRangeService;
-import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
-import org.freedomfinancestack.razorpay.cas.acs.service.InstitutionAcsUrlService;
-import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogService;
-import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
+import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
@@ -24,6 +20,7 @@ import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -64,6 +61,8 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final AResMapper aResMapper;
     private final InstitutionAcsUrlService institutionAcsUrlService;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
+    private final FeatureService featureService;
+    private final AuthenticationServiceLocator authenticationServiceLocator;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -126,6 +125,16 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
 
             // Determine if challenge is required and update transaction accordingly
             determineChallenge(areq, transaction, cardRange);
+
+            if (transaction.isChallengeMandated()) {
+                // if challenge flow then get type of authentication ACS will use to complete
+                // challenge
+                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
+                AuthType authType =
+                        AuthenticationServiceLocator.selectAuthType(
+                                transaction, authConfigDto.getChallengeAuthTypeConfig());
+                transaction.setAuthenticationType(authType.getValue());
+            }
         } catch (ThreeDSException ex) {
             // NOTE : to send Erro in response throw ThreeDSException, otherwise
 
@@ -169,19 +178,20 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
 
         // If everything is successful, send Ares message type as a response.
         try {
-            String eci =
-                    eCommIndicatorService.generateECI(
-                            new GenerateECIRequest(
-                                            transaction.getTransactionStatus(),
-                                            cardRange.getNetworkCode(),
-                                            transaction.getMessageCategory())
-                                    .setThreeRIInd(areq.getThreeRIInd()));
-            transaction.setEci(eci);
-            ares =
-                    aResMapper.toAres(
-                            areq,
-                            transaction,
-                            AResMapperParams.builder().acsUrl(acsUrl.getChallengeUrl()).build());
+            if (!Util.isNullorBlank(transaction.getId()) && cardRange != null) {
+                String eci =
+                        eCommIndicatorService.generateECI(
+                                new GenerateECIRequest(
+                                                transaction.getTransactionStatus(),
+                                                cardRange.getNetworkCode(),
+                                                transaction.getMessageCategory())
+                                        .setThreeRIInd(areq.getThreeRIInd()));
+                transaction.setEci(eci);
+            }
+            String acsUrlStr = acsUrl == null ? "" : acsUrl.getChallengeUrl();
+            AResMapperParams aResMapperParams =
+                    AResMapperParams.builder().acsUrl(acsUrlStr).build();
+            ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
             if (transaction.isChallengeMandated()) {
@@ -229,7 +239,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     }
 
     private boolean isChallengeRequired(RiskFlag riskFlag, Transaction transaction) {
-        // todo honor ThreeDSRequestorChallsengeInd once RBA is implemented
+        // todo honor ThreeDSRequestorChallengeInd once RBA is implemented
         if (riskFlag.equals(RiskFlag.NO_CHALLENGE)) {
             return false;
         } else if (riskFlag.equals(RiskFlag.CHALLENGE)) {
