@@ -102,6 +102,10 @@ INSERT INTO `card_detail` VALUES ('99', '1', 'R2','I1','7654310438709147', '0535
 INSERT INTO `card_detail` VALUES ('100', '1', 'R2','I1','7654310438747238', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('101', '1', 'R2','I1','7654310438708990', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('102', '1', 'R8','I1','765430270009033', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('103', '1', 'R2','I1','7654310438709295', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('104', '1', 'R2','I1','7654310438709311', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('105', '1', 'R2','I1','7654310438747253', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('106', '1', 'R2','I1','7654310438709329', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 
 UNLOCK TABLES;
 

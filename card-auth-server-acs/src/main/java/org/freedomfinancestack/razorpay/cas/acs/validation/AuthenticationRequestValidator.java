@@ -439,6 +439,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 request.getMessageExtension(),
                 isListValid(isValidObject()));
+        // total size should not exceed 81920 JSONLengthValidator
+        // total 10 extension allowed.  ListSizeValidator
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())
