@@ -1,8 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.validation;
 
+import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
-import org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ public class ChallengeValidationRequestValidator {
                     ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                     incomingCvreq.getTransactionId(),
                     notNull(),
-                    lengthValidator(LengthValidator.DataLengthType.FIXED, 36));
+                    lengthValidator(DataLengthType.FIXED, 36));
         } catch (ValidationException ex) {
             throw new ACSValidationException(ex);
         }
