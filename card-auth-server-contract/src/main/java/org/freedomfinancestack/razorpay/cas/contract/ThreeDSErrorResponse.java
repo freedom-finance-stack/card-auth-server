@@ -24,7 +24,7 @@ public class ThreeDSErrorResponse {
 
     private String errorDetail;
 
-    private String errorMessageType;
+    private String errorMessageType = MessageType.AReq.toString();
 
     private String messageType = MessageType.Erro.toString();
 

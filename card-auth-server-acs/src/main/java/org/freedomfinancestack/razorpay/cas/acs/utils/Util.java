@@ -17,6 +17,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
@@ -277,13 +278,17 @@ public class Util {
     }
 
     public static ThreeDSErrorResponse generateErrorResponse(
-            ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
+            ThreeDSecureErrorCode error,
+            Transaction transaction,
+            String errorDetail,
+            MessageType messageType) {
         ThreeDSErrorResponse errorObj = new ThreeDSErrorResponse();
         if (error != null) {
             errorObj.setErrorCode(error.getErrorCode());
             errorObj.setErrorComponent(error.getErrorComponent());
             errorObj.setErrorDescription(error.getErrorDescription());
             errorObj.setErrorDetail(errorDetail);
+            errorObj.setErrorMessageType(messageType.toString());
         }
         if (null != transaction) {
             errorObj.setMessageVersion(transaction.getMessageVersion());

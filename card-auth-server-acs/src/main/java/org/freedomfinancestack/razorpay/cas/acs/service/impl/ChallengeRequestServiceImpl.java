@@ -91,7 +91,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     Util.generateErrorResponse(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                             null,
-                            "Unexpected error while validating challenge");
+                            "Unexpected error while validating challenge",
+                            MessageType.CReq);
             cdReqError.setEncryptedErro(Util.encodeBase64Url(errorObj));
         }
         return cdReqError;
@@ -262,7 +263,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     Util.generateErrorResponse(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                             null,
-                            "Unexpected error while validating challenge");
+                            "Unexpected error while validating challenge",
+                            MessageType.CReq);
             cdReqError.setEncryptedErro(Util.encodeBase64Url(errorObj));
         }
         return cdReqError;
@@ -606,7 +608,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             CdRes cdRes, ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
         cdRes.setError(true);
         cdRes.setEncryptedCRes(null);
-        ThreeDSErrorResponse errorObj = Util.generateErrorResponse(error, transaction, errorDetail);
+        ThreeDSErrorResponse errorObj =
+                Util.generateErrorResponse(error, transaction, errorDetail, MessageType.CReq);
         cdRes.setEncryptedErro(Util.encodeBase64Url(errorObj));
     }
 }

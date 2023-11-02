@@ -15,6 +15,7 @@ import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.RRES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -111,7 +112,7 @@ public class ResultRequestServiceImpl implements ResultRequestService {
         // send error message to DS.  Ignore all the exception as its 2nd communication to DS, we
         // want to send Cres back
         ThreeDSErrorResponse errorMessage =
-                Util.generateErrorResponse(error, transaction, errorDetails);
+                Util.generateErrorResponse(error, transaction, errorDetails, MessageType.RReq);
         try {
             dsGatewayService.sendError(
                     Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),
