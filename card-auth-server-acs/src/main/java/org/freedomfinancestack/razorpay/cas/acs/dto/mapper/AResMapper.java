@@ -131,9 +131,12 @@ public interface AResMapper {
     }
 
     default String getAuthType(Transaction transaction) {
-        if (transaction.getAuthenticationType() == null) {
+        if (transaction == null || transaction.getAuthenticationType() == null) {
             return "";
         }
-        return "0" + transaction.getAuthenticationType();
+        if (transaction.getAuthenticationType() < 10) {
+            return "0" + transaction.getAuthenticationType();
+        }
+        return String.valueOf(transaction.getAuthenticationType());
     }
 }

@@ -36,7 +36,7 @@ otp:
 gateway:
   services:
     VISA_DS:
-      mock: true
+      mock: false
       url: https://sample-ds.com
       useSSL: false
       connectTimeout: 5000
@@ -51,7 +51,7 @@ gateway:
         maxAttempts: 2
         backOffPeriod: 1000   #ms
     MASTERCARD_DS:
-      mock: true
+      mock: false
       url: https://sample-ds.com
       useSSL: false
       connectTimeout: 5000
