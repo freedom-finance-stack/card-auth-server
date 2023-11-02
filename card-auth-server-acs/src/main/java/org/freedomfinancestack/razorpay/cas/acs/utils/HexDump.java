@@ -4,13 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class HexDump {
-    private static final Logger logger = LoggerFactory.getLogger(HexDump.class);
-
-    private static String[] pseudo = {
+    private static final String[] pseudo = {
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"
     };
 
@@ -21,18 +16,17 @@ public class HexDump {
             return null;
         }
         StringBuffer out = new StringBuffer(in.length * 2);
-        String lFormatString = new String("%1$04x:");
-        String lPadding = new String(" ");
+        String lFormatString = "%1$04x:";
+        String lPadding = " ";
         while (oldIndex + 1 <= in.length) {
-            out.append(String.format(lFormatString, new Object[] {new Integer(oldIndex)}));
+            out.append(String.format(lFormatString, oldIndex));
             newIndex = WriteHex(in, oldIndex, out);
             out.append(lPadding);
             newIndex = WriteAscii(in, oldIndex, out);
             oldIndex += newIndex;
-            out.append(String.format("%1$c", new Object[] {Integer.valueOf(10)}));
+            out.append(String.format("%1$c", 10));
         }
-        String rslt = new String(out);
-        return rslt;
+        return new String(out);
     }
 
     public static String byteArrayToHex(byte[] in) {
@@ -53,9 +47,7 @@ public class HexDump {
             out.append(" ");
         }
         if (offset != 16) {
-            for (int i = offset; i < 16; i++) {
-                out.append(" ");
-            }
+            out.append(" ".repeat(Math.max(0, 16 - offset)));
         }
         return offset;
     }
@@ -63,13 +55,11 @@ public class HexDump {
     static int WriteAscii(byte[] b, int index, StringBuffer out) {
         int offset = 0;
         while ((offset + index + 1 <= b.length) && (offset <= 15)) {
-            out.append(String.format("%1$c", new Object[] {Byte.valueOf(b[(offset + index)])}));
+            out.append(String.format("%1$c", b[(offset + index)]));
             offset++;
         }
         if (offset != 16) {
-            for (int i = offset; i < 16; i++) {
-                out.append(" ");
-            }
+            out.append(" ".repeat(Math.max(0, 16 - offset)));
         }
         return offset;
     }
@@ -90,7 +80,7 @@ public class HexDump {
         if (s.length() > len) {
             throw new Exception("invalid len " + s.length() + "/" + len);
         }
-        StringBuffer d = new StringBuffer(len);
+        StringBuilder d = new StringBuilder(len);
         int fill = len - s.length();
         while (fill-- > 0) {
             d.append(c);
@@ -108,9 +98,9 @@ public class HexDump {
     }
 
     public static String hexdump(byte[] b, int offset, int len) {
-        StringBuffer sb = new StringBuffer();
-        StringBuffer hex = new StringBuffer();
-        StringBuffer ascii = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
+        StringBuilder hex = new StringBuilder();
+        StringBuilder ascii = new StringBuilder();
         String sep = " ";
         String lineSep = System.getProperty("line.separator");
         for (int i = offset; i < len; i++) {
@@ -124,18 +114,17 @@ public class HexDump {
 
             int j = i % 16;
             switch (j) {
-                case 7:
-                    hex.append(' ');
-                    break;
-                case 15:
+                case 7 -> hex.append(' ');
+                case 15 -> {
                     sb.append(hexOffset(i));
                     sb.append(sep);
                     sb.append(hex.toString());
                     sb.append(' ');
                     sb.append(ascii.toString());
                     sb.append(lineSep);
-                    hex = new StringBuffer();
-                    ascii = new StringBuffer();
+                    hex = new StringBuilder();
+                    ascii = new StringBuilder();
+                }
             }
         }
         if (hex.length() > 0) {
@@ -261,7 +250,7 @@ public class HexDump {
 
             HexDump.dumpHexData(ps, byteArray, byteArray.length);
 
-            strHexDump = new String(baos.toByteArray(), Charset.defaultCharset());
+            strHexDump = baos.toString(Charset.defaultCharset());
 
         } catch (Exception e) {
             strHexDump = "";

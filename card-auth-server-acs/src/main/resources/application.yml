@@ -27,7 +27,7 @@ notification:
 
 otp:
   sms:
-    content: "Your One-Time Password (OTP) for verification is: %s. Please enter this OTP to complete your login. Do not share this OTP with anyone."
+    templateName: acs.sms.otp.sample
   email:
     from: acs@bank.com
     templateName: acs.email.otp.sample
