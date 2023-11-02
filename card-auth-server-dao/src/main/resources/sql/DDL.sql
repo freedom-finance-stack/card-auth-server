@@ -46,8 +46,11 @@ DROP TABLE IF EXISTS `transaction_sdk_detail`;
 CREATE TABLE `transaction_sdk_detail`
 (
     `transaction_id`     varchar(36) PRIMARY KEY,
-    `sdk_transaction_id` varchar(36),
+    `sdk_trans_id` varchar(36) DEFAULT NULL,
+    `sdk_app_id` varchar(36) DEFAULT NULL,
+    `sdk_reference_number` varchar(32) DEFAULT NULL,
     `acs_ui_type`          char(2),
+    `device_info` text,
     `created_at`         timestamp NOT NULL,
     `modified_at`        timestamp,
     `deleted_at`         timestamp
@@ -237,7 +240,7 @@ CREATE TABLE `feature`
     `entity_type` ENUM ('INSTITUTION', 'CARD_RANGE', 'CARD_RANGE_GROUP')                      NOT NULL,
     `entity_id`   varchar(36)                                                                 NOT NULL,
     `active`      bool                                                                        NOT NULL,
-    `name`        ENUM ('CHALLENGE_AUTH_TYPE', 'CHALLENGE_ATTEMPT', 'OTP', 'PASSWORD', 'OOB') NOT NULL,
+    `name`        ENUM ('CHALLENGE_AUTH_TYPE', 'CHALLENGE_ATTEMPT', 'OTP', 'PASSWORD', 'OOB', 'ACS_RENDERING_TYPE') NOT NULL,
     `properties`  varchar(500)                                                                NOT NULL,
     `created_at`  timestamp                                                                   NOT NULL,
     `created_by`  varchar(40)                                                                 NOT NULL,

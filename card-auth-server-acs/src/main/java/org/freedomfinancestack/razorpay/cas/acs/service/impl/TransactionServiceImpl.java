@@ -192,7 +192,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private TransactionSdkDetail buildTransactionSDKDetail(AREQ areq) {
-        return TransactionSdkDetail.builder().sdkTransactionId(areq.getSdkTransID()).build();
+        return TransactionSdkDetail.builder()
+                .sdkAppID(areq.getSdkAppID())
+                .sdkTransId(areq.getSdkTransID())
+                .sdkReferenceNumber(areq.getSdkReferenceNumber())
+                .deviceInfo(areq.getDeviceInfo())
+                .build();
     }
 
     private TransactionReferenceDetail buildTransactionReferenceDetail(AREQ areq) {
