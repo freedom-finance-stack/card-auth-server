@@ -1,8 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.admin.validation;
 
+import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
-import org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator;
 import org.freedomfinancestack.razorpay.cas.admin.dto.institution.GetInstitutionRequestDto;
 import org.freedomfinancestack.razorpay.cas.admin.dto.institution.InstitutionData;
 import org.freedomfinancestack.razorpay.cas.admin.dto.institution.InstitutionMetaData;
@@ -40,12 +40,12 @@ public class InstitutionValidator {
                 "institutionName",
                 institutionData.institutionName,
                 notNull(),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 100));
+                lengthValidator(DataLengthType.VARIABLE, 100));
         Validation.validate(
                 "institutionShortName",
                 institutionData.institutionShortName,
                 notNull(),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 20));
+                lengthValidator(DataLengthType.VARIABLE, 20));
         Validation.validate(
                 "isoCountryCode",
                 institutionData.isoCountryCode,
@@ -70,7 +70,7 @@ public class InstitutionValidator {
                 "logoFileName",
                 institutionMetaData.getLogoFilename(),
                 notNull(),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 50));
+                lengthValidator(DataLengthType.VARIABLE, 50));
     }
 
     public void validateGetInstitutionRequest(
@@ -98,13 +98,13 @@ public class InstitutionValidator {
                 institutionData.institutionName,
                 when(
                         (institutionData.institutionName != null),
-                        lengthValidator(LengthValidator.DataLengthType.VARIABLE, 100)));
+                        lengthValidator(DataLengthType.VARIABLE, 100)));
         Validation.validate(
                 "institutionShortName",
                 institutionData.institutionShortName,
                 when(
                         (institutionData.institutionShortName != null),
-                        lengthValidator(LengthValidator.DataLengthType.VARIABLE, 20)));
+                        lengthValidator(DataLengthType.VARIABLE, 20)));
         Validation.validate(
                 "isoCountryCode",
                 institutionData.isoCountryCode,
@@ -147,7 +147,7 @@ public class InstitutionValidator {
                 institutionMetaData.getLogoFilename(),
                 when(
                         (institutionMetaData.getLogoFilename() != null),
-                        lengthValidator(LengthValidator.DataLengthType.VARIABLE, 50)));
+                        lengthValidator(DataLengthType.VARIABLE, 50)));
     }
 
     public void validateDeleteInstitutionRequest(@NonNull final String institutionId)

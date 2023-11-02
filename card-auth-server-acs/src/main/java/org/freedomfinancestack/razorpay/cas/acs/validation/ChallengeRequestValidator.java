@@ -2,9 +2,9 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import java.util.Arrays;
 
+import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
-import org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
@@ -81,13 +81,13 @@ public class ChallengeRequestValidator {
                         validateDeviceChannelAndMessageCategory(
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
                         notNull()),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 36));
+                lengthValidator(DataLengthType.VARIABLE, 36));
 
         Validation.validate(
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                 incomingCreq.getAcsTransID(),
                 notNull(),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 36));
+                lengthValidator(DataLengthType.VARIABLE, 36));
 
         Validation.validate(
                 ThreeDSDataElement.CHALLENGE_WINDOW_SIZE.getFieldName(),
@@ -105,7 +105,7 @@ public class ChallengeRequestValidator {
                         validateDeviceChannelAndMessageCategory(
                                 ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
                         notNull()),
-                lengthValidator(LengthValidator.DataLengthType.FIXED, 3));
+                lengthValidator(DataLengthType.FIXED, 3));
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 incomingCreq.getSdkTransID(),
@@ -113,7 +113,7 @@ public class ChallengeRequestValidator {
                         validateDeviceChannelAndMessageCategory(
                                 ThreeDSDataElement.SDK_TRANS_ID, transaction),
                         notNull()),
-                lengthValidator(LengthValidator.DataLengthType.VARIABLE, 36));
+                lengthValidator(DataLengthType.VARIABLE, 36));
     }
 
     protected void validateOptionalFields(CREQ incomingCreq, Transaction transaction)
@@ -144,7 +144,7 @@ public class ChallengeRequestValidator {
                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeDataEntry(),
                     when(conditionForChallengeDataEntry, notNull()),
-                    lengthValidator(LengthValidator.DataLengthType.VARIABLE, 45));
+                    lengthValidator(DataLengthType.VARIABLE, 45));
 
             boolean conditionForChallengeHTMLDataEntry =
                     (Arrays.asList("01", "02", "03", "04", "05").contains(acsUiType))
