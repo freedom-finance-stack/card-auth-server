@@ -25,23 +25,17 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     public OtpTransactionDetail generateOTP(String transactionId, OtpConfig otpConfig) {
-        boolean generateNew = false;
         OtpTransactionDetail otpTransactionDetail =
                 otpTransactionDetailRepository
                         .findTopByTransactionIdAndVerificationStatusOrderByCreatedAtDesc(
                                 transactionId, OtpVerificationStatus.CREATED);
-        if (otpTransactionDetail == null) {
-            generateNew = true;
-        } else {
-            LocalDateTime createdAt = otpTransactionDetail.getCreatedAt().toLocalDateTime();
-            if (isExpired(createdAt)) {
+        if (otpTransactionDetail == null
+                || isExpired(otpTransactionDetail.getCreatedAt().toLocalDateTime())) {
+            log.info("Generating OTP for transactionId: " + transactionId);
+            if (otpTransactionDetail != null) {
                 otpTransactionDetail.setVerificationStatus(OtpVerificationStatus.EXPIRED);
                 otpTransactionDetailRepository.save(otpTransactionDetail);
-                generateNew = true;
             }
-        }
-        if (generateNew) {
-            log.info("Generating OTP for transactionId: " + transactionId);
             String otp = randomNumberGenerator.getIntRandomNumberInRange(otpConfig.getLength());
             otpTransactionDetail =
                     OtpTransactionDetail.builder()
@@ -52,7 +46,6 @@ public class OtpServiceImpl implements OtpService {
                             .build();
             otpTransactionDetailRepository.save(otpTransactionDetail);
         }
-
         return otpTransactionDetail;
     }
 
