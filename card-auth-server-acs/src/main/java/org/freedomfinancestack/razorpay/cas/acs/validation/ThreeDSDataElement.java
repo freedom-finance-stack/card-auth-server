@@ -348,7 +348,7 @@ public enum ThreeDSDataElement {
 
     MESSAGE_VERSION(
             ThreeDSConstant.ELEMENT_MESSAGE_VERSION,
-            new String[] {"2.2.0", "2.3.1"},
+            new String[] {"2.1.0", "2.2.0", "2.3.1"},
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
 
