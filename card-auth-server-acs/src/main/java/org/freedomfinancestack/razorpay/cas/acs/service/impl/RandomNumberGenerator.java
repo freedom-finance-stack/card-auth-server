@@ -1,39 +1,32 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.security.SecureRandom;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RandomNumberGenerator {
+    SecureRandom secureRandom = new SecureRandom();
 
     public String getIntRandomNumberInRange(int digit) {
         try {
-            return ThreadLocalRandom.current().nextInt(getStartRange(digit), getEndRange(digit))
-                    + "";
+            return String.valueOf(
+                    this.secureRandom.nextInt(getStartRange(digit), getEndRange(digit)));
+
         } catch (Exception e) {
-            return ThreadLocalRandom.current()
-                            .nextInt(
-                                    InternalConstants.OTP_START_RANGE,
-                                    InternalConstants.OTP_END_RANGE)
-                    + "";
+            return String.valueOf(
+                    this.secureRandom.nextInt(
+                            InternalConstants.OTP_START_RANGE, InternalConstants.OTP_END_RANGE));
         }
     }
 
     private Integer getStartRange(int digit) {
-        String startRange = "1";
-        for (int i = 0; i < digit - 1; i++) {
-            startRange += "0";
-        }
-        return Integer.valueOf(startRange);
+        return Integer.valueOf("1" + "0".repeat(Math.max(0, digit - 1)));
     }
 
     private Integer getEndRange(int digit) {
-        String endRange = "";
-        for (int i = 0; i < digit; i++) {
-            endRange += "9";
-        }
-        return Integer.valueOf(endRange);
+        return Integer.valueOf("9".repeat(Math.max(0, digit)));
     }
 }
