@@ -16,6 +16,22 @@ app:
       challengeCompletion: 600 #sec
 
 
+notification:
+  sms:
+    enabledChannel: "dummy-sms-server"
+  email:
+    enabledChannel: "dummy-smtp-server"
+    simpleSMTP:
+      host: your-smtp-server.com
+      port: 587
+
+otp:
+  sms:
+    templateName: acs.sms.otp.sample
+  email:
+    from: acs@bank.com
+    templateName: acs.email.otp.sample
+    subjectText:  "Verification code"
 
 gateway:
   services:

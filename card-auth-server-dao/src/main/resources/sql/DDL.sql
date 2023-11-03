@@ -286,38 +286,6 @@ CREATE TABLE `card_detail`
     `deleted_by`     varchar(40)
 );
 
-
-
-DROP TABLE IF EXISTS `otp`;
-CREATE TABLE `otp`
-(
-    `id`          varchar(36) PRIMARY KEY,
-    `value`       varchar(36) NOT NULL,
-    `channel`     varchar(36),
-    `destination` varchar(36),
-    `response`    varchar(36),
-    `provider`    varchar(36),
-    `otp_status`  ENUM ('CREATED', 'SENT', 'FAIL'),
-    `attempted`   int,
-    `valid_till`  timestamp,
-    `created_at`  timestamp   NOT NULL,
-    `modified_at` timestamp   NOT NULL,
-    `deleted_at`  timestamp default NULL
-);
-
-DROP TABLE IF EXISTS `otp_transaction_detail`;
-CREATE TABLE `otp_transaction_detail`
-(
-    `id`                  varchar(36),
-    `transaction_id`      varchar(36) NOT NULL,
-    `resend_count`        int,
-    `otp_id`              varchar(36) NOT NULL,
-    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
-    `created_at`          timestamp   NOT NULL,
-    `modified_at`         timestamp   NOT NULL,
-    `deleted_at`          timestamp default NULL
-);
-
 DROP TABLE IF EXISTS `admin_user`;
 CREATE TABLE `admin_user`
 (
@@ -361,10 +329,45 @@ CREATE TABLE `institution_meta`
     `deleted_by`     varchar(40) DEFAULT NULL
 );
 
--- Purposed tables for OTP
 
--- OTP : ID , Value, Valid_till, Verification_status ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED')
--- NOTIFICATION : CHANNEL, DESTINATION, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
--- OTP_TRANSACTION :  TRANSACTION_ID, OTP_ID
+
+
+DROP TABLE IF EXISTS `notification_detail`;
+CREATE TABLE `notification_detail`
+(
+    `id`          varchar(36) PRIMARY KEY,
+    `entity_type` varchar(36),
+    `entity_id`   varchar(36),
+    `channel`     varchar(36),
+    `destination` varchar(36),
+    `response`    varchar(36),
+    `provider`    varchar(36),
+    `status`      ENUM ('PENDING', 'SENT', 'FAILED'),
+    `created_at`  timestamp   NOT NULL,
+    `modified_at` timestamp   NOT NULL,
+    `deleted_at`  timestamp default NULL
+);
+
+
+
+DROP TABLE IF EXISTS `otp_transaction_detail`;
+CREATE TABLE `otp_transaction_detail`
+(
+    `id`                  varchar(36),
+    `transaction_id`      varchar(36) NOT NULL,
+    `value`               varchar(10) NOT NULL,
+    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
+    `created_at`          timestamp   NOT NULL,
+    `modified_at`         timestamp   NOT NULL,
+    `deleted_at`          timestamp default NULL
+);
+CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
+
+
+
+#  Purposed tables for OTP
+
+#  OTP_TRANSACTION_DETAIL : ID ,TRANSACTION_ID, Value
+#  NOTIFICATION : CHANNEL, DESTINATION, REQUEST, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
 
 

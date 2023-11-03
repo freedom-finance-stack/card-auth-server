@@ -44,8 +44,7 @@ public class InstitutionAcsUrlServiceImpl implements InstitutionAcsUrlService {
             throws ACSDataAccessException, DataNotFoundException {
         try {
             Optional<InstitutionAcsUrl> acsUrl =
-                    institutionAcsUrlRepository.findById(
-                            institutionAcsUrlPK); // DB connection, DB query, DB contraint, DB
+                    institutionAcsUrlRepository.findById(institutionAcsUrlPK);
             // transaction
             if (acsUrl.isPresent()) {
                 return acsUrl.get();

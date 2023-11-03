@@ -182,7 +182,13 @@ public enum
             "8013",
             "transaction timed out for challenge completion",
             TransactionStatus.FAILED,
-            TransactionStatusReason.TRANSACTION_TIMEOUT);
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+    UNABLE_TO_SEND_OTP(
+            "8015",
+            "UNABLE TO SEND OTP",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    ;
 
     private final String code;
 

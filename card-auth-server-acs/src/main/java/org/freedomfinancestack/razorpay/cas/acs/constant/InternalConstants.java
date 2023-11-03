@@ -25,6 +25,9 @@ public class InternalConstants {
     public static final String NO_OP_HSM = "NoOpHSM";
     public static final Character SYMBOL_F = 'F';
 
+    public static final Integer OTP_START_RANGE = 111111;
+    public static final Integer OTP_END_RANGE = 999999;
+
     public static final String CHALLENGE_INFORMATION_TEXT =
             "we have sent you a text message with a code ";
     public static final String CHALLENGE_INFORMATION_MOBILE_TEXT =
@@ -34,7 +37,8 @@ public class InternalConstants {
     public static final String CHALLENGE_INFORMATION_EMAIL_TEXT =
             "to your registered email address %s";
 
-    public static final String CHALLENGE_INCORRECT_OTP_TEXT = "you have entered incorrect OTP";
+    public static final String CHALLENGE_INCORRECT_OTP_TEXT = "You have entered incorrect OTP";
+    public static final String CHALLENGE_CORRECT_OTP_TEXT = "OTP Authentication Successful";
     public static final String MODEL_ATTRIBUTE_CRES = "cRes";
     public static final String MODEL_ATTRIBUTE_ERRO = "erro";
 
