@@ -163,7 +163,6 @@ public class CustomRestTemplateConfiguration {
         }
     }
 
-
     private String getCacertsPath() {
         if (!Util.isNullorBlank(appConfiguration.getJava().getCacerts())) {
             return appConfiguration.getJava().getCacerts();

@@ -85,9 +85,6 @@ public class OtpServiceImpl implements OtpService {
     public boolean isExpired(LocalDateTime createdAt) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         long minutes = createdAt.until(currentDateTime, java.time.temporal.ChronoUnit.MINUTES);
-        if (minutes > EXPIRE_MIN) {
-            return true;
-        }
-        return false;
+        return minutes > EXPIRE_MIN;
     }
 }
