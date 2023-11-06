@@ -1,8 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.impl;
 
+import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
-import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CardDetailsMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
@@ -10,10 +10,8 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoun
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
-import org.freedomfinancestack.razorpay.cas.dao.model.CardDetail;
 import org.freedomfinancestack.razorpay.cas.dao.repository.CardDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -31,39 +29,43 @@ import lombok.extern.slf4j.Slf4j;
  * @author jaydeepRadadiya
  */
 @Slf4j
-@Service(CardDetailsStore.CardStoreTypeConstants.ACS)
+@Service(CardDetailsStore.CardStoreTypeConstants.MOCK)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class ACSCardDetailFetcherServiceImpl implements CardDetailFetcherService {
+public class MockCardDetailFetcherServiceImpl implements CardDetailFetcherService {
     private final CardDetailRepository cardDetailRepository;
 
     public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
             throws ACSDataAccessException {
-        log.info("Fetching card details from ACS");
-        try {
-            CardDetail cardDetail =
-                    cardDetailRepository.findByCardNumber(cardDetailsRequest.getCardNumber());
-            if (cardDetail != null) {
-                return CardDetailResponse.builder()
-                        .cardDetailDto(CardDetailsMapper.INSTANCE.toCardDetailDto(cardDetail))
-                        .isSuccess(true)
+        log.info("Fetching card details from Mock Implementation");
+        CardDetailDto cardDto =
+                CardDetailDto.builder()
+                        .institutionId("I1")
+                        .cardExpiry("0525")
+                        .cardNumber(cardDetailsRequest.getCardNumber())
+                        .mobileNumber("9999999999")
+                        .name("TEST")
+                        .emailId("TEST@ffs.org")
+                        .dob("01-01-2023")
+                        .blocked(false)
                         .build();
-            }
-        } catch (DataAccessException ex) {
-            throw new ACSDataAccessException(InternalErrorCode.CARD_USER_FETCH_EXCEPTION, ex);
+
+        long cardNumber = Long.parseLong(cardDetailsRequest.getCardNumber());
+        if (cardNumber >= 7654340600000000L && cardNumber <= 7654340699999999L) { // No Card found
+            CardDetailResponse.builder()
+                    .isSuccess(false)
+                    .cardDetailDto(new CardDetailDto())
+                    .build();
+        } else if (cardNumber >= 7654320500000000L
+                && cardNumber <= 7654320599999999L) { // card Blocked
+            cardDto.setBlocked(true);
         }
 
-        return CardDetailResponse.builder().isSuccess(false).build();
+        return CardDetailResponse.builder().isSuccess(true).cardDetailDto(cardDto).build();
     }
 
     @Override
     public void blockCard(CardDetailsRequest cardDetailsRequest) throws ACSDataAccessException {
-        log.info("Block card in CardDetails table");
-        try {
-            cardDetailRepository.blockCard(
-                    cardDetailsRequest.getCardNumber(), cardDetailsRequest.getInstitutionId());
-        } catch (DataAccessException ex) {
-            throw new ACSDataAccessException(InternalErrorCode.CARD_USER_FETCH_EXCEPTION, ex);
-        }
+        log.info("Blocked card Mocked");
     }
 
     public void validateCardDetails(CardDetailResponse cardDetailResponse)

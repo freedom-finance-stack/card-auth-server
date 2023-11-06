@@ -20,9 +20,6 @@ import lombok.NoArgsConstructor;
 public class CardDetail extends BaseEntity<String> {
     @Id private String id;
 
-    @Column(name = "card_range_id", nullable = false)
-    private String cardRangeId;
-
     @Column(name = "institution_id", nullable = false)
     private String institutionId;
 
