@@ -1,27 +1,44 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
-import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureName;
+import org.hibernate.annotations.Where;
 
-import com.google.gson.annotations.SerializedName;
-
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "rendering_type_config")
 @Data
-public class RenderingTypeConfig implements IFeature {
-    @SerializedName("default_render_option")
-    String defaultRenderOption;
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Where(clause = "deleted_at is null")
+public class RenderingTypeConfig extends BaseEntity<RenderingTypeConfigPK> {
 
-    @SerializedName("acs_ui_type")
-    String acsUiType;
+    @EmbeddedId private RenderingTypeConfigPK renderingTypeConfigPK;
 
-    @SerializedName("acs_interface")
-    String acsInterface;
+    @Column(name = "default_render_option")
+    private String defaultRenderOption;
 
-    @SerializedName("acs_ui_template")
-    String acsUiTemplate;
+    @Column(name = "acs_ui_type")
+    private String acsUiType;
 
-    @Override
-    public FeatureName getName() {
-        return FeatureName.ACS_RENDERING_TYPE;
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
+
+    @Column(name = "modified_by")
+    private String modifiedBy;
+
+    @Column(name = "deleted_by")
+    private String deletedBy;
+
+    public RenderingTypeConfigPK getId() {
+        return renderingTypeConfigPK;
+    }
+
+    public void setId(RenderingTypeConfigPK renderingTypeConfigPK) {
+        this.renderingTypeConfigPK = renderingTypeConfigPK;
     }
 }

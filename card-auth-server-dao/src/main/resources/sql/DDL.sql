@@ -50,6 +50,9 @@ CREATE TABLE `transaction_sdk_detail`
     `sdk_app_id` varchar(36) DEFAULT NULL,
     `sdk_reference_number` varchar(32) DEFAULT NULL,
     `acs_ui_type`          char(2),
+    `default_render_option` tinyint(4) DEFAULT NULL,
+    `acs_secret_key` LONGTEXT NULL,
+    `acs_signed_content` LONGTEXT NULL,
     `device_info` text,
     `created_at`         timestamp NOT NULL,
     `modified_at`        timestamp,
@@ -240,7 +243,7 @@ CREATE TABLE `feature`
     `entity_type` ENUM ('INSTITUTION', 'CARD_RANGE', 'CARD_RANGE_GROUP')                      NOT NULL,
     `entity_id`   varchar(36)                                                                 NOT NULL,
     `active`      bool                                                                        NOT NULL,
-    `name`        ENUM ('CHALLENGE_AUTH_TYPE', 'CHALLENGE_ATTEMPT', 'OTP', 'PASSWORD', 'OOB', 'ACS_RENDERING_TYPE') NOT NULL,
+    `name`        ENUM ('CHALLENGE_AUTH_TYPE', 'CHALLENGE_ATTEMPT', 'OTP', 'PASSWORD', 'OOB') NOT NULL,
     `properties`  varchar(500)                                                                NOT NULL,
     `created_at`  timestamp                                                                   NOT NULL,
     `created_by`  varchar(40)                                                                 NOT NULL,
@@ -363,6 +366,40 @@ CREATE TABLE `otp_transaction_detail`
 );
 CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
 
+
+DROP TABLE IF EXISTS `signer_detail`;
+CREATE TABLE `signer_detail`
+(
+    `institution_id`      varchar(36) NOT NULL,
+    `network_code` varchar(2) NOT NULL,
+    `keystore`               VARCHAR(150),
+    `keypass`                VARCHAR(100),
+    `hsm_debit_cert_key`     varchar(30),
+    `hsm_root_cert_key`      varchar(30),
+    `hsm_inter_cert_key`     varchar(30),
+    `created_at`     timestamp   NOT NULL,
+    `modified_at`    timestamp   NOT NULL,
+    `deleted_at`     timestamp   DEFAULT NULL,
+    `created_by`     varchar(40) NOT NULL,
+    `modified_by`    varchar(40) NOT NULL,
+    `deleted_by`     varchar(40) DEFAULT NULL
+);
+
+DROP TABLE IF EXISTS `rendering_type_config`;
+CREATE TABLE `rendering_type_config` (
+ `institution_id` varchar(5) NOT NULL,
+ `card_range_id` varchar(8) NOT NULL,
+ `acs_interface` varchar(2) NOT NULL,
+ `acs_ui_template` varchar(2) NOT NULL,
+ `default_render_option` tinyint(4) DEFAULT NULL,
+ `acs_ui_type` varchar(2) DEFAULT '01',
+ `created_at`     timestamp   NOT NULL,
+ `created_by`     varchar(40) NOT NULL,
+ `modified_at`    timestamp   NOT NULL,
+ `modified_by`    varchar(40) NOT NULL,
+ `deleted_at`     timestamp   DEFAULT NULL,
+ `deleted_by`     varchar(40) DEFAULT NULL
+);
 
 
 #  Purposed tables for OTP

@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.dto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.AResMapper;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
+import org.freedomfinancestack.razorpay.cas.contract.enums.ACSRenderingType;
 
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +32,6 @@ import lombok.Data;
 @Data
 public class AResMapperParams {
     String acsUrl;
+
+    ACSRenderingType acsRenderingType;
 }

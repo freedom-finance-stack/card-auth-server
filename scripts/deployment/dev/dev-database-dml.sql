@@ -70,3 +70,14 @@ INSERT INTO `feature` VALUES ('2', 'INSTITUTION', 'I1', 1, 'CHALLENGE_ATTEMPT', 
 
 INSERT INTO `feature` VALUES ('3', 'INSTITUTION', 'I1', 1, 'OTP', '{ "length" : 4}', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
 UNLOCK TABLES;
+
+LOCK TABLES `rendering_type_config` WRITE;
+INSERT INTO `rendering_type_config` VALUES ('I1', 'R1', '01', '01', '1', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `rendering_type_config` VALUES ('I1', 'R2', '01', '01', '0', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `rendering_type_config` VALUES ('I1', 'R3', '01', '02', '1', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `rendering_type_config` VALUES ('I1', 'R4', '02', '03', '0', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `rendering_type_config` VALUES ('I1', 'R5', '02', '04', '1', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `rendering_type_config` VALUES ('I1', 'R6', '02', '05', '0', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `rendering_type_config` VALUES ('I1', 'R7', '02', '03', '1', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `rendering_type_config` VALUES ('I1', 'R8', '01', '05', '0', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+UNLOCK TABLES;

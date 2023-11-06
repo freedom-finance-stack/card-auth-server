@@ -81,8 +81,11 @@ public interface AResMapper {
     @Mapping(target = "sdkEphemPubKey", expression = "java(null)")
     @Mapping(target = "cardholderInfo", expression = "java(null)")
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
+    @Mapping(
+            target = "acsRenderingType",
+            expression = "java(aResMapperParams.getAcsRenderingType())")
 
-    // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
+    // todo    @Mapping AcsSignedContent for app based
     ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {

@@ -19,15 +19,12 @@ import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
-import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
-import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
-import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrlPK;
-import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -63,6 +60,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
+    private final RenderingTypeService renderingTypeService;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -85,6 +83,8 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
         InstitutionAcsUrl acsUrl = null;
         ARES ares;
         CardRange cardRange = null;
+        DeviceInterface sdkDeviceInterface = null;
+        RenderingTypeConfig renderingTypeConfig = null;
         try {
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
@@ -122,6 +122,38 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     new CardDetailsRequest(
                             cardRange.getInstitution().getId(), areq.getAcctNumber()),
                     cardRange.getCardDetailsStore());
+
+            if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
+                if (areq.getDeviceRenderOptions() == null) {
+                    throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
+                }
+
+                sdkDeviceInterface =
+                        DeviceInterface.getDeviceInterface(
+                                areq.getDeviceRenderOptions().getSdkInterface());
+                if (DeviceInterface.BOTH.equals(sdkDeviceInterface)) {
+                    try {
+                        renderingTypeConfig =
+                                renderingTypeService.findDefaultRenderingType(
+                                        transaction.getInstitutionId(),
+                                        transaction.getCardRangeId(),
+                                        DeviceInterface.NATIVE.getValue());
+                    } catch (Exception e) {
+                        throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
+                    }
+                } else {
+                    try {
+                        renderingTypeConfig =
+                                renderingTypeService.findRenderingType(
+                                        transaction.getInstitutionId(),
+                                        transaction.getCardRangeId(),
+                                        sdkDeviceInterface.getValue());
+                    } catch (Exception e) {
+                        // why?
+                        e.printStackTrace();
+                    }
+                }
+            }
 
             // Determine if challenge is required and update transaction accordingly
             determineChallenge(areq, transaction, cardRange);
@@ -191,6 +223,19 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             String acsUrlStr = acsUrl == null ? "" : acsUrl.getChallengeUrl();
             AResMapperParams aResMapperParams =
                     AResMapperParams.builder().acsUrl(acsUrlStr).build();
+            if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
+                    && renderingTypeConfig != null) {
+                aResMapperParams.setAcsRenderingType(
+                        new ACSRenderingType(
+                                renderingTypeConfig.getDefaultRenderOption(),
+                                renderingTypeConfig.getAcsUiType()));
+                transaction
+                        .getTransactionSdkDetail()
+                        .setAcsUiType(renderingTypeConfig.getAcsUiType());
+                transaction
+                        .getTransactionSdkDetail()
+                        .setDefaultRenderOption(renderingTypeConfig.getDefaultRenderOption());
+            }
             ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);

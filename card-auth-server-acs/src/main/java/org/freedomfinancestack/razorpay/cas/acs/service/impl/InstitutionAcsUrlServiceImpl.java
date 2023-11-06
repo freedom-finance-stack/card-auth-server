@@ -51,7 +51,7 @@ public class InstitutionAcsUrlServiceImpl implements InstitutionAcsUrlService {
             }
         } catch (DataAccessException e) {
             log.error(
-                    "Error while fetching acs url for Institution ID :"
+                    "Error while fetching acs url for Institution ID : "
                             + institutionAcsUrlPK.getInstitutionId()
                             + " and Network: "
                             + institutionAcsUrlPK.getNetworkCode()
@@ -61,7 +61,7 @@ public class InstitutionAcsUrlServiceImpl implements InstitutionAcsUrlService {
         }
 
         log.error(
-                "Acs url not found for Institution ID :"
+                "Acs url not found for Institution ID : "
                         + institutionAcsUrlPK.getInstitutionId()
                         + " and Network: "
                         + institutionAcsUrlPK.getNetworkCode()

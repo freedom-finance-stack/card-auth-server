@@ -79,6 +79,18 @@ public enum
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
 
+    // Error code for App based flow
+    RENDERING_TYPE_NOT_FOUND(
+            "3014",
+            "RENDERING TYPE NOT FOUND",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    UNSUPPPORTED_DEVICE_CATEGORY(
+            "3015",
+            "UNSUPPORTED DEVICE CATEGORY",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
+
     // Error code for save Transaction
     TRANSACTION_SAVE_EXCEPTION(
             "2001",

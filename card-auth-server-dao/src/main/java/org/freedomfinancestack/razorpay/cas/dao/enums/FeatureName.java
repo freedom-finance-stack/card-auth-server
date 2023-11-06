@@ -5,6 +5,5 @@ public enum FeatureName {
     CHALLENGE_ATTEMPT,
     OTP,
     PASSWORD,
-    OOB,
-    ACS_RENDERING_TYPE;
+    OOB;
 }

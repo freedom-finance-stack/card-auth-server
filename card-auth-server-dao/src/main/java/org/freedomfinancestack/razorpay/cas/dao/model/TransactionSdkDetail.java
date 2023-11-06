@@ -30,8 +30,17 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "acs_ui_type")
     private String acsUiType;
 
+    @Column(name = "default_render_option")
+    private String defaultRenderOption;
+
     @Column(name = "device_info")
     private String deviceInfo;
+
+    @Column(name = "acs_secret_key")
+    private String acsSecretKey;
+
+    @Column(name = "acs_signed_content")
+    private String acsSignedContent;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
