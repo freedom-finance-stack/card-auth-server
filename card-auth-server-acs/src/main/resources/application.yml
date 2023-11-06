@@ -15,6 +15,11 @@ app:
       challengeRequest: 30 #sec
       challengeCompletion: 600 #sec
 
+test:
+  enable : false
+  attemptedRange:
+    start: 4016000000000010
+    end: 4016000000000020
 
 notification:
   sms:

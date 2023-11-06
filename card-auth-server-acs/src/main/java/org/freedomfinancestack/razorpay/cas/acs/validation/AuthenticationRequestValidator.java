@@ -95,10 +95,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getMessageVersion(),
                 notNull(),
                 lengthValidator(DataLengthType.VARIABLE, 8),
-                isIn(
-                        ThreeDSDataElement.MESSAGE_VERSION
-                                .getAcceptedValues())); // todo handle exception for message
-        // version
+                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_COMPIND.getFieldName(),

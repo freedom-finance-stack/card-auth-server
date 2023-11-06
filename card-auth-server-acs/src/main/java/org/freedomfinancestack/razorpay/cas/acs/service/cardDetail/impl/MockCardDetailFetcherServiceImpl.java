@@ -48,18 +48,6 @@ public class MockCardDetailFetcherServiceImpl implements CardDetailFetcherServic
                         .dob("01-01-2023")
                         .blocked(false)
                         .build();
-
-        long cardNumber = Long.parseLong(cardDetailsRequest.getCardNumber());
-        if (cardNumber >= 7654340600000000L && cardNumber <= 7654340699999999L) { // No Card found
-            CardDetailResponse.builder()
-                    .isSuccess(false)
-                    .cardDetailDto(new CardDetailDto())
-                    .build();
-        } else if (cardNumber >= 7654320500000000L
-                && cardNumber <= 7654320599999999L) { // card Blocked
-            cardDto.setBlocked(true);
-        }
-
         return CardDetailResponse.builder().isSuccess(true).cardDetailDto(cardDto).build();
     }
 
@@ -70,9 +58,22 @@ public class MockCardDetailFetcherServiceImpl implements CardDetailFetcherServic
 
     public void validateCardDetails(CardDetailResponse cardDetailResponse)
             throws DataNotFoundException, CardBlockedException, CardDetailsNotFoundException {
-        if (cardDetailResponse == null
-                || !cardDetailResponse.isSuccess()
-                || cardDetailResponse.getCardDetailDto() == null) {
+        long cardNumber = Long.parseLong(cardDetailResponse.getCardDetailDto().getCardNumber());
+        if (cardNumber >= 7654320500000000L && cardNumber <= 7654320599999999L) {
+            throw new CardDetailsNotFoundException(
+                    InternalErrorCode.TEST_TRANSACTION_FAILED,
+                    InternalErrorCode.TEST_TRANSACTION_FAILED.getDefaultErrorMessage());
+        } else if (cardNumber >= 7654360800000000L && cardNumber <= 7654360899999999L) {
+            throw new CardDetailsNotFoundException(
+                    InternalErrorCode.TEST_TRANSACTION_REJECTED,
+                    InternalErrorCode.TEST_TRANSACTION_REJECTED.getDefaultErrorMessage());
+        } else if (cardNumber >= 7654340600000000L && cardNumber <= 7654340699999999L) {
+            throw new CardDetailsNotFoundException(
+                    InternalErrorCode.TEST_TRANSACTION_UA,
+                    InternalErrorCode.TEST_TRANSACTION_UA.getDefaultErrorMessage());
+        }
+
+        if (!cardDetailResponse.isSuccess() || cardDetailResponse.getCardDetailDto() == null) {
             log.error("Card Number not found");
             throw new CardDetailsNotFoundException(
                     InternalErrorCode.CARD_USER_NOT_FOUND,

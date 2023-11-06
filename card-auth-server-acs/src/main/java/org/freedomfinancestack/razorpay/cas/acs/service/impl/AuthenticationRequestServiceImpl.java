@@ -1,6 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import java.util.Arrays;
+
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -9,6 +12,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
@@ -27,6 +31,7 @@ import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import lombok.NonNull;
@@ -61,6 +66,8 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
     private final ChallengeDetermineService challengeDetermineService;
+    private final Environment environment;
+    private final TestConfigProperties testConfigProperties;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -176,6 +183,11 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
 
         // If everything is successful, send Ares message type as a response.
         try {
+            if (isAttemptedTestRange(transaction.getTransactionCardDetail().getCardNumber())) {
+                transaction.setTransactionStatus(TransactionStatus.ATTEMPT);
+                // todo not raising Attempt actual anywhere in code, check if attempt scenario is
+                // possible
+            }
             if (!Util.isNullorBlank(transaction.getId()) && cardRange != null) {
                 String eci =
                         eCommIndicatorService.generateECI(
@@ -194,6 +206,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                         .locateService(MessageType.AReq)
                         .scheduleTask(transaction.getId());
             }
+
         } catch (Exception ex) {
             // updating transaction with error and updating DB
             // throw ThreeDSException again so that it returns to client with error message, it is
@@ -209,6 +222,14 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transactionService.saveOrUpdate(transaction);
         }
         return ares;
+    }
+
+    private boolean isAttemptedTestRange(String cardNumber) {
+        long cardNumberLong = Long.parseLong(cardNumber);
+        return !Arrays.asList(environment.getActiveProfiles()).contains(InternalConstants.PROD)
+                && testConfigProperties.isEnable()
+                && testConfigProperties.getAttemptedRange().getStart() <= cardNumberLong
+                && cardNumberLong <= testConfigProperties.getAttemptedRange().getEnd();
     }
 
     private Transaction updateTransactionPhaseWithError(
