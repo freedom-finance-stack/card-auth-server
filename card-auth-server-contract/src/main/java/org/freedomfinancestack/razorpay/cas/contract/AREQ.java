@@ -150,9 +150,6 @@ public class AREQ extends ThreeDSObject {
     @SerializedName(value = "merchantRiskIndicator")
     private ThreeDSMerchantFeilds merchantRiskIndicator;
 
-    @SerializedName(value = "threeDSReqAuthMethodInd")
-    private String threeDSReqAuthMethodInd;
-
     // All Conditional Fields
     @SerializedName(value = "threeDSServerOperatorID")
     private String threeDSServerOperatorID;
@@ -259,23 +256,27 @@ public class AREQ extends ThreeDSObject {
     @SerializedName(value = "transType")
     private String transType;
 
-    @SerializedName(value = "browserJavascriptEnabled")
-    private String browserJavascriptEnabled;
-
-    @SerializedName(value = "whiteListStatus")
-    private String whiteListStatus;
-
-    @SerializedName(value = "whiteListStatusSource")
-    private String whiteListStatusSource;
-
-    @SerializedName(value = "payTokenSource")
-    private String payTokenSource;
+    /** 3DS Version 2.2.0 additional fields */
+    @SerializedName(value = "threeDSReqAuthMethodInd")
+    private String threeDSReqAuthMethodInd;
 
     @SerializedName(value = "threeDSRequestorDecMaxTime")
     private String threeDSRequestorDecMaxTime;
 
     @SerializedName(value = "threeDSRequestorDecReqInd")
     private String threeDSRequestorDecReqInd;
+
+    @SerializedName(value = "browserJavascriptEnabled")
+    private String browserJavascriptEnabled;
+
+    @SerializedName(value = "payTokenSource")
+    private String payTokenSource;
+
+    @SerializedName(value = "whiteListStatus")
+    private String whiteListStatus;
+
+    @SerializedName(value = "whiteListStatusSource")
+    private String whiteListStatusSource;
 
     private transient String transactionId;
 

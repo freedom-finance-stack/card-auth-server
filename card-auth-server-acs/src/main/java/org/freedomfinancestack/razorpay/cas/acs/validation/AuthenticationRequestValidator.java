@@ -13,6 +13,7 @@ import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.springframework.stereotype.Component;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsIP.isIP;
@@ -45,10 +46,10 @@ import static org.freedomfinancestack.extensions.validation.validator.rule.When.
 public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
 
     /**
-     * Validates the authentication request (AREQ).
+     * Validates the authentication request {@link AREQ}.
      *
-     * @param request The authentication request (AREQ) to be validated.
-     * @throws ValidationException If the request fails validation.
+     * @param request The authentication request {@link AREQ} to be validated.
+     * @throws ACSValidationException If the request fails validation.
      */
     @Override
     public void validateRequest(AREQ request) throws ACSValidationException {
@@ -56,10 +57,10 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
     }
 
     /**
-     * Validates the authentication request (AREQ) by performing various validation checks.
+     * Validates the authentication request {@link AREQ} by performing various validation checks.
      *
-     * @param request The authentication request (AREQ) to be validated.
-     * @throws ValidationException If the request fails validation.
+     * @param request The authentication request {@link AREQ} to be validated.
+     * @throws ACSValidationException If the request fails validation.
      */
     private void validateAuthenticationRequest(AREQ request) throws ACSValidationException {
         try {
@@ -102,8 +103,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_COMPIND.getFieldName(),
                 request.getThreeDSCompInd(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.THREEDS_COMPIND, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.THREEDS_COMPIND, request),
                         notNull()),
                 lengthValidator(DataLengthType.FIXED, 1),
                 isIn(ThreeDSDataElement.THREEDS_COMPIND.getAcceptedValues()));
@@ -111,7 +111,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_REQUESTOR_URL.getFieldName(),
                 request.getThreeDSRequestorURL(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_REQUESTOR_URL, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
@@ -119,7 +119,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_REQUESTOR_ID.getFieldName(),
                 request.getThreeDSRequestorID(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_REQUESTOR_ID, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 35));
@@ -127,7 +127,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_REQUESTOR_AUTHENTICATION_IND.getFieldName(),
                 request.getThreeDSRequestorAuthenticationInd(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_REQUESTOR_AUTHENTICATION_IND, request),
                         notNull()),
                 isIn(ThreeDSDataElement.THREEDS_REQUESTOR_AUTHENTICATION_IND.getAcceptedValues()));
@@ -135,7 +135,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_REQUESTOR_NAME.getFieldName(),
                 request.getThreeDSRequestorName(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_REQUESTOR_NAME, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 40));
@@ -143,7 +143,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_SERVER_REF_NUMBER.getFieldName(),
                 request.getThreeDSServerRefNumber(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_REF_NUMBER, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 32));
@@ -151,7 +151,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
                 request.getThreeDSServerTransID(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 36));
@@ -159,7 +159,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_SERVER_URL.getFieldName(),
                 request.getThreeDSServerURL(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_URL, request),
                         notNull()),
                 lengthValidator(
@@ -169,8 +169,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_RI_IND.getFieldName(),
                 request.getThreeRIInd(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.THREEDS_RI_IND, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.THREEDS_RI_IND, request),
                         notNull()),
                 isIn(ThreeDSDataElement.THREEDS_RI_IND.getAcceptedValues()));
 
@@ -178,15 +177,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.ACQUIRER_BIN.getFieldName(),
                 request.getAcquirerBIN(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.ACQUIRER_BIN, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.ACQUIRER_BIN, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 11));
         Validation.validate(
                 ThreeDSDataElement.ACQUIRER_MERCHANT_ID.getFieldName(),
                 request.getAcquirerMerchantID(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.ACQUIRER_MERCHANT_ID, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 15));
@@ -195,7 +193,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BROWSER_JAVA_ENABLED.getFieldName(),
                 request.getBrowserJavaEnabled(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.BROWSER_JAVA_ENABLED, request),
                         notNull()),
                 isIn(ThreeDSDataElement.BROWSER_JAVA_ENABLED.getAcceptedValues()));
@@ -203,7 +201,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BROWSER_ACCEPT_HEADER.getFieldName(),
                 request.getBrowserAcceptHeader(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.BROWSER_ACCEPT_HEADER, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
@@ -211,7 +209,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BROWSER_JAVA_SCRIPT_ENABLED.getFieldName(),
                 request.getBrowserJavascriptEnabled(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.BROWSER_JAVA_SCRIPT_ENABLED, request),
                         notNull()),
                 isIn(ThreeDSDataElement.BROWSER_JAVA_SCRIPT_ENABLED.getAcceptedValues()));
@@ -219,15 +217,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BROWSER_LANGUAGE.getFieldName(),
                 request.getBrowserLanguage(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.BROWSER_LANGUAGE, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.BROWSER_LANGUAGE, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 8));
         Validation.validate(
                 ThreeDSDataElement.BROWSER_COLOR_DEPTH.getFieldName(),
                 request.getBrowserColorDepth(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.BROWSER_COLOR_DEPTH, request),
                         notNull()),
                 isIn(ThreeDSDataElement.BROWSER_COLOR_DEPTH.getAcceptedValues()));
@@ -235,7 +232,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BROWSER_SCREEN_HEIGHT.getFieldName(),
                 request.getBrowserScreenHeight(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.BROWSER_SCREEN_HEIGHT, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 6),
@@ -244,7 +241,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BROWSER_SCREEN_WIDTH.getFieldName(),
                 request.getBrowserScreenWidth(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.BROWSER_SCREEN_WIDTH, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 6),
@@ -253,8 +250,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BROWSER_TZ.getFieldName(),
                 request.getBrowserTZ(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.BROWSER_TZ, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.BROWSER_TZ, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 5),
                 regexValidator("[0-9-.]{1,5}"));
@@ -262,7 +258,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BROWSER_USER_AGENT.getFieldName(),
                 request.getBrowserUserAgent(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.BROWSER_USER_AGENT, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
@@ -270,15 +266,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.ACCT_NUMBER.getFieldName(),
                 request.getAcctNumber(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.ACCT_NUMBER, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.ACCT_NUMBER, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 19));
         Validation.validate(
                 ThreeDSDataElement.DEVICE_RENDER_OPTIONS.getFieldName(),
                 request.getDeviceRenderOptions(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
                         notNull()),
                 isValidObject());
@@ -286,8 +281,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.NOTIFICATION_URL.getFieldName(),
                 request.getNotificationURL(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.NOTIFICATION_URL, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.NOTIFICATION_URL, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
 
@@ -295,16 +289,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.SDK_APP_ID.getFieldName(),
                 request.getSdkAppID(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.SDK_APP_ID, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.SDK_APP_ID, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 36));
         Validation.validate(
                 ThreeDSDataElement.SDK_MAX_TIMEOUT.getFieldName(),
                 request.getSdkMaxTimeout(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.SDK_MAX_TIMEOUT, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.SDK_MAX_TIMEOUT, request),
                         notNull()),
                 lengthValidator(DataLengthType.FIXED, 2),
                 notIn(EMVCOConstant.sdkMaxTimeoutList));
@@ -312,7 +304,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.SDK_REFERENCE_NUMBER.getFieldName(),
                 request.getSdkReferenceNumber(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_REFERENCE_NUMBER, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 32));
@@ -320,16 +312,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.SDK_EPHEM_PUB_KEY.getFieldName(),
                 request.getSdkEphemPubKey(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.SDK_EPHEM_PUB_KEY, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.SDK_EPHEM_PUB_KEY, request),
                         notNull()),
                 isValidObject());
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 request.getSdkTransID(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.SDK_TRANS_ID, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.SDK_TRANS_ID, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 36),
                 isUUID());
@@ -337,8 +327,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.DEVICE_INFO.getFieldName(),
                 request.getDeviceInfo(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.DEVICE_INFO, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.DEVICE_INFO, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 64000));
 
@@ -346,7 +335,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.DS_REFERENCE_NUMBER.getFieldName(),
                 request.getDsReferenceNumber(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.DS_REFERENCE_NUMBER, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 32));
@@ -354,16 +343,13 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.DS_TRANS_ID.getFieldName(),
                 request.getDsTransID(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.DS_TRANS_ID, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.DS_TRANS_ID, request),
                         notNull()),
                 lengthValidator(DataLengthType.FIXED, 36));
         Validation.validate(
                 ThreeDSDataElement.DS_URL.getFieldName(),
                 request.getDsURL(),
-                when(
-                        validateDeviceChannelAndMessageCategory(ThreeDSDataElement.DS_URL, request),
-                        notNull()),
+                when(isValidateThreeDSDataElement(ThreeDSDataElement.DS_URL, request), notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
     }
 
@@ -373,16 +359,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.MCC.getFieldName(),
                 request.getMcc(),
-                when(
-                        validateDeviceChannelAndMessageCategory(ThreeDSDataElement.MCC, request),
-                        notNull()),
+                when(isValidateThreeDSDataElement(ThreeDSDataElement.MCC, request), notNull()),
                 lengthValidator(DataLengthType.FIXED, 4),
                 isNumeric());
         Validation.validate(
                 ThreeDSDataElement.MERCHANT_COUNTRY_CODE.getFieldName(),
                 request.getMerchantCountryCode(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                 ThreeDSDataElement.MERCHANT_COUNTRY_CODE, request),
                         notNull()),
                 lengthValidator(DataLengthType.FIXED, 3),
@@ -392,16 +376,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.MERCHANT_NAME.getFieldName(),
                 request.getMerchantName(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                ThreeDSDataElement.MERCHANT_NAME, request),
+                        isValidateThreeDSDataElement(ThreeDSDataElement.MERCHANT_NAME, request),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 40));
         Validation.validate(
                 ThreeDSDataElement.PAY_TOKEN_SOURCE.getFieldName(),
                 request.getPayTokenSource(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                        ThreeDSDataElement.PAY_TOKEN_SOURCE, request)
+                        isValidateThreeDSDataElement(ThreeDSDataElement.PAY_TOKEN_SOURCE, request)
                                 && !Util.isNullorBlank(request.getPayTokenInd()),
                         notNull()),
                 isIn(ThreeDSDataElement.PAY_TOKEN_SOURCE.getAcceptedValues()));
@@ -409,7 +391,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_REQ_AUTH_METHOD_IND.getFieldName(),
                 request.getThreeDSReqAuthMethodInd(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                         ThreeDSDataElement.THREEDS_REQ_AUTH_METHOD_IND, request)
                                 && !Util.isNullorBlank(request.getThreeDSReqAuthMethodInd()),
                         notNull()),
@@ -418,7 +400,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.WHITE_LIST_STATUS_SOURCE.getFieldName(),
                 request.getWhiteListStatusSource(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                         ThreeDSDataElement.WHITE_LIST_STATUS_SOURCE, request)
                                 && !Util.isNullorBlank(request.getWhiteListStatus()),
                         notNull()),
@@ -428,7 +410,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.THREEDS_REQUESTOR_DEC_MAX_TIME.getFieldName(),
                 request.getThreeDSRequestorDecMaxTime(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                         ThreeDSDataElement.THREEDS_REQUESTOR_DEC_MAX_TIME, request)
                                 && !Util.isNullorBlank(request.getThreeDSRequestorDecReqInd())
                                 && InternalConstants.YES.equals(
@@ -482,7 +464,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.PURCHASE_INSTAL_DATA.getFieldName(),
                 request.getPurchaseInstalData(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        isValidateThreeDSDataElement(
                                         ThreeDSDataElement.PURCHASE_INSTAL_DATA, request)
                                 && Util.isNullorBlank(
                                         request.getThreeDSRequestorAuthenticationInd())
@@ -637,18 +619,28 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 isValidObject());
     }
 
-    public static boolean validateDeviceChannelAndMessageCategory(
-            ThreeDSDataElement element, AREQ areq) {
-        return validateDeviceChannel(element, areq) && validateMessageCategory(element, areq);
+    private static boolean isValidateThreeDSDataElement(
+            @NonNull final ThreeDSDataElement element, @NonNull final AREQ areq) {
+        return validateDeviceChannel(element, areq)
+                && validateMessageCategory(element, areq)
+                && validateMessageVersion(element, areq);
     }
 
-    public static boolean validateDeviceChannel(ThreeDSDataElement element, AREQ areq) {
+    private static boolean validateDeviceChannel(
+            @NonNull final ThreeDSDataElement element, @NonNull final AREQ areq) {
         return Arrays.stream(element.getSupportedChannel())
                 .anyMatch(sc -> sc.getChannel().equals(areq.getDeviceChannel()));
     }
 
-    public static boolean validateMessageCategory(ThreeDSDataElement element, AREQ areq) {
+    private static boolean validateMessageCategory(
+            @NonNull final ThreeDSDataElement element, @NonNull final AREQ areq) {
         return Arrays.stream(element.getSupportedCategory())
                 .anyMatch(sc -> sc.getCategory().equals(areq.getMessageCategory()));
+    }
+
+    private static boolean validateMessageVersion(
+            @NonNull final ThreeDSDataElement element, @NonNull final AREQ areq) {
+        return Arrays.stream(element.getSupportedMessageVersion())
+                .anyMatch(version -> version.equals(areq.getMessageVersion()));
     }
 }

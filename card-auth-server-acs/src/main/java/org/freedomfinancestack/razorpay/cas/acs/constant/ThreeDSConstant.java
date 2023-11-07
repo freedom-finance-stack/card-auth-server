@@ -6,7 +6,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ThreeDSConstant {
 
-    public static final String[] SUPPORTED_MESSAGE_VERSION = {"2.1.0", "2.2.0"};
+    public static final String MESSAGE_VERSION_2_1_0 = "2.1.0";
+    public static final String MESSAGE_VERSION_2_2_0 = "2.2.0";
+    public static final String[] SUPPORTED_MESSAGE_VERSION = {
+        MESSAGE_VERSION_2_1_0, MESSAGE_VERSION_2_2_0
+    };
+
+    public static final String[] ALL_VERSIONS_SUPPORTED_ELEMENT = {
+        MESSAGE_VERSION_2_1_0, MESSAGE_VERSION_2_2_0
+    };
 
     // Supported Message Types
     public static final String ELEMENT_THREEDS_COMPIND = "threeDSCompInd";

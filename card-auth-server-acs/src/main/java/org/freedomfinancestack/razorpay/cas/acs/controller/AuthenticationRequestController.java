@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * The {@link AuthenticationRequestController} class is a REST controller responsible for handling
- * Authentication Request {@link AREQ} from the 3DS Server.
+ * Authentication Request {@link AREQ} from the 3DS Server. This endpoint supports 3DS version 2.x.x
  *
  * @version 1.0.0
  * @since 1.0.0
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController("acsController")
-@RequestMapping("/v1/transaction")
+@RequestMapping("/v2/transaction")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationRequestController {
 

@@ -22,10 +22,9 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.L
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
-import static org.freedomfinancestack.razorpay.cas.acs.validation.AuthenticationRequestValidator.validateDeviceChannelAndMessageCategory;
 
 /**
- * Validates the challenge request (CREQ)
+ * Validates the challenge request {@link CREQ}.
  *
  * @author jaydeepRadadiya
  * @version 1.0.0
@@ -33,15 +32,14 @@ import static org.freedomfinancestack.razorpay.cas.acs.validation.Authentication
  */
 @Slf4j
 @Service
-public class ChallengeRequestValidator {
-    // todo : not implementation of threeDSValidator as it requires few more fields
-
+public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
     /**
-     * Validates the authentication request (CREQ).
+     * Validates the authentication request {@link CREQ}.
      *
-     * @param incomingCreq The authentication request (CREQ) to be validated.
-     * @throws ValidationException If the request fails validation.
+     * @param incomingCreq The authentication request {@link CREQ} to be validated.
+     * @throws ACSValidationException If the request fails validation.
      */
+    @Override
     public void validateRequest(CREQ incomingCreq, Transaction transaction)
             throws ACSValidationException {
         if (incomingCreq == null) {
@@ -156,19 +154,19 @@ public class ChallengeRequestValidator {
         }
     }
 
-    public static boolean validateDeviceChannelAndMessageCategory(
+    private static boolean validateDeviceChannelAndMessageCategory(
             ThreeDSDataElement element, Transaction transaction) {
         return validateDeviceChannel(element, transaction)
                 && validateMessageCategory(element, transaction);
     }
 
-    public static boolean validateDeviceChannel(
+    private static boolean validateDeviceChannel(
             ThreeDSDataElement element, Transaction transaction) {
         return Arrays.stream(element.getSupportedChannel())
                 .anyMatch(sc -> sc.getChannel().equals(transaction.getDeviceChannel()));
     }
 
-    public static boolean validateMessageCategory(
+    private static boolean validateMessageCategory(
             ThreeDSDataElement element, Transaction transaction) {
         return Arrays.stream(element.getSupportedCategory())
                 .anyMatch(sc -> sc.equals(transaction.getMessageCategory()));

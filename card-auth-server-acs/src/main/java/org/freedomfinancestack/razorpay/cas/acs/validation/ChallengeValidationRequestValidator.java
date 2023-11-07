@@ -21,14 +21,15 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.L
  */
 @Slf4j
 @Service
-public class ChallengeValidationRequestValidator {
+public class ChallengeValidationRequestValidator implements ThreeDSValidator<CVReq> {
 
     /**
      * Validates the authentication request (CVREQ).
      *
-     * @param incomingCvreq The authentication request (CVREQ) to be validated.
-     * @throws ValidationException If the request fails validation.
+     * @param incomingCvreq The authentication request {@link CVReq} to be validated.
+     * @throws ACSValidationException If the request fails validation.
      */
+    @Override
     public void validateRequest(CVReq incomingCvreq) throws ACSValidationException {
         if (incomingCvreq == null) {
             throw new ACSValidationException(

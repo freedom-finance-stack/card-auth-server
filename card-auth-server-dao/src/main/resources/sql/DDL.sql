@@ -13,7 +13,7 @@ CREATE TABLE `transaction`
     `challenge_mandated`        bool,
     `transaction_status`        ENUM ('CREATED','SUCCESS','FAILED','UNABLE_TO_AUTHENTICATE','ATTEMPT','CHALLENGE_REQUIRED','CHALLENGE_REQUIRED_DECOUPLED','REJECTED','INFORMATIONAL') NOT NULL,
     `transaction_status_reason` varchar(80),
-    `phase`                     ENUM ('AREQ','ARES','AERROR','CREQ','CRES','RREQ','CDRES','CVREQ','ERROR')                                                                            NOT NULL,
+    `phase`                     ENUM ('AREQ','ARES','AERROR','CREQ','CRES','RREQ','CDRES','CVREQ','ERROR') NOT NULL,
     `threeds_session_data`      varchar(1024),
     `three_ri_ind`              varchar(2),
     `auth_value`                varchar(200),
@@ -25,7 +25,7 @@ CREATE TABLE `transaction`
     `resend_count`              int DEFAULT 0,
     `challenge_cancel_ind`      varchar(2),
     `error_code`                varchar(20),
-    `created_at`                timestamp  NOT NULL,
+    `created_at`                timestamp NOT NULL,
     `modified_at`               timestamp,
     `deleted_at`                timestamp
 );
@@ -45,15 +45,15 @@ CREATE TABLE `transaction_browser_detail`
 DROP TABLE IF EXISTS `transaction_sdk_detail`;
 CREATE TABLE `transaction_sdk_detail`
 (
-    `transaction_id`     varchar(36) PRIMARY KEY,
-    `sdk_trans_id` varchar(36) DEFAULT NULL,
-    `sdk_app_id` varchar(36) DEFAULT NULL,
+    `transaction_id`       varchar(36) PRIMARY KEY,
+    `sdk_trans_id`         varchar(36) DEFAULT NULL,
+    `sdk_app_id`           varchar(36) DEFAULT NULL,
     `sdk_reference_number` varchar(32) DEFAULT NULL,
     `acs_ui_type`          char(2),
-    `device_info` text,
-    `created_at`         timestamp NOT NULL,
-    `modified_at`        timestamp,
-    `deleted_at`         timestamp
+    `device_info`          text,
+    `created_at`           timestamp NOT NULL,
+    `modified_at`          timestamp,
+    `deleted_at`           timestamp
 );
 
 DROP TABLE IF EXISTS `transaction_merchant`;
@@ -162,13 +162,13 @@ CREATE TABLE `institution`
     `iso_country_code` smallint,
     `timezone`         varchar(25),
     `status`           ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
-    `created_at`       timestamp                   NOT NULL,
-    `created_by`       varchar(40)                 NOT NULL,
+    `created_at`       timestamp   NOT NULL,
+    `created_by`       varchar(40) NOT NULL,
     `modified_at`      timestamp,
     `modified_by`      varchar(40),
-    `deleted_at`       timestamp default NULL,
+    `deleted_at`       timestamp   default NULL,
     `deleted_by`       varchar(40),
-    `message_version`       varchar(10) default NULL
+    `message_version`  varchar(10) default NULL
 );
 
 DROP TABLE IF EXISTS `hsm_config`;
@@ -205,16 +205,16 @@ CREATE TABLE `card_range`
     `institution_id`     varchar(36),
     `start_range`        decimal(25),
     `end_range`          decimal(25),
-    `status`             ENUM ('ACTIVE', 'INACTIVE')               NOT NULL,
-    `card_type`          ENUM ('CREDIT', 'DEBIT', 'PREPAID')       NOT NULL,
+    `status`             ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
+    `card_type`          ENUM ('CREDIT', 'DEBIT', 'PREPAID') NOT NULL,
     `risk_flag`          ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA') NOT NULL,
     `description`        varchar(255),
     `card_details_store` enum ('ACS', 'API_1'),
     `network_code`       tinyint,
-    `created_at`         timestamp                                 NOT NULL,
-    `modified_at`        timestamp                                 NOT NULL,
+    `created_at`         timestamp   NOT NULL,
+    `modified_at`        timestamp   NOT NULL,
     `deleted_at`         timestamp default NULL,
-    `created_by`         varchar(40)                               NOT NULL,
+    `created_by`         varchar(40) NOT NULL,
     `modified_by`        varchar(40),
     `deleted_by`         varchar(40)
 );
@@ -237,13 +237,13 @@ DROP TABLE IF EXISTS `feature`;
 CREATE TABLE `feature`
 (
     `id`          varchar(36) PRIMARY KEY,
-    `entity_type` ENUM ('INSTITUTION', 'CARD_RANGE', 'CARD_RANGE_GROUP')                      NOT NULL,
-    `entity_id`   varchar(36)                                                                 NOT NULL,
-    `active`      bool                                                                        NOT NULL,
+    `entity_type` ENUM ('INSTITUTION', 'CARD_RANGE', 'CARD_RANGE_GROUP') NOT NULL,
+    `entity_id`   varchar(36)  NOT NULL,
+    `active`      bool         NOT NULL,
     `name`        ENUM ('CHALLENGE_AUTH_TYPE', 'CHALLENGE_ATTEMPT', 'OTP', 'PASSWORD', 'OOB', 'ACS_RENDERING_TYPE') NOT NULL,
-    `properties`  varchar(500)                                                                NOT NULL,
-    `created_at`  timestamp                                                                   NOT NULL,
-    `created_by`  varchar(40)                                                                 NOT NULL,
+    `properties`  varchar(500) NOT NULL,
+    `created_at`  timestamp    NOT NULL,
+    `created_by`  varchar(40)  NOT NULL,
     `modified_at` timestamp,
     `modified_by` varchar(40),
     `deleted_at`  timestamp,
@@ -290,17 +290,17 @@ DROP TABLE IF EXISTS `admin_user`;
 CREATE TABLE `admin_user`
 (
     `id`              varchar(36) PRIMARY KEY,
-    `username`        varchar(50)                 NOT NULL,
-    `email_id`        varchar(100)                NOT NULL,
+    `username`        varchar(50)  NOT NULL,
+    `email_id`        varchar(100) NOT NULL,
     `mobile_number`   varchar(20) DEFAULT NULL,
-    `password`        varchar(50)                 NOT NULL,
+    `password`        varchar(50)  NOT NULL,
     `status`          ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
     `last_login_dttm` timestamp   DEFAULT NULL,
-    `created_at`      timestamp                   NOT NULL,
-    `modified_at`     timestamp                   NOT NULL,
+    `created_at`      timestamp    NOT NULL,
+    `modified_at`     timestamp    NOT NULL,
     `deleted_at`      timestamp   DEFAULT NULL,
-    `created_by`      varchar(40)                 NOT NULL,
-    `modified_by`     varchar(40)                 NOT NULL,
+    `created_by`      varchar(40)  NOT NULL,
+    `modified_by`     varchar(40)  NOT NULL,
     `deleted_by`      varchar(40) DEFAULT NULL
 );
 
@@ -319,7 +319,7 @@ DROP TABLE IF EXISTS `institution_meta`;
 CREATE TABLE `institution_meta`
 (
     `institution_id` varchar(36) PRIMARY KEY,
-    `logo_data`      blob NOT NULL,
+    `logo_data`      blob        NOT NULL,
     `logo_filename`  varchar(50) NOT NULL,
     `created_at`     timestamp   NOT NULL,
     `modified_at`    timestamp   NOT NULL,
@@ -328,7 +328,6 @@ CREATE TABLE `institution_meta`
     `modified_by`    varchar(40) NOT NULL,
     `deleted_by`     varchar(40) DEFAULT NULL
 );
-
 
 
 
@@ -343,8 +342,8 @@ CREATE TABLE `notification_detail`
     `response`    varchar(36),
     `provider`    varchar(36),
     `status`      ENUM ('PENDING', 'SENT', 'FAILED'),
-    `created_at`  timestamp   NOT NULL,
-    `modified_at` timestamp   NOT NULL,
+    `created_at`  timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
     `deleted_at`  timestamp default NULL
 );
 
@@ -365,9 +364,9 @@ CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_deta
 
 
 
-#  Purposed tables for OTP
+-- Purposed tables for OTP
 
-#  OTP_TRANSACTION_DETAIL : ID ,TRANSACTION_ID, Value
-#  NOTIFICATION : CHANNEL, DESTINATION, REQUEST, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
+-- OTP_TRANSACTION_DETAIL : ID ,TRANSACTION_ID, Value
+-- NOTIFICATION : CHANNEL, DESTINATION, REQUEST, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
 
 
