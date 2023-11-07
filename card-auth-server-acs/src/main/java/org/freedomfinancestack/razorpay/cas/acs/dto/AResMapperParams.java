@@ -34,4 +34,6 @@ public class AResMapperParams {
     String acsUrl;
 
     ACSRenderingType acsRenderingType;
+
+    String acsSignedContent;
 }

@@ -84,8 +84,9 @@ public interface AResMapper {
     @Mapping(
             target = "acsRenderingType",
             expression = "java(aResMapperParams.getAcsRenderingType())")
-
-    // todo    @Mapping AcsSignedContent for app based
+    @Mapping(
+            target = "acsSignedContent",
+            expression = "java(aResMapperParams.getAcsSignedContent())")
     ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {

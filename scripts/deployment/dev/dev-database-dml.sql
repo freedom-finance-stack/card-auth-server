@@ -81,3 +81,8 @@ INSERT INTO `rendering_type_config` VALUES ('I1', 'R6', '02', '05', '0', '01', N
 INSERT INTO `rendering_type_config` VALUES ('I1', 'R7', '02', '03', '1', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `rendering_type_config` VALUES ('I1', 'R8', '01', '05', '0', '01', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;
+
+LOCK TABLES `signer_detail` WRITE;
+INSERT INTO `signer_detail` VALUES ('I1', '1', '/Users/ishan.agrawal/code/src/github.com/ffs/card-auth-server/acsSigningKey', 'password', 'debitcert', 'creditcert', 'debitsigner', 'creditsigner', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `signer_detail` VALUES ('I1', '2', '/Users/ishan.agrawal/code/src/github.com/ffs/card-auth-server/acsSigningKey', 'password', 'debitcert', 'creditcert', 'debitsigner', 'creditsigner', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+UNLOCK TABLES;

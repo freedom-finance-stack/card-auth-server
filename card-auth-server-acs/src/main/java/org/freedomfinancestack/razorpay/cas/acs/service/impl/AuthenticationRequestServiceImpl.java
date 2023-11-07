@@ -61,6 +61,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
     private final RenderingTypeService renderingTypeService;
+    private final SignerService signerService;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -85,6 +86,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
         CardRange cardRange = null;
         DeviceInterface sdkDeviceInterface = null;
         RenderingTypeConfig renderingTypeConfig = null;
+        String signedData = null;
         try {
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
@@ -166,6 +168,20 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                         AuthenticationServiceLocator.selectAuthType(
                                 transaction, authConfigDto.getChallengeAuthTypeConfig());
                 transaction.setAuthenticationType(authType.getValue());
+
+                if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
+                    transaction
+                            .getTransactionSdkDetail()
+                            .setAcsUiType(renderingTypeConfig.getAcsUiType());
+                    transaction
+                            .getTransactionSdkDetail()
+                            .setDefaultRenderOption(renderingTypeConfig.getDefaultRenderOption());
+                    log.trace("Generating ACSSignedContent");
+                    signedData =
+                            signerService.getAcsSignedContent(
+                                    areq, transaction, acsUrl.getChallengeUrl());
+                    transaction.getTransactionSdkDetail().setAcsSignedContent(signedData);
+                }
             }
         } catch (ThreeDSException ex) {
             // NOTE : to send Erro in response throw ThreeDSException, otherwise
@@ -224,17 +240,14 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             AResMapperParams aResMapperParams =
                     AResMapperParams.builder().acsUrl(acsUrlStr).build();
             if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
-                    && renderingTypeConfig != null) {
+                    && transaction.isChallengeMandated()
+                    && renderingTypeConfig != null
+                    && signedData != null) {
                 aResMapperParams.setAcsRenderingType(
                         new ACSRenderingType(
                                 renderingTypeConfig.getDefaultRenderOption(),
                                 renderingTypeConfig.getAcsUiType()));
-                transaction
-                        .getTransactionSdkDetail()
-                        .setAcsUiType(renderingTypeConfig.getAcsUiType());
-                transaction
-                        .getTransactionSdkDetail()
-                        .setDefaultRenderOption(renderingTypeConfig.getDefaultRenderOption());
+                aResMapperParams.setAcsSignedContent(signedData);
             }
             ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
