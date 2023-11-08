@@ -340,6 +340,12 @@ public enum ThreeDSDataElement {
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
 
+    MESSAGE_EXTENSION_CRITICAL_INDICATOR(
+            ThreeDSConstant.ELEMENT_MESSAGE_EXTENSION_CRITICALITY_INDICATOR,
+            new String[] {"false"},
+            new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
+
     MESSAGE_TYPE(
             ThreeDSConstant.ELEMENT_MESSAGE_TYPE,
             new String[] {"AReq", "CReq", "RRes", "Erro"},

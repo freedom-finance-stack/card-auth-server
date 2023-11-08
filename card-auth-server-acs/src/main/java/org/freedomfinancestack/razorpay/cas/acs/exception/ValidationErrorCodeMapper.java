@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.exception;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
 public class ValidationErrorCodeMapper {
     private static final Map<ValidationErrorCode, ThreeDSecureErrorCode>
-            VALIDATION_TO_THREEDSECURE_ERROR_MAP = new HashMap<>();
+            VALIDATION_TO_THREEDSECURE_ERROR_MAP = new EnumMap<>(ValidationErrorCode.class);
 
     private static final Map<String, ThreeDSecureErrorCode> FIELD_TO_THREEDSECURE_ERROR_MAP =
             new HashMap<>();
@@ -32,6 +33,9 @@ public class ValidationErrorCodeMapper {
         FIELD_TO_THREEDSECURE_ERROR_MAP.put(
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
                 ThreeDSecureErrorCode.MESSAGE_VERSION_NUMBER_NOT_SUPPORTED);
+        FIELD_TO_THREEDSECURE_ERROR_MAP.put(
+                ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR.getFieldName(),
+                ThreeDSecureErrorCode.CRITICAL_MESSAGE_EXTENSION_NOT_RECOGNISED);
     }
 
     public static ThreeDSecureErrorCode mapValidationToThreeDSecure(
@@ -39,9 +43,7 @@ public class ValidationErrorCodeMapper {
         if (FIELD_TO_THREEDSECURE_ERROR_MAP.containsKey(fieldName)) {
             return FIELD_TO_THREEDSECURE_ERROR_MAP.get(fieldName);
         }
-        if (VALIDATION_TO_THREEDSECURE_ERROR_MAP.containsKey(validationErrorCode)) {
-            return VALIDATION_TO_THREEDSECURE_ERROR_MAP.get(validationErrorCode);
-        }
-        return ThreeDSecureErrorCode.INVALID_FORMAT;
+        return VALIDATION_TO_THREEDSECURE_ERROR_MAP.getOrDefault(
+                validationErrorCode, ThreeDSecureErrorCode.INVALID_FORMAT);
     }
 }

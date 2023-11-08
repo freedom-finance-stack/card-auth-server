@@ -216,29 +216,35 @@ TABLES;
 LOCK
 TABLES `card_range` WRITE;
 INSERT INTO `card_range`
-VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'ACS', 1,
+VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'MOCK', 1,
         NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range`
-VALUES ('R7', 'I1', 4030000000000000, 4030000000000100, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'Visa Testing', 'ACS', 1,
+VALUES ('R7', 'I1', 4030000000000000, 4030000000000100, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'Visa Testing', 'MOCK', 1,
         NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range`
-VALUES ('R5', 'I1', 5116000000000000, 5516000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'MasterCard Testing', 'ACS',
+VALUES ('R5', 'I1', 5116000000000000, 5516000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'MasterCard Testing', 'MOCK',
         2, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range`
 VALUES ('R2', 'I1', 7654310400000000, 7654310499999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE',
-        '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+        '3DS Portal Frictionless Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range`
-VALUES ('R3', 'I1', 7654350700000000, 7654350799999999, 'INACTIVE', 'CREDIT', 'NO_CHALLENGE',
-        '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+VALUES ('R3', 'I1', 7654350700000000, 7654350799999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE',
+        '3DS Portal Frictionless Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range`
+VALUES ('R4', 'I1', 7654340600000000, 7654340699999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE',
+        'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range`
 VALUES ('R5', 'I1', 7654360800000000, 7654360899999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE',
-        '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+        '3DS Portal Frictionless Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range`
 VALUES ('R6', 'I1', 7654320500000000, 7654320599999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE',
-        '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+        '3DS Portal Testing CardholderNotAuth', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range`
 VALUES ('R8', 'I1', 765430270000000, 765430279999999, 'ACTIVE', 'CREDIT', 'CHALLENGE',
-        '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+        '3DS Portal Testing CardholderNotAuth', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range`
+VALUES ('R9', 'I1', 9876522800000000, 9876522899999999, 'ACTIVE', 'CREDIT', 'CHALLENGE',
+        '3DS Portal Testing CardholderNotAuth', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK
 TABLES;
 

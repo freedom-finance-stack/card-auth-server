@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
+import org.freedomfinancestack.razorpay.cas.contract.MessageExtension;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,6 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.I
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.NotIn.notIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.RegexValidator.regexValidator;
-import static org.freedomfinancestack.extensions.validation.validator.enriched.isJsonObjectLengthValid.isJsonObjectLengthValid;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.isListLengthValid.isListLengthValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
@@ -440,10 +440,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 isListValid(isValidObject()),
                 isListLengthValid(DataLengthType.VARIABLE, 10));
 
-        Validation.validate(
-                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
-                request.getMessageExtension(),
-                isJsonObjectLengthValid(81920));
+        for (MessageExtension messageExtension : request.getMessageExtension()) {
+            Validation.validate(
+                    ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR.getFieldName(),
+                    Boolean.toString(messageExtension.isCriticalityIndicator()),
+                    isIn(
+                            ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR
+                                    .getAcceptedValues()));
+        }
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())

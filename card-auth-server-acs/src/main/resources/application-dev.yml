@@ -7,7 +7,6 @@ app:
       challengeRequest:  10 #sec
       challengeCompletion: 600 #sec
 
-
 test:
   enable : true
   attemptedRange:
