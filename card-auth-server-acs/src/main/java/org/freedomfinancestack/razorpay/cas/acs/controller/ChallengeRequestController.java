@@ -72,9 +72,9 @@ public class ChallengeRequestController {
     }
 
     private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes) {
-        if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
-            throw new RuntimeException("Transaction not recognized");
-        }
+        //        if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
+        //            throw new RuntimeException("Transaction not recognized");
+        //        }
 
         if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
             model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
