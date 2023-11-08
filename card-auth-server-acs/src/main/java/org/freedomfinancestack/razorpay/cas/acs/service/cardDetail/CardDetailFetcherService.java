@@ -5,7 +5,6 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 
 /**
  * The {@code CardDetailFetcherService} interface defines the contract for fetching card details and
@@ -40,8 +39,8 @@ public interface CardDetailFetcherService {
      *
      * @param cardDetailResponse the response object containing card details
      * @throws CardBlockedException if the card is blocked or not allowed
-     * @throws DataNotFoundException if the card details are not found
+     * @throws CardDetailsNotFoundException if the card details are not found
      */
     void validateCardDetails(CardDetailResponse cardDetailResponse)
-            throws CardBlockedException, DataNotFoundException, CardDetailsNotFoundException;
+            throws CardBlockedException, CardDetailsNotFoundException;
 }

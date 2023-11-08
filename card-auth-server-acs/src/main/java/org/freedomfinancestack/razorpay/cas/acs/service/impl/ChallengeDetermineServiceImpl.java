@@ -14,22 +14,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChallengeDetermineServiceImpl implements ChallengeDetermineService {
 
-    RiskFlag isChallengeRequired(AREQ objAReq, RiskFlag riskFlagByAcs) {
+    private RiskFlag isChallengeRequired(final AREQ objAReq, final RiskFlag riskFlagByAcs) {
 
         RiskFlag riskFlag = null;
         if (!Util.isNullorBlank(objAReq.getThreeDSRequestorChallengeInd())) {
-            ThreeDSRequestorChallengeInd challengeIn =
+            ThreeDSRequestorChallengeInd challengeInd =
                     ThreeDSRequestorChallengeInd.getByValue(
                             objAReq.getThreeDSRequestorChallengeInd());
-            if (ThreeDSRequestorChallengeInd.CHALLENGE_REQUESTED_MANDATE.equals(challengeIn)
+            if (ThreeDSRequestorChallengeInd.CHALLENGE_REQUESTED_MANDATE.equals(challengeInd)
                     || ThreeDSRequestorChallengeInd.CHALLENGE_REQUESTED_REQUESTER_PREFERENCE.equals(
-                            challengeIn)
+                            challengeInd)
                     || ThreeDSRequestorChallengeInd.WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
-                            .equals(challengeIn)) {
+                            .equals(challengeInd)) {
                 riskFlag = RiskFlag.CHALLENGE;
-            } else if (ThreeDSRequestorChallengeInd.DATA_SHARE_ONLY.equals(challengeIn)
+            } else if (ThreeDSRequestorChallengeInd.DATA_SHARE_ONLY.equals(challengeInd)
                     || ThreeDSRequestorChallengeInd.TRANSACTIONAL_RISK_ANALYSIS_IS_ALREADY_PERFORMED
-                            .equals(challengeIn)) {
+                            .equals(challengeInd)) {
                 riskFlag = RiskFlag.NO_CHALLENGE;
             } else if (!Util.isNullorBlank(objAReq.getThreeDSRequestorDecReqInd())
                     && objAReq.getThreeDSRequestorDecReqInd().equalsIgnoreCase("Y")) {
@@ -42,7 +42,8 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
     }
 
     @Override
-    public void determineChallenge(AREQ objAReq, Transaction transaction, RiskFlag riskFlagAcs) {
+    public void determineChallenge(
+            final AREQ objAReq, final Transaction transaction, final RiskFlag riskFlagAcs) {
 
         RiskFlag riskFlag = isChallengeRequired(objAReq, riskFlagAcs);
         boolean challengeFlag = false;
