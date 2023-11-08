@@ -21,6 +21,7 @@ public enum
             "CARD BLOCKED",
             TransactionStatus.FAILED,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
+
     CARD_USER_FETCH_EXCEPTION(
             "1003",
             "Error while fetching card user details",
@@ -188,26 +189,32 @@ public enum
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
+    CHALLENGE_FLOW_INTERNAL_SERVER_ERROR(
+            "8016",
+            "UNEXPECTED ERROR OCCURRED",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
     TEST_TRANSACTION_UA(
-            "1001",
+            "9001",
             "CARD NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.NO_CARD_RECORD),
 
     TEST_TRANSACTION_REJECTED(
-            "1001",
+            "9002",
             "CARD NOT FOUND",
             TransactionStatus.REJECTED,
             TransactionStatusReason.NO_CARD_RECORD),
 
     TEST_TRANSACTION_ATTEMPTED(
-            "1001",
+            "9003",
             "CARD NOT FOUND",
             TransactionStatus.ATTEMPT,
             TransactionStatusReason.NO_CARD_RECORD),
 
     TEST_TRANSACTION_FAILED(
-            "1001",
+            "9004",
             "CARD NOT FOUND",
             TransactionStatus.FAILED,
             TransactionStatusReason.NO_CARD_RECORD),

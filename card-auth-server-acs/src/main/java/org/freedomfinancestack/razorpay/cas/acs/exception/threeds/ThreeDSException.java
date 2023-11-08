@@ -34,6 +34,18 @@ public class ThreeDSException extends Exception {
 
     public ThreeDSException(
             final ThreeDSecureErrorCode threeDSecureErrorCode,
+            final InternalErrorCode internalErrorCode) {
+        super(internalErrorCode.getDefaultErrorMessage());
+        addMetaInThreeDSecureErrorCode(
+                this.threeDSErrorResponse,
+                threeDSecureErrorCode,
+                internalErrorCode.getDefaultErrorMessage());
+        this.threeDSecureErrorCode = threeDSecureErrorCode;
+        this.internalErrorCode = internalErrorCode;
+    }
+
+    public ThreeDSException(
+            final ThreeDSecureErrorCode threeDSecureErrorCode,
             final InternalErrorCode internalErrorCode,
             final String message,
             final Throwable cause) {
