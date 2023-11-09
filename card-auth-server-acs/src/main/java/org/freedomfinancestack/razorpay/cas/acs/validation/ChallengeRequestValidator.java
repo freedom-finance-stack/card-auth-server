@@ -13,6 +13,7 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
@@ -76,7 +77,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
                 incomingCreq.getThreeDSServerTransID(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 36));
@@ -91,7 +92,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 ThreeDSDataElement.CHALLENGE_WINDOW_SIZE.getFieldName(),
                 incomingCreq.getChallengeWindowSize(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.CHALLENGE_WINDOW_SIZE, transaction),
                         notNull()),
                 isIn(ThreeDSDataElement.CHALLENGE_WINDOW_SIZE.getAcceptedValues()));
@@ -100,7 +101,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 ThreeDSDataElement.SDK_COUNTER_STOA.getFieldName(),
                 incomingCreq.getSdkCounterStoA(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
                         notNull()),
                 lengthValidator(DataLengthType.FIXED, 3));
@@ -108,10 +109,18 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 incomingCreq.getSdkTransID(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
+                        shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_TRANS_ID, transaction),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 36));
+        Validation.validate(
+                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL.getFieldName(),
+                incomingCreq.getThreeDSRequestorAppURL(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
+                        notNull()),
+                lengthValidator(DataLengthType.VARIABLE, 256));
     }
 
     protected void validateOptionalFields(CREQ incomingCreq, Transaction transaction)
@@ -136,8 +145,8 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     (Arrays.asList("01", "02", "03").contains(acsUiType)
                                     && !YES.equals(incomingCreq.getResendChallenge()))
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                            && (!Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                    && !YES.equals(incomingCreq.getChallengeNoEntry()));
+                            && ((!Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
+                                    && !YES.equals(incomingCreq.getChallengeNoEntry())));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeDataEntry(),
@@ -152,23 +161,47 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     incomingCreq.getChallengeHTMLDataEntry(),
                     when(conditionForChallengeHTMLDataEntry, notNull()));
         }
+
+        if (transaction.getTransactionSdkDetail().getAcsUiType() != null) {
+            String acsUiType = transaction.getTransactionSdkDetail().getAcsUiType();
+            boolean conditionForChallengeNoEntry =
+                    shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
+                            && !(Arrays.asList("01", "02", "03").contains(acsUiType))
+                            && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
+                            && Util.isNullorBlank(incomingCreq.getChallengeCancel())
+                            && Util.isNullorBlank(incomingCreq.getResendChallenge());
+            Validation.validate(
+                    ThreeDSDataElement.CHALLENGE_NO_ENTRY.getFieldName(),
+                    incomingCreq.getChallengeNoEntry(),
+                    when(
+                            conditionForChallengeNoEntry,
+                            isIn(ThreeDSDataElement.CHALLENGE_NO_ENTRY.getAcceptedValues())));
+        }
     }
 
-    private static boolean validateDeviceChannelAndMessageCategory(
-            ThreeDSDataElement element, Transaction transaction) {
+    private static boolean shouldValidateThreeDSDataElement(
+            @NonNull final ThreeDSDataElement element, @NonNull final Transaction transaction) {
         return validateDeviceChannel(element, transaction)
-                && validateMessageCategory(element, transaction);
+                && validateMessageCategory(element, transaction)
+                && validateMessageVersion(element, transaction);
     }
 
     private static boolean validateDeviceChannel(
-            ThreeDSDataElement element, Transaction transaction) {
+            @NonNull final ThreeDSDataElement element, @NonNull final Transaction transaction) {
         return Arrays.stream(element.getSupportedChannel())
                 .anyMatch(sc -> sc.getChannel().equals(transaction.getDeviceChannel()));
     }
 
     private static boolean validateMessageCategory(
-            ThreeDSDataElement element, Transaction transaction) {
+            @NonNull final ThreeDSDataElement element, @NonNull final Transaction transaction) {
         return Arrays.stream(element.getSupportedCategory())
                 .anyMatch(sc -> sc.equals(transaction.getMessageCategory()));
+    }
+
+    private static boolean validateMessageVersion(
+            @NonNull final ThreeDSDataElement element, @NonNull final Transaction transaction) {
+        return Arrays.stream(element.getSupportedMessageVersion())
+                .anyMatch(version -> version.equals(transaction.getMessageVersion()));
     }
 }

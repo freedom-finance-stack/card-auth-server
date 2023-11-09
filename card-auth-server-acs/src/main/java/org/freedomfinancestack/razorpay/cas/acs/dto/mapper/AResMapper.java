@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
@@ -28,7 +29,8 @@ import org.mapstruct.Mapping;
             TransactionStatus.class,
             MessageCategory.class,
             Network.class,
-            MessageType.class
+            MessageType.class,
+            ThreeDSConstant.class
         })
 public interface AResMapper {
 
@@ -48,7 +50,8 @@ public interface AResMapper {
     @Mapping(
             target = "acsDecConInd",
             expression =
-                    "java(transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)"
+                    "java(transaction.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)"
+                        + " && transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)"
                         + " ? \"Y\" : \"N\")")
     @Mapping(
             target = "acsOperatorID",

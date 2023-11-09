@@ -515,7 +515,7 @@ public enum ThreeDSDataElement {
             new String[] {"Y", "N"},
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
-            ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
 
     ACS_OPERATOR_ID(
             ThreeDSConstant.ELEMENT_ACS_OPERATOR_ID,
@@ -701,6 +701,19 @@ public enum ThreeDSDataElement {
     WHITE_LISTING_DATA_ENTRY(
             ThreeDSConstant.ELEMENT_WHITELISTING_DATA_ENTRY,
             new String[] {"Y", "N"},
+            new DeviceChannel[] {DeviceChannel.APP},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
+
+    THREEDS_REQUESTOR_APP_URL(
+            ThreeDSConstant.ELEMENT_THREEDS_REQUESTOR_APP_URL,
+            new DeviceChannel[] {DeviceChannel.APP},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
+
+    CHALLENGE_NO_ENTRY(
+            ThreeDSConstant.ELEMENT_CHALLENGE_NO_ENTRY,
+            new String[] {"Y"},
             new DeviceChannel[] {DeviceChannel.APP},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
