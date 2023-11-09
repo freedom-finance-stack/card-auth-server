@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
@@ -29,7 +30,8 @@ import org.mapstruct.Mapping;
             MessageCategory.class,
             Network.class,
             MessageType.class,
-            Util.class
+            Util.class,
+            InternalConstants.class,
         })
 public interface AResMapper {
 
@@ -82,12 +84,14 @@ public interface AResMapper {
             target = "whiteListStatus",
             expression =
                     "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
-                            + " areq.getThreeRIInd().equals(\"10\") ? \"N\" : null)")
+                        + " areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)"
+                        + " ?  InternalConstants.NO : null)")
     @Mapping(
             target = "whiteListStatusSource",
             expression =
                     "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
-                            + " areq.getThreeRIInd().equals(\"10\") ? \"03\" : null)")
+                        + " areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)"
+                        + " ? InternalConstants.THREE_RI_WHILE_LIST_STATUS_SOURCE : null)")
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
@@ -102,6 +106,7 @@ public interface AResMapper {
                         || TransactionStatus.REJECTED.equals(transaction.getTransactionStatus()))) {
             transStatusReason = transaction.getTransactionStatusReason();
         } else {
+
             // For 02-NPA, Conditional as defined by the DS.
             if (transaction.getTransactionCardDetail() != null
                     && transaction.getTransactionCardDetail().getNetworkCode() != null

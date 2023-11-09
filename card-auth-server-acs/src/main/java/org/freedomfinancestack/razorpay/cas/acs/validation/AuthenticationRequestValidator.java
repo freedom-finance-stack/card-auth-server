@@ -26,6 +26,7 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.I
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.NotIn.notIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.RegexValidator.regexValidator;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.isJsonObjectLengthValid.isJsonObjectLengthValid;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.isListLengthValid.isListLengthValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
@@ -450,6 +451,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                         .getAcceptedValues()));
             }
         }
+
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
+                request.getMessageExtension(),
+                isJsonObjectLengthValid(81920));
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())

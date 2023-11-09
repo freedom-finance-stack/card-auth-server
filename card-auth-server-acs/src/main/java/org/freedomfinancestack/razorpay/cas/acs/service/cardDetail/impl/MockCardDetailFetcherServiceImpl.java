@@ -7,7 +7,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
 import org.freedomfinancestack.razorpay.cas.dao.repository.CardDetailRepository;
@@ -57,7 +56,7 @@ public class MockCardDetailFetcherServiceImpl implements CardDetailFetcherServic
     }
 
     public void validateCardDetails(CardDetailResponse cardDetailResponse)
-            throws DataNotFoundException, CardBlockedException, CardDetailsNotFoundException {
+            throws CardBlockedException, CardDetailsNotFoundException {
         long cardNumber = Long.parseLong(cardDetailResponse.getCardDetailDto().getCardNumber());
         if (cardNumber >= 7654320500000000L && cardNumber <= 7654320599999999L) {
             throw new CardDetailsNotFoundException(

@@ -51,10 +51,11 @@ public enum
             "CARD RANGE NOT ACTIVE",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
+
     CARD_RANGE_NOT_FOUND(
             "3007",
             "CARD RANGE NOT FOUND",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatus.REJECTED,
             TransactionStatusReason.NO_CARD_RECORD),
 
     RANGE_GROUP_NOT_FOUND(

@@ -46,6 +46,8 @@ public class InternalConstants {
 
     public static final String MODEL_ATTRIBUTE_CHALLENGE_VALIDATION_REQUEST = "cVReq";
     public static final String MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE = "cdRes";
+    public static final String THREE_RI_WHILE_LIST_STATUS_SOURCE = "03";
+    public static final String THREE_RI_IND_WHILE_LIST = "10";
 
     public static final String CHALLENGE_BRW_VALIDATION_URL =
             "v1/transaction/challenge/browser/validate";
