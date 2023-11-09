@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -22,11 +21,9 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
-import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
-import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrlPK;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -63,6 +60,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
+    private final ChallengeDetermineService challengeDetermineService;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -108,14 +106,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transaction.setCardRangeId(cardRange.getId());
             transaction.setInstitutionId(cardRange.getInstitution().getId());
 
-            // get acs url
-            acsUrl =
-                    institutionAcsUrlService.findById(
-                            new InstitutionAcsUrlPK(
-                                    cardRange.getInstitution().getId(),
-                                    areq.getDeviceChannel(),
-                                    cardRange.getNetworkCode()));
-
             // fetch Card and User details and validate details
             cardDetailService.validateAndUpdateCardDetails(
                     transaction,
@@ -124,16 +114,24 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     cardRange.getCardDetailsStore());
 
             // Determine if challenge is required and update transaction accordingly
-            determineChallenge(areq, transaction, cardRange);
+            challengeDetermineService.determineChallenge(
+                    areq, transaction, cardRange.getRiskFlag());
+            AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
+            AuthType authType =
+                    AuthenticationServiceLocator.selectAuthType(
+                            transaction, authConfigDto.getChallengeAuthTypeConfig());
+            transaction.setAuthenticationType(authType.getValue());
 
-            if (transaction.isChallengeMandated()) {
-                // if challenge flow then get type of authentication ACS will use to complete
-                // challenge
-                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
-                AuthType authType =
-                        AuthenticationServiceLocator.selectAuthType(
-                                transaction, authConfigDto.getChallengeAuthTypeConfig());
-                transaction.setAuthenticationType(authType.getValue());
+            if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
+                String eci =
+                        eCommIndicatorService.generateECI(
+                                new GenerateECIRequest(
+                                                transaction.getTransactionStatus(),
+                                                cardRange.getNetworkCode(),
+                                                transaction.getMessageCategory())
+                                        .setThreeRIInd(areq.getThreeRIInd()));
+                transaction.setEci(eci);
+                transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
             }
         } catch (ThreeDSException ex) {
             // NOTE : to send Erro in response throw ThreeDSException, otherwise
@@ -188,10 +186,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                         .setThreeRIInd(areq.getThreeRIInd()));
                 transaction.setEci(eci);
             }
-            String acsUrlStr = acsUrl == null ? "" : acsUrl.getChallengeUrl();
-            AResMapperParams aResMapperParams =
-                    AResMapperParams.builder().acsUrl(acsUrlStr).build();
-            ares = aResMapper.toAres(areq, transaction, aResMapperParams);
+            ares = aResMapper.toAres(areq, transaction);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
             if (transaction.isChallengeMandated()) {
@@ -214,39 +209,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transactionService.saveOrUpdate(transaction);
         }
         return ares;
-    }
-
-    private void determineChallenge(AREQ areq, Transaction transaction, CardRange cardRange)
-            throws ACSException, ThreeDSException {
-        if (isChallengeRequired(cardRange.getRiskFlag(), transaction)) {
-            transaction.setChallengeMandated(true);
-            // todo add timer logic for challenge
-            transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
-        } else {
-            transaction.setChallengeMandated(false);
-            String eci =
-                    eCommIndicatorService.generateECI(
-                            new GenerateECIRequest(
-                                            transaction.getTransactionStatus(),
-                                            cardRange.getNetworkCode(),
-                                            transaction.getMessageCategory())
-                                    .setThreeRIInd(areq.getThreeRIInd()));
-            transaction.setEci(eci);
-            transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-            String authValue = authValueGeneratorService.getAuthValue(transaction);
-            transaction.setAuthValue(authValue);
-        }
-    }
-
-    private boolean isChallengeRequired(RiskFlag riskFlag, Transaction transaction) {
-        // todo honor ThreeDSRequestorChallengeInd once RBA is implemented
-        if (riskFlag.equals(RiskFlag.NO_CHALLENGE)) {
-            return false;
-        } else if (riskFlag.equals(RiskFlag.CHALLENGE)) {
-            return true;
-        } else { // RBA
-            throw new UnsupportedOperationException("RBA is not supported yet");
-        }
     }
 
     private Transaction updateTransactionPhaseWithError(

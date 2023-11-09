@@ -25,6 +25,8 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.I
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.NotIn.notIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.RegexValidator.regexValidator;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.isJsonObjectLengthValid.isJsonObjectLengthValid;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.isListLengthValid.isListLengthValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
 
@@ -36,9 +38,9 @@ import static org.freedomfinancestack.extensions.validation.validator.rule.When.
  * also annotated with Spring annotation {@code @Component} to mark it as a Spring component with
  * the name "authenticationRequestValidator".
  *
+ * @author jaydeepRadadiya
  * @version 1.0.0
  * @since 1.0.0
- * @author jaydeepRadadiya
  */
 @Slf4j
 @Component(value = "authenticationRequestValidator")
@@ -48,7 +50,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
      * Validates the authentication request (AREQ).
      *
      * @param request The authentication request (AREQ) to be validated.
-     * @throws ValidationException If the request fails validation.
+     * @throws ACSValidationException If the request fails validation.
      */
     @Override
     public void validateRequest(AREQ request) throws ACSValidationException {
@@ -59,7 +61,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
      * Validates the authentication request (AREQ) by performing various validation checks.
      *
      * @param request The authentication request (AREQ) to be validated.
-     * @throws ValidationException If the request fails validation.
+     * @throws ACSValidationException If the request fails validation.
      */
     private void validateAuthenticationRequest(AREQ request) throws ACSValidationException {
         try {
@@ -438,7 +440,13 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 request.getMessageExtension(),
-                isListValid(isValidObject()));
+                isListValid(isValidObject()),
+                isListLengthValid(DataLengthType.VARIABLE, 10));
+
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
+                request.getMessageExtension(),
+                isJsonObjectLengthValid(81920));
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())

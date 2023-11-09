@@ -1,7 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
-import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
@@ -28,7 +29,9 @@ import org.mapstruct.Mapping;
             TransactionStatus.class,
             MessageCategory.class,
             Network.class,
-            MessageType.class
+            MessageType.class,
+            Util.class,
+            InternalConstants.class,
         })
 public interface AResMapper {
 
@@ -40,8 +43,6 @@ public interface AResMapper {
      * @param areq The {@link AREQ} object representing the Authentication Request message received
      *     from the 3DS Server.
      * @param transaction The {@link Transaction} object representing the transaction details.
-     * @param aResMapperParams The {@link AResMapperParams} object containing additional parameters
-     *     for mapping.
      * @return The {@link ARES} object representing the Authentication Response message.
      */
     @Mapping(target = "acsChallengeMandated", source = "transaction.challengeMandated")
@@ -61,9 +62,8 @@ public interface AResMapper {
     @Mapping(
             target = "acsURL",
             expression =
-                    "java(!transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)"
-                            + " && aResMapperParams.getAcsUrl() != null ? "
-                            + "aResMapperParams.getAcsUrl() : null)")
+                    "java(Util.getAcsChallengeUrl(this.helperMapper.appConfiguration.getHostname(),"
+                            + " transaction.getDeviceChannel()))")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -80,13 +80,25 @@ public interface AResMapper {
     @Mapping(target = "broadInfo", expression = "java(null)")
     @Mapping(target = "sdkEphemPubKey", expression = "java(null)")
     @Mapping(target = "cardholderInfo", expression = "java(null)")
+    @Mapping(
+            target = "whiteListStatus",
+            expression =
+                    "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
+                        + " areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)"
+                        + " ?  InternalConstants.NO : null)")
+    @Mapping(
+            target = "whiteListStatusSource",
+            expression =
+                    "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
+                        + " areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)"
+                        + " ? InternalConstants.THREE_RI_WHILE_LIST_STATUS_SOURCE : null)")
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
 
     // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
-    ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
+    ARES toAres(AREQ areq, Transaction transaction);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
-        AResMapperParams aResMapperParams;
+
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
                 && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
@@ -96,8 +108,10 @@ public interface AResMapper {
             transStatusReason = transaction.getTransactionStatusReason();
         } else {
             // For 02-NPA, Conditional as defined by the DS.
-            if (Network.AMEX.getValue()
-                    == transaction.getTransactionCardDetail().getNetworkCode()) {
+            if (transaction.getTransactionCardDetail() != null
+                    && transaction.getTransactionCardDetail().getNetworkCode() != null
+                    && Network.AMEX.getValue()
+                            == transaction.getTransactionCardDetail().getNetworkCode()) {
                 if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                     transaction.setTransactionStatusReason(
                             TransactionStatusReason.MEDIUM_CONFIDENCE.getCode());
@@ -116,7 +130,7 @@ public interface AResMapper {
         String operatorId = "";
         if (transaction.getTransactionCardDetail() == null
                 || transaction.getTransactionCardDetail().getNetworkCode() == null) {
-            operatorId = "";
+            operatorId = "DEFAULT";
         } else if (Network.VISA.getValue()
                 == transaction.getTransactionCardDetail().getNetworkCode().intValue()) {
             operatorId = appConfiguration.getAcs().getOperatorId().getVisa();
@@ -132,7 +146,7 @@ public interface AResMapper {
 
     default String getAuthType(Transaction transaction) {
         if (transaction == null || transaction.getAuthenticationType() == null) {
-            return "";
+            return "02"; // default Auth type to 2, this is needed as required by test portal
         }
         if (transaction.getAuthenticationType() < 10) {
             return "0" + transaction.getAuthenticationType();

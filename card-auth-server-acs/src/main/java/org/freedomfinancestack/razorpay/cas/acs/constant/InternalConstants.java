@@ -41,11 +41,19 @@ public class InternalConstants {
     public static final String CHALLENGE_CORRECT_OTP_TEXT = "OTP Authentication Successful";
     public static final String MODEL_ATTRIBUTE_CRES = "cRes";
     public static final String MODEL_ATTRIBUTE_ERRO = "erro";
-
     public static final String MODEL_ATTRIBUTE_NOTIFICATION_URL = "notificationUrl";
     public static final String MODEL_ATTRIBUTE_THREEDS_SESSION_DATA = "threeDSSessionData";
-    public static final String MODEL_ATTRIBUTE_CHALLENGE_RESPONSE = "challengeResponse";
+
+    public static final String MODEL_ATTRIBUTE_CHALLENGE_VALIDATION_REQUEST = "cVReq";
+    public static final String MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE = "cdRes";
+    public static final String THREE_RI_WHILE_LIST_STATUS_SOURCE = "03";
+    public static final String THREE_RI_IND_WHILE_LIST = "10";
 
     public static final String CHALLENGE_BRW_VALIDATION_URL =
             "v1/transaction/challenge/browser/validate";
+    public static final String CHALLENGE_APP_VALIDATION_URL =
+            "v1/transaction/challenge/app/validate";
+
+    public static final String CHALLENGE_BRW_URL = "v1/transaction/challenge/browser";
+    public static final String CHALLENGE_APP_URL = "v1/transaction/challenge/app";
 }

@@ -12,7 +12,7 @@ public class MessageExtension implements Validatable {
 
     private String name;
     private String id;
-    private String criticalityIndicator;
+    private boolean criticalityIndicator;
     private Map<String, Object> data;
 
     public boolean isValid() {

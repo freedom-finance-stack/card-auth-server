@@ -4,6 +4,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -75,7 +76,10 @@ public class CardDetailService {
             Transaction transaction,
             CardDetailsRequest cardDetailsRequest,
             CardDetailsStore cardDetailsStoreType)
-            throws DataNotFoundException, CardBlockedException, ACSDataAccessException {
+            throws DataNotFoundException,
+                    CardBlockedException,
+                    ACSDataAccessException,
+                    CardDetailsNotFoundException {
         CardDetailResponse cardDetailResponse =
                 getCardDetails(cardDetailsRequest, cardDetailsStoreType);
         CardDetailFetcherService cardDetailFetcherService =

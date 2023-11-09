@@ -15,33 +15,23 @@ import lombok.Setter;
 public class ThreeDSErrorResponse {
 
     // All Required Fields
-
     private String errorCode;
-
     private String errorComponent;
-
     private String errorDescription;
-
     private String errorDetail;
-
-    private String errorMessageType;
-
+    private String errorMessageType = MessageType.AReq.toString();
     private String messageType = MessageType.Erro.toString();
-
     private String messageVersion = EMVCOConstant.MESSAGE_TYPE_VERSION;
 
     // All Conditional Fields
     private String threeDSServerTransID;
-
     private String acsTransID;
-
     private String dsTransID;
-
     private String sdkTransID;
 
-    private int httpStatus;
+    private transient int httpStatus;
 
-    private Instant timestamp = Instant.now();
+    private transient Instant timestamp = Instant.now();
 
     public ThreeDSErrorResponse setAcsTransID(String acsTransID) {
         this.acsTransID = acsTransID;
