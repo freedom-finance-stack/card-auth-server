@@ -1,5 +1,4 @@
 CREATE DATABASE IF NOT EXISTS `cas_db`;
-
 USE `cas_db`;
 
 DROP TABLE IF EXISTS `transaction`;
@@ -272,12 +271,10 @@ CREATE TABLE `card_detail`
 (
     `id`             varchar(36) PRIMARY KEY,
     `cardholder_id`  varchar(36) NOT NULL,
-    `card_range_id`  varchar(36) NOT NULL,
     `institution_id` varchar(36) NOT NULL,
     `card_number`    varchar(25),
     `card_expiry`    varchar(4),
     `blocked`        bool,
-    `network_code`   varchar(4),
     `created_at`     timestamp   NOT NULL,
     `modified_at`    timestamp   NOT NULL,
     `deleted_at`     timestamp default NULL,
@@ -329,7 +326,34 @@ CREATE TABLE `institution_meta`
     `deleted_by`     varchar(40) DEFAULT NULL
 );
 
+DROP TABLE IF EXISTS `notification_detail`;
+CREATE TABLE `notification_detail`
+(
+    `id`          varchar(36) PRIMARY KEY,
+    `entity_type` varchar(36),
+    `entity_id`   varchar(36),
+    `channel`     varchar(36),
+    `destination` varchar(36),
+    `response`    varchar(36),
+    `provider`    varchar(36),
+    `status`      ENUM ('PENDING', 'SENT', 'FAILED'),
+    `created_at`  timestamp NOT NULL,
+    `modified_at` timestamp NOT NULL,
+    `deleted_at`  timestamp default NULL
+);
 
+DROP TABLE IF EXISTS `otp_transaction_detail`;
+CREATE TABLE `otp_transaction_detail`
+(
+    `id`                  varchar(36),
+    `transaction_id`      varchar(36) NOT NULL,
+    `value`               varchar(10) NOT NULL,
+    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
+    `created_at`          timestamp   NOT NULL,
+    `modified_at`         timestamp   NOT NULL,
+    `deleted_at`          timestamp default NULL
+);
+CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
 
 DROP TABLE IF EXISTS `notification_detail`;
 CREATE TABLE `notification_detail`
@@ -347,8 +371,6 @@ CREATE TABLE `notification_detail`
     `deleted_at`  timestamp default NULL
 );
 
-
-
 DROP TABLE IF EXISTS `otp_transaction_detail`;
 CREATE TABLE `otp_transaction_detail`
 (
@@ -361,12 +383,3 @@ CREATE TABLE `otp_transaction_detail`
     `deleted_at`          timestamp default NULL
 );
 CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
-
-
-
--- Purposed tables for OTP
-
--- OTP_TRANSACTION_DETAIL : ID ,TRANSACTION_ID, Value
--- NOTIFICATION : CHANNEL, DESTINATION, REQUEST, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
-
-

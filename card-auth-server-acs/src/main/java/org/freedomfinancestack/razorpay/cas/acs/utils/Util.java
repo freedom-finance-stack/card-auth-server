@@ -16,6 +16,8 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
@@ -254,21 +256,51 @@ public class Util {
         return random.nextInt(max - min + 1) + min;
     }
 
+    public static String removeBase64Padding(String base64String) {
+        if (base64String != null) {
+            return base64String.replaceAll("=+$", "");
+        }
+        return null;
+    }
+
+    public static String getAcsChallengeUrl(String hostName, String deviceChannel) {
+        if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
+            return hostName + InternalConstants.CHALLENGE_APP_URL;
+        }
+        return hostName + InternalConstants.CHALLENGE_BRW_URL;
+    }
+
+    public static String getAcsChallengeValidationUrl(String hostName, String deviceChannel) {
+        if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
+            return hostName + InternalConstants.CHALLENGE_APP_VALIDATION_URL;
+        }
+        return hostName + InternalConstants.CHALLENGE_BRW_VALIDATION_URL;
+    }
+
     public static ThreeDSErrorResponse generateErrorResponse(
-            ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
+            ThreeDSecureErrorCode error,
+            Transaction transaction,
+            String errorDetail,
+            MessageType messageType) {
         ThreeDSErrorResponse errorObj = new ThreeDSErrorResponse();
         if (error != null) {
             errorObj.setErrorCode(error.getErrorCode());
             errorObj.setErrorComponent(error.getErrorComponent());
             errorObj.setErrorDescription(error.getErrorDescription());
             errorObj.setErrorDetail(errorDetail);
+            errorObj.setErrorMessageType(messageType.toString());
         }
         if (null != transaction) {
             errorObj.setMessageVersion(transaction.getMessageVersion());
             errorObj.setAcsTransID(transaction.getId());
-            errorObj.setDsTransID(transaction.getTransactionReferenceDetail().getDsTransactionId());
-            errorObj.setThreeDSServerTransID(
-                    transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+            if (transaction.getTransactionReferenceDetail() != null) {
+                errorObj.setDsTransID(
+                        transaction.getTransactionReferenceDetail().getDsTransactionId());
+                errorObj.setThreeDSServerTransID(
+                        transaction
+                                .getTransactionReferenceDetail()
+                                .getThreedsServerTransactionId());
+            }
         }
         return errorObj;
     }

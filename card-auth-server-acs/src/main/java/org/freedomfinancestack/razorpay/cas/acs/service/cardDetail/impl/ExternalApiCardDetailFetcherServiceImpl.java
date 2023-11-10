@@ -4,7 +4,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class ExternalApiCardDetailFetcherServiceImpl implements CardDetailFetche
     }
 
     public void validateCardDetails(CardDetailResponse cardDetailDto)
-            throws CardBlockedException, DataNotFoundException {
+            throws CardBlockedException, CardDetailsNotFoundException {
         log.info("Validating card details from ACS");
     }
 }

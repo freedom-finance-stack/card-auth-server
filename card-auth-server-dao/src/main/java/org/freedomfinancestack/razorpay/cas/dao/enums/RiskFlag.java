@@ -3,5 +3,6 @@ package org.freedomfinancestack.razorpay.cas.dao.enums;
 public enum RiskFlag {
     NO_CHALLENGE,
     CHALLENGE,
-    RBA
+    RBA,
+    DECOUPLED_CHALLENGE
 }

@@ -34,6 +34,18 @@ public class ThreeDSException extends Exception {
 
     public ThreeDSException(
             final ThreeDSecureErrorCode threeDSecureErrorCode,
+            final InternalErrorCode internalErrorCode) {
+        super(internalErrorCode.getDefaultErrorMessage());
+        addMetaInThreeDSecureErrorCode(
+                this.threeDSErrorResponse,
+                threeDSecureErrorCode,
+                internalErrorCode.getDefaultErrorMessage());
+        this.threeDSecureErrorCode = threeDSecureErrorCode;
+        this.internalErrorCode = internalErrorCode;
+    }
+
+    public ThreeDSException(
+            final ThreeDSecureErrorCode threeDSecureErrorCode,
             final InternalErrorCode internalErrorCode,
             final String message,
             final Throwable cause) {
@@ -78,6 +90,9 @@ public class ThreeDSException extends Exception {
                     transaction.getTransactionReferenceDetail().getDsTransactionId());
         }
         threeDSErrorResponse.setAcsTransID(transaction.getId());
-        threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
+        if (transaction.getMessageVersion() != null
+                && transaction.getMessageVersion().length() > 0) {
+            threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
+        }
     }
 }
