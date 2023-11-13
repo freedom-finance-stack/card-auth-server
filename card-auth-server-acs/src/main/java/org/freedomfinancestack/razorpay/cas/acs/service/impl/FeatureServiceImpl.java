@@ -1,12 +1,14 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.repository.FeatureRepository;
@@ -30,6 +32,39 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FeatureServiceImpl implements FeatureService {
     private final FeatureRepository featureRepository;
+
+    @Override
+    public RenderingTypeConfig getRenderingTypeConfig(
+            Transaction transaction, DeviceInterface deviceInterface, boolean fetchDefault)
+            throws ACSDataAccessException {
+        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
+        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
+        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
+        List<RenderingTypeConfig> renderingTypeConfigs =
+                (List<RenderingTypeConfig>)
+                        featureRepository.findFeatureByIds(
+                                FeatureName.RENDERING_TYPE, entityIdsByType);
+
+        for (RenderingTypeConfig renderingTypeConfig : renderingTypeConfigs) {
+            if (renderingTypeConfig.getAcsInterface().equals(deviceInterface.getValue())) {
+                if (fetchDefault) {
+                    if (renderingTypeConfig.getDefaultRenderOption().equals("1")) {
+                        return renderingTypeConfig;
+                    }
+                } else {
+                    return renderingTypeConfig;
+                }
+            }
+        }
+
+        log.error(
+                "Rendering Type not found for Institution ID : "
+                        + transaction.getInstitutionId()
+                        + " and Card Range ID : "
+                        + transaction.getCardRangeId());
+        throw new ACSDataAccessException(
+                InternalErrorCode.RENDERING_TYPE_NOT_FOUND, "Rendering Type Config not found");
+    }
 
     @Override
     public AuthConfigDto getAuthenticationConfig(Transaction transaction)

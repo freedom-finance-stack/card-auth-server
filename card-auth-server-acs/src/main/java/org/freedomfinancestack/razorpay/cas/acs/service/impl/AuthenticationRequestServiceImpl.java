@@ -60,7 +60,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
-    private final RenderingTypeService renderingTypeService;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -134,25 +133,33 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 if (DeviceInterface.BOTH.equals(sdkDeviceInterface)) {
                     try {
                         renderingTypeConfig =
-                                renderingTypeService.findDefaultRenderingType(
-                                        transaction.getInstitutionId(),
-                                        transaction.getCardRangeId(),
-                                        DeviceInterface.NATIVE.getValue());
+                                featureService.getRenderingTypeConfig(
+                                        transaction, DeviceInterface.NATIVE, true);
                     } catch (Exception e) {
                         throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
                     }
                 } else {
                     try {
                         renderingTypeConfig =
-                                renderingTypeService.findRenderingType(
-                                        transaction.getInstitutionId(),
-                                        transaction.getCardRangeId(),
-                                        sdkDeviceInterface.getValue());
+                                featureService.getRenderingTypeConfig(
+                                        transaction, sdkDeviceInterface, false);
                     } catch (Exception e) {
                         // why?
                         e.printStackTrace();
                     }
                 }
+                transaction
+                        .getTransactionSdkDetail()
+                        .setAcsInterface(renderingTypeConfig.getAcsInterface());
+                transaction
+                        .getTransactionSdkDetail()
+                        .setAcsUiTemplate(renderingTypeConfig.getAcsUiTemplate());
+                transaction
+                        .getTransactionSdkDetail()
+                        .setAcsUiType(renderingTypeConfig.getAcsUiType());
+                transaction
+                        .getTransactionSdkDetail()
+                        .setDefaultRenderOption(renderingTypeConfig.getDefaultRenderOption());
             }
 
             // Determine if challenge is required and update transaction accordingly
@@ -223,19 +230,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             String acsUrlStr = acsUrl == null ? "" : acsUrl.getChallengeUrl();
             AResMapperParams aResMapperParams =
                     AResMapperParams.builder().acsUrl(acsUrlStr).build();
-            if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
-                    && renderingTypeConfig != null) {
-                aResMapperParams.setAcsRenderingType(
-                        new ACSRenderingType(
-                                renderingTypeConfig.getDefaultRenderOption(),
-                                renderingTypeConfig.getAcsUiType()));
-                transaction
-                        .getTransactionSdkDetail()
-                        .setAcsUiType(renderingTypeConfig.getAcsUiType());
-                transaction
-                        .getTransactionSdkDetail()
-                        .setDefaultRenderOption(renderingTypeConfig.getDefaultRenderOption());
-            }
             ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);

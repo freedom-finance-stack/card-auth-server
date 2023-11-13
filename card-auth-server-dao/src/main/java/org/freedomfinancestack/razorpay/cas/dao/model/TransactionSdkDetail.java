@@ -27,6 +27,12 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "sdk_reference_number")
     private String sdkReferenceNumber;
 
+    @Column(name = "acs_interface")
+    private String acsInterface;
+
+    @Column(name = "acs_ui_template")
+    private String acsUiTemplate;
+
     @Column(name = "acs_ui_type")
     private String acsUiType;
 
