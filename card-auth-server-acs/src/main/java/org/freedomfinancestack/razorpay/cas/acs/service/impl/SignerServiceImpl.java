@@ -101,7 +101,7 @@ public class SignerServiceImpl implements SignerService {
 
             List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail, cardType);
 
-            //Temporary: Currently Don't have certificate file
+            // Temporary: Currently Don't have certificate file
             if (x509CertChain.isEmpty()) {
                 return "testACSSignedContent";
             }

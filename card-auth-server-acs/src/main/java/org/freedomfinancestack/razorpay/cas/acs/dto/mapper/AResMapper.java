@@ -83,7 +83,10 @@ public interface AResMapper {
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
     @Mapping(
             target = "acsRenderingType",
-            expression = "java(aResMapperParams.getAcsRenderingType())")
+            expression =
+                    "java(new org.freedomfinancestack.razorpay.cas.contract.enums."
+                        + "ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
+                        + " transaction.getTransactionSdkDetail().getAcsUiTemplate()))")
     @Mapping(
             target = "acsSignedContent",
             expression = "java(aResMapperParams.getAcsSignedContent())")

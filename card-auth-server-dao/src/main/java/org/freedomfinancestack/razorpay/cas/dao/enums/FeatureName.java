@@ -5,5 +5,6 @@ public enum FeatureName {
     CHALLENGE_ATTEMPT,
     OTP,
     PASSWORD,
-    OOB;
+    OOB,
+    RENDERING_TYPE;
 }
