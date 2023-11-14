@@ -11,6 +11,7 @@ import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.MessageExtension;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.springframework.stereotype.Component;
 
@@ -495,17 +496,55 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 when(purchaseElementsWhenRule, notNull()),
                 lengthValidator(DataLengthType.FIXED, 14),
                 isDate(ThreeDSDataElement.PURCHASE_DATE.getAcceptedFormat()));
+
         Validation.validate(
                 ThreeDSDataElement.PURCHASE_INSTAL_DATA.getFieldName(),
                 request.getPurchaseInstalData(),
                 when(
-                        validateDeviceChannelAndMessageCategory(
-                                        ThreeDSDataElement.PURCHASE_INSTAL_DATA, request)
-                                && Util.isNullorBlank(
-                                        request.getThreeDSRequestorAuthenticationInd())
-                                && "03".equals(request.getThreeDSRequestorAuthenticationInd()),
+                        (validateDeviceChannelAndMessageCategory(
+                                                ThreeDSDataElement.PURCHASE_INSTAL_DATA, request)
+                                        && !Util.isNullorBlank(
+                                                request.getThreeDSRequestorAuthenticationInd())
+                                        && "03"
+                                                .equals(
+                                                        request
+                                                                .getThreeDSRequestorAuthenticationInd())
+                                || (DeviceChannel.TRI
+                                                .getChannel()
+                                                .equals(request.getDeviceChannel())
+                                        && request.getThreeRIInd().equals("02"))),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 3));
+
+        Validation.validate(
+                ThreeDSDataElement.RECURRING_FREQUENCY.getFieldName(),
+                request.getRecurringFrequency(),
+                when(
+                        validateDeviceChannelAndMessageCategory(
+                                        ThreeDSDataElement.RECURRING_FREQUENCY, request)
+                                && !Util.isNullorBlank(
+                                        request.getThreeDSRequestorAuthenticationInd())
+                                && ("02".equals(request.getThreeDSRequestorAuthenticationInd())
+                                        || "03"
+                                                .equals(
+                                                        request
+                                                                .getThreeDSRequestorAuthenticationInd())),
+                        notNull()));
+
+        Validation.validate(
+                ThreeDSDataElement.RECURRING_EXPIRY.getFieldName(),
+                request.getRecurringExpiry(),
+                when(
+                        validateDeviceChannelAndMessageCategory(
+                                        ThreeDSDataElement.RECURRING_EXPIRY, request)
+                                && !Util.isNullorBlank(
+                                        request.getThreeDSRequestorAuthenticationInd())
+                                && ("02".equals(request.getThreeDSRequestorAuthenticationInd())
+                                        || "03"
+                                                .equals(
+                                                        request
+                                                                .getThreeDSRequestorAuthenticationInd())),
+                        notNull()));
     }
 
     protected void validateOptionalFields(AREQ request) throws ValidationException {
@@ -567,12 +606,19 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BILL_ADDR_CITY.getFieldName(),
                 request.getBillAddrCity(),
                 lengthValidator(DataLengthType.VARIABLE, 50));
+
         Validation.validate(
                 ThreeDSDataElement.BILL_ADDR_COUNTRY.getFieldName(),
                 request.getBillAddrCountry(),
+                when(
+                        validateDeviceChannelAndMessageCategory(
+                                        ThreeDSDataElement.BILL_ADDR_COUNTRY, request)
+                                && !Util.isNullorBlank(request.getBillAddrState()),
+                        notNull()),
                 lengthValidator(DataLengthType.FIXED, 3),
                 isNumeric(),
                 notIn(EMVCOConstant.excludedCountry));
+
         Validation.validate(
                 ThreeDSDataElement.BILL_ADDR_LINE_1.getFieldName(),
                 request.getBillAddrLine1(),
@@ -616,6 +662,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.SHIP_ADDR_COUNTRY.getFieldName(),
                 request.getShipAddrCountry(),
+                when(
+                        validateDeviceChannelAndMessageCategory(
+                                        ThreeDSDataElement.SHIP_ADDR_COUNTRY, request)
+                                && !Util.isNullorBlank(request.getShipAddrState()),
+                        notNull()),
                 lengthValidator(DataLengthType.FIXED, 3),
                 isNumeric(),
                 notIn(EMVCOConstant.excludedCountry));

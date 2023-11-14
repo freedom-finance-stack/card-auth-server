@@ -176,7 +176,8 @@ public class ThreeDSConstant {
     public static final String ELEMENT_WHITELISTING_DATA_ENTRY = "whitelistingDataEntry";
     public static final String ELEMENT_THREEDS_REQ_AUTH_METHOD_IND = "threeDSReqAuthMethodInd";
     public static final String ELEMENT_PAYTOKEN_SOURCE = "payTokenSource";
-
+    public static final String ELEMENT_RECURRING_EXPIRY = "recurringExpiry";
+    public static final String ELEMENT_RECURRING_FREQUENCY = "recurringFrequency";
     public static final String ELEMENT_THREEDS_REQUESTOR_DEC_MAX_TIME =
             "threeDSRequestorDecMaxTime";
     public static final String ELEMENT_THREEDS_REQUESTOR_DEC_REQ_IND = "threeDSRequestorDecReqInd";
