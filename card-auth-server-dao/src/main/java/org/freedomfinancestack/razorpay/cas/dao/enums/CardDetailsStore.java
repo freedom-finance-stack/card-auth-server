@@ -2,7 +2,8 @@ package org.freedomfinancestack.razorpay.cas.dao.enums;
 
 public enum CardDetailsStore {
     ACS(CardStoreTypeConstants.ACS),
-    EXTERNAL_API(CardStoreTypeConstants.EXTERNAL_API);
+    EXTERNAL_API(CardStoreTypeConstants.EXTERNAL_API),
+    MOCK(CardStoreTypeConstants.MOCK);
 
     CardDetailsStore(String name) {
         this.name = name;
@@ -18,5 +19,6 @@ public enum CardDetailsStore {
     public interface CardStoreTypeConstants {
         String ACS = "ACS";
         String EXTERNAL_API = "EXTERNAL_API";
+        String MOCK = "MOCK";
     }
 }

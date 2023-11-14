@@ -15,12 +15,17 @@ app:
       challengeRequest: 30 #sec
       challengeCompletion: 600 #sec
 
+test:
+  enable : false
+  attemptedRange:
+    start: 4016000000000010
+    end: 4016000000000020
 
 notification:
   sms:
     enabledChannel: "dummy-sms-server"
   email:
-    enabledChannel: "dummy-smtp-server"
+    enabledChannel: "dummy-email-server"
     simpleSMTP:
       host: your-smtp-server.com
       port: 587
@@ -36,7 +41,7 @@ otp:
 gateway:
   services:
     VISA_DS:
-      mock: false
+      mock: true
       url: https://sample-ds.com
       useSSL: false
       connectTimeout: 5000
@@ -51,7 +56,7 @@ gateway:
         maxAttempts: 2
         backOffPeriod: 1000   #ms
     MASTERCARD_DS:
-      mock: false
+      mock: true
       url: https://sample-ds.com
       useSSL: false
       connectTimeout: 5000

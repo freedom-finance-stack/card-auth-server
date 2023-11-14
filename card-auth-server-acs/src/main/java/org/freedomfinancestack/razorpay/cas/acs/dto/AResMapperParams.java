@@ -31,5 +31,4 @@ import lombok.Data;
 @Data
 public class AResMapperParams {
     String acsUrl;
-    
 }
