@@ -71,7 +71,7 @@ public class PlrqService extends HttpsGatewayService {
         pFormValuesBRW.correctFormData = String.format(BRW_FORM_DATA, transactionId, authVal);
         pFormValuesBRW.incorrectFormData = String.format(BRW_FORM_DATA, transactionId, "00000");
         pFormValuesBRW.action =
-                appConfiguration.getHostname() + RouteConstants.CHALLENGE_BROWSER_VALIDATE_ROUTE;
+                appConfiguration.getHostname() + RouteConstants.CHALLENGE_BROWSER_VALIDATION_URL;
 
         Plrq plrq = new Plrq();
         plrq.acsTransID = transactionId;
