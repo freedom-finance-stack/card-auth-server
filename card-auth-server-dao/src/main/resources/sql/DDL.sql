@@ -79,7 +79,7 @@ CREATE TABLE `transaction_message_log`
     `deleted_at`     timestamp
 );
 
-/* Create Index on transaction_id */
+-- /* Create Index on transaction_id */
 CREATE INDEX `transaction_message_type_detail_transaction_id_idx` ON transaction_message_log (`transaction_id`);
 
 DROP TABLE IF EXISTS `transaction_reference_detail`;

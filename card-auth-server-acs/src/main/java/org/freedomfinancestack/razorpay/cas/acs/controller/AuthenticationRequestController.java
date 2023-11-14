@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author ankitchoudhary2209, jaydeepRadadiya
  */
 @Slf4j
-@RestController("acsController")
+@RestController
 @RequestMapping("/v2/transaction")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationRequestController {

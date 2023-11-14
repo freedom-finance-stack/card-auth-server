@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The {@code ACSController} class is a Web View controller responsible for handling Challenge flow
@@ -25,8 +26,9 @@ import lombok.RequiredArgsConstructor;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Controller
-@RequestMapping("/v1/transaction")
+@RequestMapping("/v2/transaction")
 @RequiredArgsConstructor
 public class ChallengeRequestController {
 

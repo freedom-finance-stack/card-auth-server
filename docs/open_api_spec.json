@@ -20,58 +20,7 @@
     }
   ],
   "paths": {
-    "/v2/transaction/authentication": {
-      "post": {
-        "tags": [
-          "authentication-request-controller"
-        ],
-        "summary": "Handles Authentication Request generating from 3DS Server",
-        "operationId": "handleAuthenticationRequest",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AREQ"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Request Successfully handled and validated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ARES"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request or Request not according to Areq Schema",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ARES"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Exception Occurred during request handling",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ARES"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/transaction/challenge/browser": {
+    "/v2/transaction/challenge/browser": {
       "post": {
         "tags": [
           "challenge-request-controller"
@@ -130,7 +79,7 @@
         }
       }
     },
-    "/v1/transaction/challenge/browser/validate": {
+    "/v2/transaction/challenge/browser/validate": {
       "post": {
         "tags": [
           "challenge-request-controller"
@@ -179,10 +128,92 @@
           }
         }
       }
+    },
+    "/v2/transaction/authentication": {
+      "post": {
+        "tags": [
+          "authentication-request-controller"
+        ],
+        "summary": "Handles Authentication Request generating from 3DS Server",
+        "operationId": "handleAuthenticationRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AREQ"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Request Successfully handled and validated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ARES"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request or Request not according to Areq Schema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ARES"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Exception Occurred during request handling",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ARES"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "CVReq": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string"
+          },
+          "authVal": {
+            "type": "string"
+          },
+          "resendChallenge": {
+            "type": "boolean"
+          },
+          "cancelChallenge": {
+            "type": "boolean"
+          },
+          "threeDSMessageType": {
+            "type": "string",
+            "enum": [
+              "AReq",
+              "ARes",
+              "CReq",
+              "CRes",
+              "Erro",
+              "RReq",
+              "CDRes",
+              "CVReq",
+              "RRes"
+            ]
+          }
+        }
+      },
       "AREQ": {
         "type": "object",
         "properties": {
@@ -802,37 +833,6 @@
           },
           "whiteListStatusSource": {
             "type": "string"
-          },
-          "threeDSMessageType": {
-            "type": "string",
-            "enum": [
-              "AReq",
-              "ARes",
-              "CReq",
-              "CRes",
-              "Erro",
-              "RReq",
-              "CDRes",
-              "CVReq",
-              "RRes"
-            ]
-          }
-        }
-      },
-      "CVReq": {
-        "type": "object",
-        "properties": {
-          "transactionId": {
-            "type": "string"
-          },
-          "authVal": {
-            "type": "string"
-          },
-          "resendChallenge": {
-            "type": "boolean"
-          },
-          "cancelChallenge": {
-            "type": "boolean"
           },
           "threeDSMessageType": {
             "type": "string",
