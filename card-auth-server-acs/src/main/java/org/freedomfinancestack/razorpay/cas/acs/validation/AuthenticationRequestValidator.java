@@ -497,24 +497,29 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 lengthValidator(DataLengthType.FIXED, 14),
                 isDate(ThreeDSDataElement.PURCHASE_DATE.getAcceptedFormat()));
 
+        String authenticationInd = request.getThreeDSRequestorAuthenticationInd();
+        String threeRIInd = request.getThreeRIInd();
         Validation.validate(
                 ThreeDSDataElement.PURCHASE_INSTAL_DATA.getFieldName(),
                 request.getPurchaseInstalData(),
                 when(
                         (validateDeviceChannelAndMessageCategory(
                                                 ThreeDSDataElement.PURCHASE_INSTAL_DATA, request)
-                                        && !Util.isNullorBlank(
-                                                request.getThreeDSRequestorAuthenticationInd())
-                                        && "03"
-                                                .equals(
-                                                        request
-                                                                .getThreeDSRequestorAuthenticationInd())
+                                        && (!Util.isNullorBlank(authenticationInd)
+                                                && "03".equals(authenticationInd))
                                 || (DeviceChannel.TRI
                                                 .getChannel()
                                                 .equals(request.getDeviceChannel())
-                                        && request.getThreeRIInd().equals("02"))),
+                                        && threeRIInd.equals("02"))),
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 3));
+
+        boolean isAuthenticationIndValid =
+                !Util.isNullorBlank(authenticationInd)
+                        && ("02".equals(authenticationInd) || "03".equals(authenticationInd));
+        boolean isThreeRIIndValid =
+                !Util.isNullorBlank(threeRIInd)
+                        && (threeRIInd.equals("01") || threeRIInd.equals("02"));
 
         Validation.validate(
                 ThreeDSDataElement.RECURRING_FREQUENCY.getFieldName(),
@@ -522,13 +527,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 when(
                         validateDeviceChannelAndMessageCategory(
                                         ThreeDSDataElement.RECURRING_FREQUENCY, request)
-                                && !Util.isNullorBlank(
-                                        request.getThreeDSRequestorAuthenticationInd())
-                                && ("02".equals(request.getThreeDSRequestorAuthenticationInd())
-                                        || "03"
-                                                .equals(
-                                                        request
-                                                                .getThreeDSRequestorAuthenticationInd())),
+                                && (isAuthenticationIndValid || isThreeRIIndValid),
                         notNull()));
 
         Validation.validate(
@@ -537,13 +536,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 when(
                         validateDeviceChannelAndMessageCategory(
                                         ThreeDSDataElement.RECURRING_EXPIRY, request)
-                                && !Util.isNullorBlank(
-                                        request.getThreeDSRequestorAuthenticationInd())
-                                && ("02".equals(request.getThreeDSRequestorAuthenticationInd())
-                                        || "03"
-                                                .equals(
-                                                        request
-                                                                .getThreeDSRequestorAuthenticationInd())),
+                                && (isAuthenticationIndValid || isThreeRIIndValid),
                         notNull()));
     }
 
