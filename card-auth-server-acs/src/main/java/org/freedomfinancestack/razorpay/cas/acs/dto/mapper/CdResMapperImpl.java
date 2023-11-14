@@ -58,8 +58,10 @@ public class CdResMapperImpl {
         Network network =
                 Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
         cdRes.setSchemaName(network.getName());
-        cdRes.setJsEnableIndicator(
-                transaction.getTransactionBrowserDetail().getJavascriptEnabled());
+        if (transaction.getTransactionBrowserDetail().getJavascriptEnabled() != null) {
+            cdRes.setJsEnableIndicator(
+                    transaction.getTransactionBrowserDetail().getJavascriptEnabled());
+        }
         StringBuilder challengeText = new StringBuilder();
         TransactionCardHolderDetail transactionCardHolderDetail =
                 transaction.getTransactionCardHolderDetail();

@@ -191,7 +191,7 @@ public class TransactionServiceImpl implements TransactionService {
                         .ip(areq.getBrowserIP())
                         .build();
         if (StringUtils.isNotBlank(areq.getBrowserJavascriptEnabled())
-                && areq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)) {
+                && areq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
             transactionBrowserDetail.setJavascriptEnabled(
                     Boolean.valueOf(areq.getBrowserJavascriptEnabled()));
         }
