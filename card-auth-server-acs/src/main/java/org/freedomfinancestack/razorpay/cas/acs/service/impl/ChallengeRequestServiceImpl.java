@@ -108,7 +108,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         // todo dynamic configurable UI
 
         log.info("processBrowserRequest - Received CReq Request - " + strCReq);
-        Transaction transaction = new Transaction();
+        Transaction transaction = null;
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         challengeFlowDto.setCdRes(new CdRes());
         CREQ cReq;
@@ -222,7 +222,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     ex.getMessage());
         } finally {
             // save CDres and Transaction
-            if (transaction != null) {
+            if (transaction != null && !Util.isNullorBlank(transaction.getId())) {
                 if (Util.isChallengeCompleted(transaction)) {
                     transactionTimeoutServiceLocator
                             .locateService(MessageType.CReq)

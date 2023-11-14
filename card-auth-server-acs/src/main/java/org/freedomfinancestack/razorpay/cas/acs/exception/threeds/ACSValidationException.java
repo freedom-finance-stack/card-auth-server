@@ -19,7 +19,8 @@ public class ACSValidationException extends ThreeDSException {
     public ACSValidationException(ValidationException validationException) {
         super(
                 ValidationErrorCodeMapper.mapValidationToThreeDSecure(
-                        validationException.getValidationErrorCode()),
+                        validationException.getValidationErrorCode(),
+                        validationException.getFieldName()),
                 InternalErrorCode.INVALID_REQUEST,
                 validationException.getMessage());
     }

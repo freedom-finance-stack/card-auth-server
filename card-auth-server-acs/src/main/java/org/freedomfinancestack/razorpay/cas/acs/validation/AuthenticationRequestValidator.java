@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
+import org.freedomfinancestack.razorpay.cas.contract.MessageExtension;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.springframework.stereotype.Component;
@@ -95,10 +96,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getMessageVersion(),
                 notNull(),
                 lengthValidator(DataLengthType.VARIABLE, 8),
-                isIn(
-                        ThreeDSDataElement.MESSAGE_VERSION
-                                .getAcceptedValues())); // todo handle exception for message
-        // version
+                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_COMPIND.getFieldName(),
@@ -442,6 +440,17 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getMessageExtension(),
                 isListValid(isValidObject()),
                 isListLengthValid(DataLengthType.VARIABLE, 10));
+
+        if (request.getMessageExtension() != null) {
+            for (MessageExtension messageExtension : request.getMessageExtension()) {
+                Validation.validate(
+                        ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR.getFieldName(),
+                        Boolean.toString(messageExtension.isCriticalityIndicator()),
+                        isIn(
+                                ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR
+                                        .getAcceptedValues()));
+            }
+        }
 
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),

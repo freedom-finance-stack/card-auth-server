@@ -10,17 +10,18 @@ public enum
         InternalErrorCode { // todo get this file reviewed by Ashish and Piyush and revisit error
     // codes
 
-    // Error code for card USER
     CARD_USER_NOT_FOUND(
             "1001",
             "CARD NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.NO_CARD_RECORD),
+
     CARD_USER_BLOCKED(
             "1002",
             "CARD BLOCKED",
             TransactionStatus.FAILED,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
+
     CARD_USER_FETCH_EXCEPTION(
             "1003",
             "Error while fetching card user details",
@@ -45,13 +46,12 @@ public enum
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
-    // Error code for Card Range
-    // NOTE: Using Attempt and Rejected status for above 2 error to create scenario for 3ds testing
     CARD_RANGE_NOT_ACTIVE(
             "3006",
             "CARD RANGE NOT ACTIVE",
-            TransactionStatus.ATTEMPT,
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
+
     CARD_RANGE_NOT_FOUND(
             "3007",
             "CARD RANGE NOT FOUND",
@@ -189,6 +189,36 @@ public enum
             "UNABLE TO SEND OTP",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+    CHALLENGE_FLOW_INTERNAL_SERVER_ERROR(
+            "8016",
+            "UNEXPECTED ERROR OCCURRED",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
+    TEST_TRANSACTION_UA(
+            "9001",
+            "CARD NOT FOUND",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.NO_CARD_RECORD),
+
+    TEST_TRANSACTION_REJECTED(
+            "9002",
+            "CARD NOT FOUND",
+            TransactionStatus.REJECTED,
+            TransactionStatusReason.NO_CARD_RECORD),
+
+    TEST_TRANSACTION_ATTEMPTED(
+            "9003",
+            "CARD NOT FOUND",
+            TransactionStatus.ATTEMPT,
+            TransactionStatusReason.NO_CARD_RECORD),
+
+    TEST_TRANSACTION_FAILED(
+            "9004",
+            "CARD NOT FOUND",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.NO_CARD_RECORD),
     ;
 
     private final String code;

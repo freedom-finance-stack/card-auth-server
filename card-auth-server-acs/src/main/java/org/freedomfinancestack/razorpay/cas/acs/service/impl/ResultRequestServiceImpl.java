@@ -92,14 +92,18 @@ public class ResultRequestServiceImpl implements ResultRequestService {
         } catch (ACSValidationException e) {
             transaction.setTransactionStatus(e.getInternalErrorCode().getTransactionStatus());
             transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
-            sendDsErrorResponse(transaction, e.getThreeDSecureErrorCode(), e.getMessage());
+            sendDsErrorResponse(
+                    transaction, e.getThreeDSecureErrorCode(), e.getMessage(), MessageType.RRes);
             throw e;
         } catch (GatewayHttpStatusCodeException e) {
             transaction.setTransactionStatus(TransactionStatus.UNABLE_TO_AUTHENTICATE);
             if (e.getHttpStatus().is4xxClientError()) {
                 transaction.setErrorCode(InternalErrorCode.CONNECTION_TO_DS_FAILED.getCode());
                 sendDsErrorResponse(
-                        transaction, ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT, e.getMessage());
+                        transaction,
+                        ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT,
+                        e.getMessage(),
+                        MessageType.RReq);
             } else {
                 transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
             }
@@ -108,11 +112,14 @@ public class ResultRequestServiceImpl implements ResultRequestService {
     }
 
     private void sendDsErrorResponse(
-            Transaction transaction, ThreeDSecureErrorCode error, String errorDetails) {
+            Transaction transaction,
+            ThreeDSecureErrorCode error,
+            String errorDetails,
+            MessageType messageType) {
         // send error message to DS.  Ignore all the exception as its 2nd communication to DS, we
         // want to send Cres back
         ThreeDSErrorResponse errorMessage =
-                Util.generateErrorResponse(error, transaction, errorDetails, MessageType.RReq);
+                Util.generateErrorResponse(error, transaction, errorDetails, messageType);
         try {
             dsGatewayService.sendError(
                     Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),

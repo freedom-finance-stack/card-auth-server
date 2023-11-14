@@ -98,7 +98,6 @@ public interface AResMapper {
     ARES toAres(AREQ areq, Transaction transaction);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
-
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
                 && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
@@ -107,6 +106,7 @@ public interface AResMapper {
                         || TransactionStatus.REJECTED.equals(transaction.getTransactionStatus()))) {
             transStatusReason = transaction.getTransactionStatusReason();
         } else {
+
             // For 02-NPA, Conditional as defined by the DS.
             if (transaction.getTransactionCardDetail() != null
                     && transaction.getTransactionCardDetail().getNetworkCode() != null

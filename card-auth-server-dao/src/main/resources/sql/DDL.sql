@@ -2,6 +2,8 @@ CREATE DATABASE IF NOT EXISTS `cas_db`;
 
 USE `cas_db`;
 
+
+
 DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE `transaction`
 (
@@ -272,12 +274,10 @@ CREATE TABLE `card_detail`
 (
     `id`             varchar(36) PRIMARY KEY,
     `cardholder_id`  varchar(36) NOT NULL,
-    `card_range_id`  varchar(36) NOT NULL,
     `institution_id` varchar(36) NOT NULL,
     `card_number`    varchar(25),
     `card_expiry`    varchar(4),
     `blocked`        bool,
-    `network_code`   varchar(4),
     `created_at`     timestamp   NOT NULL,
     `modified_at`    timestamp   NOT NULL,
     `deleted_at`     timestamp default NULL,

@@ -24,7 +24,7 @@ public class InternalConstants {
     public static final String PAD_RIGHT = "RIGHT";
     public static final String NO_OP_HSM = "NoOpHSM";
     public static final Character SYMBOL_F = 'F';
-
+    public static final String PROD = "prod";
     public static final Integer OTP_START_RANGE = 111111;
     public static final Integer OTP_END_RANGE = 999999;
 

@@ -293,9 +293,14 @@ public class Util {
         if (null != transaction) {
             errorObj.setMessageVersion(transaction.getMessageVersion());
             errorObj.setAcsTransID(transaction.getId());
-            errorObj.setDsTransID(transaction.getTransactionReferenceDetail().getDsTransactionId());
-            errorObj.setThreeDSServerTransID(
-                    transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+            if (transaction.getTransactionReferenceDetail() != null) {
+                errorObj.setDsTransID(
+                        transaction.getTransactionReferenceDetail().getDsTransactionId());
+                errorObj.setThreeDSServerTransID(
+                        transaction
+                                .getTransactionReferenceDetail()
+                                .getThreedsServerTransactionId());
+            }
         }
         return errorObj;
     }
