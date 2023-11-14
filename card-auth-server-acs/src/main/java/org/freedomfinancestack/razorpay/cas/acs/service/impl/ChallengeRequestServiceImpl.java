@@ -91,7 +91,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     Util.generateErrorResponse(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                             null,
-                            "Unexpected error while validating challenge");
+                            "Unexpected error while validating challenge",
+                            MessageType.CReq);
             cdReqError.setEncryptedErro(Util.encodeBase64Url(errorObj));
         }
         return cdReqError;
@@ -107,7 +108,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         // todo dynamic configurable UI
 
         log.info("processBrowserRequest - Received CReq Request - " + strCReq);
-        Transaction transaction = new Transaction();
+        Transaction transaction = null;
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         challengeFlowDto.setCdRes(new CdRes());
         CREQ cReq;
@@ -130,6 +131,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
             // validation Creq
             challengeRequestValidator.validateRequest(cReq, transaction);
+            transaction.setThreedsSessionData(
+                    Util.removeBase64Padding(
+                            threeDSSessionData)); // removing base64 padding because Padding not
+            // allowed in base64url encoded form parameter
 
             // 4 flows
             // 1: if Challenge cancelled by user
@@ -217,13 +222,15 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     ex.getMessage());
         } finally {
             // save CDres and Transaction
-            if (transaction != null) {
+            if (transaction != null && !Util.isNullorBlank(transaction.getId())) {
                 if (Util.isChallengeCompleted(transaction)) {
                     transactionTimeoutServiceLocator
                             .locateService(MessageType.CReq)
                             .cancelTask(transaction.getId());
                     challengeFlowDto.getCdRes().setChallengeCompleted(true);
-                    challengeFlowDto.getCdRes().setThreeDSSessionData(threeDSSessionData);
+                    challengeFlowDto
+                            .getCdRes()
+                            .setThreeDSSessionData(transaction.getThreedsSessionData());
                 }
                 updateEci(transaction);
                 if (challengeFlowDto.isSendRreq()) {
@@ -256,7 +263,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     Util.generateErrorResponse(
                             ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                             null,
-                            "Unexpected error while validating challenge");
+                            "Unexpected error while validating challenge",
+                            MessageType.CReq);
             cdReqError.setEncryptedErro(Util.encodeBase64Url(errorObj));
         }
         return cdReqError;
@@ -270,7 +278,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         Transaction transaction = null;
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         challengeFlowDto.setCdRes(new CdRes());
-        String threeDsSessionData = "";
 
         try {
             challengeValidationRequestValidator.validateRequest(cvReq);
@@ -283,7 +290,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     .setNotificationUrl(
                             transaction.getTransactionReferenceDetail().getNotificationUrl());
 
-            threeDsSessionData = transaction.getThreedsSessionData();
             // log cvreq
             transactionMessageLogService.createAndSave(cvReq, cvReq.getTransactionId());
 
@@ -380,7 +386,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             .locateService(MessageType.CReq)
                             .cancelTask(transaction.getId());
                     challengeFlowDto.getCdRes().setChallengeCompleted(true);
-                    challengeFlowDto.getCdRes().setThreeDSSessionData(threeDsSessionData);
+                    challengeFlowDto
+                            .getCdRes()
+                            .setThreeDSSessionData(transaction.getThreedsSessionData());
                 }
                 updateEci(transaction);
                 if (challengeFlowDto.isSendRreq()) {
@@ -525,8 +533,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         .build());
         log.info("Sent challenge for transaction {}", transaction.getId());
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
-        plrqService.sendPlrq(
-                transaction.getId(), transaction.getAuthValue(), transaction.getMessageVersion());
         cdResMapper.generateCDres(challengeFlowDto.getCdRes(), transaction);
     }
 
@@ -602,7 +608,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             CdRes cdRes, ThreeDSecureErrorCode error, Transaction transaction, String errorDetail) {
         cdRes.setError(true);
         cdRes.setEncryptedCRes(null);
-        ThreeDSErrorResponse errorObj = Util.generateErrorResponse(error, transaction, errorDetail);
+        ThreeDSErrorResponse errorObj =
+                Util.generateErrorResponse(error, transaction, errorDetail, MessageType.CReq);
         cdRes.setEncryptedErro(Util.encodeBase64Url(errorObj));
     }
 }

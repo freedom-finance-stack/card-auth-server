@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.service.CardRangeService;
@@ -42,14 +43,14 @@ public class CardRangeServiceImpl implements CardRangeService {
      * @throws DataNotFoundException
      * @throws ACSDataAccessException
      */
-    public CardRange findByPan(String pan) throws DataNotFoundException, ACSDataAccessException {
+    public CardRange findByPan(String pan)
+            throws DataNotFoundException, ACSDataAccessException, CardDetailsNotFoundException {
         if (StringUtils.isBlank(pan)) {
             log.error("PAN is null or empty");
             throw new DataNotFoundException(
                     ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
                     InternalErrorCode.CARD_RANGE_NOT_FOUND);
         }
-
         CardRange cardRange;
         try {
             cardRange = cardRangeRepository.findByPan(Long.valueOf(pan));
@@ -62,9 +63,9 @@ public class CardRangeServiceImpl implements CardRangeService {
 
         if (cardRange == null) {
             log.error("Card range not found for PAN: " + pan); // todo Noncompliance : Mask PAN
-            throw new DataNotFoundException(
-                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
-                    InternalErrorCode.CARD_RANGE_NOT_FOUND);
+            throw new CardDetailsNotFoundException(
+                    InternalErrorCode.CARD_RANGE_NOT_FOUND,
+                    InternalErrorCode.CARD_RANGE_NOT_FOUND.getDefaultErrorMessage());
         }
 
         return cardRange;
@@ -78,9 +79,13 @@ public class CardRangeServiceImpl implements CardRangeService {
      * @throws DataNotFoundException
      */
     public void validateRange(CardRange cardRange)
-            throws TransactionDataNotValidException, DataNotFoundException {
+            throws TransactionDataNotValidException,
+                    DataNotFoundException,
+                    CardDetailsNotFoundException {
         if (cardRange.getStatus() != CardRangeStatus.ACTIVE) {
-            throw new TransactionDataNotValidException(InternalErrorCode.CARD_RANGE_NOT_ACTIVE);
+            throw new CardDetailsNotFoundException(
+                    InternalErrorCode.CARD_RANGE_NOT_ACTIVE,
+                    InternalErrorCode.CARD_RANGE_NOT_ACTIVE.getDefaultErrorMessage());
         }
 
         Institution institution = cardRange.getInstitution();

@@ -15,6 +15,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.NotificationSentException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.PlrqService;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.OtpCommunicationConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationService;
 import org.freedomfinancestack.razorpay.cas.acs.service.OtpService;
@@ -44,8 +45,9 @@ import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstant
 @RequiredArgsConstructor
 public class OTPAuthenticationServiceImpl implements AuthenticationService {
     private final OtpService otpService;
-    private final NotificationService notificationService;
     private final OtpCommunicationConfiguration otpCommunicationConfiguration;
+    private final PlrqService plrqService;
+    private final NotificationService notificationService;
 
     @Override
     public void preAuthenticate(AuthenticationDto authentication) throws ThreeDSException {
@@ -112,6 +114,7 @@ public class OTPAuthenticationServiceImpl implements AuthenticationService {
                     log.error("Unable to send SMS!!!");
                 }
             }
+            plrqService.sendPlrq(transaction.getId(), otp, transaction.getMessageVersion());
         } catch (NotificationException e) {
             throw new NotificationSentException(
                     ThreeDSecureErrorCode.SYSTEM_CONNECTION_FAILURE,

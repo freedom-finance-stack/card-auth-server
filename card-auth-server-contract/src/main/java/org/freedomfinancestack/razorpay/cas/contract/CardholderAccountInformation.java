@@ -4,6 +4,9 @@ import org.freedomfinancestack.extensions.validation.validator.Validatable;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.utils.Util;
 
+import lombok.Data;
+
+@Data
 public class CardholderAccountInformation implements Validatable {
 
     private String chAccAgeInd;
