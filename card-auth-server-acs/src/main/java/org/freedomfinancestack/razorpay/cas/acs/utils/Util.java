@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
@@ -265,16 +266,16 @@ public class Util {
 
     public static String getAcsChallengeUrl(String hostName, String deviceChannel) {
         if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
-            return hostName + InternalConstants.CHALLENGE_APP_URL;
+            return hostName + RouteConstants.CHALLENGE_APP_URL;
         }
-        return hostName + InternalConstants.CHALLENGE_BRW_URL;
+        return hostName + RouteConstants.CHALLENGE_BROWSER_URL;
     }
 
     public static String getAcsChallengeValidationUrl(String hostName, String deviceChannel) {
         if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
-            return hostName + InternalConstants.CHALLENGE_APP_VALIDATION_URL;
+            return hostName + RouteConstants.CHALLENGE_APP_VALIDATION_URL;
         }
-        return hostName + InternalConstants.CHALLENGE_BRW_VALIDATION_URL;
+        return hostName + RouteConstants.CHALLENGE_BROWSER_VALIDATION_URL;
     }
 
     public static ThreeDSErrorResponse generateErrorResponse(

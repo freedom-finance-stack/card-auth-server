@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.hc.core5.http.ContentType;
-import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
@@ -71,7 +71,7 @@ public class PlrqService extends HttpsGatewayService {
         pFormValuesBRW.correctFormData = String.format(BRW_FORM_DATA, transactionId, authVal);
         pFormValuesBRW.incorrectFormData = String.format(BRW_FORM_DATA, transactionId, "00000");
         pFormValuesBRW.action =
-                appConfiguration.getHostname() + InternalConstants.CHALLENGE_BRW_VALIDATION_URL;
+                appConfiguration.getHostname() + RouteConstants.CHALLENGE_BROWSER_VALIDATE_ROUTE;
 
         Plrq plrq = new Plrq();
         plrq.acsTransID = transactionId;

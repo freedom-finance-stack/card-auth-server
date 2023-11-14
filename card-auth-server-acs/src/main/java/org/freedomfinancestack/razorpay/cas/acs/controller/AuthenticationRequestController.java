@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestService;
@@ -30,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@RequestMapping("/v2/transaction")
+@RequestMapping(RouteConstants.TRANSACTION_ROUTE)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationRequestController {
 
@@ -67,7 +68,7 @@ public class AuthenticationRequestController {
                         description = "Bad Request or Request not according to Areq Schema")
             })
     @PostMapping(
-            value = "/authentication",
+            value = RouteConstants.AUTHENTICATION_ROUTE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "acs.auth-request", longTask = true)

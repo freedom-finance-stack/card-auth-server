@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Controller
-@RequestMapping("/v2/transaction")
+@RequestMapping(RouteConstants.TRANSACTION_ROUTE)
 @RequiredArgsConstructor
 public class ChallengeRequestController {
 
@@ -47,7 +48,7 @@ public class ChallengeRequestController {
      *     HTML format.
      */
     @RequestMapping(
-            value = "/challenge/browser",
+            value = RouteConstants.CHALLENGE_BROWSER_ROUTE,
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
@@ -116,7 +117,7 @@ public class ChallengeRequestController {
      *     HTML format.
      */
     @RequestMapping(
-            value = "/challenge/browser/validate",
+            value = RouteConstants.CHALLENGE_BROWSER_VALIDATE_ROUTE,
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
