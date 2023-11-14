@@ -240,11 +240,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             String acsUrlStr = acsUrl == null ? "" : acsUrl.getChallengeUrl();
             AResMapperParams aResMapperParams =
                     AResMapperParams.builder().acsUrl(acsUrlStr).build();
-            if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
-                    && transaction.isChallengeMandated()
-                    && signedData != null) {
-                aResMapperParams.setAcsSignedContent(signedData);
-            }
             ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
