@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 
 /**
@@ -45,7 +45,7 @@ public class ChallengeValidationRequestValidator implements ThreeDSValidator<CVR
             Validation.validate(
                     ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                     incomingCvreq.getTransactionId(),
-                    notNull(),
+                    notBlank(),
                     lengthValidator(DataLengthType.FIXED, 36));
         } catch (ValidationException ex) {
             throw new ACSValidationException(ex);

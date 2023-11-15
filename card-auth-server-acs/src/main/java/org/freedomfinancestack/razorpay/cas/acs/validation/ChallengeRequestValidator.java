@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsUUID.isUUID;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
-import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
@@ -66,12 +66,12 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_TYPE.getFieldName(),
                 incomingCreq.getMessageType(),
-                notNull(),
+                notBlank(),
                 isIn(new String[] {MessageType.CReq.toString()}));
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
                 incomingCreq.getMessageVersion(),
-                notNull(),
+                notBlank(),
                 isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
 
         Validation.validate(
@@ -80,13 +80,13 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
-                        notNull()),
+                        notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 36));
 
         Validation.validate(
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                 incomingCreq.getAcsTransID(),
-                notNull(),
+                notBlank(),
                 lengthValidator(DataLengthType.VARIABLE, 36));
 
         Validation.validate(
@@ -95,7 +95,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.CHALLENGE_WINDOW_SIZE, transaction),
-                        notNull()),
+                        notBlank()),
                 isIn(ThreeDSDataElement.CHALLENGE_WINDOW_SIZE.getAcceptedValues()));
 
         Validation.validate(
@@ -104,7 +104,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
-                        notNull()),
+                        notBlank()),
                 lengthValidator(DataLengthType.FIXED, 3));
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
@@ -112,7 +112,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_TRANS_ID, transaction),
-                        notNull()),
+                        notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 36),
                 isUUID());
         Validation.validate(
@@ -121,7 +121,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
-                        notNull()),
+                        notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 256));
     }
 
@@ -152,7 +152,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeDataEntry(),
-                    when(conditionForChallengeDataEntry, notNull()),
+                    when(conditionForChallengeDataEntry, notBlank()),
                     lengthValidator(DataLengthType.VARIABLE, 45));
 
             boolean conditionForChallengeHTMLDataEntry =
@@ -161,7 +161,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeHTMLDataEntry(),
-                    when(conditionForChallengeHTMLDataEntry, notNull()));
+                    when(conditionForChallengeHTMLDataEntry, notBlank()));
         }
 
         if (transaction.getTransactionSdkDetail().getAcsUiType() != null) {
