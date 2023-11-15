@@ -83,7 +83,7 @@ public class ChallengeRequestController {
                     InternalErrorCode.INTERNAL_SERVER_ERROR);
         }
         if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
-            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
+            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedErro());
         } else {
             model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
         }
