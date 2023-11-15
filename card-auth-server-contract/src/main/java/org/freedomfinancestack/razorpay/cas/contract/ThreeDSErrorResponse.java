@@ -21,7 +21,7 @@ public class ThreeDSErrorResponse {
     private String errorDetail;
     private String errorMessageType = MessageType.AReq.toString();
     private String messageType = MessageType.Erro.toString();
-    private String messageVersion = EMVCOConstant.MESSAGE_TYPE_VERSION;
+    private String messageVersion = EMVCOConstant.DEFAULT_MESSAGE_TYPE_VERSION;
 
     // All Conditional Fields
     private String threeDSServerTransID;

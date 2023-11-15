@@ -26,7 +26,7 @@ public class ARES extends ThreeDSObject {
 
     private String messageType = MessageType.ARes.toString();
 
-    private String messageVersion = EMVCOConstant.MESSAGE_TYPE_VERSION;
+    private String messageVersion = EMVCOConstant.DEFAULT_MESSAGE_TYPE_VERSION;
 
     private String sdkEphemPubKey;
 

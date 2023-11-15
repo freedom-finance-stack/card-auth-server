@@ -90,8 +90,7 @@ public class ThreeDSException extends Exception {
                     transaction.getTransactionReferenceDetail().getDsTransactionId());
         }
         threeDSErrorResponse.setAcsTransID(transaction.getId());
-        if (transaction.getMessageVersion() != null
-                && transaction.getMessageVersion().length() > 0) {
+        if (transaction.getMessageVersion() != null && !transaction.getMessageVersion().isEmpty()) {
             threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
         }
     }
