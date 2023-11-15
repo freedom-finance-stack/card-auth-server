@@ -435,7 +435,6 @@ public enum ThreeDSDataElement {
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
-
     NOTIFICATION_URL(
             ThreeDSConstant.ELEMENT_NOTIFICATION_URL,
             new DeviceChannel[] {DeviceChannel.BRW},
