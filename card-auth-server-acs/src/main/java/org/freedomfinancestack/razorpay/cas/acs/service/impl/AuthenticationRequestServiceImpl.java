@@ -91,8 +91,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
         InstitutionAcsUrl acsUrl = null;
         ARES ares;
         CardRange cardRange = null;
-        DeviceInterface sdkDeviceInterface = null;
-        RenderingTypeConfig renderingTypeConfig = null;
         try {
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
@@ -128,9 +126,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
                 }
 
-                sdkDeviceInterface =
+                DeviceInterface sdkDeviceInterface =
                         DeviceInterface.getDeviceInterface(
                                 areq.getDeviceRenderOptions().getSdkInterface());
+                RenderingTypeConfig renderingTypeConfig = null;
                 if (DeviceInterface.BOTH.equals(sdkDeviceInterface)) {
                     try {
                         renderingTypeConfig =
@@ -149,18 +148,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                         e.printStackTrace();
                     }
                 }
-                transaction
-                        .getTransactionSdkDetail()
-                        .setAcsInterface(renderingTypeConfig.getAcsInterface());
-                transaction
-                        .getTransactionSdkDetail()
-                        .setAcsUiTemplate(renderingTypeConfig.getAcsUiTemplate());
-                transaction
-                        .getTransactionSdkDetail()
-                        .setAcsUiType(renderingTypeConfig.getAcsUiType());
-                transaction
-                        .getTransactionSdkDetail()
-                        .setDefaultRenderOption(renderingTypeConfig.getDefaultRenderOption());
+                transactionService.updateTransactionSDKDetail(transaction, renderingTypeConfig);
             }
 
             // Determine if challenge is required and update transaction accordingly
