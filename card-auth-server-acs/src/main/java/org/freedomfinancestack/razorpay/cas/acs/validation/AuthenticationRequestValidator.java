@@ -157,15 +157,21 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         notNull()),
                 lengthValidator(DataLengthType.VARIABLE, 36));
         Validation.validate(
-                ThreeDSDataElement.THREEDS_SERVER_URL.getFieldName(),
+                ThreeDSDataElement.THREEDS_SERVER_URL_2_2_0.getFieldName(),
                 request.getThreeDSServerURL(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.THREEDS_SERVER_URL, request),
+                                ThreeDSDataElement.THREEDS_SERVER_URL_2_2_0, request),
                         notNull()),
-                lengthValidator(
-                        DataLengthType.VARIABLE,
-                        2048)); // todo is message version condition needed ?
+                lengthValidator(DataLengthType.VARIABLE, 2048));
+        Validation.validate(
+                ThreeDSDataElement.THREEDS_SERVER_URL_2_1_0.getFieldName(),
+                request.getThreeDSServerURL(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.THREEDS_SERVER_URL_2_1_0, request),
+                        notNull()),
+                lengthValidator(DataLengthType.VARIABLE, 2048));
         Validation.validate(
                 ThreeDSDataElement.THREEDS_RI_IND.getFieldName(),
                 request.getThreeRIInd(),

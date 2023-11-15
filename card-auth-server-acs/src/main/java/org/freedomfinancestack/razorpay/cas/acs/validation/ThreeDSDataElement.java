@@ -87,11 +87,17 @@ public enum ThreeDSDataElement {
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
 
-    THREEDS_SERVER_URL(
+    THREEDS_SERVER_URL_2_2_0(
             ThreeDSConstant.ELEMENT_THREEDSSERVER_URL,
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
-            ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
+
+    THREEDS_SERVER_URL_2_1_0(
+            ThreeDSConstant.ELEMENT_THREEDSSERVER_URL,
+            new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_1_0}),
 
     THREEDS_RI_IND(
             ThreeDSConstant.ELEMENT_THREE_RI_IND,
