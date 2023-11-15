@@ -60,7 +60,6 @@ public class ResultRequestServiceImpl implements ResultRequestService {
             isSuccessful = true;
         } catch (Exception ex) {
             isSuccessful = false;
-            transaction.setTransactionStatus(TransactionStatus.FAILED);
             // Ignore any exception in sending RReq after retries and complete transaction
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
             try {
