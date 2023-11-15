@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import static org.freedomfinancestack.extensions.validation.validator.basic.IsUUID.isUUID;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
@@ -112,7 +113,8 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_TRANS_ID, transaction),
                         notNull()),
-                lengthValidator(DataLengthType.VARIABLE, 36));
+                lengthValidator(DataLengthType.VARIABLE, 36),
+                isUUID());
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL.getFieldName(),
                 incomingCreq.getThreeDSRequestorAppURL(),
