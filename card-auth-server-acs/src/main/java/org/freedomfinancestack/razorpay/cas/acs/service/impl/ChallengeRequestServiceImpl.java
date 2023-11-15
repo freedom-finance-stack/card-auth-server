@@ -394,16 +394,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 if (challengeFlowDto.isSendRreq()) {
                     log.info("Sending Result request for transaction {}", transaction.getId());
                     // sendRreq and if it fails update response
-                    if (!resultRequestService.processRreq(transaction)) {
-                        log.info(
-                                "Failed to send Result request for transaction {}",
-                                transaction.getId());
-                        generateErrorResponse(
-                                challengeFlowDto.getCdRes(),
-                                ThreeDSecureErrorCode.SENT_MESSAGES_LIMIT_EXCEEDED,
-                                transaction,
-                                "Couldn't communicate to DS");
-                    }
+                    resultRequestService.processRreq(transaction);
                 }
                 transactionService.saveOrUpdate(transaction);
                 transactionMessageLogService.createAndSave(
