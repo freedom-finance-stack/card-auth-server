@@ -13,11 +13,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -262,20 +260,6 @@ public class Util {
             return base64String.replaceAll("=+$", "");
         }
         return null;
-    }
-
-    public static String getAcsChallengeUrl(String hostName, String deviceChannel) {
-        if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
-            return hostName + RouteConstants.CHALLENGE_APP_URL;
-        }
-        return hostName + RouteConstants.CHALLENGE_BROWSER_URL;
-    }
-
-    public static String getAcsChallengeValidationUrl(String hostName, String deviceChannel) {
-        if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
-            return hostName + RouteConstants.CHALLENGE_APP_VALIDATION_URL;
-        }
-        return hostName + RouteConstants.CHALLENGE_BROWSER_VALIDATION_URL;
     }
 
     public static ThreeDSErrorResponse generateErrorResponse(

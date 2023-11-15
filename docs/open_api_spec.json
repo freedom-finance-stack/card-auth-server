@@ -481,9 +481,6 @@
           "whiteListStatusSource": {
             "type": "string"
           },
-          "transactionId": {
-            "type": "string"
-          },
           "threeDSMessageType": {
             "type": "string",
             "enum": [
@@ -497,6 +494,9 @@
               "CVReq",
               "RRes"
             ]
+          },
+          "transactionId": {
+            "type": "string"
           }
         }
       },
