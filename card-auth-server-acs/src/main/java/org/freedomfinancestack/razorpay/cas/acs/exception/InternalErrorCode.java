@@ -129,6 +129,12 @@ public enum
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.INVALID_TRANSACTION),
 
+    SESSION_DATA_PARSING_ERROR(
+            "8001",
+            "threeDSSessionData is invalid",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
     TRANSACTION_NOT_FOUND(
             "8002",
             "TRANSACTION ID NOT FOUND",
