@@ -133,7 +133,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             challengeRequestValidator.validateRequest(cReq, transaction);
 
             // validate threeDSSessionData
-            if (Util.isNullorBlank(threeDSSessionData)) {
+            if (!Util.isNullorBlank(threeDSSessionData)) {
                 if (!Util.isValidBase64Url(threeDSSessionData)) {
                     transaction.setChallengeCancelInd(
                             ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
