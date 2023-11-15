@@ -189,21 +189,13 @@ VALUES
         '4', 'CARD_RANGE', 'R8', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "01",
-    "acs_ui_template": "01",
-    "default_render_option": "0",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["01", "02"],
+    "preference": 1
     },
     {
     "acs_interface" : "02",
-    "acs_ui_template": "03",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    },
-    {
-    "acs_interface" : "01",
-    "acs_ui_template": "02",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["03"],
+    "preference": 2
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -214,9 +206,8 @@ VALUES
         '5', 'CARD_RANGE', 'R9', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "01",
-    "acs_ui_template": "01",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["01"],
+    "preference": 1
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -227,9 +218,8 @@ VALUES
         '6', 'CARD_RANGE', 'R10', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "01",
-    "acs_ui_template": "02",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["02"],
+    "preference": 1
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -240,9 +230,8 @@ VALUES
         '7', 'CARD_RANGE', 'R11', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "01",
-    "acs_ui_template": "03",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["03"],
+    "preference": 1
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -253,9 +242,8 @@ VALUES
         '8', 'CARD_RANGE', 'R12', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "01",
-    "acs_ui_template": "04",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["04"],
+    "preference": "1"
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -266,9 +254,8 @@ VALUES
         '9', 'CARD_RANGE', 'R13', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "02",
-    "acs_ui_template": "01",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["01"],
+    "preference": 1
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -279,9 +266,8 @@ VALUES
         '10', 'CARD_RANGE', 'R14', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "02",
-    "acs_ui_template": "02",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["02"],
+    "preference": 1
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -292,9 +278,8 @@ VALUES
         '11', 'CARD_RANGE', 'R15', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "02",
-    "acs_ui_template": "03",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["03"],
+    "preference": 1
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -305,9 +290,8 @@ VALUES
         '12', 'CARD_RANGE', 'R16', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "02",
-    "acs_ui_template": "04",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["04"],
+    "preference": 1
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
@@ -318,9 +302,8 @@ VALUES
         '13', 'CARD_RANGE', 'R17', 1, 'RENDERING_TYPE',
         '[{
     "acs_interface" : "02",
-    "acs_ui_template": "05",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
+    "acs_ui_template": ["05"],
+    "preference": 1
     }]',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null

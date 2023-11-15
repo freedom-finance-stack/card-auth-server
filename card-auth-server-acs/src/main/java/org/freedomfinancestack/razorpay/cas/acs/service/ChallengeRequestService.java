@@ -1,6 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
+import lombok.NonNull;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 
 /**
@@ -15,6 +18,8 @@ import org.freedomfinancestack.razorpay.cas.contract.*;
  * @since 1.0.0
  */
 public interface ChallengeRequestService {
+
+    CRES processAppChallengeRequest(@NonNull CREQ creq) throws ThreeDSException, ACSDataAccessException;
 
     /**
      * Process the challenge request (CReq) and generate the challenge display response (CDRes) for
