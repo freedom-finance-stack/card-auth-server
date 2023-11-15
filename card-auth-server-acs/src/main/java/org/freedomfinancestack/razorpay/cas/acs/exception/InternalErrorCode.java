@@ -55,7 +55,7 @@ public enum
     CARD_RANGE_NOT_FOUND(
             "3007",
             "CARD RANGE NOT FOUND",
-            TransactionStatus.REJECTED,
+            TransactionStatus.FAILED,
             TransactionStatusReason.NO_CARD_RECORD),
 
     RANGE_GROUP_NOT_FOUND(
