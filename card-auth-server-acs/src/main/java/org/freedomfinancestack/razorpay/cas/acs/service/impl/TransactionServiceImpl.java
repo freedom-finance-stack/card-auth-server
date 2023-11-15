@@ -90,6 +90,20 @@ public class TransactionServiceImpl implements TransactionService {
         return transaction;
     }
 
+    public void updateTransactionSDKDetail(
+            Transaction transaction, RenderingTypeConfig renderingTypeConfig) {
+        transaction
+                .getTransactionSdkDetail()
+                .setAcsInterface(renderingTypeConfig.getAcsInterface());
+        transaction
+                .getTransactionSdkDetail()
+                .setAcsUiTemplate(renderingTypeConfig.getAcsUiTemplate());
+        transaction.getTransactionSdkDetail().setAcsUiType(renderingTypeConfig.getAcsUiType());
+        transaction
+                .getTransactionSdkDetail()
+                .setDefaultRenderOption(renderingTypeConfig.getDefaultRenderOption());
+    }
+
     private static Transaction createTransactionFromAreq(AREQ areq) {
         Transaction.TransactionBuilder transactionBuilder = Transaction.builder();
         transactionBuilder

@@ -37,13 +37,10 @@ public class FeatureServiceImpl implements FeatureService {
     public RenderingTypeConfig getRenderingTypeConfig(
             Transaction transaction, DeviceInterface deviceInterface, boolean fetchDefault)
             throws ACSDataAccessException {
-        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
-        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
-        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
         List<RenderingTypeConfig> renderingTypeConfigs =
                 (List<RenderingTypeConfig>)
                         featureRepository.findFeatureByIds(
-                                FeatureName.RENDERING_TYPE, entityIdsByType);
+                                FeatureName.RENDERING_TYPE, getEntityIdsByType(transaction));
 
         for (RenderingTypeConfig renderingTypeConfig : renderingTypeConfigs) {
             if (renderingTypeConfig.getAcsInterface().equals(deviceInterface.getValue())) {
@@ -69,10 +66,7 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     public AuthConfigDto getAuthenticationConfig(Transaction transaction)
             throws ACSDataAccessException {
-        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
-        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
-        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
-        return getAuthenticationConfig(entityIdsByType);
+        return getAuthenticationConfig(getEntityIdsByType(transaction));
     }
 
     // todo add cache
@@ -105,6 +99,13 @@ public class FeatureServiceImpl implements FeatureService {
                 challengeAuthTypeConfig.getThresholdAuthType(), authConfigDto, entityIdsByType);
 
         return authConfigDto;
+    }
+
+    private Map<FeatureEntityType, String> getEntityIdsByType(Transaction transaction) {
+        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
+        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
+        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
+        return entityIdsByType;
     }
 
     private void fetchAuthTypeConfig(
