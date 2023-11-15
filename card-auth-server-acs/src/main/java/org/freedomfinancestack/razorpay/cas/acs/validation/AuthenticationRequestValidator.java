@@ -509,7 +509,6 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
     protected void validateOptionalFields(AREQ request) throws ValidationException {
 
         // Optional Fields
-
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_AUTHENTICATION_INFO.getFieldName(),
                 request.getThreeDSRequestorAuthenticationInfo(),
@@ -564,7 +563,6 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getCardExpiryDate(),
                 lengthValidator(DataLengthType.FIXED, 4),
                 isDate("yyMM"));
-
         Validation.validate(
                 ThreeDSDataElement.BILL_ADDR_CITY.getFieldName(),
                 request.getBillAddrCity(),
