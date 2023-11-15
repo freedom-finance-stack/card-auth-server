@@ -21,6 +21,7 @@ import static org.freedomfinancestack.extensions.validation.validator.basic.IsIP
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsNumeric.isNumeric;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsUUID.isUUID;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotEmpty.notEmpty;
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsDate.isDate;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
@@ -528,6 +529,10 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.ACCT_ID.getFieldName(),
                 request.getAcctID(),
+                when(
+                        shouldValidateThreeDSDataElement(ThreeDSDataElement.ACCT_ID, request)
+                                && request.getAcctID() != null,
+                        notEmpty()),
                 lengthValidator(DataLengthType.VARIABLE, 64));
         Validation.validate(
                 ThreeDSDataElement.ACCT_TYPE.getFieldName(),
