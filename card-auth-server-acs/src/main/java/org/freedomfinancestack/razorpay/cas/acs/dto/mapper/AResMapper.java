@@ -106,7 +106,7 @@ public interface AResMapper {
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
-                && (TransactionStatus.FAILED.equals(transaction. getTransactionStatus())
+                && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
                         || TransactionStatus.UNABLE_TO_AUTHENTICATE.equals(
                                 transaction.getTransactionStatus())
                         || TransactionStatus.REJECTED.equals(transaction.getTransactionStatus()))) {
