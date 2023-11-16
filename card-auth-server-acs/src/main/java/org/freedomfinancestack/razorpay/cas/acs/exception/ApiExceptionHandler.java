@@ -91,12 +91,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
-                        httpStatusCode.value(),
+                        HttpStatus.OK.value(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorCode(),
-                        "Request message not readable",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
-                        ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
+                        ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription(),
+                        "Request message not readable");
+        return handleExceptionInternal(ex, errorResponse, headers, HttpStatus.OK, request);
     }
 
     @Override
