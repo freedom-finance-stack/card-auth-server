@@ -511,11 +511,12 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         String authenticationInd = request.getThreeDSRequestorAuthenticationInd();
         String threeRIInd = request.getThreeRIInd();
         Validation.validate(
-                ThreeDSDataElement.PURCHASE_INSTAL_DATA.getFieldName(),
+                ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_2_0.getFieldName(),
                 request.getPurchaseInstalData(),
                 when(
                         (shouldValidateThreeDSDataElement(
-                                                ThreeDSDataElement.PURCHASE_INSTAL_DATA, request)
+                                                ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_2_0,
+                                                request)
                                         && (!Util.isNullorBlank(authenticationInd)
                                                 && InternalConstants
                                                         .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03
@@ -525,6 +526,18 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                                 .equals(request.getDeviceChannel())
                                         && threeRIInd.equals(
                                                 ThreeRIInd.INSTALMENT_TRANSACTION.getValue()))),
+                        notBlank()),
+                lengthValidator(DataLengthType.VARIABLE, 3));
+        Validation.validate(
+                ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_1_0.getFieldName(),
+                request.getPurchaseInstalData(),
+                when(
+                        (shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_1_0, request)
+                                && (!Util.isNullorBlank(authenticationInd)
+                                        && InternalConstants
+                                                .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03
+                                                .equals(authenticationInd))),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 3));
 
