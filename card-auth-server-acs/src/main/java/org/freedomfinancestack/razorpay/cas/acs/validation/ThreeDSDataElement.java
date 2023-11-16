@@ -733,12 +733,14 @@ public enum ThreeDSDataElement {
     RECURRING_EXPIRY(
             ThreeDSConstant.ELEMENT_RECURRING_EXPIRY,
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
-            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
 
     RECURRING_FREQUENCY(
             ThreeDSConstant.ELEMENT_RECURRING_FREQUENCY,
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
-            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
 
     UNSUPPORTED(null, null);
 
