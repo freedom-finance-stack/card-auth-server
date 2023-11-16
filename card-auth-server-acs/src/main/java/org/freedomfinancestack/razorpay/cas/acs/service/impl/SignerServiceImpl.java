@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.SignedContent;
-import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.freedomfinancestack.razorpay.cas.acs.service.SignerService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexDump;
