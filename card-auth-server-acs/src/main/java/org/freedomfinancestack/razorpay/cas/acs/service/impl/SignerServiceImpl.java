@@ -107,11 +107,7 @@ public class SignerServiceImpl implements SignerService {
             KeyPair keyPair =
                     SecurityUtil.getRSAKeyPairFromKeystore(
                             x509CertChain,
-                            gatewayConfig
-                                    .getServices()
-                                    .get(ClientType.VISA_DS)
-                                    .getKeyStore()
-                                    .getPath(),
+                            "/opt/card-auth-server/cas-acs/bin/config/clientCertificate1910.crt",
                             gatewayConfig
                                     .getServices()
                                     .get(ClientType.VISA_DS)

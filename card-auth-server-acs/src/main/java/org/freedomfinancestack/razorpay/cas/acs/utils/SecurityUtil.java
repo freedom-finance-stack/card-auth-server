@@ -121,8 +121,9 @@ public class SecurityUtil {
     public static KeyPair getRSAKeyPairFromKeystore(
             List<Base64> x509CertChain, String keystorePath, String keystorePassword)
             throws Exception {
-
+        FileInputStream keystoreFile = new FileInputStream(keystorePath);
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keystore.load(keystoreFile, null);
         keystore.setCertificateEntry(
                 "SignerCert", X509CertUtils.parse(x509CertChain.get(0).decode()));
 
