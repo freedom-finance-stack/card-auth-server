@@ -549,6 +549,15 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         notBlank()));
 
         Validation.validate(
+                ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0.getFieldName(),
+                request.getThreeDSServerURL(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0, request),
+                        notBlank()),
+                lengthValidator(DataLengthType.VARIABLE, 2048));
+
+        Validation.validate(
                 ThreeDSDataElement.RECURRING_EXPIRY.getFieldName(),
                 request.getRecurringExpiry(),
                 when(
@@ -556,6 +565,15 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                         ThreeDSDataElement.RECURRING_EXPIRY, request)
                                 && (isAuthenticationIndValid || isThreeRIIndValid),
                         notBlank()));
+
+        Validation.validate(
+                ThreeDSDataElement.RECURRING_EXPIRY_2_1_0.getFieldName(),
+                request.getThreeDSServerURL(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.RECURRING_EXPIRY_2_1_0, request),
+                        notBlank()),
+                lengthValidator(DataLengthType.VARIABLE, 2048));
     }
 
     protected void validateOptionalFields(AREQ request) throws ValidationException {
