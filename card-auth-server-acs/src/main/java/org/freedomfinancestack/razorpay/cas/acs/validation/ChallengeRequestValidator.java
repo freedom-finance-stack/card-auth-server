@@ -164,22 +164,21 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     when(conditionForChallengeHTMLDataEntry, notBlank()));
         }
 
-        if (transaction.getTransactionSdkDetail().getAcsUiType() != null) {
-            String acsUiType = transaction.getTransactionSdkDetail().getAcsUiType();
-            boolean conditionForChallengeNoEntry =
-                    shouldValidateThreeDSDataElement(
-                                    ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
-                            && !(Arrays.asList("01", "02", "03").contains(acsUiType))
-                            && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
-                            && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                            && Util.isNullorBlank(incomingCreq.getResendChallenge());
-            Validation.validate(
-                    ThreeDSDataElement.CHALLENGE_NO_ENTRY.getFieldName(),
-                    incomingCreq.getChallengeNoEntry(),
-                    when(
-                            conditionForChallengeNoEntry,
-                            isIn(ThreeDSDataElement.CHALLENGE_NO_ENTRY.getAcceptedValues())));
-        }
+        String acsUiType = transaction.getTransactionSdkDetail().getAcsUiType();
+        boolean conditionForChallengeNoEntry =
+                transaction.getTransactionSdkDetail().getAcsUiType() != null
+                        && shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
+                        && !(Arrays.asList("01", "02", "03").contains(acsUiType))
+                        && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
+                        && Util.isNullorBlank(incomingCreq.getChallengeCancel())
+                        && Util.isNullorBlank(incomingCreq.getResendChallenge());
+        Validation.validate(
+                ThreeDSDataElement.CHALLENGE_NO_ENTRY.getFieldName(),
+                incomingCreq.getChallengeNoEntry(),
+                when(
+                        conditionForChallengeNoEntry,
+                        isIn(ThreeDSDataElement.CHALLENGE_NO_ENTRY.getAcceptedValues())));
     }
 
     private static boolean shouldValidateThreeDSDataElement(
