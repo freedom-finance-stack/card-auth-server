@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
-import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 
@@ -56,13 +56,13 @@ public class ResultResponseValidator {
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_TYPE.getFieldName(),
                 incomingRres.getMessageType(),
-                notNull(),
+                notBlank(),
                 isIn(new String[] {MessageType.RRes.toString(), MessageType.Erro.toString()}));
 
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
                 incomingRres.getMessageVersion(),
-                notNull(),
+                notBlank(),
                 isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
 
         Validation.validate(
@@ -73,19 +73,19 @@ public class ResultResponseValidator {
         Validation.validate(
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                 incomingRres.getAcsTransID(),
-                notNull(),
+                notBlank(),
                 isIn(new String[] {rreq.getAcsTransID()}));
 
         Validation.validate(
                 ThreeDSDataElement.DS_TRANS_ID.getFieldName(),
                 incomingRres.getDsTransID(),
-                notNull(),
+                notBlank(),
                 isIn(new String[] {rreq.getDsTransID()}));
 
         Validation.validate(
                 ThreeDSDataElement.RESULTS_STATUS.getFieldName(),
                 incomingRres.getResultsStatus(),
-                notNull(),
+                notBlank(),
                 isIn(ThreeDSDataElement.RESULTS_STATUS.getAcceptedValues()));
     }
 
