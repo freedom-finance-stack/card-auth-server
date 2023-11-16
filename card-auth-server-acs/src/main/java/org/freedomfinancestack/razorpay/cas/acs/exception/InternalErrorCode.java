@@ -55,7 +55,7 @@ public enum
     CARD_RANGE_NOT_FOUND(
             "3007",
             "CARD RANGE NOT FOUND",
-            TransactionStatus.REJECTED,
+            TransactionStatus.FAILED,
             TransactionStatusReason.NO_CARD_RECORD),
 
     RANGE_GROUP_NOT_FOUND(
@@ -126,6 +126,12 @@ public enum
     CREQ_JSON_PARSING_ERROR(
             "8001",
             "Can't parse Creq message",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
+    SESSION_DATA_PARSING_ERROR(
+            "8001",
+            "threeDSSessionData is invalid",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.INVALID_TRANSACTION),
 

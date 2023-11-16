@@ -243,6 +243,28 @@ public class Util {
     }
 
     /**
+     * to check string is base64 Url encoding or not
+     *
+     * @param input input string. which need to check for validity
+     * @return boolean set to true for valid base64url encoding
+     */
+    public static boolean isValidBase64Url(String input) {
+        try {
+            // Decode the input to check if it's a valid Base64 encoding
+            byte[] decodedBytes = Base64.getUrlDecoder().decode(input);
+
+            // Encode the decoded bytes again and compare with the original input
+            String reencoded = Base64.getUrlEncoder().encodeToString(decodedBytes);
+
+            // If the re-encoded string matches the original input, it's a valid Base64 URL encoding
+            return input.equals(reencoded);
+        } catch (Exception e) {
+            // If decoding fails, it's not a valid Base64 encoding
+            return false;
+        }
+    }
+
+    /**
      * Generates a random number with the specified number of digits.
      *
      * @param digits the number of digits in the random number

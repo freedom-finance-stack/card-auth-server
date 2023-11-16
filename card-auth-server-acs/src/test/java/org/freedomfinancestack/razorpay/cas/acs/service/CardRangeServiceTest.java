@@ -55,11 +55,11 @@ public class CardRangeServiceTest {
     @Test
     public void testFindByPanNoCardRangeFound() throws Exception {
         when(cardRangeRepository.findByPan(Long.valueOf(PanNumber))).thenReturn(null);
-        CardDetailsNotFoundException exception =
+        DataNotFoundException exception =
                 assertThrows(
-                        CardDetailsNotFoundException.class,
+                        DataNotFoundException.class,
                         () -> rangeService.findByPan("4001400112341234"));
-        assertEquals("3007", exception.getErrorCode().getCode());
+        assertEquals("305", exception.getThreeDSecureErrorCode().getErrorCode());
     }
 
     @Test
