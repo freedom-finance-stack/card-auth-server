@@ -14,7 +14,6 @@ import org.freedomfinancestack.razorpay.cas.acs.utils.HexDump;
 import org.freedomfinancestack.razorpay.cas.acs.utils.SecurityUtil;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
-import org.freedomfinancestack.razorpay.cas.dao.enums.CardType;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetailPK;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -97,17 +96,14 @@ public class SignerServiceImpl implements SignerService {
 
             if (signerDetailOptional != null) signerDetail = signerDetailOptional.get();
 
-            CardType cardType = determineCardType(areq.getAcctType());
-
-            List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail, cardType);
+            List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail);
 
             // Temporary: Currently Don't have certificate file
             if (x509CertChain.isEmpty()) {
                 return "testACSSignedContent";
             }
 
-            KeyPair keyPair =
-                    SecurityUtil.getRSAKeyPairFromKeystore(signerDetail, x509CertChain, cardType);
+            KeyPair keyPair = SecurityUtil.getRSAKeyPairFromKeystore(signerDetail, x509CertChain);
             signedData =
                     SecurityUtil.generateDigitalSignatureWithPS256(
                             keyPair, x509CertChain, signedJsonObject);
@@ -149,13 +145,5 @@ public class SignerServiceImpl implements SignerService {
         transaction
                 .getTransactionSdkDetail()
                 .setAcsSecretKey(HexDump.byteArrayToHex(derivedKey.getEncoded()));
-    }
-
-    private CardType determineCardType(String accType) {
-        if (accType.equals("02")) {
-            return CardType.CREDIT;
-        } else {
-            return CardType.DEBIT;
-        }
     }
 }

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
-import org.freedomfinancestack.razorpay.cas.dao.enums.CardType;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 
 import com.nimbusds.jose.JWSAlgorithm;
@@ -58,8 +57,7 @@ public class SecurityUtil {
         return ecKey;
     }
 
-    public static List<Base64> getKeyInfo(SignerDetail signerDetail, CardType cardType)
-            throws IOException {
+    public static List<Base64> getKeyInfo(SignerDetail signerDetail) throws IOException {
 
         List<Base64> x5c = new ArrayList<>();
 
@@ -80,7 +78,7 @@ public class SecurityUtil {
             ks.load(new FileInputStream(keyStore), keyPassword.toCharArray());
 
             // Get Signing, Root and Inter Certificate from KeyStore
-            String signerCertKey = getSignerCertKey(signerDetail, cardType);
+            String signerCertKey = signerDetail.getSignerCertKey();
             signingCert = ks.getCertificate(signerCertKey);
             String rootCertKey = signerDetail.getRootCertKey();
             rootCert = ks.getCertificate(rootCertKey);
@@ -122,8 +120,7 @@ public class SecurityUtil {
     }
 
     public static KeyPair getRSAKeyPairFromKeystore(
-            SignerDetail signerDetail, List<Base64> x509CertChain, CardType cardType)
-            throws Exception {
+            SignerDetail signerDetail, List<Base64> x509CertChain) throws Exception {
 
         String keyStore = signerDetail.getKeystore();
         String keyPass = signerDetail.getKeypass();
@@ -134,8 +131,7 @@ public class SecurityUtil {
         RSAPublicKey publicKey =
                 (RSAPublicKey) X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
         RSAPrivateKey privateKey =
-                (RSAPrivateKey)
-                        ks.getKey(getSignerKeyPair(signerDetail, cardType), keyPass.toCharArray());
+                (RSAPrivateKey) ks.getKey(signerDetail.getSignerKeyPair(), keyPass.toCharArray());
 
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
         return keyPair;
@@ -164,21 +160,5 @@ public class SecurityUtil {
         String signedContent = s + "." + jwsObject.getSignature();
 
         return signedContent;
-    }
-
-    private static String getSignerCertKey(SignerDetail signerDetail, CardType cardType) {
-        if (cardType.equals(CardType.CREDIT)) {
-            return signerDetail.getCreditCertKey();
-        } else {
-            return signerDetail.getDebitCertKey();
-        }
-    }
-
-    private static String getSignerKeyPair(SignerDetail signerDetail, CardType cardType) {
-        if (cardType.equals(CardType.CREDIT)) {
-            return signerDetail.getCreditSignerKey();
-        } else {
-            return signerDetail.getDebitSignerKey();
-        }
     }
 }
