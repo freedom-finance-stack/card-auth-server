@@ -14,6 +14,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationE
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
+import org.freedomfinancestack.razorpay.cas.contract.DeviceRenderOptions;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
@@ -91,17 +92,17 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public void updateTransactionSDKDetail(
-            Transaction transaction, RenderingTypeConfig renderingTypeConfig) {
+            Transaction transaction,
+            RenderingTypeConfig renderingTypeConfig,
+            DeviceRenderOptions deviceRenderOptions) {
         transaction
                 .getTransactionSdkDetail()
                 .setAcsInterface(renderingTypeConfig.getAcsInterface());
-        transaction
-                .getTransactionSdkDetail()
-                .setAcsUiTemplate(renderingTypeConfig.getAcsUiTemplate());
-        transaction.getTransactionSdkDetail().setAcsUiType(renderingTypeConfig.getAcsUiType());
-        transaction
-                .getTransactionSdkDetail()
-                .setDefaultRenderOption(renderingTypeConfig.getDefaultRenderOption());
+        String acsUiType =
+                Util.findFirstCommonString(
+                        Arrays.asList(deviceRenderOptions.getSdkUiType()),
+                        renderingTypeConfig.getAcsUiTemplate());
+        transaction.getTransactionSdkDetail().setAcsUiType(acsUiType);
     }
 
     private static Transaction createTransactionFromAreq(AREQ areq) {

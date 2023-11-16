@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
+import org.freedomfinancestack.razorpay.cas.contract.DeviceRenderOptions;
 import org.freedomfinancestack.razorpay.cas.dao.model.RenderingTypeConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
@@ -46,5 +47,7 @@ public interface TransactionService {
     Transaction findById(String id) throws ACSDataAccessException;
 
     void updateTransactionSDKDetail(
-            Transaction transaction, RenderingTypeConfig renderingTypeConfig);
+            Transaction transaction,
+            RenderingTypeConfig renderingTypeConfig,
+            DeviceRenderOptions deviceRenderOptions);
 }
