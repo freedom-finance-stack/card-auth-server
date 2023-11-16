@@ -557,7 +557,6 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
 
-        
         Validation.validate(
                 ThreeDSDataElement.RECURRING_EXPIRY.getFieldName(),
                 request.getRecurringExpiry(),
