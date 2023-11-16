@@ -188,7 +188,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
 
         // If everything is successful, send Ares message type as a response.
         try {
-            if (!Util.isNullorBlank(transaction.getAuthValue())
+            /*
+             * below If condition for attempted case can only be used in Self Test Platform.
+             */
+            if (transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)
                     && isAttemptedTestRange(
                             transaction.getTransactionCardDetail().getCardNumber())) {
                 transaction.setTransactionStatus(TransactionStatus.ATTEMPT);
