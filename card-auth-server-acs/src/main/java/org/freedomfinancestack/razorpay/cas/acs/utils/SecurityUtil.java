@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.utils;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
@@ -17,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import lombok.extern.slf4j.Slf4j;
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
+import org.springframework.stereotype.Component;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -33,7 +32,8 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jose.util.X509CertUtils;
-import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -65,7 +65,8 @@ public class SecurityUtil {
         return ecKey;
     }
 
-    public static List<Base64> getKeyInfo(SignerDetail signerDetail, String caFilepath) throws IOException {
+    public static List<Base64> getKeyInfo(SignerDetail signerDetail, String caFilepath)
+            throws IOException {
 
         List<Base64> x5c = new ArrayList<>();
         KeyStore ks = null;
@@ -83,33 +84,32 @@ public class SecurityUtil {
                 X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
                 byte[] VALUE = caCert.getEncoded();
                 x5c.add(Base64.encode(VALUE));
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error("exception: ", e);
             }
 
+            //            String rootCertKey = signerDetail.getRootCertKey();
+            //            rootCert = ks.getCertificate(rootCertKey);
+            //            String interCertKey = signerDetail.getInterCertKey();
+            //            interCert = ks.getCertificate(interCertKey);
 
-//            String rootCertKey = signerDetail.getRootCertKey();
-//            rootCert = ks.getCertificate(rootCertKey);
-//            String interCertKey = signerDetail.getInterCertKey();
-//            interCert = ks.getCertificate(interCertKey);
-
-//            // Inter - no intermediate cert in case of UL testing
-//            if (interCert instanceof java.security.cert.X509Certificate) {
-//                java.security.cert.X509Certificate x509cert =
-//                        (java.security.cert.X509Certificate) interCert;
-//                byte[] VALUE = x509cert.getEncoded();
-//                Base64 encodedValue = Base64.encode(VALUE);
-//                x5c.add(encodedValue);
-//            }
-//
-//            // Root
-//            if (rootCert instanceof java.security.cert.X509Certificate) {
-//                java.security.cert.X509Certificate x509cert =
-//                        (java.security.cert.X509Certificate) rootCert;
-//                byte[] VALUE = x509cert.getEncoded();
-//                Base64 encodedValue = Base64.encode(VALUE);
-//                x5c.add(encodedValue);
-//            }
+            //            // Inter - no intermediate cert in case of UL testing
+            //            if (interCert instanceof java.security.cert.X509Certificate) {
+            //                java.security.cert.X509Certificate x509cert =
+            //                        (java.security.cert.X509Certificate) interCert;
+            //                byte[] VALUE = x509cert.getEncoded();
+            //                Base64 encodedValue = Base64.encode(VALUE);
+            //                x5c.add(encodedValue);
+            //            }
+            //
+            //            // Root
+            //            if (rootCert instanceof java.security.cert.X509Certificate) {
+            //                java.security.cert.X509Certificate x509cert =
+            //                        (java.security.cert.X509Certificate) rootCert;
+            //                byte[] VALUE = x509cert.getEncoded();
+            //                Base64 encodedValue = Base64.encode(VALUE);
+            //                x5c.add(encodedValue);
+            //            }
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -9,7 +9,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedExcepti
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
-import org.freedomfinancestack.razorpay.cas.dao.repository.CardDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
