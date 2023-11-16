@@ -514,30 +514,30 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_2_0.getFieldName(),
                 request.getPurchaseInstalData(),
                 when(
-                        (shouldValidateThreeDSDataElement(
-                                                ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_2_0,
-                                                request)
-                                        && (!Util.isNullorBlank(authenticationInd)
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_2_0, request)
+                                && ((!Util.isNullorBlank(authenticationInd)
                                                 && InternalConstants
                                                         .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03
                                                         .equals(authenticationInd))
-                                || (DeviceChannel.TRI
-                                                .getChannel()
-                                                .equals(request.getDeviceChannel())
-                                        && threeRIInd.equals(
-                                                ThreeRIInd.INSTALMENT_TRANSACTION.getValue()))),
+                                        || (DeviceChannel.TRI
+                                                        .getChannel()
+                                                        .equals(request.getDeviceChannel())
+                                                && threeRIInd.equals(
+                                                        ThreeRIInd.INSTALMENT_TRANSACTION
+                                                                .getValue()))),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 3));
         Validation.validate(
                 ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_1_0.getFieldName(),
                 request.getPurchaseInstalData(),
                 when(
-                        (shouldValidateThreeDSDataElement(
+                        shouldValidateThreeDSDataElement(
                                         ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_1_0, request)
                                 && (!Util.isNullorBlank(authenticationInd)
                                         && InternalConstants
                                                 .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03
-                                                .equals(authenticationInd))),
+                                                .equals(authenticationInd)),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 3));
 
