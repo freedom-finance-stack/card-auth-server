@@ -62,8 +62,10 @@ public interface AResMapper {
     @Mapping(
             target = "acsURL",
             expression =
-                    "java(Util.getAcsChallengeUrl(this.helperMapper.appConfiguration.getHostname(),"
-                            + " transaction.getDeviceChannel()))")
+                    "java(org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())"
+                        + " ? null :"
+                        + " (Util.getAcsChallengeUrl(this.helperMapper.appConfiguration.getHostname(),"
+                        + " transaction.getDeviceChannel())))")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -96,9 +98,10 @@ public interface AResMapper {
     @Mapping(
             target = "acsRenderingType",
             expression =
-                    "java(new org.freedomfinancestack.razorpay.cas.contract.enums."
+                    "java(org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())"
+                        + " ? new org.freedomfinancestack.razorpay.cas.contract.enums."
                         + "ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
-                        + " transaction.getTransactionSdkDetail().getAcsUiType()))")
+                        + " transaction.getTransactionSdkDetail().getAcsUiType()) : null)")
     @Mapping(
             target = "acsSignedContent",
             expression = "java(transaction.getTransactionSdkDetail().getAcsSignedContent())")
