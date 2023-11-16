@@ -155,10 +155,10 @@ VALUES
     (
         '1', 'INSTITUTION', 'I1', 1, 'CHALLENGE_AUTH_TYPE',
         '{
-        "purchase_amount_threshold" : 20000,
-        "above_threshold_auth_type" :  "OTP",
-        "default_auth_type" :  "OTP"
-    }',
+            "purchase_amount_threshold" : 20000,
+            "above_threshold_auth_type" :  "OTP",
+            "default_auth_type" :  "OTP"
+        }',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -167,11 +167,11 @@ VALUES
     (
         '2', 'INSTITUTION', 'I1', 1, 'CHALLENGE_ATTEMPT',
         '{
-        "attempt_threshold": 3,
-        "resend_threshold": 3,
-        "block_on_exceed_attempt": true,
-        "whitelisting_allowed": true
-    }',
+            "attempt_threshold": 3,
+            "resend_threshold": 3,
+            "block_on_exceed_attempt": true,
+            "whitelisting_allowed": true
+        }',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -186,24 +186,16 @@ INSERT INTO `feature`
 VALUES
     (
         '4', 'CARD_RANGE', 'R8', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "01",
-    "acs_ui_template": "01",
-    "default_render_option": "0",
-    "acs_ui_type":"01"
-    },
-    {
-    "acs_interface" : "02",
-    "acs_ui_template": "03",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    },
-    {
-    "acs_interface" : "01",
-    "acs_ui_template": "02",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["01", "02"],
+        "preference": 1
+        },
+        {
+        "acs_interface" : "02",
+        "acs_ui_template": ["03"],
+        "preference": 2
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -211,12 +203,11 @@ INSERT INTO `feature`
 VALUES
     (
         '5', 'CARD_RANGE', 'R9', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "01",
-    "acs_ui_template": "01",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["01"],
+        "preference": 1
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -224,12 +215,11 @@ INSERT INTO `feature`
 VALUES
     (
         '6', 'CARD_RANGE', 'R10', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "01",
-    "acs_ui_template": "02",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["02"],
+        "preference": 1
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -237,12 +227,11 @@ INSERT INTO `feature`
 VALUES
     (
         '7', 'CARD_RANGE', 'R11', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "01",
-    "acs_ui_template": "03",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["03"],
+        "preference": 1
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -250,12 +239,11 @@ INSERT INTO `feature`
 VALUES
     (
         '8', 'CARD_RANGE', 'R12', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "01",
-    "acs_ui_template": "04",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["04"],
+        "preference": "1"
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -263,12 +251,11 @@ INSERT INTO `feature`
 VALUES
     (
         '9', 'CARD_RANGE', 'R13', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "02",
-    "acs_ui_template": "01",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["01"],
+        "preference": 1
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -276,12 +263,11 @@ INSERT INTO `feature`
 VALUES
     (
         '10', 'CARD_RANGE', 'R14', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "02",
-    "acs_ui_template": "02",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["02"],
+        "preference": 1
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -289,12 +275,11 @@ INSERT INTO `feature`
 VALUES
     (
         '11', 'CARD_RANGE', 'R15', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "02",
-    "acs_ui_template": "03",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["03"],
+        "preference": 1
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -302,12 +287,11 @@ INSERT INTO `feature`
 VALUES
     (
         '12', 'CARD_RANGE', 'R16', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "02",
-    "acs_ui_template": "04",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["04"],
+        "preference": 1
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
@@ -315,12 +299,11 @@ INSERT INTO `feature`
 VALUES
     (
         '13', 'CARD_RANGE', 'R17', 1, 'RENDERING_TYPE',
-        '[{
-    "acs_interface" : "02",
-    "acs_ui_template": "05",
-    "default_render_option": "1",
-    "acs_ui_type":"01"
-    }]',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["05"],
+        "preference": 1
+        }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );

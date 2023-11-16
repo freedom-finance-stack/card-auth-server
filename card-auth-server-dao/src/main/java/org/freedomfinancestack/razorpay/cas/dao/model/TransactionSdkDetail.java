@@ -30,14 +30,8 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "acs_interface")
     private String acsInterface;
 
-    @Column(name = "acs_ui_template")
-    private String acsUiTemplate;
-
     @Column(name = "acs_ui_type")
     private String acsUiType;
-
-    @Column(name = "default_render_option")
-    private String defaultRenderOption;
 
     @Column(name = "device_info")
     private String deviceInfo;

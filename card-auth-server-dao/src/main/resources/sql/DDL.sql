@@ -51,10 +51,8 @@ CREATE TABLE `transaction_sdk_detail`
     `sdk_trans_id`         varchar(36) DEFAULT NULL,
     `sdk_app_id`           varchar(36) DEFAULT NULL,
     `sdk_reference_number` varchar(32) DEFAULT NULL,
-    `acs_interface` varchar(2) DEFAULT NULL,
-    `acs_ui_template` varchar(2) DEFAULT NULL,
-    `acs_ui_type`          char(2),
-    `default_render_option` tinyint(4) DEFAULT NULL,
+    `acs_interface` char(2) DEFAULT NULL,
+    `acs_ui_type`          char(2) DEFAULT NULL,
     `acs_secret_key` LONGTEXT NULL,
     `acs_signed_content` LONGTEXT NULL,
     `device_info`          text,
@@ -397,23 +395,6 @@ CREATE TABLE `signer_detail`
     `modified_by`    varchar(40) NOT NULL,
     `deleted_by`     varchar(40) DEFAULT NULL
 );
-
-DROP TABLE IF EXISTS `rendering_type_config`;
-CREATE TABLE `rendering_type_config` (
- `institution_id` varchar(5) NOT NULL,
- `card_range_id` varchar(8) NOT NULL,
- `acs_interface` varchar(2) DEFAULT NULL,
- `acs_ui_template` varchar(2) DEFAULT NULL,
- `default_render_option` tinyint(4) DEFAULT NULL,
- `acs_ui_type` varchar(2) DEFAULT '01',
- `created_at`     timestamp   NOT NULL,
- `created_by`     varchar(40) NOT NULL,
- `modified_at`    timestamp   NOT NULL,
- `modified_by`    varchar(40) NOT NULL,
- `deleted_at`     timestamp   DEFAULT NULL,
- `deleted_by`     varchar(40) DEFAULT NULL
-);
-
 
 #  Purposed tables for OTP
 

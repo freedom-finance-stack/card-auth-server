@@ -98,7 +98,7 @@ public interface AResMapper {
             expression =
                     "java(new org.freedomfinancestack.razorpay.cas.contract.enums."
                         + "ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
-                        + " transaction.getTransactionSdkDetail().getAcsUiTemplate()))")
+                        + " transaction.getTransactionSdkDetail().getAcsUiType()))")
 
     // todo    @Mapping AcsSignedContent for app based
     ARES toAres(AREQ areq, Transaction transaction);
@@ -106,7 +106,7 @@ public interface AResMapper {
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
-                && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
+                && (TransactionStatus.FAILED.equals(transaction. getTransactionStatus())
                         || TransactionStatus.UNABLE_TO_AUTHENTICATE.equals(
                                 transaction.getTransactionStatus())
                         || TransactionStatus.REJECTED.equals(transaction.getTransactionStatus()))) {
