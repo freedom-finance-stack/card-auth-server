@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class RRES extends ThreeDSObject {
     // All Required Fields
     private String threeDSServerTransID;

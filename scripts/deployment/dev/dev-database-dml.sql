@@ -106,7 +106,6 @@ INSERT INTO `card_detail` VALUES ('103', '1', 'R2','I1','7654310438709295', '053
 INSERT INTO `card_detail` VALUES ('104', '1', 'R2','I1','7654310438709311', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('105', '1', 'R2','I1','7654310438747253', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('106', '1', 'R2','I1','7654310438709329', '0535', 0, 1,NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
-
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;
@@ -121,38 +120,28 @@ INSERT INTO `card_range` VALUES ('R8', 'I1', 765430270000000,  765430279999999, 
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
-INSERT INTO `card_range_group` VALUES ('RG1','I1','Platinum',NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_range_group` VALUES ('RG1', 'I1', 'Platinum', NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `cardholder` WRITE;
-INSERT INTO `cardholder` VALUES ('1','9988776655','dev-user@mail.com','01-01-2023','dev-user',NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `cardholder` VALUES ('1', '9988776655', 'dev-user@mail.com', '01-01-2023', 'dev-user', NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `institution` WRITE;
-INSERT INTO `institution` VALUES ('I1','HDFC Bank','HDFC',356,'Asia/Kolkata','ACTIVE',NOW(),'dev-user',NOW(),'dev-user',NULL,NULL, '2.2.0');
+INSERT INTO `institution`
+VALUES ('I1', 'HDFC Bank', 'HDFC', 356, 'Asia/Kolkata', 'ACTIVE', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL, '2.2.0');
 UNLOCK TABLES;
 
 LOCK TABLES `institution_acs_url` WRITE;
-INSERT INTO `institution_acs_url` VALUES ('I1', '01', 1, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v1/transaction/challenge/app', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_acs_url` VALUES ('I1', '02', 1, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v1/transaction/challenge/browser', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_acs_url` VALUES ('I1', '03', 1, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v1/transaction/challenge/three-ri', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_acs_url` VALUES ('I1', '02', 2, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v1/transaction/challenge/browser', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_acs_url` VALUES ('I1', '01', 2, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v1/transaction/challenge/app', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_acs_url` VALUES ('I1', '01', 1, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v2/transaction/challenge/app', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_acs_url` VALUES ('I1', '02', 1, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v2/transaction/challenge/browser', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_acs_url` VALUES ('I1', '03', 1, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v2/transaction/challenge/three-ri', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_acs_url` VALUES ('I1', '02', 2, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v2/transaction/challenge/browser', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_acs_url` VALUES ('I1', '01', 2, 'https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/v2/transaction/challenge/app', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `feature` WRITE;
-INSERT INTO `feature` VALUES ('1', 'INSTITUTION', 'I1', 1, 'CHALLENGE_AUTH_TYPE', '{
-    "purchase_amount_threshold" : 20000,
-    "above_threshold_auth_type" :  "OTP",
-    "default_auth_type" :  "OTP"
-}', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
-
-INSERT INTO `feature` VALUES ('2', 'INSTITUTION', 'I1', 1, 'CHALLENGE_ATTEMPT', '{
-    "attempt_threshold": 3,
-    "resend_threshold": 3,
-    "block_on_exceed_attempt": true,
-    "whitelisting_allowed": true
-}', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
-
+INSERT INTO `feature` VALUES ('1', 'INSTITUTION', 'I1', 1, 'CHALLENGE_AUTH_TYPE', '{ "purchase_amount_threshold" : 20000, "above_threshold_auth_type" :  "OTP", "default_auth_type" :  "OTP" }', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
+INSERT INTO `feature` VALUES ('2', 'INSTITUTION', 'I1', 1, 'CHALLENGE_ATTEMPT', '{ "attempt_threshold": 3, "resend_threshold": 3, "block_on_exceed_attempt": true, "whitelisting_allowed": true }', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
 INSERT INTO `feature` VALUES ('3', 'INSTITUTION', 'I1', 1, 'OTP', '{ "length" : 4}', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
 UNLOCK TABLES;

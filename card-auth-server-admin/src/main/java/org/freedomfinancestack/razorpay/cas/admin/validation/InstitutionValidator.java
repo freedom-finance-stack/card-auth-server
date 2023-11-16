@@ -16,7 +16,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsUUID.isUUID;
-import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsBase64.isBase64;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
@@ -39,37 +39,37 @@ public class InstitutionValidator {
         Validation.validate(
                 "institutionName",
                 institutionData.institutionName,
-                notNull(),
+                notBlank(),
                 lengthValidator(DataLengthType.VARIABLE, 100));
         Validation.validate(
                 "institutionShortName",
                 institutionData.institutionShortName,
-                notNull(),
+                notBlank(),
                 lengthValidator(DataLengthType.VARIABLE, 20));
         Validation.validate(
                 "isoCountryCode",
                 institutionData.isoCountryCode,
-                notNull(),
+                notBlank(),
                 isIn(metaDataConfiguration.getIsoCountryCode()));
         Validation.validate(
                 "messageVersion",
                 institutionData.messageVersion,
-                notNull(),
+                notBlank(),
                 isIn(metaDataConfiguration.getSupportedMessageVersions()));
         Validation.validate(
                 "timezone",
                 institutionData.timezone,
-                notNull(),
+                notBlank(),
                 isIn(metaDataConfiguration.getSupportedTimezone()));
     }
 
     private void validateCreateRequestInstitutionMetaData(InstitutionMetaData institutionMetaData)
             throws ValidationException {
-        Validation.validate("logoData", institutionMetaData.getLogoData(), notNull(), isBase64());
+        Validation.validate("logoData", institutionMetaData.getLogoData(), notBlank(), isBase64());
         Validation.validate(
                 "logoFileName",
                 institutionMetaData.getLogoFilename(),
-                notNull(),
+                notBlank(),
                 lengthValidator(DataLengthType.VARIABLE, 50));
     }
 
@@ -79,9 +79,9 @@ public class InstitutionValidator {
         Validation.validate(
                 "institution_id",
                 getInstitutionRequestDto.getInstitution_id(),
-                notNull(),
+                notBlank(),
                 isUUID());
-        Validation.validate("", getInstitutionRequestDto.isFetch_meta(), notNull());
+        Validation.validate("", getInstitutionRequestDto.isFetch_meta(), notBlank());
     }
 
     public void validatePatchInstitutionRequest(
@@ -92,7 +92,7 @@ public class InstitutionValidator {
 
     private void validateUpdateRequestInstitutionData(InstitutionData institutionData)
             throws ValidationException {
-        Validation.validate("id", institutionData.id, notNull(), isUUID());
+        Validation.validate("id", institutionData.id, notBlank(), isUUID());
         Validation.validate(
                 "institutionName",
                 institutionData.institutionName,
@@ -137,7 +137,7 @@ public class InstitutionValidator {
 
     private void validateUpdateRequestInstitutionMetaData(InstitutionMetaData institutionMetaData)
             throws ValidationException {
-        Validation.validate("institutionMetaData", institutionMetaData, notNull());
+        Validation.validate("institutionMetaData", institutionMetaData, notBlank());
         Validation.validate(
                 "logoData",
                 institutionMetaData.getLogoData(),
@@ -152,6 +152,6 @@ public class InstitutionValidator {
 
     public void validateDeleteInstitutionRequest(@NonNull final String institutionId)
             throws ValidationException {
-        Validation.validate("institution_id", institutionId, notNull(), isUUID());
+        Validation.validate("institution_id", institutionId, notBlank(), isUUID());
     }
 }

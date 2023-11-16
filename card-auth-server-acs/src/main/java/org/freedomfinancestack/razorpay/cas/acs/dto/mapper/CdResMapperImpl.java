@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 import java.util.Optional;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
@@ -43,7 +44,7 @@ public class CdResMapperImpl {
             throws DataNotFoundException {
         cdRes.setTransactionId(transaction.getId());
         cdRes.setValidationUrl(
-                Util.getAcsChallengeValidationUrl(
+                RouteConstants.getAcsChallengeValidationUrl(
                         appConfiguration.getHostname(), transaction.getDeviceChannel()));
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
@@ -58,8 +59,10 @@ public class CdResMapperImpl {
         Network network =
                 Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
         cdRes.setSchemaName(network.getName());
-        cdRes.setJsEnableIndicator(
-                transaction.getTransactionBrowserDetail().getJavascriptEnabled());
+        if (transaction.getTransactionBrowserDetail().getJavascriptEnabled() != null) {
+            cdRes.setJsEnableIndicator(
+                    transaction.getTransactionBrowserDetail().getJavascriptEnabled());
+        }
         StringBuilder challengeText = new StringBuilder();
         TransactionCardHolderDetail transactionCardHolderDetail =
                 transaction.getTransactionCardHolderDetail();
