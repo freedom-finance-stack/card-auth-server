@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -155,7 +156,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             signerService.getAcsSignedContent(
                                     areq,
                                     transaction,
-                                    Util.getAcsChallengeUrl(
+                                    RouteConstants.getAcsChallengeUrl(
                                             appConfiguration.getHostname(),
                                             transaction.getDeviceChannel()));
                     transaction.getTransactionSdkDetail().setAcsSignedContent(signedData);
