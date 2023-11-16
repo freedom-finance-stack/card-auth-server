@@ -258,7 +258,7 @@ public class Util {
 
             // If the re-encoded string matches the original input, it's a valid Base64 URL encoding
             return input.equals(reencoded);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             // If decoding fails, it's not a valid Base64 encoding
             return false;
         }
