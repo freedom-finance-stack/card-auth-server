@@ -1,14 +1,15 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.contract.DeviceRenderOptions;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.repository.FeatureRepository;
@@ -34,24 +35,47 @@ public class FeatureServiceImpl implements FeatureService {
     private final FeatureRepository featureRepository;
 
     @Override
-    public RenderingTypeConfig getRenderingTypeConfig(
-            Transaction transaction, DeviceInterface deviceInterface, boolean fetchDefault)
+    public void getACSRenderingType(
+            Transaction transaction, DeviceRenderOptions deviceRenderOptions)
             throws ACSDataAccessException {
-        List<RenderingTypeConfig> renderingTypeConfigs =
-                (List<RenderingTypeConfig>)
+        RenderingTypeConfigList renderingTypeConfigList =
+                (RenderingTypeConfigList)
                         featureRepository.findFeatureByIds(
                                 FeatureName.RENDERING_TYPE, getEntityIdsByType(transaction));
 
-        for (RenderingTypeConfig renderingTypeConfig : renderingTypeConfigs) {
-            if (renderingTypeConfig.getAcsInterface().equals(deviceInterface.getValue())) {
-                if (fetchDefault) {
-                    if (renderingTypeConfig.getDefaultRenderOption().equals("1")) {
-                        return renderingTypeConfig;
-                    }
-                } else {
-                    return renderingTypeConfig;
+        RenderingTypeConfig finalRenderingTypeConfig = null;
+
+        for (RenderingTypeConfig renderingTypeConfig :
+                renderingTypeConfigList.getRenderingTypeConfigs()) {
+            String acsUiType =
+                    Util.findFirstCommonString(
+                            Arrays.asList(deviceRenderOptions.getSdkUiType()),
+                            renderingTypeConfig.getAcsUiTemplate());
+            if (acsUiType == null) {
+                continue;
+            }
+            if (renderingTypeConfig
+                    .getAcsInterface()
+                    .equals(deviceRenderOptions.getSdkInterface())) {
+                transaction
+                        .getTransactionSdkDetail()
+                        .setAcsInterface(renderingTypeConfig.getAcsInterface());
+                transaction.getTransactionSdkDetail().setAcsUiType(acsUiType);
+                return;
+            } else if (deviceRenderOptions.getSdkInterface().equals("03")) {
+                if (finalRenderingTypeConfig == null
+                        || finalRenderingTypeConfig.getPreference()
+                                > renderingTypeConfig.getPreference()) {
+                    finalRenderingTypeConfig = renderingTypeConfig;
+                    transaction
+                            .getTransactionSdkDetail()
+                            .setAcsInterface(renderingTypeConfig.getAcsInterface());
+                    transaction.getTransactionSdkDetail().setAcsUiType(acsUiType);
                 }
             }
+        }
+        if (finalRenderingTypeConfig != null) {
+            return;
         }
 
         log.error(

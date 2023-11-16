@@ -5,10 +5,7 @@ import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -333,5 +330,20 @@ public class Util {
 
     public static String generateTaskIdentifier(String key, String id) {
         return key + "[" + id + "]";
+    }
+
+    public static String findFirstCommonString(List<String> str1, List<String> str2) {
+
+        // Add all strings from str1 to the set
+        Set<String> set = new HashSet<>(str1);
+
+        // Iterate through str2 and check if any string is already in the set
+        for (String s : str2) {
+            if (set.contains(s)) {
+                return s; // Return the first common string
+            }
+        }
+
+        return null; // Return null if no common string is found
     }
 }
