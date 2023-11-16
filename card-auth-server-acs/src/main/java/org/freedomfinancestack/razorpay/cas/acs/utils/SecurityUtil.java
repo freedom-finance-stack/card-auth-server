@@ -118,19 +118,21 @@ public class SecurityUtil {
         return x5c;
     }
 
-    public static KeyPair getRSAKeyPairFromKeystore(List<Base64> x509CertChain) throws Exception {
+    public static KeyPair getRSAKeyPairFromKeystore(
+            List<Base64> x509CertChain, String keystorePath, String keystorePassword)
+            throws Exception {
 
-        //        String keyStore = signerDetail.getKeystore();
-        //        String keyPass = signerDetail.getKeypass();
-        //
-        //        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        //        ks.load(new FileInputStream(keyStore), keyPass.toCharArray());
+        KeyStore keystore = KeyStore.getInstance("PKCS12");
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        try (InputStream caCertFile = new FileInputStream(keystorePath)) {
+            X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
+            keystore.setCertificateEntry("SignerCert", caCert);
+        }
 
-        X509Certificate cert = X509CertUtils.parse(x509CertChain.get(0).decode());
         RSAPublicKey publicKey =
                 (RSAPublicKey) X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
-        RSAPrivateKey privateKey = (RSAPrivateKey) cert;
-
+        RSAPrivateKey privateKey =
+                (RSAPrivateKey) keystore.getKey("SignerCert", keystorePassword.toCharArray());
         return new KeyPair(publicKey, privateKey);
     }
 

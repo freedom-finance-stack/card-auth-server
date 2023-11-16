@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.SignedContent;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.freedomfinancestack.razorpay.cas.acs.service.SignerService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexDump;
@@ -103,7 +104,19 @@ public class SignerServiceImpl implements SignerService {
                             signerDetail,
                             "/opt/card-auth-server/cas-acs/bin/config/clientCertificate1910.crt");
 
-            KeyPair keyPair = SecurityUtil.getRSAKeyPairFromKeystore(x509CertChain);
+            KeyPair keyPair =
+                    SecurityUtil.getRSAKeyPairFromKeystore(
+                            x509CertChain,
+                            gatewayConfig
+                                    .getServices()
+                                    .get(ClientType.VISA_DS)
+                                    .getKeyStore()
+                                    .getPath(),
+                            gatewayConfig
+                                    .getServices()
+                                    .get(ClientType.VISA_DS)
+                                    .getKeyStore()
+                                    .getPassword());
 
             signedData =
                     SecurityUtil.generateDigitalSignatureWithPS256(
