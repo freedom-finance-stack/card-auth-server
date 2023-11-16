@@ -122,17 +122,13 @@ public class SecurityUtil {
             List<Base64> x509CertChain, String keystorePath, String keystorePassword)
             throws Exception {
 
-        KeyStore keystore = KeyStore.getInstance("PKCS12");
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        try (InputStream caCertFile = new FileInputStream(keystorePath)) {
-            X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
-            keystore.setCertificateEntry("SignerCert", caCert);
-        }
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keystore.setCertificateEntry(
+                "SignerCert", X509CertUtils.parse(x509CertChain.get(0).decode()));
 
         RSAPublicKey publicKey =
                 (RSAPublicKey) X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
-        RSAPrivateKey privateKey =
-                (RSAPrivateKey) keystore.getKey("SignerCert", keystorePassword.toCharArray());
+        RSAPrivateKey privateKey = (RSAPrivateKey) keystore.getKey("SignerCert", null);
         return new KeyPair(publicKey, privateKey);
     }
 
