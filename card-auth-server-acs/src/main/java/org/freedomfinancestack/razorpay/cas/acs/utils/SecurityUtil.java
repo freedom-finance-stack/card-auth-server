@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.*;
 import java.security.Security;
 import java.security.cert.Certificate;
@@ -29,6 +30,9 @@ import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jose.util.X509CertUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SecurityUtil {
     public static KeyPair generateEphermalKeyPair()
             throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
@@ -75,9 +79,15 @@ public class SecurityUtil {
             ks = KeyStore.getInstance(KeyStore.getDefaultType());
             // TODO: Assuming Keypass as decrypted for not, need to store the encrypted one here
             keyPassword = signerDetail.getKeypass();
-            String baseDir = System.getProperty("user.dir");
-            String keystorePath = baseDir + "/" + keyStore;
-            ks.load(new FileInputStream(keystorePath), keyPassword.toCharArray());
+//            String baseDir = System.getProperty("user.dir");
+//            String keystorePath = baseDir + "/" + keyStore;
+            InputStream keystoreStream =
+                    SecurityUtil.class.getClassLoader().getResourceAsStream("acs_keystore");
+            if (keystoreStream == null) {
+                log.error("signer_service_error");
+            }
+            ks.load(keystoreStream, keyPassword.toCharArray());
+//            ks.load(new FileInputStream(keystorePath), keyPassword.toCharArray());
 
             // Get Signing, Root and Inter Certificate from KeyStore
             String signerCertKey = signerDetail.getSignerCertKey();
@@ -124,13 +134,19 @@ public class SecurityUtil {
     public static KeyPair getRSAKeyPairFromKeystore(
             SignerDetail signerDetail, List<Base64> x509CertChain) throws Exception {
 
-        String keyStore = signerDetail.getKeystore();
+//        String keyStore = signerDetail.getKeystore();
         String keyPass = signerDetail.getKeypass();
 
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        String baseDir = System.getProperty("user.dir");
-        String keystorePath = baseDir + "/" + keyStore;
-        ks.load(new FileInputStream(keystorePath), keyPass.toCharArray());
+//        String baseDir = System.getProperty("user.dir");
+//        String keystorePath = baseDir + "/" + keyStore;
+        InputStream keystoreStream =
+                SecurityUtil.class.getClassLoader().getResourceAsStream("acs_keystore");
+        if (keystoreStream == null) {
+            log.error("signer_service_error");
+        }
+        ks.load(keystoreStream, keyPass.toCharArray());
+//        ks.load(new FileInputStream(keystorePath), keyPass.toCharArray());
 
         RSAPublicKey publicKey =
                 (RSAPublicKey) X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
