@@ -108,23 +108,6 @@ CREATE TABLE `transaction_cardholder_detail`
     `deleted_at`     timestamp default NULL
 );
 
-
-DROP TABLE IF EXISTS `institution_acs_url`;
-CREATE TABLE `institution_acs_url`
-(
-    `institution_id` varchar(5)  NOT NULL,
-    `device_channel` varchar(10) NOT NULL,
-    `network_code`   tinyint     NOT NULL,
-    `challenge_url`  varchar(400) DEFAULT NULL,
-    `created_at`     timestamp   NOT NULL,
-    `created_by`     varchar(40) NOT NULL,
-    `modified_at`    timestamp,
-    `modified_by`    varchar(40),
-    `deleted_at`     timestamp    default NULL,
-    `deleted_by`     varchar(40),
-    PRIMARY KEY (`institution_id`, `device_channel`, `network_code`)
-);
-
 DROP TABLE IF EXISTS `transaction_purchase_detail`;
 CREATE TABLE `transaction_purchase_detail`
 (

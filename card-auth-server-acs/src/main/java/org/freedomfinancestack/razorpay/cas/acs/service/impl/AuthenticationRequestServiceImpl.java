@@ -27,7 +27,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
-import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,7 +60,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final AuthValueGeneratorService authValueGeneratorService;
     private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
-    private final InstitutionAcsUrlService institutionAcsUrlService;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
@@ -87,7 +85,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     public ARES processAuthenticationRequest(@NonNull AREQ areq)
             throws ThreeDSException, ACSDataAccessException {
         Transaction transaction = new Transaction();
-        InstitutionAcsUrl acsUrl = null;
         ARES ares;
         CardRange cardRange = null;
         try {
