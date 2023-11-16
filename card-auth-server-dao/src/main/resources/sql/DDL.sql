@@ -191,7 +191,7 @@ CREATE TABLE `card_range`
     `card_type`          ENUM ('CREDIT', 'DEBIT', 'PREPAID') NOT NULL,
     `risk_flag`          ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA') NOT NULL,
     `description`        varchar(255),
-    `card_details_store` enum ('ACS', 'API_1'),
+    `card_details_store` enum ('ACS', 'API_1', 'MOCK'),
     `network_code`       tinyint,
     `created_at`         timestamp   NOT NULL,
     `modified_at`        timestamp   NOT NULL,
