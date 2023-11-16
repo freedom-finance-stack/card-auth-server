@@ -540,11 +540,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 || ThreeRIInd.INSTALMENT_TRANSACTION.getValue().equals(threeRIInd));
 
         Validation.validate(
-                ThreeDSDataElement.RECURRING_FREQUENCY.getFieldName(),
+                ThreeDSDataElement.RECURRING_EXPIRY_2_2_0.getFieldName(),
                 request.getRecurringFrequency(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                        ThreeDSDataElement.RECURRING_FREQUENCY, request)
+                                        ThreeDSDataElement.RECURRING_EXPIRY_2_2_0, request)
                                 && (isAuthenticationIndValid || isThreeRIIndValid),
                         notBlank()));
 
@@ -558,11 +558,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 lengthValidator(DataLengthType.VARIABLE, 2048));
 
         Validation.validate(
-                ThreeDSDataElement.RECURRING_EXPIRY.getFieldName(),
+                ThreeDSDataElement.RECURRING_EXPIRY_2_2_0.getFieldName(),
                 request.getRecurringExpiry(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                        ThreeDSDataElement.RECURRING_EXPIRY, request)
+                                        ThreeDSDataElement.RECURRING_EXPIRY_2_2_0, request)
                                 && (isAuthenticationIndValid || isThreeRIIndValid),
                         notBlank()));
 
