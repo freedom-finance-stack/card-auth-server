@@ -20,7 +20,6 @@ public class InternalConstants {
     public static final String HYPEN_WITH_SPACE = " - ";
     public static final String AMPERSAND = "&";
     public static final String DOT = ".";
-    public static final String SLASH = "/";
     public static final String PAD_LEFT = "LEFT";
     public static final String PAD_RIGHT = "RIGHT";
     public static final String NO_OP_HSM = "NoOpHSM";

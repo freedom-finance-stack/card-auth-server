@@ -12,6 +12,7 @@ import org.freedomfinancestack.razorpay.cas.acs.gateway.config.CustomRetryTempla
 import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -71,7 +72,8 @@ public class PlrqService extends HttpsGatewayService {
         pFormValuesBRW.correctFormData = String.format(BRW_FORM_DATA, transactionId, authVal);
         pFormValuesBRW.incorrectFormData = String.format(BRW_FORM_DATA, transactionId, "00000");
         pFormValuesBRW.action =
-                appConfiguration.getHostname() + RouteConstants.CHALLENGE_BROWSER_VALIDATION_URL;
+                RouteConstants.getAcsChallengeValidationUrl(
+                        appConfiguration.getHostname(), DeviceChannel.BRW.getChannel());
 
         Plrq plrq = new Plrq();
         plrq.acsTransID = transactionId;
