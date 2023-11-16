@@ -9,6 +9,8 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.SignedContent;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.freedomfinancestack.razorpay.cas.acs.service.SignerService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexDump;
 import org.freedomfinancestack.razorpay.cas.acs.utils.SecurityUtil;
@@ -38,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SignerServiceImpl implements SignerService {
     private final SignerDetailRepository signerDetailRepository;
+    private final GatewayConfig gatewayConfig;
 
     @Transactional
     @Override
@@ -94,11 +97,15 @@ public class SignerServiceImpl implements SignerService {
                     signerDetailRepository.findById(
                             new SignerDetailPK(transaction.getInstitutionId(), networkCode));
 
-            if (signerDetailOptional != null) signerDetail = signerDetailOptional.get();
+            if (signerDetailOptional.isPresent()) signerDetail = signerDetailOptional.get();
 
-            List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail);
+            GatewayConfig.ServiceConfig visaConfig =
+                    gatewayConfig.getServices().get(ClientType.VISA_DS);
+
+            List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail, "/opt/card-auth-server/cas-acs/bin/config/clientCertificate1910.crt" );
 
             // Temporary: Currently Don't have certificate file
+            //todo remove this
             if (x509CertChain.isEmpty()) {
                 return "testACSSignedContent";
             }

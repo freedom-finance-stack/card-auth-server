@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service(CardDetailsStore.CardStoreTypeConstants.MOCK)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MockCardDetailFetcherServiceImpl implements CardDetailFetcherService {
-    private final CardDetailRepository cardDetailRepository;
 
     public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
             throws ACSDataAccessException {

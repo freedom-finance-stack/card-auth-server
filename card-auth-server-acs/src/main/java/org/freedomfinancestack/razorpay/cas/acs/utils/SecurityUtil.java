@@ -1,10 +1,14 @@
 package org.freedomfinancestack.razorpay.cas.acs.utils;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.*;
 import java.security.Security;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -13,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.extern.slf4j.Slf4j;
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 
@@ -28,7 +33,10 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.util.Base64;
 import com.nimbusds.jose.util.Base64URL;
 import com.nimbusds.jose.util.X509CertUtils;
+import org.springframework.stereotype.Component;
 
+@Slf4j
+@Component
 public class SecurityUtil {
     public static KeyPair generateEphermalKeyPair()
             throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
@@ -57,60 +65,51 @@ public class SecurityUtil {
         return ecKey;
     }
 
-    public static List<Base64> getKeyInfo(SignerDetail signerDetail) throws IOException {
+    public static List<Base64> getKeyInfo(SignerDetail signerDetail, String caFilepath) throws IOException {
 
         List<Base64> x5c = new ArrayList<>();
-
         KeyStore ks = null;
         Certificate signingCert = null;
         Certificate rootCert = null;
         Certificate interCert = null;
 
-        String keyStore = null;
+        String keyStorePath = null;
         String keyPassword = null;
 
         try {
-            keyStore = signerDetail.getKeystore();
 
-            ks = KeyStore.getInstance(KeyStore.getDefaultType());
-            // TODO: Assuming Keypass as decrypted for not, need to store the encrypted one here
-            keyPassword = signerDetail.getKeypass();
-            ks.load(new FileInputStream(keyStore), keyPassword.toCharArray());
-
-            // Get Signing, Root and Inter Certificate from KeyStore
-            String signerCertKey = signerDetail.getSignerCertKey();
-            signingCert = ks.getCertificate(signerCertKey);
-            String rootCertKey = signerDetail.getRootCertKey();
-            rootCert = ks.getCertificate(rootCertKey);
-            String interCertKey = signerDetail.getInterCertKey();
-            interCert = ks.getCertificate(interCertKey);
-
-            // Signing
-            if (signingCert instanceof java.security.cert.X509Certificate) {
-                java.security.cert.X509Certificate x509cert =
-                        (java.security.cert.X509Certificate) signingCert;
-                byte[] VALUE = x509cert.getEncoded();
-                Base64 encodedValue = Base64.encode(VALUE);
-                x5c.add(encodedValue);
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            try (InputStream caCertFile = new FileInputStream(caFilepath)) {
+                X509Certificate caCert = (X509Certificate) cf.generateCertificate(caCertFile);
+                byte[] VALUE = caCert.getEncoded();
+                x5c.add(Base64.encode(VALUE));
+            }catch (Exception e){
+                log.error("exception: ", e);
             }
 
-            // Inter - no intermediate cert in case of UL testing
-            if (interCert instanceof java.security.cert.X509Certificate) {
-                java.security.cert.X509Certificate x509cert =
-                        (java.security.cert.X509Certificate) interCert;
-                byte[] VALUE = x509cert.getEncoded();
-                Base64 encodedValue = Base64.encode(VALUE);
-                x5c.add(encodedValue);
-            }
 
-            // Root
-            if (rootCert instanceof java.security.cert.X509Certificate) {
-                java.security.cert.X509Certificate x509cert =
-                        (java.security.cert.X509Certificate) rootCert;
-                byte[] VALUE = x509cert.getEncoded();
-                Base64 encodedValue = Base64.encode(VALUE);
-                x5c.add(encodedValue);
-            }
+//            String rootCertKey = signerDetail.getRootCertKey();
+//            rootCert = ks.getCertificate(rootCertKey);
+//            String interCertKey = signerDetail.getInterCertKey();
+//            interCert = ks.getCertificate(interCertKey);
+
+//            // Inter - no intermediate cert in case of UL testing
+//            if (interCert instanceof java.security.cert.X509Certificate) {
+//                java.security.cert.X509Certificate x509cert =
+//                        (java.security.cert.X509Certificate) interCert;
+//                byte[] VALUE = x509cert.getEncoded();
+//                Base64 encodedValue = Base64.encode(VALUE);
+//                x5c.add(encodedValue);
+//            }
+//
+//            // Root
+//            if (rootCert instanceof java.security.cert.X509Certificate) {
+//                java.security.cert.X509Certificate x509cert =
+//                        (java.security.cert.X509Certificate) rootCert;
+//                byte[] VALUE = x509cert.getEncoded();
+//                Base64 encodedValue = Base64.encode(VALUE);
+//                x5c.add(encodedValue);
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
