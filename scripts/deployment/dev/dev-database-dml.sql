@@ -311,6 +311,6 @@ VALUES
 UNLOCK TABLES;
 
 LOCK TABLES `signer_detail` WRITE;
-INSERT INTO `signer_detail` VALUES ('I1', '1', '/Users/ishan.agrawal/code/src/github.com/ffs/card-auth-server/acs20VisaClientPitKeystore', 'ZealMac', 'server', 'server', 'acssslvisapitkey', 'acssslvisapitkey', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `signer_detail` VALUES ('I1', '2', '/Users/ishan.agrawal/code/src/github.com/ffs/card-auth-server/acs20VisaClientPitKeystore', 'ZealMac', 'server', 'server', 'acssslvisapitkey', 'acssslvisapitkey', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `signer_detail` VALUES ('I1', '1', '/Users/ishan.agrawal/code/src/github.com/ffs/card-auth-server/docs/certs/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `signer_detail` VALUES ('I1', '2', '/Users/ishan.agrawal/code/src/github.com/ffs/card-auth-server/docs/certs/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;

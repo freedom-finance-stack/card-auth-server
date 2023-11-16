@@ -28,17 +28,11 @@ public class SignerDetail extends BaseEntity<SignerDetailPK> {
     @Column(name = "keypass")
     private String keypass;
 
-    @Column(name = "debit_cert_key")
-    private String debitCertKey;
+    @Column(name = "signer_cert_key")
+    private String signerCertKey;
 
-    @Column(name = "credit_cert_key")
-    private String creditCertKey;
-
-    @Column(name = "debit_signer_key")
-    private String debitSignerKey;
-
-    @Column(name = "credit_signer_key")
-    private String creditSignerKey;
+    @Column(name = "signer_key_pair")
+    private String signerKeyPair;
 
     @Column(name = "root_cert_key")
     private String rootCertKey;
