@@ -99,21 +99,13 @@ public class SignerServiceImpl implements SignerService {
 
             if (signerDetailOptional.isPresent()) signerDetail = signerDetailOptional.get();
 
-            GatewayConfig.ServiceConfig visaConfig =
-                    gatewayConfig.getServices().get(ClientType.VISA_DS);
-
             List<Base64> x509CertChain =
                     SecurityUtil.getKeyInfo(
                             signerDetail,
                             "/opt/card-auth-server/cas-acs/bin/config/clientCertificate1910.crt");
 
-            // Temporary: Currently Don't have certificate file
-            // todo remove this
-            if (x509CertChain.isEmpty()) {
-                return "testACSSignedContent";
-            }
+            KeyPair keyPair = SecurityUtil.getRSAKeyPairFromKeystore(x509CertChain);
 
-            KeyPair keyPair = SecurityUtil.getRSAKeyPairFromKeystore(signerDetail, x509CertChain);
             signedData =
                     SecurityUtil.generateDigitalSignatureWithPS256(
                             keyPair, x509CertChain, signedJsonObject);

@@ -88,6 +88,9 @@ public class SecurityUtil {
                 log.error("exception: ", e);
             }
 
+
+
+
             //            String rootCertKey = signerDetail.getRootCertKey();
             //            rootCert = ks.getCertificate(rootCertKey);
             //            String interCertKey = signerDetail.getInterCertKey();
@@ -118,22 +121,21 @@ public class SecurityUtil {
         return x5c;
     }
 
-    public static KeyPair getRSAKeyPairFromKeystore(
-            SignerDetail signerDetail, List<Base64> x509CertChain) throws Exception {
+    public static KeyPair getRSAKeyPairFromKeystore(List<Base64> x509CertChain) throws Exception {
 
-        String keyStore = signerDetail.getKeystore();
-        String keyPass = signerDetail.getKeypass();
+//        String keyStore = signerDetail.getKeystore();
+//        String keyPass = signerDetail.getKeypass();
+//
+//        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+//        ks.load(new FileInputStream(keyStore), keyPass.toCharArray());
 
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(new FileInputStream(keyStore), keyPass.toCharArray());
-
+        X509Certificate cert = X509CertUtils.parse(x509CertChain.get(0).decode());
         RSAPublicKey publicKey =
                 (RSAPublicKey) X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
         RSAPrivateKey privateKey =
-                (RSAPrivateKey) ks.getKey(signerDetail.getSignerKeyPair(), keyPass.toCharArray());
+                (RSAPrivateKey) cert;
 
-        KeyPair keyPair = new KeyPair(publicKey, privateKey);
-        return keyPair;
+        return new KeyPair(publicKey, privateKey);
     }
 
     public static String generateDigitalSignatureWithPS256(
