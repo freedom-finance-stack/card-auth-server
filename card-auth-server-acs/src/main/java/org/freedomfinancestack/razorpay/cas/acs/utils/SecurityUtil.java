@@ -75,7 +75,9 @@ public class SecurityUtil {
             ks = KeyStore.getInstance(KeyStore.getDefaultType());
             // TODO: Assuming Keypass as decrypted for not, need to store the encrypted one here
             keyPassword = signerDetail.getKeypass();
-            ks.load(new FileInputStream(keyStore), keyPassword.toCharArray());
+            String baseDir = System.getProperty("user.dir");
+            String keystorePath = baseDir + "/" + keyStore;
+            ks.load(new FileInputStream(keystorePath), keyPassword.toCharArray());
 
             // Get Signing, Root and Inter Certificate from KeyStore
             String signerCertKey = signerDetail.getSignerCertKey();
@@ -126,7 +128,9 @@ public class SecurityUtil {
         String keyPass = signerDetail.getKeypass();
 
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(new FileInputStream(keyStore), keyPass.toCharArray());
+        String baseDir = System.getProperty("user.dir");
+        String keystorePath = baseDir + "/" + keyStore;
+        ks.load(new FileInputStream(keystorePath), keyPass.toCharArray());
 
         RSAPublicKey publicKey =
                 (RSAPublicKey) X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
