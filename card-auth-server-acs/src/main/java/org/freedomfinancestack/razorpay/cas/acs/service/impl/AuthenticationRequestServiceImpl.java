@@ -127,11 +127,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 if (areq.getDeviceRenderOptions() == null) {
                     throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
                 }
-                try {
-                    featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
-                } catch (Exception e) {
-                    throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
-                }
+                featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
             }
 
             // Determine if challenge is required and update transaction accordingly
