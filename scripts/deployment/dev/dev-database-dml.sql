@@ -113,7 +113,7 @@ INSERT INTO `card_range` VALUES ('R2', 'I1', 7654310400000000, 7654310499999999,
 INSERT INTO `card_range` VALUES ('R3', 'I1', 7654350700000000, 7654350799999999, 'INACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R5', 'I1', 7654340600000000, 7654340699999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R6', 'I1', 7654320500000000, 7654320599999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R8', 'I1', 765430270000000,  765430279999999,   'ACTIVE', 'CREDIT', 'CHALLENGE',    '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R8', 'I1', 765430270000000,  765430279999999,   'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R9', 'I1', 7654370900000000, 7654370999999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R10', 'I1', 7654381000000000, 7654381099999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R11', 'I1', 7654391100000000, 7654391199999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
@@ -296,6 +296,21 @@ VALUES
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
+
+
+INSERT INTO `feature`
+VALUES
+    (
+        '14', 'INSTITUTION', 'I1', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["01"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+
 UNLOCK TABLES;
 
 LOCK TABLES `signer_detail` WRITE;
