@@ -96,9 +96,11 @@ public interface AResMapper {
     @Mapping(
             target = "acsRenderingType",
             expression =
-                    "java(new org.freedomfinancestack.razorpay.cas.contract.enums."
+                    "java(org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())"
+                        + " && transaction.getTransactionSdkDetail().getAcsUiType() != null ? new"
+                        + " org.freedomfinancestack.razorpay.cas.contract.enums."
                         + "ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
-                        + " transaction.getTransactionSdkDetail().getAcsUiType()))")
+                        + " transaction.getTransactionSdkDetail().getAcsUiType()) : null)")
 
     // todo    @Mapping AcsSignedContent for app based
     ARES toAres(AREQ areq, Transaction transaction);
