@@ -22,10 +22,11 @@ import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
+import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +122,17 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     new CardDetailsRequest(
                             cardRange.getInstitution().getId(), areq.getAcctNumber()),
                     cardRange.getCardDetailsStore());
+
+            if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
+                if (areq.getDeviceRenderOptions() == null) {
+                    throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
+                }
+                try {
+                    featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
+                } catch (Exception e) {
+                    throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
+                }
+            }
 
             // Determine if challenge is required and update transaction accordingly
             challengeDetermineService.determineChallenge(

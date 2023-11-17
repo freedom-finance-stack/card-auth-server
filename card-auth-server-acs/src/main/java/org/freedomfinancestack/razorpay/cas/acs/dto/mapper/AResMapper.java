@@ -93,8 +93,14 @@ public interface AResMapper {
                         + " areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)"
                         + " ? InternalConstants.THREE_RI_WHILE_LIST_STATUS_SOURCE : null)")
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
+    @Mapping(
+            target = "acsRenderingType",
+            expression =
+                    "java(new org.freedomfinancestack.razorpay.cas.contract.enums."
+                        + "ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
+                        + " transaction.getTransactionSdkDetail().getAcsUiType()))")
 
-    // todo    @Mapping acsRenderingType, AcsSignedContent  for app based
+    // todo    @Mapping AcsSignedContent for app based
     ARES toAres(AREQ areq, Transaction transaction);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {

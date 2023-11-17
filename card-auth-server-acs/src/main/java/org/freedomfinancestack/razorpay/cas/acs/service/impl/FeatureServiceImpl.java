@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,6 +8,8 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.contract.DeviceRenderOptions;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.repository.FeatureRepository;
@@ -32,12 +35,62 @@ public class FeatureServiceImpl implements FeatureService {
     private final FeatureRepository featureRepository;
 
     @Override
+    public void getACSRenderingType(
+            Transaction transaction, DeviceRenderOptions deviceRenderOptions)
+            throws ACSDataAccessException {
+        RenderingTypeConfigList renderingTypeConfigList =
+                (RenderingTypeConfigList)
+                        featureRepository.findFeatureByIds(
+                                FeatureName.RENDERING_TYPE, getEntityIdsByType(transaction));
+
+        RenderingTypeConfig finalRenderingTypeConfig = null;
+
+        for (RenderingTypeConfig renderingTypeConfig :
+                renderingTypeConfigList.getRenderingTypeConfigs()) {
+            String acsUiType =
+                    Util.findFirstCommonString(
+                            Arrays.asList(deviceRenderOptions.getSdkUiType()),
+                            renderingTypeConfig.getAcsUiTemplate());
+            if (acsUiType == null) {
+                continue;
+            }
+            if (renderingTypeConfig
+                    .getAcsInterface()
+                    .equals(deviceRenderOptions.getSdkInterface())) {
+                transaction
+                        .getTransactionSdkDetail()
+                        .setAcsInterface(renderingTypeConfig.getAcsInterface());
+                transaction.getTransactionSdkDetail().setAcsUiType(acsUiType);
+                return;
+            } else if (deviceRenderOptions.getSdkInterface().equals("03")) {
+                if (finalRenderingTypeConfig == null
+                        || finalRenderingTypeConfig.getPreference()
+                                > renderingTypeConfig.getPreference()) {
+                    finalRenderingTypeConfig = renderingTypeConfig;
+                    transaction
+                            .getTransactionSdkDetail()
+                            .setAcsInterface(renderingTypeConfig.getAcsInterface());
+                    transaction.getTransactionSdkDetail().setAcsUiType(acsUiType);
+                }
+            }
+        }
+        if (finalRenderingTypeConfig != null) {
+            return;
+        }
+
+        log.error(
+                "Rendering Type not found for Institution ID : "
+                        + transaction.getInstitutionId()
+                        + " and Card Range ID : "
+                        + transaction.getCardRangeId());
+        throw new ACSDataAccessException(
+                InternalErrorCode.RENDERING_TYPE_NOT_FOUND, "Rendering Type Config not found");
+    }
+
+    @Override
     public AuthConfigDto getAuthenticationConfig(Transaction transaction)
             throws ACSDataAccessException {
-        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
-        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
-        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
-        return getAuthenticationConfig(entityIdsByType);
+        return getAuthenticationConfig(getEntityIdsByType(transaction));
     }
 
     // todo add cache
@@ -70,6 +123,13 @@ public class FeatureServiceImpl implements FeatureService {
                 challengeAuthTypeConfig.getThresholdAuthType(), authConfigDto, entityIdsByType);
 
         return authConfigDto;
+    }
+
+    private Map<FeatureEntityType, String> getEntityIdsByType(Transaction transaction) {
+        Map<FeatureEntityType, String> entityIdsByType = new HashMap<>();
+        entityIdsByType.put(FeatureEntityType.INSTITUTION, transaction.getInstitutionId());
+        entityIdsByType.put(FeatureEntityType.CARD_RANGE, transaction.getCardRangeId());
+        return entityIdsByType;
     }
 
     private void fetchAuthTypeConfig(

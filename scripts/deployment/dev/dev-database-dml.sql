@@ -106,14 +106,23 @@ INSERT INTO `card_detail` VALUES ('106', '1', 'I1','7654310438709329', '0535', 0
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;
-INSERT INTO `card_range` VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R7', 'I1', 4030000000000000, 4030000000000100, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R4', 'I1', 5116000000000000, 5516000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'MasterCard Testing', 'MOCK', 2, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R2', 'I1', 7654310400000000, 7654310499999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R3', 'I1', 7654350700000000, 7654350799999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R5', 'I1', 7654340600000000, 7654340699999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R6', 'I1', 7654320500000000, 7654320599999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Testing CardholderNotAuth', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R8', 'I1', 765430270000000,  765430279999999,   'ACTIVE', 'CREDIT', 'CHALLENGE',    '3DS Portal Testing CardholderNotAuth', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R7', 'I1', 4030000000000000, 4030000000000100, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'Visa Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R5', 'I1', 5116000000000000, 5516000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'MasterCard Testing', 'ACS', 2, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R2', 'I1', 7654310400000000, 7654310499999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R3', 'I1', 7654350700000000, 7654350799999999, 'INACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R5', 'I1', 7654340600000000, 7654340699999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R6', 'I1', 7654320500000000, 7654320599999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R8', 'I1', 765430270000000,  765430279999999,   'ACTIVE', 'CREDIT', 'CHALLENGE',    '3DS Portal Testing CardholderNotAuth', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R9', 'I1', 7654370900000000, 7654370999999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R10', 'I1', 7654381000000000, 7654381099999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R11', 'I1', 7654391100000000, 7654391199999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R12', 'I1', 8765411200000000, 8765411299999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R13', 'I1', 8765431400000000, 8765431499999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R14', 'I1', 8765441500000000, 8765441599999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R15', 'I1', 8765451600000000, 8765451699999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R16', 'I1', 8765461700000000, 8765461799999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R17', 'I1', 8765471800000000, 8765471899999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
@@ -130,7 +139,161 @@ VALUES ('I1', 'HDFC Bank', 'HDFC', 356, 'Asia/Kolkata', 'ACTIVE', NOW(), 'dev-us
 UNLOCK TABLES;
 
 LOCK TABLES `feature` WRITE;
-INSERT INTO `feature` VALUES ('1', 'INSTITUTION', 'I1', 1, 'CHALLENGE_AUTH_TYPE', '{ "purchase_amount_threshold" : 20000, "above_threshold_auth_type" :  "OTP", "default_auth_type" :  "OTP" }', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
-INSERT INTO `feature` VALUES ('2', 'INSTITUTION', 'I1', 1, 'CHALLENGE_ATTEMPT', '{ "attempt_threshold": 3, "resend_threshold": 3, "block_on_exceed_attempt": true, "whitelisting_allowed": true }', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
-INSERT INTO `feature` VALUES ('3', 'INSTITUTION', 'I1', 1, 'OTP', '{ "length" : 4}', NOW(), 'dev-user', NOW(), 'dev-user', null, null);
+INSERT INTO `feature`
+VALUES
+    (
+        '1', 'INSTITUTION', 'I1', 1, 'CHALLENGE_AUTH_TYPE',
+        '{
+            "purchase_amount_threshold" : 20000,
+            "above_threshold_auth_type" :  "OTP",
+            "default_auth_type" :  "OTP"
+        }',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '2', 'INSTITUTION', 'I1', 1, 'CHALLENGE_ATTEMPT',
+        '{
+            "attempt_threshold": 3,
+            "resend_threshold": 3,
+            "block_on_exceed_attempt": true,
+            "whitelisting_allowed": true
+        }',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '3', 'INSTITUTION', 'I1', 1, 'OTP',
+        '{ "length" : 4}', NOW(), 'dev-user',
+        NOW(), 'dev-user', null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '4', 'CARD_RANGE', 'R8', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["01", "02"],
+        "preference": 1
+        },
+        {
+        "acs_interface" : "02",
+        "acs_ui_template": ["03"],
+        "preference": 2
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '5', 'CARD_RANGE', 'R9', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["01"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '6', 'CARD_RANGE', 'R10', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["02"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '7', 'CARD_RANGE', 'R11', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["03"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '8', 'CARD_RANGE', 'R12', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": ["04"],
+        "preference": "1"
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '9', 'CARD_RANGE', 'R13', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["01"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '10', 'CARD_RANGE', 'R14', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["02"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '11', 'CARD_RANGE', 'R15', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["03"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '12', 'CARD_RANGE', 'R16', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["04"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '13', 'CARD_RANGE', 'R17', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["05"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
 UNLOCK TABLES;
