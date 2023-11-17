@@ -185,7 +185,12 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
 
         // If everything is successful, send Ares message type as a response.
         try {
-            if (isAttemptedTestRange(transaction.getTransactionCardDetail().getCardNumber())) {
+            /*
+             * below If condition for attempted case can only be used in Self Test Platform.
+             */
+            if (transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)
+                    && isAttemptedTestRange(
+                            transaction.getTransactionCardDetail().getCardNumber())) {
                 transaction.setTransactionStatus(TransactionStatus.ATTEMPT);
                 // todo not raising Attempt actual anywhere in code, check if attempt scenario is
                 // possible

@@ -132,11 +132,10 @@ public class TransactionServiceImpl implements TransactionService {
             } else if (appDeviceInfo.equals(appDeviceInfoIOS)) {
                 transactionBuilder.deviceName(InternalConstants.IOS);
             }
-            transactionBuilder.deviceChannel(DeviceChannel.APP.getChannel());
         } else if (areq.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())) {
             transactionBuilder.deviceName(InternalConstants.BROWSER);
-            transactionBuilder.deviceChannel(DeviceChannel.BRW.getChannel());
         }
+        transactionBuilder.deviceChannel(areq.getDeviceChannel());
         return transactionBuilder.build();
     }
 
