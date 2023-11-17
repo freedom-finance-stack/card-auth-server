@@ -1,6 +1,6 @@
 app:
   port: 8080
-  hostname: https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com/
+  hostname: https://ec2-52-66-119-35.ap-south-1.compute.amazonaws.com
   acs:
     referenceNumber: "12345678901234567890"
     timeout:
