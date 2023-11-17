@@ -43,7 +43,7 @@
         <gson.version>2.10.1</gson.version>
         <jakarta.platform.version>10.0.0</jakarta.platform.version>
         <http.client5.version>5.2.1</http.client5.version>
-        <cas-extensions.version>1.0.6-SNAPSHOT</cas-extensions.version>
+        <cas-extensions.version>1.0.10-SNAPSHOT</cas-extensions.version>
     </properties>
 
     <dependencyManagement>
@@ -300,23 +300,6 @@
                         <phase>process-sources</phase>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.5.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <sourcepath>${project.build.directory}/delombok</sourcepath>
-                    <doclint>none</doclint>
-                </configuration>
             </plugin>
         </plugins>
     </build>

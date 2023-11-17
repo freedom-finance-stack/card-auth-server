@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static org.freedomfinancestack.extensions.validation.validator.basic.NotNull.notNull;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 
 /**
@@ -21,14 +21,15 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.L
  */
 @Slf4j
 @Service
-public class ChallengeValidationRequestValidator {
+public class ChallengeValidationRequestValidator implements ThreeDSValidator<CVReq> {
 
     /**
      * Validates the authentication request (CVREQ).
      *
-     * @param incomingCvreq The authentication request (CVREQ) to be validated.
-     * @throws ValidationException If the request fails validation.
+     * @param incomingCvreq The authentication request {@link CVReq} to be validated.
+     * @throws ACSValidationException If the request fails validation.
      */
+    @Override
     public void validateRequest(CVReq incomingCvreq) throws ACSValidationException {
         if (incomingCvreq == null) {
             throw new ACSValidationException(
@@ -44,7 +45,7 @@ public class ChallengeValidationRequestValidator {
             Validation.validate(
                     ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                     incomingCvreq.getTransactionId(),
-                    notNull(),
+                    notBlank(),
                     lengthValidator(DataLengthType.FIXED, 36));
         } catch (ValidationException ex) {
             throw new ACSValidationException(ex);

@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The {@code ACSController} class is a Web View controller responsible for handling Challenge flow
@@ -25,8 +27,9 @@ import lombok.RequiredArgsConstructor;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Controller
-@RequestMapping("/v1/transaction")
+@RequestMapping(RouteConstants.TRANSACTION_ROUTE)
 @RequiredArgsConstructor
 public class ChallengeRequestController {
 
@@ -45,7 +48,7 @@ public class ChallengeRequestController {
      *     HTML format.
      */
     @RequestMapping(
-            value = "/challenge/browser",
+            value = RouteConstants.CHALLENGE_BROWSER_ROUTE,
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")
@@ -83,7 +86,7 @@ public class ChallengeRequestController {
                     InternalErrorCode.INTERNAL_SERVER_ERROR);
         }
         if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
-            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_ERRO, cdRes.getEncryptedErro());
+            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedErro());
         } else {
             model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
         }
@@ -114,7 +117,7 @@ public class ChallengeRequestController {
      *     HTML format.
      */
     @RequestMapping(
-            value = "/challenge/browser/validate",
+            value = RouteConstants.CHALLENGE_BROWSER_VALIDATE_ROUTE,
             method = RequestMethod.POST,
             produces = "html/text;charset=utf-8",
             consumes = "application/x-www-form-urlencoded;charset=UTF-8")

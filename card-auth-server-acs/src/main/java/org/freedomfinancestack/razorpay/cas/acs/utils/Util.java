@@ -13,7 +13,6 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -241,6 +240,28 @@ public class Util {
     }
 
     /**
+     * to check string is base64 Url encoding or not
+     *
+     * @param input input string. which need to check for validity
+     * @return boolean set to true for valid base64url encoding
+     */
+    public static boolean isValidBase64Url(String input) {
+        try {
+            // Decode the input to check if it's a valid Base64 encoding
+            byte[] decodedBytes = Base64.getUrlDecoder().decode(input);
+
+            // Encode the decoded bytes again and compare with the original input
+            String reencoded = Base64.getUrlEncoder().encodeToString(decodedBytes);
+
+            // If the re-encoded string matches the original input, it's a valid Base64 URL encoding
+            return input.equals(reencoded);
+        } catch (Exception e) {
+            // If decoding fails, it's not a valid Base64 encoding
+            return false;
+        }
+    }
+
+    /**
      * Generates a random number with the specified number of digits.
      *
      * @param digits the number of digits in the random number
@@ -258,20 +279,6 @@ public class Util {
             return base64String.replaceAll("=+$", "");
         }
         return null;
-    }
-
-    public static String getAcsChallengeUrl(String hostName, String deviceChannel) {
-        if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
-            return hostName + InternalConstants.CHALLENGE_APP_URL;
-        }
-        return hostName + InternalConstants.CHALLENGE_BRW_URL;
-    }
-
-    public static String getAcsChallengeValidationUrl(String hostName, String deviceChannel) {
-        if (DeviceChannel.APP.getChannel().equals(deviceChannel)) {
-            return hostName + InternalConstants.CHALLENGE_APP_VALIDATION_URL;
-        }
-        return hostName + InternalConstants.CHALLENGE_BRW_VALIDATION_URL;
     }
 
     public static ThreeDSErrorResponse generateErrorResponse(

@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestService;
@@ -22,15 +23,15 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * The {@link AuthenticationRequestController} class is a REST controller responsible for handling
- * Authentication Request {@link AREQ} from the 3DS Server.
+ * Authentication Request {@link AREQ} from the 3DS Server. This endpoint supports 3DS version 2.x.x
  *
  * @version 1.0.0
  * @since 1.0.0
  * @author ankitchoudhary2209, jaydeepRadadiya
  */
 @Slf4j
-@RestController("acsController")
-@RequestMapping("/v1/transaction")
+@RestController
+@RequestMapping(RouteConstants.TRANSACTION_ROUTE)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationRequestController {
 
@@ -67,7 +68,7 @@ public class AuthenticationRequestController {
                         description = "Bad Request or Request not according to Areq Schema")
             })
     @PostMapping(
-            value = "/authentication",
+            value = RouteConstants.AUTHENTICATION_ROUTE,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "acs.auth-request", longTask = true)

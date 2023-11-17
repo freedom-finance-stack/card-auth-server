@@ -1,6 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
@@ -32,6 +34,8 @@ import org.mapstruct.Mapping;
             MessageType.class,
             Util.class,
             InternalConstants.class,
+            ThreeDSConstant.class,
+            RouteConstants.class
         })
 public interface AResMapper {
 
@@ -46,11 +50,7 @@ public interface AResMapper {
      * @return The {@link ARES} object representing the Authentication Response message.
      */
     @Mapping(target = "acsChallengeMandated", source = "transaction.challengeMandated")
-    @Mapping(
-            target = "acsDecConInd",
-            expression =
-                    "java(transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)"
-                        + " ? \"Y\" : \"N\")")
+    @Mapping(target = "acsDecConInd", expression = "java(getAcsDecConInd(transaction))")
     @Mapping(
             target = "acsOperatorID",
             expression = "java(getOperatorId(transaction, this.helperMapper.appConfiguration))")
@@ -64,8 +64,7 @@ public interface AResMapper {
             expression =
                     "java(org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())"
                         + " ? null :"
-                        + " (Util.getAcsChallengeUrl(this.helperMapper.appConfiguration.getHostname(),"
-                        + " transaction.getDeviceChannel())))")
+                        + " (RouteConstants.getAcsChallengeUrl(this.helperMapper.appConfiguration.getHostname(),transaction.getDeviceChannel())))")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -116,7 +115,6 @@ public interface AResMapper {
                         || TransactionStatus.REJECTED.equals(transaction.getTransactionStatus()))) {
             transStatusReason = transaction.getTransactionStatusReason();
         } else {
-
             // For 02-NPA, Conditional as defined by the DS.
             if (transaction.getTransactionCardDetail() != null
                     && transaction.getTransactionCardDetail().getNetworkCode() != null
@@ -162,5 +160,16 @@ public interface AResMapper {
             return "0" + transaction.getAuthenticationType();
         }
         return String.valueOf(transaction.getAuthenticationType());
+    }
+
+    default String getAcsDecConInd(Transaction transaction) {
+        if (transaction.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
+            return transaction
+                            .getTransactionStatus()
+                            .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)
+                    ? "Y"
+                    : "N";
+        }
+        return null;
     }
 }
