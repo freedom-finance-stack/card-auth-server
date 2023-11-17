@@ -104,7 +104,8 @@ public class FeatureServiceImpl implements FeatureService {
                                 FeatureName.CHALLENGE_AUTH_TYPE, entityIdsByType);
         if (challengeAuthTypeConfig == null) {
             throw new ACSDataAccessException(
-                    InternalErrorCode.INVALID_CONFIG, "Challenge Auth Type Config not found");
+                    InternalErrorCode.AUTH_CONFIG_NOT_PRESENT,
+                    "Challenge Auth Type Config not found");
         }
         authConfigDto.setChallengeAuthTypeConfig(challengeAuthTypeConfig);
         ChallengeAttemptConfig challengeAttemptConfig =
@@ -113,7 +114,8 @@ public class FeatureServiceImpl implements FeatureService {
                                 FeatureName.CHALLENGE_ATTEMPT, entityIdsByType);
         if (challengeAttemptConfig == null) {
             throw new ACSDataAccessException(
-                    InternalErrorCode.INVALID_CONFIG, "Challenge attempt Config not found");
+                    InternalErrorCode.AUTH_CONFIG_NOT_PRESENT,
+                    "Challenge attempt Config not found");
         }
         authConfigDto.setChallengeAttemptConfig(challengeAttemptConfig);
 
@@ -145,7 +147,7 @@ public class FeatureServiceImpl implements FeatureService {
                                         FeatureName.OTP, entityIdsByType);
                 if (otpConfig == null) {
                     throw new ACSDataAccessException(
-                            InternalErrorCode.INVALID_CONFIG, "OTP Config not found");
+                            InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "OTP Config not found");
                 }
                 authConfigDto.setOtpConfig(otpConfig);
                 break;
@@ -156,13 +158,13 @@ public class FeatureServiceImpl implements FeatureService {
                                         FeatureName.PASSWORD, entityIdsByType);
                 if (passwordConfig == null) {
                     throw new ACSDataAccessException(
-                            InternalErrorCode.INVALID_CONFIG, "Password Config not found");
+                            InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Password Config not found");
                 }
                 authConfigDto.setPasswordConfig(passwordConfig);
                 break;
             default:
                 throw new ACSDataAccessException(
-                        InternalErrorCode.INVALID_CONFIG, "Invalid Auth Type");
+                        InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
         }
     }
 }

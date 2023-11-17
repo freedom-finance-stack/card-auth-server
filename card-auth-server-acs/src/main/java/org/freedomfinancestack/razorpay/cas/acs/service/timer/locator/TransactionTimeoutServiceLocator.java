@@ -35,7 +35,7 @@ public class TransactionTimeoutServiceLocator {
                 break;
             default:
                 throw new OperationNotSupportedException(
-                        InternalErrorCode.INVALID_CONFIG, "Invalid messageType Type");
+                        InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid messageType Type");
         }
         return transactionTimerService;
     }
