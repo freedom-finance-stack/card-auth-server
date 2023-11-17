@@ -10,7 +10,7 @@ import lombok.NonNull;
 public class RouteConstants {
 
     public static final String VERSION_TWO = "v2";
-    public static final String TRANSACTION_ROUTE = VERSION_TWO + "/transaction";
+    public static final String TRANSACTION_ROUTE = "/" + VERSION_TWO + "/transaction";
     public static final String AUTHENTICATION_ROUTE = "/authentication";
     public static final String CHALLENGE_BROWSER_ROUTE = "/challenge/browser";
     public static final String CHALLENGE_BROWSER_VALIDATE_ROUTE = "/challenge/browser/validate";
