@@ -28,7 +28,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
-import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionAcsUrl;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -62,7 +61,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final AuthValueGeneratorService authValueGeneratorService;
     private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
-    private final InstitutionAcsUrlService institutionAcsUrlService;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
@@ -88,14 +86,18 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     public ARES processAuthenticationRequest(@NonNull AREQ areq)
             throws ThreeDSException, ACSDataAccessException {
         Transaction transaction = new Transaction();
-        InstitutionAcsUrl acsUrl = null;
         ARES ares;
         CardRange cardRange = null;
         try {
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
+
+            // Set messageversion before validation as it is required in Erro
+            transaction.setMessageVersion(areq.getMessageVersion());
+
             // log incoming request in DB
             transactionMessageLogService.createAndSave(areq, areq.getTransactionId());
+
             // validate areq
             areqValidator.validateRequest(areq);
 
@@ -195,7 +197,12 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
 
         // If everything is successful, send Ares message type as a response.
         try {
-            if (isAttemptedTestRange(transaction.getTransactionCardDetail().getCardNumber())) {
+            /*
+             * below If condition for attempted case can only be used in Self Test Platform.
+             */
+            if (transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)
+                    && isAttemptedTestRange(
+                            transaction.getTransactionCardDetail().getCardNumber())) {
                 transaction.setTransactionStatus(TransactionStatus.ATTEMPT);
                 // todo not raising Attempt actual anywhere in code, check if attempt scenario is
                 // possible

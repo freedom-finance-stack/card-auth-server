@@ -8,7 +8,7 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import static org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant.MESSAGE_TYPE_VERSION;
+import static org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant.DEFAULT_MESSAGE_TYPE_VERSION;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -27,7 +27,7 @@ public class RREQ extends ThreeDSObject {
 
     private String messageType = MessageType.RReq.toString();
 
-    private String messageVersion = MESSAGE_TYPE_VERSION;
+    private String messageVersion = DEFAULT_MESSAGE_TYPE_VERSION;
 
     private String transStatus;
 

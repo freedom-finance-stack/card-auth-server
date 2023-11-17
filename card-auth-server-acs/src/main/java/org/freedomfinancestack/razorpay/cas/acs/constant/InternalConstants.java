@@ -48,12 +48,6 @@ public class InternalConstants {
     public static final String MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE = "cdRes";
     public static final String THREE_RI_WHILE_LIST_STATUS_SOURCE = "03";
     public static final String THREE_RI_IND_WHILE_LIST = "10";
-
-    public static final String CHALLENGE_BRW_VALIDATION_URL =
-            "v1/transaction/challenge/browser/validate";
-    public static final String CHALLENGE_APP_VALIDATION_URL =
-            "v1/transaction/challenge/app/validate";
-
-    public static final String CHALLENGE_BRW_URL = "v1/transaction/challenge/browser";
-    public static final String CHALLENGE_APP_URL = "v1/transaction/challenge/app";
+    public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_02 = "02";
+    public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_03 = "03";
 }
