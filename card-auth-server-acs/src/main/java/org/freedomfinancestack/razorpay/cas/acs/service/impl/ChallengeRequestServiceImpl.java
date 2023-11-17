@@ -131,10 +131,20 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
             // validation Creq
             challengeRequestValidator.validateRequest(cReq, transaction);
-            transaction.setThreedsSessionData(
-                    Util.removeBase64Padding(
-                            threeDSSessionData)); // removing base64 padding because Padding not
-            // allowed in base64url encoded form parameter
+
+            // validate threeDSSessionData
+            if (!Util.isNullorBlank(threeDSSessionData)) {
+                if (!Util.isValidBase64Url(threeDSSessionData)) {
+                    transaction.setChallengeCancelInd(
+                            ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
+                    throw new ACSValidationException(
+                            ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                            " ThreeDsSessionData incorrect");
+                }
+                transaction.setThreedsSessionData(
+                        Util.removeBase64Padding(
+                                threeDSSessionData)); // removing base64 padding because Padding not
+            }
 
             // 4 flows
             // 1: if Challenge cancelled by user
@@ -234,8 +244,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
                 updateEci(transaction);
                 if (challengeFlowDto.isSendRreq()) {
-                    // sendRreq and if it fails update response
-                    resultRequestService.processRreq(transaction);
+                    if (!resultRequestService.processRreq(transaction)) {
+                        transaction.setTransactionStatus(TransactionStatus.FAILED);
+                        CRES cres = cResMapper.toCres(transaction);
+                        challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
+                    }
                 }
                 transactionService.saveOrUpdate(transaction);
                 transactionMessageLogService.createAndSave(
@@ -395,14 +408,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     log.info("Sending Result request for transaction {}", transaction.getId());
                     // sendRreq and if it fails update response
                     if (!resultRequestService.processRreq(transaction)) {
-                        log.info(
-                                "Failed to send Result request for transaction {}",
-                                transaction.getId());
-                        generateErrorResponse(
-                                challengeFlowDto.getCdRes(),
-                                ThreeDSecureErrorCode.SENT_MESSAGES_LIMIT_EXCEEDED,
-                                transaction,
-                                "Couldn't communicate to DS");
+                        transaction.setTransactionStatus(TransactionStatus.FAILED);
+                        CRES cres = cResMapper.toCres(transaction);
+                        challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
                     }
                 }
                 transactionService.saveOrUpdate(transaction);

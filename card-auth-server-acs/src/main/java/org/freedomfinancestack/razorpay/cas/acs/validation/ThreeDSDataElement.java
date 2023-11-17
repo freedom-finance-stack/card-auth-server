@@ -379,12 +379,16 @@ public enum ThreeDSDataElement {
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
 
-    PURCHASE_INSTAL_DATA(
+    PURCHASE_INSTAL_DATA_2_2_0(
             ThreeDSConstant.ELEMENT_PURCHASE_INSTALL_DATA,
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
-            ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
-
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
+    PURCHASE_INSTAL_DATA_2_1_0(
+            ThreeDSConstant.ELEMENT_PURCHASE_INSTALL_DATA,
+            new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_1_0}),
     MCC(
             ThreeDSConstant.ELEMENT_MCC,
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
@@ -729,6 +733,30 @@ public enum ThreeDSDataElement {
             new DeviceChannel[] {DeviceChannel.APP},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
+
+    RECURRING_EXPIRY_2_2_0(
+            ThreeDSConstant.ELEMENT_RECURRING_EXPIRY,
+            new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
+
+    RECURRING_EXPIRY_2_1_0(
+            ThreeDSConstant.ELEMENT_RECURRING_EXPIRY,
+            new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_1_0}),
+
+    RECURRING_FREQUENCY_2_2_0(
+            ThreeDSConstant.ELEMENT_RECURRING_FREQUENCY,
+            new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
+
+    RECURRING_FREQUENCY_2_1_0(
+            ThreeDSConstant.ELEMENT_RECURRING_FREQUENCY,
+            new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_1_0}),
 
     UNSUPPORTED(null, null);
 

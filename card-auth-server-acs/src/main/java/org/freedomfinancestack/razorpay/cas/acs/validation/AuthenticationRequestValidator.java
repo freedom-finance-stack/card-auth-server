@@ -6,12 +6,15 @@ import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.MessageExtension;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeRIInd;
 import org.springframework.stereotype.Component;
 
 import lombok.NonNull;
@@ -262,7 +265,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         shouldValidateThreeDSDataElement(ThreeDSDataElement.BROWSER_TZ, request),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 5),
-                regexValidator("[0-9-.]{1,5}"));
+                regexValidator("[0-9-.+]{1,5}"));
         Validation.validate(
                 ThreeDSDataElement.BROWSER_USER_AGENT.getFieldName(),
                 request.getBrowserUserAgent(),
@@ -456,12 +459,24 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())
-                                && Arrays.asList("02", "03")
+                                && Arrays.asList(
+                                                InternalConstants
+                                                        .THREE_DS_REQUESTOR_AUTHENTICATION_IND_02,
+                                                InternalConstants
+                                                        .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03)
                                         .contains(request.getThreeDSRequestorAuthenticationInd()))
                         || (!Util.isNullorBlank(request.getThreeRIInd())
-                                && Arrays.asList("01", "02", "06", "07", "08", "09", "11")
+                                && Arrays.asList(
+                                                ThreeRIInd.RECURRING_TRANSACTION,
+                                                ThreeRIInd.INSTALMENT_TRANSACTION,
+                                                ThreeRIInd.SPLIT_DELAYED_SHIPMENT,
+                                                ThreeRIInd.TOP_UP,
+                                                ThreeRIInd.MAIL_ORDER,
+                                                ThreeRIInd.TELEPHONE_ORDER,
+                                                ThreeRIInd.OTHER_PAYMENT)
                                         .contains(request.getThreeRIInd())
-                                && "2.2.0".equals(request.getMessageVersion()));
+                                && ThreeDSConstant.MESSAGE_VERSION_2_2_0.equals(
+                                        request.getMessageVersion()));
         boolean purchaseElementsWhenRule =
                 validateDeviceChannel(ThreeDSDataElement.PURCHASE_AMOUNT, request)
                         && (request.getMessageCategory().equals(MessageCategory.PA.getCategory())
@@ -492,17 +507,86 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 when(purchaseElementsWhenRule, notBlank()),
                 lengthValidator(DataLengthType.FIXED, 14),
                 isDate(ThreeDSDataElement.PURCHASE_DATE.getAcceptedFormat()));
+
+        String authenticationInd = request.getThreeDSRequestorAuthenticationInd();
+        String threeRIInd = request.getThreeRIInd();
         Validation.validate(
-                ThreeDSDataElement.PURCHASE_INSTAL_DATA.getFieldName(),
+                ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_2_0.getFieldName(),
                 request.getPurchaseInstalData(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                        ThreeDSDataElement.PURCHASE_INSTAL_DATA, request)
-                                && Util.isNullorBlank(
-                                        request.getThreeDSRequestorAuthenticationInd())
-                                && "03".equals(request.getThreeDSRequestorAuthenticationInd()),
+                                        ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_2_0, request)
+                                && ((!Util.isNullorBlank(authenticationInd)
+                                                && InternalConstants
+                                                        .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03
+                                                        .equals(authenticationInd))
+                                        || (DeviceChannel.TRI
+                                                        .getChannel()
+                                                        .equals(request.getDeviceChannel())
+                                                && threeRIInd.equals(
+                                                        ThreeRIInd.INSTALMENT_TRANSACTION
+                                                                .getValue()))),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 3));
+        Validation.validate(
+                ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_1_0.getFieldName(),
+                request.getPurchaseInstalData(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.PURCHASE_INSTAL_DATA_2_1_0, request)
+                                && (!Util.isNullorBlank(authenticationInd)
+                                        && InternalConstants
+                                                .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03
+                                                .equals(authenticationInd)),
+                        notBlank()),
+                lengthValidator(DataLengthType.VARIABLE, 3));
+
+        boolean isAuthenticationIndValid =
+                !Util.isNullorBlank(authenticationInd)
+                        && (InternalConstants.THREE_DS_REQUESTOR_AUTHENTICATION_IND_02.equals(
+                                        authenticationInd)
+                                || InternalConstants.THREE_DS_REQUESTOR_AUTHENTICATION_IND_03
+                                        .equals(authenticationInd));
+        boolean isThreeRIIndValid =
+                !Util.isNullorBlank(threeRIInd)
+                        && (ThreeRIInd.RECURRING_TRANSACTION.getValue().equals(threeRIInd)
+                                || ThreeRIInd.INSTALMENT_TRANSACTION.getValue().equals(threeRIInd));
+
+        Validation.validate(
+                ThreeDSDataElement.RECURRING_EXPIRY_2_2_0.getFieldName(),
+                request.getRecurringFrequency(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.RECURRING_EXPIRY_2_2_0, request)
+                                && (isAuthenticationIndValid || isThreeRIIndValid),
+                        notBlank()));
+
+        Validation.validate(
+                ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0.getFieldName(),
+                request.getThreeDSServerURL(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0, request),
+                        notBlank()),
+                lengthValidator(DataLengthType.VARIABLE, 2048));
+
+        Validation.validate(
+                ThreeDSDataElement.RECURRING_EXPIRY_2_2_0.getFieldName(),
+                request.getRecurringExpiry(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.RECURRING_EXPIRY_2_2_0, request)
+                                && (isAuthenticationIndValid || isThreeRIIndValid),
+                        notBlank()));
+
+        Validation.validate(
+                ThreeDSDataElement.RECURRING_EXPIRY_2_1_0.getFieldName(),
+                request.getThreeDSServerURL(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.RECURRING_EXPIRY_2_1_0, request),
+                        notBlank()),
+                lengthValidator(DataLengthType.VARIABLE, 2048));
     }
 
     protected void validateOptionalFields(AREQ request) throws ValidationException {
@@ -566,12 +650,19 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.BILL_ADDR_CITY.getFieldName(),
                 request.getBillAddrCity(),
                 lengthValidator(DataLengthType.VARIABLE, 50));
+
         Validation.validate(
                 ThreeDSDataElement.BILL_ADDR_COUNTRY.getFieldName(),
                 request.getBillAddrCountry(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.BILL_ADDR_COUNTRY, request)
+                                && !Util.isNullorBlank(request.getBillAddrState()),
+                        notBlank()),
                 lengthValidator(DataLengthType.FIXED, 3),
                 isNumeric(),
                 notIn(EMVCOConstant.excludedCountry));
+
         Validation.validate(
                 ThreeDSDataElement.BILL_ADDR_LINE_1.getFieldName(),
                 request.getBillAddrLine1(),
@@ -615,6 +706,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.SHIP_ADDR_COUNTRY.getFieldName(),
                 request.getShipAddrCountry(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.SHIP_ADDR_COUNTRY, request)
+                                && !Util.isNullorBlank(request.getShipAddrState()),
+                        notBlank()),
                 lengthValidator(DataLengthType.FIXED, 3),
                 isNumeric(),
                 notIn(EMVCOConstant.excludedCountry));
