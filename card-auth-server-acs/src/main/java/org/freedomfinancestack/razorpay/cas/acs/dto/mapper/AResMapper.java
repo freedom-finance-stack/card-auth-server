@@ -97,7 +97,7 @@ public interface AResMapper {
     @Mapping(
             target = "acsRenderingType",
             expression =
-                    "java(org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())"
+                    "java(org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) && transaction.getTransactionSdkDetail().getAcsUiType() != null"
                         + " ? new org.freedomfinancestack.razorpay.cas.contract.enums."
                         + "ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
                         + " transaction.getTransactionSdkDetail().getAcsUiType()) : null)")
@@ -107,6 +107,8 @@ public interface AResMapper {
     ARES toAres(AREQ areq, Transaction transaction);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
+
+        new org.freedomfinancestack.razorpay.cas.contract.enums.ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(), transaction.getTransactionSdkDetail().getAcsUiType());
         String transStatusReason = "";
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
                 && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
