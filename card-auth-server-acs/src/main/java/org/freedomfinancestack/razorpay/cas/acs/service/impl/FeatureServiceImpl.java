@@ -42,7 +42,7 @@ public class FeatureServiceImpl implements FeatureService {
                 (RenderingTypeConfigList)
                         featureRepository.findFeatureByIds(
                                 FeatureName.RENDERING_TYPE, getEntityIdsByType(transaction));
-
+        log.info("getACSRenderingType");
         RenderingTypeConfig finalRenderingTypeConfig = null;
 
         for (RenderingTypeConfig renderingTypeConfig :
