@@ -98,11 +98,6 @@ public class SignerServiceImpl implements SignerService {
 
             List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail);
 
-            // Temporary: Currently Don't have certificate file
-            if (x509CertChain.isEmpty()) {
-                return "testACSSignedContent";
-            }
-
             KeyPair keyPair = SecurityUtil.getRSAKeyPairFromKeystore(signerDetail, x509CertChain);
             signedData =
                     SecurityUtil.generateDigitalSignatureWithPS256(
