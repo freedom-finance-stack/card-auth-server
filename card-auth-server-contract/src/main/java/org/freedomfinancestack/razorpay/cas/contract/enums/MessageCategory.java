@@ -9,20 +9,11 @@ public enum MessageCategory {
     PA("01", "PAYMENT_AUTHENTICATION"),
     NPA("02", "NON_PAYMENT_AUTHENTICATION"),
 
-    // New Message Category for Mastercard
+    // todo implement New Message Category for Mastercard
     PVPA("85", "PV_PAYMENT_AUTHENTICATION"), // PRODUCTION_VALIDATION_PAYMENT_AUTHENTICATION
     PVNPA(
             "86",
-            "PV_NON_PAYMENT_AUTHENTICATION"), // PRODUCTION_VALIDATION_NON_PAYMENT_AUTHENTICATION
-
-    // Added for Rupay
-    NW("NW", "Transaction performed at domestic merchant"),
-    TW("TW", "Transaction performed at domestic merchant along with Token provisioning"),
-    IT("IT", "Transaction performed at International merchant"),
-    AT("AT", "Authentication Transaction Only"),
-    AW("AW", "Authentication transaction for Provisioning"),
-    DI("DI", "Domestic InApp transaction"),
-    II("II", "International InApp transaction");
+            "PV_NON_PAYMENT_AUTHENTICATION"); // PRODUCTION_VALIDATION_NON_PAYMENT_AUTHENTICATION
 
     private final String category;
     private final String desc;
