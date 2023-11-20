@@ -3,13 +3,12 @@ package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
-import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
+import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -32,6 +31,8 @@ import org.mapstruct.Mapping;
             MessageCategory.class,
             Network.class,
             MessageType.class,
+            DeviceChannel.class,
+            ACSRenderingType.class,
             Util.class,
             InternalConstants.class,
             ThreeDSConstant.class,
@@ -62,8 +63,8 @@ public interface AResMapper {
     @Mapping(
             target = "acsURL",
             expression =
-                    "java(org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())"
-                        + " ? null :"
+                    "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
+                        + " null :"
                         + " (RouteConstants.getAcsChallengeUrl(this.helperMapper.appConfiguration.getHostname(),transaction.getDeviceChannel())))")
     @Mapping(
             target = "transStatus",
@@ -97,14 +98,11 @@ public interface AResMapper {
     @Mapping(
             target = "acsRenderingType",
             expression =
-                    "java(org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())"
-                        + " ? new org.freedomfinancestack.razorpay.cas.contract.enums."
-                        + "ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
+                    "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
+                        + " new ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
                         + " transaction.getTransactionSdkDetail().getAcsUiType()) : null)")
-    @Mapping(
-            target = "acsSignedContent",
-            expression = "java(transaction.getTransactionSdkDetail().getAcsSignedContent())")
-    ARES toAres(AREQ areq, Transaction transaction);
+    @Mapping(target = "acsSignedContent", source = "aResMapperParams.acsSignedContent")
+    ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
         String transStatusReason = "";

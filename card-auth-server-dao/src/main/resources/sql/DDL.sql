@@ -51,7 +51,6 @@ CREATE TABLE `transaction_sdk_detail`
     `acs_interface` char(2) DEFAULT NULL,
     `acs_ui_type`          char(2) DEFAULT NULL,
     `acs_secret_key` LONGTEXT NULL,
-    `acs_signed_content` LONGTEXT NULL,
     `device_info`          text,
     `created_at`           timestamp NOT NULL,
     `modified_at`          timestamp,
@@ -375,11 +374,6 @@ CREATE TABLE `signer_detail`
     `deleted_at`     timestamp   DEFAULT NULL,
     `deleted_by`     varchar(40) DEFAULT NULL
 );
-
-#  Purposed tables for OTP
-
-#  OTP_TRANSACTION_DETAIL : ID ,TRANSACTION_ID, Value
-#  NOTIFICATION : CHANNEL, DESTINATION, REQUEST, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
 
 DROP TABLE IF EXISTS `otp_transaction_detail`;
 CREATE TABLE `otp_transaction_detail`

@@ -48,8 +48,6 @@ public class ARES extends ThreeDSObject {
 
     private String acsURL;
 
-    private String authenticationMethod;
-
     private String authenticationType;
 
     private String authenticationValue;
