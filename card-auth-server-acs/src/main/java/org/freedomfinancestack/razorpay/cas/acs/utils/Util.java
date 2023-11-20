@@ -9,8 +9,12 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
+import org.freedomfinancestack.extensions.validation.exception.ValidationException;
+import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSDataElement;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
@@ -21,6 +25,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 
 /**
  * The {@code Util} class provides various utility methods used across the ACS (Access Control
@@ -315,6 +323,20 @@ public class Util {
                 && !transaction
                         .getTransactionStatus()
                         .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
+    }
+
+    public static boolean isMessageVersionValid(String messageVersion) {
+        try {
+            Validation.validate(
+                    ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
+                    messageVersion,
+                    notBlank(),
+                    lengthValidator(DataLengthType.VARIABLE, 8),
+                    isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
+        } catch (ValidationException e) {
+            return false;
+        }
+        return true;
     }
 
     public static void updateTransaction(Transaction transaction, InternalErrorCode errorCode) {

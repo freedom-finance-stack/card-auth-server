@@ -96,9 +96,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
 
-            // Set messageversion before validation as it is required in Erro
-            transaction.setMessageVersion(areq.getMessageVersion());
-
+            // Set message version before validation as it is required in Erro
+            if (Util.isMessageVersionValid(areq.getMessageVersion())) {
+                transaction.setMessageVersion(areq.getMessageVersion());
+            }
             // log incoming request in DB
             transactionMessageLogService.createAndSave(areq, areq.getTransactionId());
 
