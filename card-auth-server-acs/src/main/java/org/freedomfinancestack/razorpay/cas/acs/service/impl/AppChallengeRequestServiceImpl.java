@@ -78,6 +78,9 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             acsCounterAtoS += 1;
             transaction.getTransactionSdkDetail().setAcsCounterAtoS("00" + acsCounterAtoS);
 
+            // Setting Institution Ui Config
+            institutionUiService.populateInstitutionUiConfig(challengeFlowDto, transaction);
+
             // 4 flows
             // 1: if Challenge cancelled by user
             // 2: If transaction status is incorrect
@@ -105,8 +108,6 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                      handleChallengeValidation(transaction, authConfigDto, challengeFlowDto);
                  }
              }
-            // Setting Institution Ui Config
-            institutionUiService.populateInstitutionUiConfig(challengeFlowDto, transaction);
 
         } catch (ParseException | TransactionDataNotValidException ex){
             log.error("Exception occurred", ex);
@@ -158,6 +159,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             }
         }
 
+        // encrypt response
         return challengeFlowDto.getCres();
     }
 
@@ -186,7 +188,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     InternalErrorCode.CHALLENGE_RESEND_THRESHOLD_EXCEEDED
                             .getTransactionStatusReason()
                             .getCode());
-            CRES cres = cResMapper.toAppCres(transaction);
+            CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
             challengeFlowDto.setCres(cres);
             transactionMessageLogService.createAndSave(cres, transaction.getId());
             challengeFlowDto.setSendRreq(true);
@@ -236,7 +238,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
             updateEci(transaction);
             transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
-            CRES cres = cResMapper.toAppCres(transaction);
+            CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
             challengeFlowDto.setCres(cres);
 
             transactionMessageLogService.createAndSave(cres, transaction.getId());
@@ -247,7 +249,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             if (authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
                     > transaction.getInteractionCount()) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.INVALID_AUTH_VAL);
-                CRES cres = cResMapper.toAppCres(transaction);
+                CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
                 cres.setChallengeInfoText(authResponse.getDisplayMessage());
                 challengeFlowDto.setCres(cres);
             } else {
@@ -269,7 +271,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                                     transaction.getTransactionCardDetail().getCardNumber()),
                             cardRange.getCardDetailsStore());
                 }
-                CRES cres = cResMapper.toAppCres(transaction);
+                CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
                 challengeFlowDto.setCres(cres);
                 transactionMessageLogService.createAndSave(cres, transaction.getId());
                 challengeFlowDto.setSendRreq(true);
@@ -290,7 +292,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                         .build());
         log.info("Sent challenge for transaction {}", transaction.getId());
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
-        CRES cres = cResMapper.toAppCres(transaction);
+        CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
         challengeFlowDto.setCres(cres);
     }
 
@@ -307,7 +309,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 ChallengeCancelIndicator.CARDHOLDER_SELECTED_CANCEL.getIndicator());
 
         challengeFlowDto.setSendRreq(true);
-        CRES cres = cResMapper.toAppCres(transaction);
+        CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
         challengeFlowDto.setCres(cres);
         log.info("challenge cancelled for transaction {}", transaction.getId());
     }

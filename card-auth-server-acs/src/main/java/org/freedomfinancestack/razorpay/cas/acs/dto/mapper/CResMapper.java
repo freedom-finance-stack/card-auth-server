@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
@@ -68,19 +69,27 @@ public interface CResMapper {
     @Mapping(target = "acsCounterAtoS", source = "transaction.transactionSdkDetail.acsCounterAtoS")
     @Mapping(target = "acsUiType", source = "transaction.transactionSdkDetail.acsUiType")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
-    // acsHTML ...
-    // psImage
-    // resendInformationLabel
-    // submitAuthenticationLabel
-    // whitelistingInfoText
-    // whyInfoLabel whyInfoText
+    @Mapping(target = "acsHTML", source = "challengeFlowDto.getInstitutionUiConfig().getDisplayPage()")
+    @Mapping(target = "psImage", source = "challengeFlowDto.getPsImage()")
+    @Mapping(target = "issuerImage", source = "challengeFlowDto.getIssuerImage()")
+    @Mapping(target = "challengeInfoHeader", source = "challengeFlowDto.getInstitutionUiConfig().challengeInfoHeader()")
+    @Mapping(target = "challengeInfoLabel", source = "challengeFlowDto.getInstitutionUiConfig().challengeInfoLabel()")
+    @Mapping(target = "challengeInfoText", source = "challengeFlowDto.getInstitutionUiConfig().challengeInfoText()")
+    @Mapping(target = "expandInfoLabel", source = "challengeFlowDto.getInstitutionUiConfig().expandInfoLabel()")
+    @Mapping(target = "expandInfoText", source = "challengeFlowDto.getInstitutionUiConfig().expandInfoText()")
+    @Mapping(target = "resendInformationLabel", source = "challengeFlowDto.getInstitutionUiConfig().resendInformationLabel()")
+    @Mapping(target = "submitAuthenticationLabel", source = "challengeFlowDto.getInstitutionUiConfig().submitAuthenticationLabel()")
+    @Mapping(target = "whyInfoLabel", source = "challengeFlowDto.getInstitutionUiConfig().whyInfoLabel()")
+    @Mapping(target = "whyInfoText", source = "challengeFlowDto.getInstitutionUiConfig().whyInfoText()")
 
+    // challengeSelectInfo
+    // whitelistingInfoText
     // messageExtension
     // oobAppURL
     // oobContinueLabel
     // oobAppLabel
 
-    CRES toAppCres(Transaction transaction);
+    CRES toAppCres(Transaction transaction, AppChallengeFlowDto challengeFlowDto);
 
     default String getChallengeCompletionInd(Transaction transaction) {
         return Util.isChallengeCompleted(transaction)

@@ -8,6 +8,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInterfaceService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.contract.ChallengeSelectInfo;
 import org.freedomfinancestack.razorpay.cas.contract.enums.UIType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
@@ -52,11 +53,14 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
             return;
         }
 
+        validInstitutionUiConfig.setChallengeInfoHeader(institutionUiConfig.getChallengeInfoHeader());
+        validInstitutionUiConfig.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
+        validInstitutionUiConfig.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
+        validInstitutionUiConfig.setExpandInfoText(institutionUiConfig.getExpandInfoText());
+
         switch (uiType) {
             case TEXT:
                 // issuer logo image
-                validInstitutionUiConfig.setChallengeInfoHeader(institutionUiConfig.getChallengeInfoHeader());
-                validInstitutionUiConfig.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
 
                 challengeText = institutionUiConfig.getChallengeInfoText();
 
@@ -71,37 +75,25 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 validInstitutionUiConfig.setResendInformationLabel(institutionUiConfig.getResendInformationLabel());
                 validInstitutionUiConfig.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
                 validInstitutionUiConfig.setWhyInfoText(institutionUiConfig.getWhyInfoText());
-                validInstitutionUiConfig.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
-                validInstitutionUiConfig.setExpandInfoText(institutionUiConfig.getExpandInfoText());
                 break;
 
             case SINGLE_SELECT:
-                validInstitutionUiConfig.setChallengeInfoHeader(institutionUiConfig.getChallengeInfoHeader());
-
                 String username = transaction.getTransactionCardHolderDetail().getName();
                 Network network = Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
                 challengeText = institutionUiConfig.getChallengeInfoText();
                 challengeText = String.format(challengeText, username, network.getName(), institution.get().getName());
                 validInstitutionUiConfig.setChallengeInfoText(challengeText);
 
-//                ChallengeSelectInfo challengeSelectInfo = new ChallengeSelectInfo();
                 validInstitutionUiConfig.setSubmitAuthenticationLabel(institutionUiConfig.getSubmitAuthenticationLabel());
 
                 validInstitutionUiConfig.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
                 validInstitutionUiConfig.setWhyInfoText(institutionUiConfig.getWhyInfoText());
-                validInstitutionUiConfig.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
-                validInstitutionUiConfig.setExpandInfoText(institutionUiConfig.getExpandInfoText());
 
-//                if(AuthType.ExternalOTP.getCode().equals(institutionUiConfig.getInstitutionUiConfigPK().getAuthType())) {
-//                    challengeSelectInfo.setSms("SMS");
-//                    challengeSelectInfo.setEmail("Email");
-//                    transactionVO.setChallengeSelectInfo(new ChallengeSelectInfo[] {challengeSelectInfo});
-//                }
+
+                // challengeSelectInfo
                 break;
 
             case MULTI_SELECT:
-                validInstitutionUiConfig.setChallengeInfoHeader(institutionUiConfig.getChallengeInfoHeader());
-                validInstitutionUiConfig.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
 
                 challengeText = institutionUiConfig.getChallengeInfoText();
                 challengeText = String.format(challengeText, institution.get().getName());
@@ -110,14 +102,12 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 validInstitutionUiConfig.setSubmitAuthenticationLabel(institutionUiConfig.getSubmitAuthenticationLabel());
                 validInstitutionUiConfig.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
                 validInstitutionUiConfig.setWhyInfoText(institutionUiConfig.getWhyInfoText());
-                validInstitutionUiConfig.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
-                validInstitutionUiConfig.setExpandInfoText(institutionUiConfig.getExpandInfoText());
+
+                // challengeSelectInfo
                 break;
 
             case OOB:
                 // issuer image
-                validInstitutionUiConfig.setChallengeInfoHeader(institutionUiConfig.getChallengeInfoHeader());
-                validInstitutionUiConfig.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
                 challengeText = institutionUiConfig.getChallengeInfoText();
 
                 validInstitutionUiConfig.setChallengeInfoText(challengeText);
@@ -125,8 +115,6 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 validInstitutionUiConfig.setResendInformationLabel(institutionUiConfig.getResendInformationLabel());
                 validInstitutionUiConfig.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
                 validInstitutionUiConfig.setWhyInfoText(institutionUiConfig.getWhyInfoText());
-                validInstitutionUiConfig.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
-                validInstitutionUiConfig.setExpandInfoText(institutionUiConfig.getExpandInfoText());
                 // TODO setOobContinueLabel("Continue");
                 break;
 
