@@ -9,7 +9,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedExcepti
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
-import org.freedomfinancestack.razorpay.cas.dao.repository.CardDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service(CardDetailsStore.CardStoreTypeConstants.MOCK)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MockCardDetailFetcherServiceImpl implements CardDetailFetcherService {
-    private final CardDetailRepository cardDetailRepository;
-
     public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
             throws ACSDataAccessException {
         log.info("Fetching card details from Mock Implementation");

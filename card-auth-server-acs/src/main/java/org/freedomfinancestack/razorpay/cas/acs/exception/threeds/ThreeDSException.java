@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.exception.threeds;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -100,8 +101,7 @@ public class ThreeDSException extends Exception {
                     transaction.getTransactionReferenceDetail().getDsTransactionId());
         }
         threeDSErrorResponse.setAcsTransID(transaction.getId());
-        if (transaction.getMessageVersion() != null
-                && transaction.getMessageVersion().length() > 0) {
+        if (!Util.isNullorBlank(transaction.getMessageVersion())) {
             threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
         }
     }

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
@@ -146,11 +147,10 @@ public class TransactionServiceImpl implements TransactionService {
             } else if (appDeviceInfo.equals(appDeviceInfoIOS)) {
                 transactionBuilder.deviceName(InternalConstants.IOS);
             }
-            transactionBuilder.deviceChannel(DeviceChannel.APP.getChannel());
         } else if (areq.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())) {
             transactionBuilder.deviceName(InternalConstants.BROWSER);
-            transactionBuilder.deviceChannel(DeviceChannel.BRW.getChannel());
         }
+        transactionBuilder.deviceChannel(areq.getDeviceChannel());
         return transactionBuilder.build();
     }
 
@@ -199,11 +199,18 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private TransactionBrowserDetail buildTransactionBrowserDetail(AREQ areq) {
-        return TransactionBrowserDetail.builder()
-                .acceptHeader(areq.getBrowserAcceptHeader())
-                .ip(areq.getBrowserIP())
-                .javascriptEnabled(Boolean.valueOf(areq.getBrowserJavascriptEnabled()))
-                .build();
+        TransactionBrowserDetail transactionBrowserDetail =
+                TransactionBrowserDetail.builder()
+                        .acceptHeader(areq.getBrowserAcceptHeader())
+                        .ip(areq.getBrowserIP())
+                        .build();
+        if (StringUtils.isNotBlank(areq.getBrowserJavascriptEnabled())
+                && areq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
+            transactionBrowserDetail.setJavascriptEnabled(
+                    Boolean.valueOf(areq.getBrowserJavascriptEnabled()));
+        }
+
+        return transactionBrowserDetail;
     }
 
     private TransactionSdkDetail buildTransactionSDKDetail(AREQ areq) {

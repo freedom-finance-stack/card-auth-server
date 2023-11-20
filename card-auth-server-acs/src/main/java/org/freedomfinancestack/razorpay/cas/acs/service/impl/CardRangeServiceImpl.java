@@ -63,9 +63,9 @@ public class CardRangeServiceImpl implements CardRangeService {
 
         if (cardRange == null) {
             log.error("Card range not found for PAN: " + pan); // todo Noncompliance : Mask PAN
-            throw new CardDetailsNotFoundException(
-                    InternalErrorCode.CARD_RANGE_NOT_FOUND,
-                    InternalErrorCode.CARD_RANGE_NOT_FOUND.getDefaultErrorMessage());
+            throw new DataNotFoundException(
+                    ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                    InternalErrorCode.CARD_RANGE_NOT_FOUND);
         }
 
         return cardRange;

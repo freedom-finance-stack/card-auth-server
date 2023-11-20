@@ -67,4 +67,8 @@ public class InternalConstants {
     public static final String MERCHANT_NAME = "MERCHANT_NAME";
     public static final String AMOUNT_WITH_CURRENCY = "AMOUNT_WITH_CURRENCY";
     public static final String TRANSACTION_DATE = "TRANSACTION_DATE";
+
+    public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_02 = "02";
+    public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_03 = "03";
+
 }

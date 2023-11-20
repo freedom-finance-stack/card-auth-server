@@ -22,7 +22,6 @@ import org.nimbusds.jose.crypto.CustomConcatKDF;
 import org.nimbusds.jose.crypto.CustomECDH;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 public class SignerServiceImpl implements SignerService {
     private final SignerDetailRepository signerDetailRepository;
 
-    @Transactional
     @Override
     public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl) {
         SignerDetail signerDetail = null;
@@ -94,7 +92,7 @@ public class SignerServiceImpl implements SignerService {
                     signerDetailRepository.findById(
                             new SignerDetailPK(transaction.getInstitutionId(), networkCode));
 
-            if (signerDetailOptional != null) signerDetail = signerDetailOptional.get();
+            if (signerDetailOptional.isPresent()) signerDetail = signerDetailOptional.get();
 
             List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail);
 

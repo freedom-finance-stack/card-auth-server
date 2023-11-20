@@ -6,7 +6,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ThreeDSConstant {
 
-    public static final String[] SUPPORTED_MESSAGE_VERSION = {"2.1.0", "2.2.0"};
+    public static final String MESSAGE_VERSION_2_1_0 = "2.1.0";
+    public static final String MESSAGE_VERSION_2_2_0 = "2.2.0";
+    public static final String[] SUPPORTED_MESSAGE_VERSION = {
+        MESSAGE_VERSION_2_1_0, MESSAGE_VERSION_2_2_0
+    };
+
+    public static final String[] ALL_VERSIONS_SUPPORTED_ELEMENT = {
+        MESSAGE_VERSION_2_1_0, MESSAGE_VERSION_2_2_0
+    };
 
     // Supported Message Types
     public static final String ELEMENT_THREEDS_COMPIND = "threeDSCompInd";
@@ -177,8 +185,13 @@ public class ThreeDSConstant {
     public static final String ELEMENT_WHITELISTING_DATA_ENTRY = "whitelistingDataEntry";
     public static final String ELEMENT_THREEDS_REQ_AUTH_METHOD_IND = "threeDSReqAuthMethodInd";
     public static final String ELEMENT_PAYTOKEN_SOURCE = "payTokenSource";
-
+    public static final String ELEMENT_RECURRING_EXPIRY = "recurringExpiry";
+    public static final String ELEMENT_RECURRING_FREQUENCY = "recurringFrequency";
     public static final String ELEMENT_THREEDS_REQUESTOR_DEC_MAX_TIME =
             "threeDSRequestorDecMaxTime";
     public static final String ELEMENT_THREEDS_REQUESTOR_DEC_REQ_IND = "threeDSRequestorDecReqInd";
+
+    public static final String ELEMENT_THREEDS_REQUESTOR_APP_URL = "threeDSRequestorAppURL";
+
+    public static final String ELEMENT_CHALLENGE_NO_ENTRY = "challengeNoEntry";
 }

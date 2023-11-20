@@ -39,9 +39,6 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "acs_secret_key")
     private String acsSecretKey;
 
-    @Column(name = "acs_signed_content")
-    private String acsSignedContent;
-
     @Column(name = "acs_counter_a_to_s")
     private String  acsCounterAtoS;
 

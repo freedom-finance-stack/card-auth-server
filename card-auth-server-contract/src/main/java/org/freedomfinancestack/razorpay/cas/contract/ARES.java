@@ -26,15 +26,13 @@ public class ARES extends ThreeDSObject {
 
     private String messageType = MessageType.ARes.toString();
 
-    private String messageVersion = EMVCOConstant.MESSAGE_TYPE_VERSION;
+    private String messageVersion = EMVCOConstant.DEFAULT_MESSAGE_TYPE_VERSION;
 
     private String sdkEphemPubKey;
 
     private String sdkTransID;
 
     private String transStatus;
-
-    private String acsDecConInd;
 
     // All Optional Fields
     private String cardholderInfo;
@@ -50,8 +48,6 @@ public class ARES extends ThreeDSObject {
 
     private String acsURL;
 
-    private String authenticationMethod;
-
     private String authenticationType;
 
     private String authenticationValue;
@@ -63,6 +59,9 @@ public class ARES extends ThreeDSObject {
     private List<MessageExtension> messageExtension;
 
     private String transStatusReason;
+
+    /** 3DS Version 2.2.0 additional fields */
+    private String acsDecConInd;
 
     private String whiteListStatus;
 
