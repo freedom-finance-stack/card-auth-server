@@ -22,7 +22,6 @@ import org.nimbusds.jose.crypto.CustomConcatKDF;
 import org.nimbusds.jose.crypto.CustomECDH;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SignerServiceImpl implements SignerService {
     private final SignerDetailRepository signerDetailRepository;
-    
+
     @Override
     public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl) {
         SignerDetail signerDetail = null;
