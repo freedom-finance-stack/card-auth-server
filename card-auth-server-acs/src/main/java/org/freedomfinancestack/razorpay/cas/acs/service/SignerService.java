@@ -6,6 +6,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface SignerService {
 
-    @Transactional
     String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl);
 }

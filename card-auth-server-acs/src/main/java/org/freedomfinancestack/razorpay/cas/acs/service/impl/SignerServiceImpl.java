@@ -38,8 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SignerServiceImpl implements SignerService {
     private final SignerDetailRepository signerDetailRepository;
-
-    @Transactional
+    
     @Override
     public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl) {
         SignerDetail signerDetail = null;
