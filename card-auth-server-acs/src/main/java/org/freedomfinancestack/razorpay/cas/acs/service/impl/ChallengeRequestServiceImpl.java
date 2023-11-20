@@ -73,16 +73,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final PlrqService plrqService;
 
     @Override
-    public CRES processAppChallengeRequest(@NonNull CREQ creq) throws ThreeDSException, ACSDataAccessException {
-        CRES cres;
-        try {
-
-        } catch(){
-
-        }
-    }
-
-    @Override
     public CdRes processBrwChallengeRequest(
             @NotNull final String strCReq, final String threeDSSessionData) {
         CdRes cdReqError = new CdRes();

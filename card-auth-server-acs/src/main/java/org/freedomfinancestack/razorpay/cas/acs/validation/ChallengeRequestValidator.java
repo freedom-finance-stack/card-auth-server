@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
@@ -147,12 +148,26 @@ public class ChallengeRequestValidator {
                     lengthValidator(DataLengthType.VARIABLE, 45));
 
             boolean conditionForChallengeHTMLDataEntry =
-                    (Arrays.asList("01", "02", "03", "04", "05").contains(acsUiType))
+                    (acsUiType.equals("05"))
                             && !Util.isNullorBlank(incomingCreq.getChallengeCancel());
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeHTMLDataEntry(),
-                    when(conditionForChallengeHTMLDataEntry, notNull()));
+                    when(conditionForChallengeHTMLDataEntry, notNull()),
+                    lengthValidator(DataLengthType.VARIABLE, 256));
+
+            boolean conditionForChallengeNoEntry =
+                    (Arrays.asList("01", "02", "03").contains(acsUiType))
+                            && ((!YES.equals(incomingCreq.getResendChallenge()))
+                        && Util.isNullorBlank(incomingCreq.getChallengeCancel())
+                            && Util.isNullorBlank(incomingCreq.getChallengeDataEntry()));
+
+            Validation.validate(
+                    ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
+                    incomingCreq.getChallengeHTMLDataEntry(),
+                    when(conditionForChallengeNoEntry, notNull()),
+                    lengthValidator(DataLengthType.FIXED, 1),
+                    isIn(ThreeDSDataElement.CHALLENGE_NO_ENTRY.getAcceptedValues()));
         }
     }
 

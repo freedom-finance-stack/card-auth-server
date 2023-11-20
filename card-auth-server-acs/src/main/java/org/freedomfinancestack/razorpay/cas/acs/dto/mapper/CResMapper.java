@@ -4,6 +4,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
@@ -24,6 +25,7 @@ import org.mapstruct.Mapping;
         uses = {HelperMapper.class},
         componentModel = "spring",
         imports = {
+                DeviceChannel.class,
             TransactionStatus.class,
             MessageCategory.class,
             Network.class,
@@ -52,6 +54,33 @@ public interface CResMapper {
     // todo add acsRenderingType, messageExtension, sdkTransactionId and WhiteListStatus for App
     // Based flow
     CRES toCres(Transaction transaction);
+
+    @Mapping(target = "acsTransID", source = "transaction.id")
+    @Mapping(
+            target = "threeDSServerTransID",
+            source = "transaction.transactionReferenceDetail.threedsServerTransactionId")
+    @Mapping(
+            target = "challengeCompletionInd",
+            expression = "java(getChallengeCompletionInd(transaction))")
+    @Mapping(target = "transStatus", source = "transaction.transactionStatus.status")
+    @Mapping(target = "messageVersion", source = "transaction.messageVersion")
+    @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
+    @Mapping(target = "acsCounterAtoS", source = "transaction.transactionSdkDetail.acsCounterAtoS")
+    @Mapping(target = "acsUiType", source = "transaction.transactionSdkDetail.acsUiType")
+    @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
+    // acsHTML ...
+    // psImage
+    // resendInformationLabel
+    // submitAuthenticationLabel
+    // whitelistingInfoText
+    // whyInfoLabel whyInfoText
+
+    // messageExtension
+    // oobAppURL
+    // oobContinueLabel
+    // oobAppLabel
+
+    CRES toAppCres(Transaction transaction);
 
     default String getChallengeCompletionInd(Transaction transaction) {
         return Util.isChallengeCompleted(transaction)

@@ -67,6 +67,16 @@ public class ThreeDSException extends Exception {
         this.threeDSecureErrorCode = threeDSecureErrorCode;
     }
 
+    public ThreeDSException(
+            final ThreeDSecureErrorCode threeDSecureErrorCode,
+            final String message,
+            final Transaction transaction) {
+        super(message);
+        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode, message);
+        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, transaction);
+        this.threeDSecureErrorCode = threeDSecureErrorCode;
+    }
+
     public ThreeDSErrorResponse getErrorResponse() {
         return this.threeDSErrorResponse.setHttpStatus(HttpStatus.OK.value());
     }

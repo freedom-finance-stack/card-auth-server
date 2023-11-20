@@ -20,6 +20,8 @@ public class InternalConstants {
     public static final String HYPEN_WITH_SPACE = " - ";
     public static final String AMPERSAND = "&";
     public static final String DOT = ".";
+
+    public static final String LAST_FOUR_DIGIT_PLACEHOLDER = "XXXX";
     public static final String PAD_LEFT = "LEFT";
     public static final String PAD_RIGHT = "RIGHT";
     public static final String NO_OP_HSM = "NoOpHSM";
@@ -56,4 +58,13 @@ public class InternalConstants {
 
     public static final String CHALLENGE_BRW_URL = "v1/transaction/challenge/browser";
     public static final String CHALLENGE_APP_URL = "v1/transaction/challenge/app";
+
+    // Placeholders
+
+    public static final String LAST_FOUR_DIGIT_MOBILE_NUMBER = "LAST_FOUR_DIGIT_MOBILE_NUMBER";
+    public static final String MASKED_MOBILE_NUMBER = "MASKED_MOBILE_NUMBER";
+    public static final String MASKED_CARD_NUMBER = "MASKED_CARD_NUMBER";
+    public static final String MERCHANT_NAME = "MERCHANT_NAME";
+    public static final String AMOUNT_WITH_CURRENCY = "AMOUNT_WITH_CURRENCY";
+    public static final String TRANSACTION_DATE = "TRANSACTION_DATE";
 }

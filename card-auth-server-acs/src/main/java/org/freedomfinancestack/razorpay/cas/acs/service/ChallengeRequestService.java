@@ -19,8 +19,6 @@ import org.freedomfinancestack.razorpay.cas.contract.*;
  */
 public interface ChallengeRequestService {
 
-    CRES processAppChallengeRequest(@NonNull CREQ creq) throws ThreeDSException, ACSDataAccessException;
-
     /**
      * Process the challenge request (CReq) and generate the challenge display response (CDRes) for
      * the browser based request

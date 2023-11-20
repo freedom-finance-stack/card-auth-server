@@ -8,6 +8,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.service.AppChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
@@ -38,6 +39,8 @@ import lombok.RequiredArgsConstructor;
 public class ChallengeRequestController {
 
     private final ChallengeRequestService challengeRequestService;
+
+    private final AppChallengeRequestService appChallengeRequestService;
 
     /**
      * Handles Challenge Request (CReq) received from the 3DS Server and generates HTML pages for
@@ -103,7 +106,7 @@ public class ChallengeRequestController {
                                        @RequestHeader HttpHeaders headers,
                                        HttpServletResponse httpServletResponse
     ) throws ThreeDSException, ACSDataAccessException {
-        return challengeRequestService.processAppChallengeRequest(creq);
+        return appChallengeRequestService.processAppChallengeRequest(creq);
     }
 
     private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes)

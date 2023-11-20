@@ -42,6 +42,9 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "acs_signed_content")
     private String acsSignedContent;
 
+    @Column(name = "acs_counter_a_to_s")
+    private String  acsCounterAtoS;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
     @MapsId
