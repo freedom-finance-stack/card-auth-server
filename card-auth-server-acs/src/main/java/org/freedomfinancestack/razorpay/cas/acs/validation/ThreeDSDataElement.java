@@ -689,7 +689,7 @@ public enum ThreeDSDataElement {
 
     WHITE_LIST_STATUS(
             ThreeDSConstant.ELEMENT_WHITELIST_STATUS,
-            new String[] {"Y", "N", "E", "P", "R", "U"},
+            new String[] {"Y", "N"},
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             new String[] {ThreeDSConstant.MESSAGE_VERSION_2_2_0}),
