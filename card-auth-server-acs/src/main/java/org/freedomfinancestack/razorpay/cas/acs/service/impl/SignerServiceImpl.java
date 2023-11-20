@@ -92,7 +92,7 @@ public class SignerServiceImpl implements SignerService {
                     signerDetailRepository.findById(
                             new SignerDetailPK(transaction.getInstitutionId(), networkCode));
 
-            if (signerDetailOptional != null) signerDetail = signerDetailOptional.get();
+            if (signerDetailOptional.isPresent()) signerDetail = signerDetailOptional.get();
 
             List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail);
 
