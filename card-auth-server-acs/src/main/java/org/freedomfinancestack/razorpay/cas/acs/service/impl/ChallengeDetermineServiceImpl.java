@@ -66,6 +66,7 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
             final AREQ objAReq, final Transaction transaction, final RiskFlag riskFlagAcs) {
 
         RiskFlag riskFlag = isChallengeRequired(objAReq, riskFlagAcs);
+        log.info("riskFlag {} for transaction {}", riskFlag.toString(), transaction.getId());
         if (RiskFlag.CHALLENGE == riskFlag) {
             transaction.setChallengeMandated(true);
             transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
