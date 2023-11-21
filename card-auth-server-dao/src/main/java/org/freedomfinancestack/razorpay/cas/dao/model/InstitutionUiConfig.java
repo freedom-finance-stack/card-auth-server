@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
+import org.hibernate.annotations.Where;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -8,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "institution_ui_config")
@@ -61,5 +62,7 @@ public class InstitutionUiConfig extends BaseEntity<InstitutionUiConfigPK> {
     private String deletedBy;
 
     @Override
-    public InstitutionUiConfigPK getId() {return institutionUiConfigPK;}
+    public InstitutionUiConfigPK getId() {
+        return institutionUiConfigPK;
+    }
 }

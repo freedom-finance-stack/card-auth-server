@@ -40,7 +40,7 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     private String acsSecretKey;
 
     @Column(name = "acs_counter_a_to_s")
-    private String  acsCounterAtoS;
+    private String acsCounterAtoS;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")

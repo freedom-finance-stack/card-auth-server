@@ -1,8 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
@@ -17,6 +14,7 @@ import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -92,23 +93,33 @@ public class ChallengeRequestController {
     @Operation(summary = "Handles App Based Challenge Request")
     @ApiResponses(
             value = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Request Successfully handled and validated"),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Server Exception Occurred during request handling"),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Bad Request or Request not according to CReq Schema")
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to CReq Schema")
             })
-    @RequestMapping(value = "/challenge/app", method = RequestMethod.POST, produces= {"application/jose;charset=UTF-8"},consumes = {"application/jose; charset=utf-8", "application/jose","application/json;charset=utf-8"})
+    @RequestMapping(
+            value = RouteConstants.CHALLENGE_APP_ROUTE,
+            method = RequestMethod.POST,
+            //            produces = {"application/jose;charset=UTF-8"},
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = {
+                "application/jose; charset=utf-8",
+                "application/jose",
+                "application/json;charset=utf-8"
+            })
     @ResponseBody
-    public CRES handleChallengeRequest(@RequestBody @Valid CREQ creq,
-                                       HttpServletRequest httpServletRequest,
-                                       @RequestHeader HttpHeaders headers,
-                                       HttpServletResponse httpServletResponse
-    ) throws ThreeDSException, ACSDataAccessException {
+    public CRES handleChallengeRequest(
+            @RequestBody @Valid CREQ creq,
+            HttpServletRequest httpServletRequest,
+            @RequestHeader HttpHeaders headers,
+            HttpServletResponse httpServletResponse)
+            throws ThreeDSException, ACSDataAccessException {
         return appChallengeRequestService.processAppChallengeRequest(creq);
     }
 

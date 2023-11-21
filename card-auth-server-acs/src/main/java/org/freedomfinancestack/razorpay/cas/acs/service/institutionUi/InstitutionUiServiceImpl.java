@@ -1,8 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.institutionUi;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
@@ -20,8 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.Optional;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service(value = "institutionUiServiceImpl")
@@ -33,28 +34,37 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
     private final InstitutionUiConfigRepository institutionUiConfigRepository;
 
     @Override
-    public void populateInstitutionUiConfig(AppChallengeFlowDto challengeFlowDto, Transaction transaction) throws ACSDataAccessException {
+    public void populateInstitutionUiConfig(
+            AppChallengeFlowDto challengeFlowDto, Transaction transaction)
+            throws ACSDataAccessException {
 
-        DeviceInterface deviceInterface = DeviceInterface.getDeviceInterface(transaction.getTransactionSdkDetail().getAcsInterface());
+        DeviceInterface deviceInterface =
+                DeviceInterface.getDeviceInterface(
+                        transaction.getTransactionSdkDetail().getAcsInterface());
         AuthType authType = AuthType.getAuthType(transaction.getAuthenticationType());
         UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
-        Optional<InstitutionUiConfig> institutionUiConfig = institutionUiConfigRepository.findById(new InstitutionUiConfigPK(transaction.getInstitutionId(), authType, uiType));
+        Optional<InstitutionUiConfig> institutionUiConfig =
+                institutionUiConfigRepository.findById(
+                        new InstitutionUiConfigPK(
+                                transaction.getInstitutionId(), authType, uiType));
         if (institutionUiConfig.isPresent()) {
-            DeviceInterfaceService deviceInterfaceService = getDeviceInterfaceService(Objects.requireNonNull(
-                    deviceInterface
-            ));
-            deviceInterfaceService.populateInstitutionUiConfig(transaction, challengeFlowDto, institutionUiConfig.get());
+            DeviceInterfaceService deviceInterfaceService =
+                    getDeviceInterfaceService(Objects.requireNonNull(deviceInterface));
+            deviceInterfaceService.populateInstitutionUiConfig(
+                    transaction, challengeFlowDto, institutionUiConfig.get());
+            return;
         }
 
         log.error(
                 "Institution Ui Config not found for Institution ID : "
                         + transaction.getInstitutionId());
         throw new ACSDataAccessException(
-                InternalErrorCode.INSTITUTION_UI_CONFIG_NOT_FOUND, "Institution Ui Config not found");
-
+                InternalErrorCode.INSTITUTION_UI_CONFIG_NOT_FOUND,
+                "Institution Ui Config not found");
     }
 
-    private DeviceInterfaceService getDeviceInterfaceService(@NonNull final DeviceInterface deviceInterface) {
+    private DeviceInterfaceService getDeviceInterfaceService(
+            @NonNull final DeviceInterface deviceInterface) {
         switch (deviceInterface) {
             case NATIVE:
                 return applicationContext.getBean(NativeDeviceInterfaceServiceImpl.class);

@@ -52,8 +52,7 @@ CREATE TABLE `transaction_sdk_detail`
     `acs_ui_type`          char(2) DEFAULT NULL,
     `acs_secret_key` LONGTEXT NULL,
     `device_info`          text,
-    `acs_counter_a_to_s` INT(1) DEFAULT 0,
-    `cas_counter_s_to_a` INT(1) DEFAULT 0,
+    `acs_counter_a_to_s` char(3) DEFAULT '000',
     `created_at`           timestamp NOT NULL,
     `modified_at`          timestamp,
     `deleted_at`           timestamp
@@ -374,7 +373,6 @@ CREATE TABLE `institution_ui_config`
     `challenge_info_header` varchar(45) DEFAULT NULL,
     `challenge_info_label` varchar(45) DEFAULT NULL,
     `challenge_info_text` varchar(256) DEFAULT NULL,
-    `challenge_info_text_colour` varchar(7) DEFAULT NULL,
     `expand_info_label` varchar(45) DEFAULT NULL,
     `expand_info_text` varchar(256) DEFAULT NULL,
     `submit_authentication_label` varchar(45) DEFAULT NULL,

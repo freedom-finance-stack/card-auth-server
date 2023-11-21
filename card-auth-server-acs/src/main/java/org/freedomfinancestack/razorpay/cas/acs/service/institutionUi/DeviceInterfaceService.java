@@ -6,5 +6,9 @@ import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
 public interface DeviceInterfaceService {
-    void populateInstitutionUiConfig(Transaction transaction, AppChallengeFlowDto challengeFlowDto, InstitutionUiConfig institutionUiConfig) throws ACSDataAccessException;
+    void populateInstitutionUiConfig(
+            Transaction transaction,
+            AppChallengeFlowDto challengeFlowDto,
+            InstitutionUiConfig institutionUiConfig)
+            throws ACSDataAccessException;
 }

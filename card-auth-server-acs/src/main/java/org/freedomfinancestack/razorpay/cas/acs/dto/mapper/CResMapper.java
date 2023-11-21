@@ -26,7 +26,7 @@ import org.mapstruct.Mapping;
         uses = {HelperMapper.class},
         componentModel = "spring",
         imports = {
-                DeviceChannel.class,
+            DeviceChannel.class,
             TransactionStatus.class,
             MessageCategory.class,
             Network.class,
@@ -52,9 +52,56 @@ public interface CResMapper {
     @Mapping(target = "transStatus", source = "transaction.transactionStatus.status")
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
-    // todo add acsRenderingType, messageExtension, sdkTransactionId and WhiteListStatus for App
-    // Based flow
     CRES toCres(Transaction transaction);
+
+    @Mapping(target = "acsTransID", source = "transaction.id")
+    @Mapping(
+            target = "threeDSServerTransID",
+            source = "transaction.transactionReferenceDetail.threedsServerTransactionId")
+    @Mapping(
+            target = "challengeCompletionInd",
+            expression = "java(getChallengeCompletionInd(transaction))")
+    @Mapping(target = "messageVersion", source = "transaction.messageVersion")
+    @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
+    @Mapping(target = "acsCounterAtoS", source = "challengeFlowDto.acsCounterAtoS")
+    @Mapping(target = "acsUiType", source = "transaction.transactionSdkDetail.acsUiType")
+    @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
+    @Mapping(target = "acsHTML", source = "challengeFlowDto.institutionUiConfig.displayPage")
+    @Mapping(target = "psImage", source = "challengeFlowDto.psImage")
+    @Mapping(target = "issuerImage", source = "challengeFlowDto.issuerImage")
+    @Mapping(
+            target = "challengeInfoHeader",
+            source = "challengeFlowDto.institutionUiConfig.challengeInfoHeader")
+    @Mapping(
+            target = "challengeInfoLabel",
+            source = "challengeFlowDto.institutionUiConfig.challengeInfoLabel")
+    @Mapping(
+            target = "challengeInfoText",
+            source = "challengeFlowDto.institutionUiConfig.challengeInfoText")
+    @Mapping(
+            target = "expandInfoLabel",
+            source = "challengeFlowDto.institutionUiConfig.expandInfoLabel")
+    @Mapping(
+            target = "expandInfoText",
+            source = "challengeFlowDto.institutionUiConfig.expandInfoText")
+    @Mapping(
+            target = "resendInformationLabel",
+            source = "challengeFlowDto.institutionUiConfig.resendInformationLabel")
+    @Mapping(
+            target = "submitAuthenticationLabel",
+            source = "challengeFlowDto.institutionUiConfig.submitAuthenticationLabel")
+    @Mapping(target = "whyInfoLabel", source = "challengeFlowDto.institutionUiConfig.whyInfoLabel")
+    @Mapping(target = "whyInfoText", source = "challengeFlowDto.institutionUiConfig.whyInfoText")
+
+    // TODO
+    // challengeSelectInfo
+    // whitelistingInfoText
+    // messageExtension
+    // oobAppURL
+    // oobContinueLabel
+    // oobAppLabel
+
+    CRES toAppCres(Transaction transaction, AppChallengeFlowDto challengeFlowDto);
 
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(
@@ -66,30 +113,11 @@ public interface CResMapper {
     @Mapping(target = "transStatus", source = "transaction.transactionStatus.status")
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
-    @Mapping(target = "acsCounterAtoS", source = "transaction.transactionSdkDetail.acsCounterAtoS")
-    @Mapping(target = "acsUiType", source = "transaction.transactionSdkDetail.acsUiType")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
-    @Mapping(target = "acsHTML", source = "challengeFlowDto.getInstitutionUiConfig().getDisplayPage()")
-    @Mapping(target = "psImage", source = "challengeFlowDto.getPsImage()")
-    @Mapping(target = "issuerImage", source = "challengeFlowDto.getIssuerImage()")
-    @Mapping(target = "challengeInfoHeader", source = "challengeFlowDto.getInstitutionUiConfig().challengeInfoHeader()")
-    @Mapping(target = "challengeInfoLabel", source = "challengeFlowDto.getInstitutionUiConfig().challengeInfoLabel()")
-    @Mapping(target = "challengeInfoText", source = "challengeFlowDto.getInstitutionUiConfig().challengeInfoText()")
-    @Mapping(target = "expandInfoLabel", source = "challengeFlowDto.getInstitutionUiConfig().expandInfoLabel()")
-    @Mapping(target = "expandInfoText", source = "challengeFlowDto.getInstitutionUiConfig().expandInfoText()")
-    @Mapping(target = "resendInformationLabel", source = "challengeFlowDto.getInstitutionUiConfig().resendInformationLabel()")
-    @Mapping(target = "submitAuthenticationLabel", source = "challengeFlowDto.getInstitutionUiConfig().submitAuthenticationLabel()")
-    @Mapping(target = "whyInfoLabel", source = "challengeFlowDto.getInstitutionUiConfig().whyInfoLabel()")
-    @Mapping(target = "whyInfoText", source = "challengeFlowDto.getInstitutionUiConfig().whyInfoText()")
-
-    // challengeSelectInfo
-    // whitelistingInfoText
-    // messageExtension
-    // oobAppURL
-    // oobContinueLabel
-    // oobAppLabel
-
-    CRES toAppCres(Transaction transaction, AppChallengeFlowDto challengeFlowDto);
+    @Mapping(target = "acsCounterAtoS", source = "challengeFlowDto.acsCounterAtoS")
+    @Mapping(target = "psImage", expression = "java(null)")
+    @Mapping(target = "issuerImage", expression = "java(null)")
+    CRES toFinalCres(Transaction transaction, AppChallengeFlowDto challengeFlowDto);
 
     default String getChallengeCompletionInd(Transaction transaction) {
         return Util.isChallengeCompleted(transaction)

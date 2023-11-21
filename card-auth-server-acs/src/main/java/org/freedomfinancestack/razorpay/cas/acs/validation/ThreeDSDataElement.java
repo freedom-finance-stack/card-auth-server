@@ -631,12 +631,6 @@ public enum ThreeDSDataElement {
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
 
-    CHALLENGE_NO_ENTRY(
-            ThreeDSConstant.ELEMENT_CHALLENGE_NO_ENTRY,
-            new String[] {"Y"},
-            new DeviceChannel[] {DeviceChannel.APP},
-            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA}),
-
     CHALLENGE_HTML_DATA_ENTRY(
             ThreeDSConstant.ELEMENT_CHALLENGE_HTML_DATA_ENTRY,
             new DeviceChannel[] {DeviceChannel.APP},

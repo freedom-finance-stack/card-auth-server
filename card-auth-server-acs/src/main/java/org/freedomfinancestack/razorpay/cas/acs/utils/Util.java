@@ -370,15 +370,17 @@ public class Util {
                 }
                 fractionAmount = amount.substring(amount.length() - exponentNumber);
             } else {
-                fractionAmount = String.valueOf(InternalConstants.PADDED_SYMBOL_0) + InternalConstants.PADDED_SYMBOL_0;
+                fractionAmount =
+                        String.valueOf(InternalConstants.PADDED_SYMBOL_0)
+                                + InternalConstants.PADDED_SYMBOL_0;
             }
         }
         return amount.substring(0, amount.length() - exponentNumber) + "." + fractionAmount;
     }
 
     public static String getLastFourDigit(String data) {
-        if(!isNullorBlank(data)) {
-            data = data.substring((data.length()-4), data.length());
+        if (!isNullorBlank(data)) {
+            data = data.substring((data.length() - 4), data.length());
             return data;
         } else {
             return InternalConstants.LAST_FOUR_DIGIT_PLACEHOLDER;

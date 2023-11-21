@@ -61,6 +61,12 @@ public class InternalConstants {
 
     // Placeholders
 
+    public static final String PS_LOGO = "PS_LOGO";
+    public static final String INSTITUTION_LOGO = "INSTITUTION_LOGO";
+    public static final String INSTITUTION_NAME = "INSTITUTION_NAME";
+    public static final String INSTITUTION_TIMEOUT_IN_MINUTES = "INSTITUTION_TIMEOUT_IN_MINUTES";
+    public static final String INSTITUTION_TIMEOUT_IN_SECONDS = "INSTITUTION_TIMEOUT_IN_SECONDS";
+    public static final String INSTITUTION_CSS_URL = "INSTITUTION_CSS_URL";
     public static final String LAST_FOUR_DIGIT_MOBILE_NUMBER = "LAST_FOUR_DIGIT_MOBILE_NUMBER";
     public static final String MASKED_MOBILE_NUMBER = "MASKED_MOBILE_NUMBER";
     public static final String MASKED_CARD_NUMBER = "MASKED_CARD_NUMBER";
@@ -70,5 +76,4 @@ public class InternalConstants {
 
     public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_02 = "02";
     public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_03 = "03";
-
 }

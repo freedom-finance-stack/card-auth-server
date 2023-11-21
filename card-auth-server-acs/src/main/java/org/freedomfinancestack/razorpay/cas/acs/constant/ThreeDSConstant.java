@@ -192,6 +192,4 @@ public class ThreeDSConstant {
     public static final String ELEMENT_THREEDS_REQUESTOR_DEC_REQ_IND = "threeDSRequestorDecReqInd";
 
     public static final String ELEMENT_THREEDS_REQUESTOR_APP_URL = "threeDSRequestorAppURL";
-
-    public static final String ELEMENT_CHALLENGE_NO_ENTRY = "challengeNoEntry";
 }
