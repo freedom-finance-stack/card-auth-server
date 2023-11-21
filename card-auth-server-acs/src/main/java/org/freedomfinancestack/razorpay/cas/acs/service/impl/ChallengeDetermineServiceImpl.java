@@ -24,24 +24,14 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
             ThreeDSRequestorChallengeInd challengeInd =
                     ThreeDSRequestorChallengeInd.getByValue(
                             objAReq.getThreeDSRequestorChallengeInd());
+            ThreeDSReqAuthMethodInd methodInd =
+                    ThreeDSReqAuthMethodInd.getByValue(objAReq.getThreeDSReqAuthMethodInd());
             if (ThreeDSRequestorChallengeInd.CHALLENGE_REQUESTED_MANDATE.equals(challengeInd)
                     || ThreeDSRequestorChallengeInd.CHALLENGE_REQUESTED_REQUESTER_PREFERENCE.equals(
                             challengeInd)
                     || ThreeDSRequestorChallengeInd.WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
                             .equals(challengeInd)) {
                 riskFlag = RiskFlag.CHALLENGE;
-            } else if (Util.isNullorBlank(objAReq.getAcctInfo())
-                    && Util.isNullorBlank(objAReq.getAcctInfo().getSuspiciousAccActivity())) {
-                if ("02".equals(objAReq.getAcctInfo().getSuspiciousAccActivity())) {
-                    riskFlag = RiskFlag.CHALLENGE;
-                }
-            } else if (!Util.isNullorBlank(objAReq.getThreeDSReqAuthMethodInd())) {
-                ThreeDSReqAuthMethodInd methodInd =
-                        ThreeDSReqAuthMethodInd.getByValue(objAReq.getThreeDSReqAuthMethodInd());
-                if (ThreeDSReqAuthMethodInd.FAILED.equals(methodInd)
-                        || ThreeDSReqAuthMethodInd.NOT_PERFORMED.equals(methodInd)) {
-                    riskFlag = RiskFlag.CHALLENGE;
-                }
             } else if (ThreeDSRequestorChallengeInd.TRANSACTIONAL_RISK_ANALYSIS_IS_ALREADY_PERFORMED
                     .equals(challengeInd)) {
                 riskFlag = RiskFlag.NO_CHALLENGE;
@@ -54,7 +44,17 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
             } else if (!Util.isNullorBlank(objAReq.getThreeDSRequestorDecReqInd())
                     && objAReq.getThreeDSRequestorDecReqInd().equalsIgnoreCase("Y")) {
                 riskFlag = RiskFlag.DECOUPLED_CHALLENGE;
-            } else {
+            } else if (Util.isNullorBlank(objAReq.getAcctInfo())
+                    && Util.isNullorBlank(objAReq.getAcctInfo().getSuspiciousAccActivity())
+                    && "02".equals(objAReq.getAcctInfo().getSuspiciousAccActivity())) {
+                riskFlag = RiskFlag.CHALLENGE;
+            } else if (!Util.isNullorBlank(objAReq.getThreeDSReqAuthMethodInd())
+                    && (ThreeDSReqAuthMethodInd.FAILED.equals(methodInd)
+                            || ThreeDSReqAuthMethodInd.NOT_PERFORMED.equals(methodInd))) {
+                riskFlag = RiskFlag.CHALLENGE;
+            }
+
+            if (riskFlag == null) {
                 riskFlag = riskFlagByAcs;
             }
         }
@@ -66,7 +66,6 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
             final AREQ objAReq, final Transaction transaction, final RiskFlag riskFlagAcs) {
 
         RiskFlag riskFlag = isChallengeRequired(objAReq, riskFlagAcs);
-        log.info("riskFlag {} for transaction {}", riskFlag.toString(), transaction.getId());
         if (RiskFlag.CHALLENGE == riskFlag) {
             transaction.setChallengeMandated(true);
             transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
