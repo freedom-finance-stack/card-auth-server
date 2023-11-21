@@ -388,11 +388,6 @@ CREATE TABLE `institution_ui_config`
     `deleted_by`     varchar(40) DEFAULT NULL
 );
 
-#  Purposed tables for OTP
-
-#  OTP_TRANSACTION_DETAIL : ID ,TRANSACTION_ID, Value
-#  NOTIFICATION : CHANNEL, DESTINATION, REQUEST, RESPONSE, PROVIDER, STATUS, ENTITY, ENTITY_ID
-
 DROP TABLE IF EXISTS `otp_transaction_detail`;
 CREATE TABLE `otp_transaction_detail`
 (
