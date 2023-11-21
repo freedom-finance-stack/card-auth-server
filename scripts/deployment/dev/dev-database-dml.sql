@@ -126,6 +126,7 @@ INSERT INTO `card_range` VALUES ('R17', 'I1', 8765471800000000, 8765471899999999
 INSERT INTO `card_range` VALUES ('R18', 'I1', 9876522800000000, 9876522899999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R19', 'I1', 1876542400000000000, 1876542499999999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R20', 'I1', 6543200100000, 6543200199999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R21', 'I1', 9876543000000000, 9876543099999999, 'ACTIVE', 'CREDIT', 'INFORMATIONAL', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 
 
 UNLOCK TABLES;

@@ -138,14 +138,13 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             // Determine if challenge is required and update transaction accordingly
             challengeDetermineService.determineChallenge(
                     areq, transaction, cardRange.getRiskFlag());
-            AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
-            AuthType authType =
-                    AuthenticationServiceLocator.selectAuthType(
-                            transaction, authConfigDto.getChallengeAuthTypeConfig());
-            transaction.setAuthenticationType(authType.getValue());
 
             if (transaction.isChallengeMandated()) {
-
+                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
+                AuthType authType =
+                        AuthenticationServiceLocator.selectAuthType(
+                                transaction, authConfigDto.getChallengeAuthTypeConfig());
+                transaction.setAuthenticationType(authType.getValue());
                 if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
                     log.trace("Generating ACSSignedContent");
                     String signedData =
