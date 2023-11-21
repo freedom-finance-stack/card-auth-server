@@ -113,6 +113,11 @@ public enum
             "Error while finding transaction",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    TRANSACTION_ID_NOT_RECOGNISED(
+            "2003",
+            "Transaction not Recognised",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
 
     // Error code for invalid request
     INVALID_REQUEST(
@@ -146,7 +151,7 @@ public enum
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     CREQ_JSON_PARSING_ERROR(
-            "8001",
+            "8000",
             "Can't parse Creq message",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.INVALID_TRANSACTION),
@@ -223,6 +228,12 @@ public enum
             "UNEXPECTED ERROR OCCURRED",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
+
+    CRES_ENCRYPTION_ERROR(
+            "8017",
+            "Can't encrypt CRES response",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     TEST_TRANSACTION_UA(
             "9001",

@@ -9,11 +9,17 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.SignedContent;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.SignerService;
+import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexDump;
+import org.freedomfinancestack.razorpay.cas.acs.utils.HexUtil;
 import org.freedomfinancestack.razorpay.cas.acs.utils.SecurityUtil;
-import org.freedomfinancestack.razorpay.cas.contract.AREQ;
-import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
+import org.freedomfinancestack.razorpay.cas.contract.*;
+import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetailPK;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -25,6 +31,9 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.DirectDecrypter;
+import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.util.Base64;
@@ -37,6 +46,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SignerServiceImpl implements SignerService {
     private final SignerDetailRepository signerDetailRepository;
+
+    private final TransactionService transactionService;
 
     @Override
     public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl) {
@@ -107,6 +118,44 @@ public class SignerServiceImpl implements SignerService {
         return signedData;
     }
 
+    @Override
+    public CREQ parseEncryptedRequest(String strCReq, boolean decryptionRequired)
+            throws ACSException {
+        ThreeDSErrorResponse errorObj = SecurityUtil.isErrorResponse(strCReq);
+        if (errorObj == null) {
+            String decryptedCReq = null;
+            if (decryptionRequired) {
+                decryptedCReq = decryptCReq(strCReq);
+            } else {
+                decryptedCReq = strCReq;
+            }
+            return SecurityUtil.parseCREQ(decryptedCReq);
+        } else {
+            CREQ objCReq = new CREQ();
+            objCReq.setAcsTransID(errorObj.getAcsTransID());
+            objCReq.setThreeDSServerTransID(errorObj.getThreeDSServerTransID());
+            objCReq.setMessageVersion(errorObj.getMessageVersion());
+            objCReq.setMessageType(errorObj.getMessageType());
+            objCReq.setChallengeCancel(ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
+            objCReq.setSdkTransID(errorObj.getSdkTransID());
+            return objCReq;
+        }
+    }
+
+    @Override
+    public String generateEncryptedResponse(
+            Transaction transaction, CRES cres, boolean encryptionRequired) throws ACSException {
+        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+        String strCRes = gson.toJson(cres);
+        String encryptedCRes = null;
+        if (encryptionRequired) {
+            encryptedCRes = encryptResponse(transaction, strCRes);
+        } else {
+            encryptedCRes = strCRes;
+        }
+        return encryptedCRes;
+    }
+
     private void generateSHA256SecretKey(
             AREQ areq, Transaction transaction, ECKey sdkPubKey, KeyPair acsKeyPair)
             throws Exception {
@@ -138,5 +187,135 @@ public class SignerServiceImpl implements SignerService {
         transaction
                 .getTransactionSdkDetail()
                 .setAcsSecretKey(HexDump.byteArrayToHex(derivedKey.getEncoded()));
+    }
+
+    private String decryptCReq(String encryptedCReq) throws ACSException {
+        String decryptedCReq = null;
+        byte[] acsKDFSecretKey = null;
+        Transaction transaction = null;
+
+        // Step 6 - ACS to Parse JWE object received from SDK
+        JWEObject acsJweObject = null;
+        try {
+            encryptedCReq = encryptedCReq.replaceAll("\\s+", "");
+            acsJweObject = JWEObject.parse(encryptedCReq);
+
+            String acsTransactionID = acsJweObject.getHeader().getKeyID();
+            transaction = transactionService.findById(acsTransactionID);
+            if (transaction == null) {
+                throw new DataNotFoundException(
+                        ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
+                        InternalErrorCode.TRANSACTION_NOT_FOUND);
+            }
+            String strAcsSecretKey = transaction.getTransactionSdkDetail().getAcsSecretKey();
+
+            acsKDFSecretKey = HexUtil.hexStringToByteArray(strAcsSecretKey);
+            transaction
+                    .getTransactionSdkDetail()
+                    .setEncryptionAlgorithm(
+                            acsJweObject.getHeader().getEncryptionMethod().getName());
+
+            if (acsJweObject.getHeader().getEncryptionMethod().getName().equals("A128GCM")) {
+                // After you already have generated the digest
+                byte[] mdbytes = acsKDFSecretKey;
+                byte[] key = new byte[mdbytes.length / 2];
+
+                for (int I = 0; I < key.length; I++) {
+                    // Choice 1 for using only 128 bits of the 256 generated
+                    key[I] = mdbytes[I];
+
+                    // Choice 2 for using ALL of the 256 bits generated
+                    // key[I] = mdbytes[I] ^ mdbytes[I + key.length];
+                }
+                acsKDFSecretKey = key;
+            }
+            // Step 7 - ASC to decrypt the JWE object using ACS CEK
+            acsJweObject.decrypt(new DirectDecrypter(acsKDFSecretKey));
+
+            // Step 8 - ACS to fetch the CREQ for processing
+            String payload = acsJweObject.getPayload().toString();
+            decryptedCReq = payload;
+        } catch (java.text.ParseException e) {
+            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
+        } catch (KeyLengthException e) {
+            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
+        } catch (JOSEException e) {
+            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
+        } catch (ACSDataAccessException e) {
+            throw new ACSException(InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED, e);
+        } catch (DataNotFoundException e) {
+            throw new ACSException(InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED, e);
+        } catch (Exception e) {
+            throw new ACSException(InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED, e);
+        } finally {
+            if (transaction != null) {
+                try {
+                    transactionService.saveOrUpdate(transaction);
+                } catch (Exception e) {
+                    throw new ACSException(InternalErrorCode.INTERNAL_SERVER_ERROR);
+                }
+            }
+        }
+
+        return decryptedCReq;
+    }
+
+    private String encryptResponse(Transaction transaction, String challangeResponse)
+            throws ACSException {
+
+        String encryptedCRes = null;
+        byte[] acsKDFSecretKey = null;
+
+        // Step 6 - ACS to Parse JWE object received from SDK
+        JWEObject acsJweObject = null;
+        EncryptionMethod encryptionMethod = EncryptionMethod.A128CBC_HS256;
+
+        try {
+            String acsTransactionID = transaction.getId();
+            String strAcsSecretKey = transaction.getTransactionSdkDetail().getAcsSecretKey();
+
+            acsKDFSecretKey = HexUtil.hexStringToByteArray(strAcsSecretKey);
+
+            if (transaction.getTransactionSdkDetail().getEncryptionAlgorithm().equals("A128GCM")) {
+
+                byte[] mdbytes = acsKDFSecretKey;
+                byte[] key = new byte[mdbytes.length / 2];
+
+                // for(int I = 0; I < key.length; I++){
+                for (int i = 0; i < key.length; i++) {
+                    // Choice 1 for using only 128 bits of the 256 generated
+                    key[i] = mdbytes[i + (mdbytes.length / 2)];
+
+                    // Choice 2 for using ALL of the 256 bits generated
+                    // key[I] = mdbytes[I] ^ mdbytes[I + key.length];
+                }
+                acsKDFSecretKey = key;
+                encryptionMethod = EncryptionMethod.A128GCM;
+            }
+
+            JWEHeader acsEncHeader =
+                    new JWEHeader.Builder(JWEAlgorithm.DIR, encryptionMethod)
+                            .keyID(acsTransactionID)
+                            .build();
+
+            // Step 3 - Create JWE object
+            // ieyJraWQiOiJhZGM0NjI4Ny0zZWZmLTRjNTUtODVlZC04NGM3MjdjZDU5M2MiLCJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..jPj3nEb-A-6adCHsUZA02g.8rPub9hscfiH-zuNfYOZuH1nUi3_ZVlxyS1ZEIeUX_26EBytNnCr0bCUhWu1KCC1Ik_euORXAcBZqOpP0cfMt_1FiY4yhH-IE8R1eiyOWx4gggZsgU596-J0k9RyPZvu9mtQ0HPHM6qlV9Iqr_zzLzmh0bPsft5jqyuvsPGLDDNJbp6S95bQVNNTuDFg9zthIDtpsFdTyk2HcMH7Jb3B0UhZRiM4wlUI4onaXBC1S_KRyo_G4w2sYShpU7qVPwIC_VZgPRx1zU_0rMvC0FPAWOBF5oBmNV8aTLJQVfs9wIvNm9tizbyXsitmpHUPnObi.RyJgCU8zpcCgzFVeod9vtAn SDK
+            acsJweObject =
+                    new JWEObject(
+                            acsEncHeader,
+                            new Payload(challangeResponse)); // JWE Object with Header and Payload
+            // (CRES/Error)
+
+            // Step 4 - Encrypt the JWE using SDK CEK
+            acsJweObject.encrypt(new DirectEncrypter(acsKDFSecretKey)); // JWE Compact SErialization
+
+            // Step 5 - Serialise to compact JOSE form and send it to ACS
+            encryptedCRes = acsJweObject.serialize();
+
+        } catch (Exception e) {
+            throw new ACSException(InternalErrorCode.CRES_ENCRYPTION_ERROR, e);
+        }
+
+        return encryptedCRes;
     }
 }

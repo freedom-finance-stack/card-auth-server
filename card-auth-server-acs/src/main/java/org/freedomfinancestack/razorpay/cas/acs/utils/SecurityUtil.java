@@ -13,9 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 
+import com.google.gson.Gson;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSObject;
@@ -179,5 +184,39 @@ public class SecurityUtil {
         String signedContent = s + "." + jwsObject.getSignature();
 
         return signedContent;
+    }
+
+    public static ThreeDSErrorResponse isErrorResponse(String strReq) {
+        Gson gson = new Gson();
+        ThreeDSErrorResponse objErr = null;
+
+        try {
+            objErr = gson.fromJson(strReq, ThreeDSErrorResponse.class);
+        } catch (Exception e) {
+            // TODO Log Exception
+            return null;
+        }
+
+        if (null == objErr.getErrorCode()) {
+            // TODO Log Null Obj
+            return null;
+        }
+        return objErr;
+    }
+
+    public static CREQ parseCREQ(String strCReq) throws ACSException {
+        Gson gson = new Gson();
+        CREQ objCReq = null;
+
+        try {
+            objCReq = gson.fromJson(strCReq, CREQ.class);
+        } catch (Exception e) {
+            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
+        }
+
+        if (null == objCReq) {
+            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR);
+        }
+        return objCReq;
     }
 }

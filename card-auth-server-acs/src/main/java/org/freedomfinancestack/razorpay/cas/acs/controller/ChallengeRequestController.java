@@ -9,12 +9,9 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSExcepti
 import org.freedomfinancestack.razorpay.cas.acs.service.AppChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.contract.CREQ;
-import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +21,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -106,21 +102,20 @@ public class ChallengeRequestController {
     @RequestMapping(
             value = RouteConstants.CHALLENGE_APP_ROUTE,
             method = RequestMethod.POST,
-            //            produces = {"application/jose;charset=UTF-8"},
-            produces = MediaType.APPLICATION_JSON_VALUE,
+            produces = {"application/jose;charset=UTF-8"},
             consumes = {
                 "application/jose; charset=utf-8",
                 "application/jose",
                 "application/json;charset=utf-8"
             })
     @ResponseBody
-    public CRES handleChallengeRequest(
-            @RequestBody @Valid CREQ creq,
+    public String handleChallengeRequest(
+            @RequestBody String strCReq,
             HttpServletRequest httpServletRequest,
             @RequestHeader HttpHeaders headers,
             HttpServletResponse httpServletResponse)
             throws ThreeDSException, ACSDataAccessException {
-        return appChallengeRequestService.processAppChallengeRequest(creq);
+        return appChallengeRequestService.processAppChallengeRequest(strCReq);
     }
 
     private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes)

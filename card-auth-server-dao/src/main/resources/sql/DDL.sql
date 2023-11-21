@@ -51,6 +51,7 @@ CREATE TABLE `transaction_sdk_detail`
     `acs_interface` char(2) DEFAULT NULL,
     `acs_ui_type`          char(2) DEFAULT NULL,
     `acs_secret_key` LONGTEXT NULL,
+    `encryption_algo` VARCHAR(45) DEFAULT NULL,
     `device_info`          text,
     `acs_counter_a_to_s` char(3) DEFAULT '000',
     `created_at`           timestamp NOT NULL,

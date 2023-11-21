@@ -28,7 +28,6 @@ import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,16 +49,21 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     private final AuthValueGeneratorService authValueGeneratorService;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final InstitutionUiService institutionUiService;
+    private final SignerService signerService;
     private final PlrqService plrqService;
 
     @Override
-    public CRES processAppChallengeRequest(@NonNull CREQ creq)
+    public String processAppChallengeRequest(String strCReq)
             throws ThreeDSException, ACSDataAccessException {
+        CREQ creq = null;
         Transaction transaction = null;
         AppChallengeFlowDto challengeFlowDto = new AppChallengeFlowDto();
+        String cres = null;
+        // decEncRequired = false for local testing;
+        boolean decEncRequired = false;
         try {
-
-            // TODO decryption logic
+            // Decrypting CREQ
+            creq = (CREQ) signerService.parseEncryptedRequest(strCReq, decEncRequired);
 
             //  find Transaction and previous request, response
             transaction = fetchTransactionData(creq.getAcsTransID());
@@ -189,13 +193,26 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     }
                 }
                 transactionService.saveOrUpdate(transaction);
-                transactionMessageLogService.createAndSave(
-                        challengeFlowDto.getCres(), transaction.getId());
+                if (challengeFlowDto.getCres() != null) {
+                    transactionMessageLogService.createAndSave(
+                            challengeFlowDto.getCres(), transaction.getId());
+                }
             }
         }
 
+        try {
+            // Encrypting CRES
+            cres =
+                    signerService.generateEncryptedResponse(
+                            transaction, challengeFlowDto.getCres(), decEncRequired);
+        } catch (ACSException ex) {
+            updateTransactionForACSException(ex.getErrorCode(), transaction);
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
+        }
+
         // encrypt response
-        return challengeFlowDto.getCres();
+        return cres;
     }
 
     private Transaction fetchTransactionData(String transactionId)
@@ -365,6 +382,16 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         transaction.setTransactionStatusReason(
                 internalErrorCode.getTransactionStatusReason().getCode());
         transaction.setPhase(Phase.ERROR);
+        return transactionService.saveOrUpdate(transaction);
+    }
+
+    private Transaction updateTransactionForACSException(
+            InternalErrorCode internalErrorCode, Transaction transaction)
+            throws ACSDataAccessException {
+        transaction.setErrorCode(internalErrorCode.getCode());
+        transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+        transaction.setTransactionStatusReason(
+                internalErrorCode.getTransactionStatusReason().getCode());
         return transactionService.saveOrUpdate(transaction);
     }
 }
