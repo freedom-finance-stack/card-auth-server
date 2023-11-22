@@ -91,6 +91,17 @@ public enum
             "UNSUPPORTED DEVICE CATEGORY",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
+    SIGNER_DETAIL_NOT_FOUND(
+            "3016",
+            "SIGNER DETAIL NOT FOUND",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    //    SIGNER_DETAIL_NOT_FOUND(
+    //            "3017",
+    //            "SIGNER DETAIL NOT FOUND",
+    //            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+    //            TransactionStatusReason.ACS_TECHNICAL_ISSUE
+    //    ),
 
     // Error code for save Transaction
     TRANSACTION_SAVE_EXCEPTION(
