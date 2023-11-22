@@ -130,9 +130,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     cardRange.getCardDetailsStore());
 
             if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
-                if (areq.getDeviceRenderOptions() == null) {
-                    throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
-                }
                 featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
             }
 
@@ -145,20 +142,18 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             transaction, authConfigDto.getChallengeAuthTypeConfig());
             transaction.setAuthenticationType(authType.getValue());
 
-            if (transaction.isChallengeMandated()) {
-
-                if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
-                    log.trace("Generating ACSSignedContent");
-                    String signedData =
-                            signerService.getAcsSignedContent(
-                                    areq,
-                                    transaction,
-                                    RouteConstants.getAcsChallengeUrl(
-                                            appConfiguration.getHostname(),
-                                            transaction.getDeviceChannel()));
-                    aResMapperParams.setAcsSignedContent(signedData);
-                    transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
-                }
+            if (transaction.isChallengeMandated()
+                    && DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
+                log.info("Generating ACSSignedContent");
+                String signedData =
+                        signerService.getAcsSignedContent(
+                                areq,
+                                transaction,
+                                RouteConstants.getAcsChallengeUrl(
+                                        appConfiguration.getHostname(),
+                                        transaction.getDeviceChannel()));
+                aResMapperParams.setAcsSignedContent(signedData);
+                transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
             }
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                 String eci =

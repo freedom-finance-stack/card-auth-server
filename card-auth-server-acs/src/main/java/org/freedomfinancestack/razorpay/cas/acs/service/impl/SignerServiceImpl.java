@@ -1,8 +1,11 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyPair;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.security.interfaces.ECPrivateKey;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,12 +16,16 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.SignerService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexDump;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexUtil;
 import org.freedomfinancestack.razorpay.cas.acs.utils.SecurityUtil;
 import org.freedomfinancestack.razorpay.cas.contract.*;
+import org.freedomfinancestack.razorpay.cas.contract.AREQ;
+import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetailPK;
@@ -32,6 +39,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nimbusds.jose.*;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.DirectEncrypter;
 import com.nimbusds.jose.jwk.ECKey;
@@ -50,7 +58,8 @@ public class SignerServiceImpl implements SignerService {
     private final TransactionService transactionService;
 
     @Override
-    public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl) {
+    public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl)
+            throws ThreeDSException {
         SignerDetail signerDetail = null;
         String signedData = null;
 
@@ -76,18 +85,17 @@ public class SignerServiceImpl implements SignerService {
             generateSHA256SecretKey(areq, transaction, sdkPubKey, acsKeyPair);
 
             EphemPubKey acsPublicKey = new EphemPubKey();
-            for (Map.Entry entry : acsPublicKeyJWK.getRequiredParams().entrySet()) {
-                String key = entry.getKey().toString();
+
+            for (Map.Entry<String, ?> entry : acsPublicKeyJWK.getRequiredParams().entrySet()) {
+                String key = entry.getKey();
                 String value = entry.getValue().toString();
 
-                if (key.equals("crv")) {
-                    acsPublicKey.setCrv(value);
-                } else if (key.equals("kty")) {
-                    acsPublicKey.setKty(value);
-                } else if (key.equals("x")) {
-                    acsPublicKey.setX(value);
-                } else if (key.equals("y")) {
-                    acsPublicKey.setY(value);
+                switch (key) {
+                    case "crv" -> acsPublicKey.setCrv(value);
+                    case "kty" -> acsPublicKey.setKty(value);
+                    case "x" -> acsPublicKey.setX(value);
+                    case "y" -> acsPublicKey.setY(value);
+                    default -> {}
                 }
             }
 
@@ -104,6 +112,13 @@ public class SignerServiceImpl implements SignerService {
                             new SignerDetailPK(transaction.getInstitutionId(), networkCode));
 
             if (signerDetailOptional.isPresent()) signerDetail = signerDetailOptional.get();
+            else {
+                log.debug(
+                        "Can't find signerDetail for institution_id: "
+                                + transaction.getInstitutionId());
+                throw new ACSDataAccessException(
+                        InternalErrorCode.SIGNER_DETAIL_NOT_FOUND, "Signer Detail not found");
+            }
 
             List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail);
 
@@ -112,8 +127,37 @@ public class SignerServiceImpl implements SignerService {
                     SecurityUtil.generateDigitalSignatureWithPS256(
                             keyPair, x509CertChain, signedJsonObject);
 
+        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException e) {
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    "Error during Algorithm Execution",
+                    e);
+        } catch (ACSDataAccessException e) {
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_DETAIL_NOT_FOUND,
+                    "Signer Detail Not Found",
+                    e);
+        } catch (JOSEException e) {
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    "Error during Encryption/Decryption",
+                    e);
+        } catch (UnrecoverableKeyException
+                | CertificateException
+                | KeyStoreException
+                | IOException e) {
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    "Error during Keystore Extraction/Parsing",
+                    e);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.INTERNAL_SERVER_ERROR);
         }
         return signedData;
     }
@@ -158,7 +202,7 @@ public class SignerServiceImpl implements SignerService {
 
     private void generateSHA256SecretKey(
             AREQ areq, Transaction transaction, ECKey sdkPubKey, KeyPair acsKeyPair)
-            throws Exception {
+            throws JOSEException {
 
         // Step 4 - Perform KeyAgreement and derive SecretKey
         SecretKey Z =
@@ -235,25 +279,13 @@ public class SignerServiceImpl implements SignerService {
             // Step 8 - ACS to fetch the CREQ for processing
             String payload = acsJweObject.getPayload().toString();
             decryptedCReq = payload;
-        } catch (java.text.ParseException e) {
+        } catch (ParseException | JOSEException e) {
             throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
-        } catch (KeyLengthException e) {
-            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
-        } catch (JOSEException e) {
-            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
-        } catch (ACSDataAccessException e) {
-            throw new ACSException(InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED, e);
-        } catch (DataNotFoundException e) {
-            throw new ACSException(InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED, e);
         } catch (Exception e) {
             throw new ACSException(InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED, e);
         } finally {
             if (transaction != null) {
-                try {
-                    transactionService.saveOrUpdate(transaction);
-                } catch (Exception e) {
-                    throw new ACSException(InternalErrorCode.INTERNAL_SERVER_ERROR);
-                }
+                transactionService.saveOrUpdate(transaction);
             }
         }
 

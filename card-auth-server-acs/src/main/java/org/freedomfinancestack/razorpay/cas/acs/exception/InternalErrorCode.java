@@ -91,13 +91,20 @@ public enum
             "UNSUPPORTED DEVICE CATEGORY",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
-    INSTITUTION_UI_CONFIG_NOT_FOUND(
+
+    SIGNER_DETAIL_NOT_FOUND(
             "3016",
+            "SIGNER DETAIL NOT FOUND",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+    INSTITUTION_UI_CONFIG_NOT_FOUND(
+            "3017",
             "INSTITUTION UI CONFIG NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
     UNSUPPORTED_UI_TYPE(
-            "3017",
+            "3018",
             "UNSUPPORTED UI TYPE",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
