@@ -39,11 +39,6 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "acs_secret_key")
     private String acsSecretKey;
 
-    @Column(name = "acs_signed_content")
-    private String acsSignedContent;
-
-    // todo remove this field if not needed
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
     @MapsId
