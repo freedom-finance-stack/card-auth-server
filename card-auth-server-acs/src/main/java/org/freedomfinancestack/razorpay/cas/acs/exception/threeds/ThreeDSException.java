@@ -97,7 +97,9 @@ public class ThreeDSException extends Exception {
         if (transaction != null) {
             if (transaction.getTransactionReferenceDetail() != null) {
                 threeDSErrorResponse.setThreeDSServerTransID(
-                        transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+                        transaction
+                                .getTransactionReferenceDetail()
+                                .getThreedsServerTransactionId());
                 threeDSErrorResponse.setDsTransID(
                         transaction.getTransactionReferenceDetail().getDsTransactionId());
             }
