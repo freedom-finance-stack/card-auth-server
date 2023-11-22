@@ -4,8 +4,10 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.AResMapper;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The {@code AResMapperParams} class is a data class representing parameters used by the {@link
@@ -29,6 +31,8 @@ import lombok.Data;
  */
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AResMapperParams {
-    String acsUrl;
+    String acsSignedContent;
 }
