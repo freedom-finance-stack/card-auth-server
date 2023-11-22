@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.interfaces.ECPrivateKey;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,13 +14,15 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.SignedContent;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.service.SignerService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexDump;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexUtil;
 import org.freedomfinancestack.razorpay.cas.acs.utils.SecurityUtil;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
@@ -164,7 +165,12 @@ public class SignerServiceImpl implements SignerService {
 
     @Override
     public CREQ parseEncryptedRequest(String strCReq, boolean decryptionRequired)
-            throws ACSException {
+            throws ParseException, TransactionDataNotValidException {
+        if (Util.isNullorBlank(strCReq)) {
+            throw new ParseException(
+                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                    InternalErrorCode.CREQ_JSON_PARSING_ERROR);
+        }
         ThreeDSErrorResponse errorObj = SecurityUtil.isErrorResponse(strCReq);
         if (errorObj == null) {
             log.info("------------------- parsing creq-------------------");
@@ -234,7 +240,8 @@ public class SignerServiceImpl implements SignerService {
                 .setAcsSecretKey(HexDump.byteArrayToHex(derivedKey.getEncoded()));
     }
 
-    private String decryptCReq(String encryptedCReq) throws ACSException {
+    private String decryptCReq(String encryptedCReq)
+            throws ParseException, TransactionDataNotValidException {
         String decryptedCReq = null;
         byte[] acsKDFSecretKey = null;
         Transaction transaction = null;
@@ -247,10 +254,8 @@ public class SignerServiceImpl implements SignerService {
 
             String acsTransactionID = acsJweObject.getHeader().getKeyID();
             transaction = transactionService.findById(acsTransactionID);
-            if (transaction == null) {
-                throw new DataNotFoundException(
-                        ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
-                        InternalErrorCode.TRANSACTION_NOT_FOUND);
+            if (null == transaction || !transaction.isChallengeMandated()) {
+                throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
             }
             String strAcsSecretKey = transaction.getTransactionSdkDetail().getAcsSecretKey();
 
@@ -259,6 +264,8 @@ public class SignerServiceImpl implements SignerService {
                     .getTransactionSdkDetail()
                     .setEncryptionAlgorithm(
                             acsJweObject.getHeader().getEncryptionMethod().getName());
+
+            transactionService.saveOrUpdate(transaction);
 
             if (acsJweObject.getHeader().getEncryptionMethod().getName().equals("A128GCM")) {
                 // After you already have generated the digest
@@ -280,14 +287,14 @@ public class SignerServiceImpl implements SignerService {
             // Step 8 - ACS to fetch the CREQ for processing
             String payload = acsJweObject.getPayload().toString();
             decryptedCReq = payload;
-        } catch (ParseException | JOSEException e) {
-            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
-        } catch (Exception e) {
-            throw new ACSException(InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED, e);
-        } finally {
-            if (transaction != null) {
-                transactionService.saveOrUpdate(transaction);
-            }
+        } catch (java.text.ParseException | JOSEException e) {
+            throw new ParseException(
+                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                    InternalErrorCode.CREQ_JSON_PARSING_ERROR,
+                    e);
+        } catch (ACSDataAccessException e) {
+            throw new TransactionDataNotValidException(
+                    InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         }
 
         return decryptedCReq;

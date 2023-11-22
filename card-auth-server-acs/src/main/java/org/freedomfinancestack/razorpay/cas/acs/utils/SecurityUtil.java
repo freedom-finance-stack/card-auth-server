@@ -16,10 +16,11 @@ import java.util.UUID;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 
 import com.google.gson.Gson;
@@ -187,7 +188,7 @@ public class SecurityUtil {
         try {
             objErr = gson.fromJson(strReq, ThreeDSErrorResponse.class);
         } catch (Exception e) {
-            // TODO Log Exception
+            log.info("---------------error checking------------ ");
             return null;
         }
 
@@ -198,18 +199,23 @@ public class SecurityUtil {
         return objErr;
     }
 
-    public static CREQ parseCREQ(String strCReq) throws ACSException {
+    public static CREQ parseCREQ(String strCReq) throws ParseException {
         Gson gson = new Gson();
         CREQ objCReq = null;
 
         try {
             objCReq = gson.fromJson(strCReq, CREQ.class);
         } catch (Exception e) {
-            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR, e);
+            throw new ParseException(
+                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                    InternalErrorCode.CREQ_JSON_PARSING_ERROR,
+                    e);
         }
 
         if (null == objCReq) {
-            throw new ACSException(InternalErrorCode.CREQ_JSON_PARSING_ERROR);
+            throw new ParseException(
+                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                    InternalErrorCode.CREQ_JSON_PARSING_ERROR);
         }
         return objCReq;
     }

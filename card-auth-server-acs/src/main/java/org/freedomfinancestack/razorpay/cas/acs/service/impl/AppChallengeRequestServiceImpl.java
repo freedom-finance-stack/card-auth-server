@@ -55,16 +55,34 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     @Override
     public String processAppChallengeRequest(String strCReq)
             throws ThreeDSException, ACSDataAccessException {
+        try {
+            return processAppChallengeRequestHandler(strCReq);
+        } catch (InvalidStateTransactionException e) {
+            log.error(
+                    "Invalid State Transaction occurred in processAppChallengeRequest {}",
+                    e.getMessage(),
+                    e);
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                    InternalErrorCode.INVALID_STATE_TRANSITION,
+                    "Invalid State Transaction occurred",
+                    e);
+        }
+    }
+
+    @Override
+    public String processAppChallengeRequestHandler(String strCReq)
+            throws ThreeDSException, ACSDataAccessException, InvalidStateTransactionException {
         CREQ creq = null;
         Transaction transaction = null;
         AppChallengeFlowDto challengeFlowDto = new AppChallengeFlowDto();
         String cres = null;
         // decEncRequired = false for local testing;
-        boolean decEncRequired = false;
+        boolean decEncRequired = true;
         try {
             // Decrypting CREQ
 
-            log.info(strCReq);
+            log.info("------------------enc CREQ-----------------: ", strCReq);
 
             creq = (CREQ) signerService.parseEncryptedRequest(strCReq, decEncRequired);
 
@@ -378,15 +396,16 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         log.info("challenge cancelled for transaction {}", transaction.getId());
     }
 
-    private Transaction updateTransactionWithError(
+    private void updateTransactionWithError(
             InternalErrorCode internalErrorCode, Transaction transaction)
-            throws ACSDataAccessException {
-        transaction.setErrorCode(internalErrorCode.getCode());
-        transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
-        transaction.setTransactionStatusReason(
-                internalErrorCode.getTransactionStatusReason().getCode());
-        transaction.setPhase(Phase.ERROR);
-        return transactionService.saveOrUpdate(transaction);
+            throws InvalidStateTransactionException {
+        if (transaction != null) {
+            transaction.setErrorCode(internalErrorCode.getCode());
+            transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+            transaction.setTransactionStatusReason(
+                    internalErrorCode.getTransactionStatusReason().getCode());
+            StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
+        }
     }
 
     private Transaction updateTransactionForACSException(
