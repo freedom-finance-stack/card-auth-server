@@ -178,8 +178,8 @@ external-libs:
       enabled: false
 
 institution-ui:
-  institution-url: "http://127.0.0.1:8080/acs/resources/images/"
-  institution-css-url: "http://127.0.0.1:8080/acs/resources/css/stylesEFT.css"
+  institution-url: "https://ffs.acs.com/acs/resources/images/"
+  institution-css-url: "https://ffs.acs.com/acs/resources/css/stylesEFT.css"
   medium-logo: "medium_image.png"
   high-logo: "high_image.png"
   extra-high-logo: "extra_high_image.png"
