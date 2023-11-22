@@ -167,6 +167,7 @@ public class SignerServiceImpl implements SignerService {
             throws ACSException {
         ThreeDSErrorResponse errorObj = SecurityUtil.isErrorResponse(strCReq);
         if (errorObj == null) {
+            log.info("------------------- parsing creq-------------------");
             String decryptedCReq = null;
             if (decryptionRequired) {
                 decryptedCReq = decryptCReq(strCReq);

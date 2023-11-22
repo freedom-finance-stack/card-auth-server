@@ -63,8 +63,12 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         boolean decEncRequired = false;
         try {
             // Decrypting CREQ
+
+            log.info(strCReq);
+
             creq = (CREQ) signerService.parseEncryptedRequest(strCReq, decEncRequired);
 
+            log.info("--------------- CREQ --------------", creq);
             //  find Transaction and previous request, response
             transaction = fetchTransactionData(creq.getAcsTransID());
 
@@ -158,7 +162,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     transaction,
                     ex);
         } catch (ACSException ex) {
-            log.error("Exception occurred", ex);
+            log.error("-------------------------Exception occurred-----------------------", ex);
             challengeFlowDto.setSendRreq(true);
             updateTransactionWithError(ex.getErrorCode(), transaction);
             throw new ThreeDSException(
