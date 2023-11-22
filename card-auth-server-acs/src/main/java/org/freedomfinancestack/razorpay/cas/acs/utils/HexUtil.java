@@ -5,6 +5,10 @@ import java.io.StringWriter;
 
 public class HexUtil {
 
+    public static String byteArrayToHexString(byte[] b) {
+        return hexValue(b, 0, b.length);
+    }
+
     public static String hexValue(byte[] b, int offset, int length) {
         StringBuilder hex = new StringBuilder();
         for (int i = 0; i < length; i++) {

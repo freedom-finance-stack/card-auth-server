@@ -237,7 +237,7 @@ public class SignerServiceImpl implements SignerService {
 
         transaction
                 .getTransactionSdkDetail()
-                .setAcsSecretKey(HexDump.byteArrayToHex(derivedKey.getEncoded()));
+                .setAcsSecretKey(HexUtil.byteArrayToHexString(derivedKey.getEncoded()));
     }
 
     private String decryptCReq(String encryptedCReq)
