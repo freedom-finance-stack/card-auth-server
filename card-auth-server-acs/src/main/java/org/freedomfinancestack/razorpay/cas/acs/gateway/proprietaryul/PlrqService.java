@@ -31,6 +31,10 @@ public class PlrqService extends HttpsGatewayService {
     public static final String BRW_CANCEL_FORM_DATA = "transactionId=%s&cancelChallenge=true";
     public static final String PLRQ_MESSAGE_TYPE = "pIrq";
     public static final String PLRQ_MESSAGE_VERSION = "1.0.6";
+    public static final String APP_CORRECT_DATA = "123456";
+    public static final String APP_INCORRECT_DATA = "000000";
+    public static final String APP_DEVICE_CHANNEL = "01";
+    public static final String BRW_DEVICE_CHANNEL = "02";
 
     private final AppConfiguration appConfiguration;
     private final RestTemplate ulRestTemplate;
@@ -46,13 +50,15 @@ public class PlrqService extends HttpsGatewayService {
         this.serviceConfig = gatewayConfig.getServices().get(ClientType.UL_TEST_PORTAL);
     }
 
-    public void sendPlrq(String transactionId, String otpAuthVal, String messageVersion)
+    public void sendPlrq(
+            String transactionId, String otpAuthVal, String messageVersion, String deviceChannel)
             throws ACSValidationException {
         if (serviceConfig.isMock()) {
             log.info("Mocking PLRQ");
             return;
         }
-        Plrq plrq = createPlrqBrw(transactionId, otpAuthVal, messageVersion);
+
+        Plrq plrq = createPlrq(transactionId, otpAuthVal, messageVersion, deviceChannel);
         try {
             log.info("Sending PLRQ: " + Util.toJson(plrq));
             Map<String, String> headerMap = new HashMap<>();
@@ -66,7 +72,31 @@ public class PlrqService extends HttpsGatewayService {
         }
     }
 
-    private Plrq createPlrqBrw(String transactionId, String authVal, String messageVersion) {
+    private Plrq createPlrq(
+            String transactionId, String authVal, String messageVersion, String deviceChannel) {
+        Plrq plrq = new Plrq();
+        plrq.acsTransID = transactionId;
+        plrq.messageType = PLRQ_MESSAGE_TYPE;
+        plrq.p_messageVersion = PLRQ_MESSAGE_VERSION;
+        plrq.messageVersion = messageVersion;
+
+        switch (deviceChannel) {
+            case APP_DEVICE_CHANNEL -> plrq.p_formValues_APP = createPlrqApp(authVal);
+            case BRW_DEVICE_CHANNEL -> plrq.p_formValues_BRW =
+                    createPlrqBrw(transactionId, authVal);
+            default -> {}
+        }
+        return plrq;
+    }
+
+    private Plrq.PFormValuesAPP createPlrqApp(String authVal) {
+        Plrq.PFormValuesAPP pFormValuesAPP = new Plrq.PFormValuesAPP();
+        pFormValuesAPP.correctChallengeData = authVal;
+        pFormValuesAPP.incorrectChallengeData = APP_INCORRECT_DATA;
+        return pFormValuesAPP;
+    }
+
+    private Plrq.PFormValuesBRW createPlrqBrw(String transactionId, String authVal) {
         Plrq.PFormValuesBRW pFormValuesBRW = new Plrq.PFormValuesBRW();
         pFormValuesBRW.cancelFormData = String.format(BRW_CANCEL_FORM_DATA, transactionId);
         pFormValuesBRW.correctFormData = String.format(BRW_FORM_DATA, transactionId, authVal);
@@ -74,14 +104,7 @@ public class PlrqService extends HttpsGatewayService {
         pFormValuesBRW.action =
                 RouteConstants.getAcsChallengeValidationUrl(
                         appConfiguration.getHostname(), DeviceChannel.BRW.getChannel());
-
-        Plrq plrq = new Plrq();
-        plrq.acsTransID = transactionId;
-        plrq.messageType = PLRQ_MESSAGE_TYPE;
-        plrq.p_messageVersion = PLRQ_MESSAGE_VERSION;
-        plrq.messageVersion = messageVersion;
-        plrq.p_formValues_BRW = pFormValuesBRW;
-        return plrq;
+        return pFormValuesBRW;
     }
 
     @Override
