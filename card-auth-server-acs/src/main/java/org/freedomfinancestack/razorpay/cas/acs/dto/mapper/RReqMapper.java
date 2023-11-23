@@ -1,6 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
+import org.freedomfinancestack.razorpay.cas.contract.enums.ACSRenderingType;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
@@ -24,7 +26,9 @@ import org.mapstruct.Mapping;
             TransactionStatus.class,
             MessageCategory.class,
             Network.class,
-            MessageType.class
+            MessageType.class,
+            DeviceChannel.class,
+            ACSRenderingType.class,
         })
 public interface RReqMapper {
 
@@ -55,7 +59,19 @@ public interface RReqMapper {
             target = "messageCategory",
             expression = "java(transaction.getMessageCategory().getCategory())")
     @Mapping(target = "messageType", expression = "java(MessageType.RReq.toString())")
-    // todo add acsRenderingType, messageExtension, sdkTransactionId and WhiteListStatus for App
+    @Mapping(
+            target = "sdkTransID",
+            expression =
+                    "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
+                            + " transaction.getTransactionSdkDetail().getSdkTransID() : null)")
+    @Mapping(
+            target = "acsRenderingType",
+            expression =
+                    "java((DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) &&"
+                        + " transaction.getTransactionSdkDetail().getAcsUiType() != null )? new"
+                        + " ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
+                        + " transaction.getTransactionSdkDetail().getAcsUiType()) : null)")
+    // todo add WhiteListStatus
     // Based flow
     RREQ toRreq(Transaction transaction);
 
