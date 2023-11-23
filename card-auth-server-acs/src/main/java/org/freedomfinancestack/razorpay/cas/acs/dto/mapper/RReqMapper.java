@@ -63,7 +63,7 @@ public interface RReqMapper {
             target = "sdkTransID",
             expression =
                     "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
-                            + " transaction.getTransactionSdkDetail().getSdkTransID() : null)")
+                            + " transaction.getTransactionSdkDetail().getSdkTransId() : null)")
     @Mapping(
             target = "acsRenderingType",
             expression =
