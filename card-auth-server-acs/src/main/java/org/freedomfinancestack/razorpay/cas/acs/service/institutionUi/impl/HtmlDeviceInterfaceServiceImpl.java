@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.impl;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Optional;
@@ -112,7 +113,7 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         html = html.replaceFirst(InternalConstants.TRANSACTION_DATE, transactionDate);
 
         String encodedHtml =
-                Base64.getUrlEncoder().encodeToString(html.getBytes()).replaceAll("=+$", "");
+                Base64.getMimeEncoder().encodeToString(html.getBytes(StandardCharsets.UTF_8));
         validInstitutionUiConfig.setDisplayPage(encodedHtml);
         challengeFlowDto.setInstitutionUiConfig(validInstitutionUiConfig);
     }
