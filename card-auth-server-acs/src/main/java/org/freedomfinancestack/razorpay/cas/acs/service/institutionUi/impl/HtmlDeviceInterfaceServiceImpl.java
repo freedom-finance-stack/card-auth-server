@@ -111,7 +111,8 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         }
         html = html.replaceFirst(InternalConstants.TRANSACTION_DATE, transactionDate);
 
-        String encodedHtml = Base64.getUrlEncoder().encodeToString(html.getBytes());
+        String encodedHtml =
+                Base64.getUrlEncoder().encodeToString(html.getBytes()).replaceAll("=+$", "");
         validInstitutionUiConfig.setDisplayPage(encodedHtml);
         challengeFlowDto.setInstitutionUiConfig(validInstitutionUiConfig);
     }
