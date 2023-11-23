@@ -341,7 +341,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                                     transaction.getTransactionCardDetail().getCardNumber()),
                             cardRange.getCardDetailsStore());
                 }
-                CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
+                CRES cres = cResMapper.toFinalCres(transaction, challengeFlowDto);
                 challengeFlowDto.setCres(cres);
                 transactionMessageLogService.createAndSave(cres, transaction.getId());
                 challengeFlowDto.setSendRreq(true);
