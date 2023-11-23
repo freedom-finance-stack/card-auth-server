@@ -12,7 +12,7 @@ app:
       mastercard: 123456789012345
       amex: 123456789012345
     timeout:
-      challengeRequest: 300 #sec TODO testing
+      challengeRequest: 30 #sec 
       challengeCompletion: 600 #sec
       challengeValidation: 180 #sec
 
