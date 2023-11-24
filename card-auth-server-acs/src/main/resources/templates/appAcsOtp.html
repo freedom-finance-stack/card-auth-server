@@ -87,7 +87,7 @@
   <div class="separator"></div>
   <h2>Enter Verification Code</h2>
   <p><span th:text="${appOtpHtmlParams.challengeText}"></span></p>
-  <form action="#" th:action="${appOtpHtmlParams.validationUrl}" method="post" name="challengeForm">
+  <form action="#" th:action=${appOtpHtmlParams.validationUrl} method="post" name="challengeForm">
     <label for="otp">Verification Code</label>
     <input type="text" id="otp" name="otp" required>
     <input type="hidden" name="transactionId" th:value="${appOtpHtmlParams.transactionId}">

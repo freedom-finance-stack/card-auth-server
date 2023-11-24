@@ -178,8 +178,8 @@ external-libs:
       enabled: false
 
 institution-ui:
-  institution-url: "https://ffs.acs.com/acs/resources/images/"
-  institution-css-url: ${INSTITUTION_CSS_URL:"https://EMV3DS/challenge"}
+  institution-url: https://ffs.acs.com/acs/resources/images/
+  institution-css-url: ${INSTITUTION_CSS_URL:https://EMV3DS/challenge}
   medium-logo: "medium_image.png"
   high-logo: "high_image.png"
   extra-high-logo: "extra_high_image.png"
