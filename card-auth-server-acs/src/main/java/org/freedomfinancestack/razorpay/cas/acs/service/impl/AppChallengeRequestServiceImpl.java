@@ -78,7 +78,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         AppChallengeFlowDto challengeFlowDto = new AppChallengeFlowDto();
         String cres = null;
         // decEncRequired = false for local testing;
-        boolean decEncRequired = true;
+        boolean decEncRequired = false;
         try {
             // Decrypting CREQ
 
@@ -93,14 +93,14 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             // Validating CREQ
             challengeRequestValidator.validateRequest(creq, transaction);
 
-            //             Checking Counter Mismatch
+            // Checking Counter Mismatch
             if (!Util.isNullorBlank(creq.getSdkCounterStoA())
                     && !creq.getSdkCounterStoA()
                             .equals(transaction.getTransactionSdkDetail().getAcsCounterAtoS())) {
                 throw new ThreeDSException(
                         ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                        "Acs Counter Mismatch",
-                        transaction);
+                        InternalErrorCode.INVALID_REQUEST,
+                        "Acs Counter Mismatch");
             }
             challengeFlowDto.setAcsCounterAtoS(
                     transaction.getTransactionSdkDetail().getAcsCounterAtoS());

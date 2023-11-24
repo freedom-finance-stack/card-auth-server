@@ -108,6 +108,16 @@ public enum
             "UNSUPPORTED UI TYPE",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
+    DISPLAY_PAGE_PARSING_EXCEPTION(
+            "3019",
+            "DISPLAY PAGE PARSING EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
+    DISPLAY_PAGE_NOT_FOUND(
+            "3020",
+            "DISPLAY PAGE NOT FOUND",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
 
     // Error code for save Transaction
     TRANSACTION_SAVE_EXCEPTION(

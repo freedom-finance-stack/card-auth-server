@@ -7,9 +7,12 @@ import java.util.Optional;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AppOtpHtmlParams;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
+import org.freedomfinancestack.razorpay.cas.acs.service.ThymeleafService;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInterfaceService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
@@ -19,6 +22,8 @@ import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -35,6 +40,10 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
 
     private final AppConfiguration appConfiguration;
 
+    private final ThymeleafService thymeleafService;
+
+    private final ResourceLoader resourceLoader;
+
     @Override
     public void populateInstitutionUiConfig(
             Transaction transaction,
@@ -43,33 +52,35 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
             throws ACSDataAccessException {
         InstitutionUiConfig validInstitutionUiConfig = new InstitutionUiConfig();
 
+        AppOtpHtmlParams appOtpHtmlParams = new AppOtpHtmlParams();
+
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
         if (institution.isEmpty()) {
             return;
         }
-        String institutionName = institution.get().getName();
-        String timeoutInMinutes =
+        appOtpHtmlParams.setInstitutionName(institution.get().getName());
+        appOtpHtmlParams.setTimeoutInSeconds(
+                String.valueOf(appConfiguration.getAcs().getTimeout().getChallengeValidation()));
+        appOtpHtmlParams.setTimeoutInMinutes(
                 String.valueOf(
-                        appConfiguration.getAcs().getTimeout().getChallengeValidation() * 60);
-        String timeoutInSeconds =
-                String.valueOf(appConfiguration.getAcs().getTimeout().getChallengeValidation());
+                        appConfiguration.getAcs().getTimeout().getChallengeValidation() / 60));
 
         String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
         Network network =
                 Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
-
-        String issuerImage = logoBaseUrl + institutionUiConfiguration.getMediumLogo();
-        String psImage =
+        appOtpHtmlParams.setSchemaName(network.getName());
+        appOtpHtmlParams.setIssuerImage(logoBaseUrl + institutionUiConfiguration.getMediumLogo());
+        appOtpHtmlParams.setPsImage(
                 logoBaseUrl
                         + institutionUiConfiguration
                                 .getNetworkUiConfig()
                                 .get(network)
-                                .getMediumPs();
+                                .getMediumPs());
 
-        String transactionDate =
-                new SimpleDateFormat("dd/MM/yyyy").format(transaction.getModifiedAt());
-        String cardNumber = transaction.getTransactionCardDetail().getCardNumber();
+        appOtpHtmlParams.setTransactionDate(
+                new SimpleDateFormat("dd/MM/yyyy").format(transaction.getModifiedAt()));
+        appOtpHtmlParams.setCardNumber(transaction.getTransactionCardDetail().getCardNumber());
 
         MessageCategory messageCategory = transaction.getMessageCategory();
         String purchaseAmount = null;
@@ -81,36 +92,30 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
             exponent = transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
             amount = Util.formatAmount(purchaseAmount, exponent);
             currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
+            appOtpHtmlParams.setAmountWithCurrency(amount + InternalConstants.SPACE + currency);
         }
 
-        String mobileNumber =
+        appOtpHtmlParams.setMobileNumber(
                 Util.getLastFourDigit(
-                        transaction.getTransactionCardHolderDetail().getMobileNumber());
-        String merchantName = transaction.getTransactionMerchant().getMerchantName();
+                        transaction.getTransactionCardHolderDetail().getMobileNumber()));
+        appOtpHtmlParams.setMerchantName(transaction.getTransactionMerchant().getMerchantName());
 
-        String cssUrl = institutionUiConfiguration.getInstitutionCssUrl();
+        appOtpHtmlParams.setValidationUrl(institutionUiConfiguration.getInstitutionCssUrl());
 
-        String html =
-                institutionUiConfiguration.getNetworkUiConfig().get(network).getHtmlTemplateOtp();
+        Resource templateResource =
+                resourceLoader.getResource(
+                        "classpath:/templates/"
+                                + institutionUiConfiguration.getHtmlOtpTemplate()
+                                + ".html");
 
-        html = html.replaceAll(InternalConstants.INSTITUTION_NAME, institutionName);
-        html = html.replaceAll(InternalConstants.INSTITUTION_TIMEOUT_IN_MINUTES, timeoutInMinutes);
-        html = html.replaceAll(InternalConstants.INSTITUTION_TIMEOUT_IN_SECONDS, timeoutInSeconds);
+        String html;
+        html =
+                thymeleafService.getAppOtpHTML(
+                        appOtpHtmlParams, institutionUiConfiguration.getHtmlOtpTemplate());
 
-        html = html.replaceFirst(InternalConstants.INSTITUTION_CSS_URL, cssUrl);
-        html = html.replaceFirst(InternalConstants.PS_LOGO, psImage);
-        html = html.replaceFirst(InternalConstants.INSTITUTION_LOGO, issuerImage);
-
-        html = html.replaceFirst(InternalConstants.LAST_FOUR_DIGIT_MOBILE_NUMBER, mobileNumber);
-        html = html.replaceFirst(InternalConstants.MASKED_CARD_NUMBER, cardNumber);
-        html = html.replaceFirst(InternalConstants.MERCHANT_NAME, merchantName);
-        if (messageCategory.equals(MessageCategory.PA)) {
-            html =
-                    html.replaceFirst(
-                            InternalConstants.AMOUNT_WITH_CURRENCY,
-                            amount + InternalConstants.SPACE + currency);
+        if (html == null) {
+            throw new ACSDataAccessException(InternalErrorCode.DISPLAY_PAGE_NOT_FOUND);
         }
-        html = html.replaceFirst(InternalConstants.TRANSACTION_DATE, transactionDate);
 
         String encodedHtml =
                 Base64.getUrlEncoder()

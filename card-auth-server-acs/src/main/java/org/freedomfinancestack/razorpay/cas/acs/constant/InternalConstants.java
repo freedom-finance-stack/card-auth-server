@@ -50,6 +50,7 @@ public class InternalConstants {
 
     public static final String MODEL_ATTRIBUTE_CHALLENGE_VALIDATION_REQUEST = "cVReq";
     public static final String MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE = "cdRes";
+    public static final String APP_ACS_OTP_TEMPLATE_NAME = "appAcsOtp";
     public static final String THREE_RI_WHILE_LIST_STATUS_SOURCE = "03";
     public static final String THREE_RI_IND_WHILE_LIST = "10";
 
@@ -73,6 +74,11 @@ public class InternalConstants {
     public static final String MASKED_MOBILE_NUMBER = "MASKED_MOBILE_NUMBER";
     public static final String MASKED_CARD_NUMBER = "MASKED_CARD_NUMBER";
     public static final String MERCHANT_NAME = "MERCHANT_NAME";
+
+    public static final String NETWORK_SCHEMA_NAME = "NETWORK_SCHEMA_NAME";
+
+    public static final String INSTITUTION_CHALLENGE_TEXT = "INSTITUTION_CHALLENGE_TEXT";
+    public static final String INSTITUTION_CHALLENGE_INFO_TEXT = "INSTITUTION_CHALLENGE_INFO_TEXT";
     public static final String AMOUNT_WITH_CURRENCY = "AMOUNT_WITH_CURRENCY";
     public static final String TRANSACTION_DATE = "TRANSACTION_DATE";
 

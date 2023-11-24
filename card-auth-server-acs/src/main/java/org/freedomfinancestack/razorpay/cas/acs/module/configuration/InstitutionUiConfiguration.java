@@ -25,6 +25,7 @@ public class InstitutionUiConfiguration {
     private String highLogo;
     private String extraHighLogo;
     private String institutionCssUrl;
+    private String htmlOtpTemplate;
     private Map<Network, UiConfig> networkUiConfig = new EnumMap<>(Network.class);
 
     @Getter
@@ -33,6 +34,5 @@ public class InstitutionUiConfiguration {
         String mediumPs;
         String highPs;
         String extraHighPs;
-        String htmlTemplateOtp;
     }
 }
