@@ -112,10 +112,6 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             // Setting Institution Ui Config
             institutionUiService.populateInstitutionUiConfig(challengeFlowDto, transaction);
 
-            if (transaction.getTransactionSdkDetail().getAcsInterface().equals("02")) {
-                transaction.getTransactionSdkDetail().setAcsUiType("05");
-            }
-
             // 4 flows
             // 1: if Challenge cancelled by user
             // 2: If transaction status is incorrect

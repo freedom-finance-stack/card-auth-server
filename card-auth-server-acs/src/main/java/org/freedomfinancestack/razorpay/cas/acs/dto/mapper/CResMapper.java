@@ -64,7 +64,11 @@ public interface CResMapper {
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
     @Mapping(target = "acsCounterAtoS", source = "challengeFlowDto.acsCounterAtoS")
-    @Mapping(target = "acsUiType", source = "transaction.transactionSdkDetail.acsUiType")
+    @Mapping(
+            target = "acsUiType",
+            expression =
+                    "java(transaction.getTransactionSdkDetail().getAcsInterface().equals(\"02\") ?"
+                            + " \"05\" : transaction.getTransactionSdkDetail().getAcsUiType())")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
     @Mapping(target = "acsHTML", source = "challengeFlowDto.institutionUiConfig.displayPage")
     @Mapping(target = "psImage", source = "challengeFlowDto.psImage")
