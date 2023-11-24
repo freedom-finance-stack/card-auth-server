@@ -316,7 +316,9 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     > transaction.getInteractionCount()) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.INVALID_AUTH_VAL);
                 CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
-                cres.setChallengeInfoText(authResponse.getDisplayMessage());
+                if (transaction.getTransactionSdkDetail().getAcsInterface().equals("01")) {
+                    cres.setChallengeInfoText(authResponse.getDisplayMessage());
+                }
                 challengeFlowDto.setCres(cres);
             } else {
                 transaction.setTransactionStatus(
