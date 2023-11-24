@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
+import org.freedomfinancestack.extensions.validation.validator.Validatable;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
@@ -330,6 +331,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 ThreeDSDataElement.SDK_EPHEM_PUB_KEY, request),
                         notBlank()),
                 isValidObject());
+        Validation.validate(
+                ThreeDSDataElement.SDK_EPHEM_PUB_KEY.getFieldName(),
+                request.getSdkEphemPubKey(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.SDK_EPHEM_PUB_KEY, request),
+                        notBlank()),
+                isJsonObjectLengthValid(256));
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 request.getSdkTransID(),
