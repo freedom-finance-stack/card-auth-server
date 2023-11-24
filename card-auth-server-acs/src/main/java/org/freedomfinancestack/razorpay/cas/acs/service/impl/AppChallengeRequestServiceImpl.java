@@ -78,7 +78,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         AppChallengeFlowDto challengeFlowDto = new AppChallengeFlowDto();
         String cres = null;
         // decEncRequired = false for local testing;
-        boolean decEncRequired = false;
+        boolean decEncRequired = true;
         try {
             // Decrypting CREQ
 
