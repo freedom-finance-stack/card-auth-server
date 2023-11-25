@@ -261,6 +261,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             challengeFlowDto.setSendRreq(true);
         } else {
             log.info(" ReSending challenge for transaction {}", transaction.getId());
+            transaction.setInteractionCount(transaction.getInteractionCount() + 1);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
             handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
         }
