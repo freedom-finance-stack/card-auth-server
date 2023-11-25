@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationErrorCode;
@@ -23,6 +24,7 @@ import static org.freedomfinancestack.extensions.validation.validator.basic.IsVa
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.RegexValidator.regexValidator;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
@@ -74,7 +76,8 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
                 incomingCreq.getMessageVersion(),
                 notBlank(),
-                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
+                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()),
+                regexValidator("^" + Pattern.quote(incomingCreq.getMessageVersion()) + "$"));
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
