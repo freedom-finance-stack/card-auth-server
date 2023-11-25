@@ -21,7 +21,6 @@ import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValid
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
-import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
@@ -133,7 +132,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                             transaction);
                 }
             } else if (!Util.isNullorBlank(creq.getChallengeCancel())) {
-                handleCancelChallenge(transaction, challengeFlowDto);
+                handleCancelChallenge(transaction, challengeFlowDto, creq);
             } else {
                 AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
                 if (creq.getResendChallenge() != null
@@ -367,7 +366,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private void handleCancelChallenge(
-            Transaction transaction, AppChallengeFlowDto challengeFlowDto)
+            Transaction transaction, AppChallengeFlowDto challengeFlowDto, CREQ creq)
             throws InvalidStateTransactionException {
         StateMachine.Trigger(transaction, Phase.PhaseEvent.CANCEL_CHALLENGE);
 
@@ -376,8 +375,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         transaction.setTransactionStatusReason(
                 TransactionStatusReason.EXCEED_MAX_CHALLANGES.getCode());
         transaction.setErrorCode(InternalErrorCode.CANCELLED_BY_CARDHOLDER.getCode());
-        transaction.setChallengeCancelInd(
-                ChallengeCancelIndicator.CARDHOLDER_SELECTED_CANCEL.getIndicator());
+        transaction.setChallengeCancelInd(creq.getChallengeCancel());
 
         challengeFlowDto.setSendRreq(true);
         CRES cres = cResMapper.toFinalCres(transaction, challengeFlowDto);
