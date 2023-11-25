@@ -185,13 +185,8 @@ VALUES
         '4', 'CARD_RANGE', 'R8', 1, 'RENDERING_TYPE',
         '{"rendering_type_configs":[{
         "acs_interface" : "01",
-        "acs_ui_template": ["01", "02"],
+        "acs_ui_template": ["01"],
         "preference": 1
-        },
-        {
-        "acs_interface" : "02",
-        "acs_ui_template": ["03"],
-        "preference": 2
         }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null

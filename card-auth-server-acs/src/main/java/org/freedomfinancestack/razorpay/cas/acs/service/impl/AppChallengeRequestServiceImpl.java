@@ -8,6 +8,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
@@ -21,10 +22,12 @@ import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValid
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
+import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.freedomfinancestack.razorpay.cas.dao.model.TransactionReferenceDetail;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -81,7 +84,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         try {
             // Decrypting CREQ
 
-            creq = (CREQ) signerService.parseEncryptedRequest(strCReq, decEncRequired);
+            creq = signerService.parseEncryptedRequest(strCReq, decEncRequired);
 
             //  find Transaction and previous request, response
             transaction = fetchTransactionData(creq.getAcsTransID());
@@ -153,7 +156,16 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
 
         } catch (ParseException | TransactionDataNotValidException ex) {
             log.error("Exception occurred", ex);
+            Transaction transactionErr = new Transaction();
+            generateDummyTransactionWithError(ex.getInternalErrorCode(), transactionErr, creq);
+            throw new ThreeDSException(
+                    ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
+        } catch (ACSValidationException ex) {
+            log.error("Exception occurred", ex);
+            challengeFlowDto.setSendRreq(true);
             updateTransactionWithError(ex.getInternalErrorCode(), transaction);
+            transaction.setChallengeCancelInd(
+                    ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (ThreeDSException ex) {
@@ -229,7 +241,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private Transaction fetchTransactionData(String transactionId)
-            throws ACSDataAccessException, ThreeDSException {
+            throws ACSDataAccessException, TransactionDataNotValidException {
         Transaction transaction = transactionService.findById(transactionId);
         if (null == transaction || !transaction.isChallengeMandated()) {
             throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
@@ -396,13 +408,30 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         }
     }
 
-    private Transaction updateTransactionForACSException(
+    private void generateDummyTransactionWithError(
+            InternalErrorCode internalErrorCode, Transaction transaction, CREQ creq) {
+        transaction.setMessageVersion(creq.getMessageVersion());
+        transaction.setErrorCode(internalErrorCode.getCode());
+        transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+        transaction.setTransactionStatusReason(
+                internalErrorCode.getTransactionStatusReason().getCode());
+        transaction.setPhase(Phase.ERROR);
+        if (creq != null) {
+            TransactionReferenceDetail transactionReferenceDetail =
+                    new TransactionReferenceDetail();
+            transactionReferenceDetail.setThreedsServerTransactionId(
+                    creq.getThreeDSServerTransID());
+            transaction.setTransactionReferenceDetail(transactionReferenceDetail);
+        }
+    }
+
+    private void updateTransactionForACSException(
             InternalErrorCode internalErrorCode, Transaction transaction)
             throws ACSDataAccessException {
         transaction.setErrorCode(internalErrorCode.getCode());
         transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
         transaction.setTransactionStatusReason(
                 internalErrorCode.getTransactionStatusReason().getCode());
-        return transactionService.saveOrUpdate(transaction);
+        transactionService.saveOrUpdate(transaction);
     }
 }
