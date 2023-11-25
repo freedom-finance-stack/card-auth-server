@@ -3,12 +3,14 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 import java.util.Arrays;
 
 import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
+import org.freedomfinancestack.extensions.validation.exception.ValidationErrorCode;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
@@ -142,43 +144,102 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                         ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
                         lengthValidator(DataLengthType.VARIABLE, 256)));
 
-        if (transaction.getTransactionSdkDetail().getAcsUiType() != null) {
+        int challengeDataCount = 0;
+
+        if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
+                && transaction.getTransactionSdkDetail().getAcsUiType() != null
+                && !incomingCreq.getSdkCounterStoA().equals("000")) {
             String acsUiType = transaction.getTransactionSdkDetail().getAcsUiType();
+            String acsInterface = transaction.getTransactionSdkDetail().getAcsInterface();
+
             boolean conditionForChallengeDataEntry =
-                    (Arrays.asList("01", "02", "03").contains(acsUiType)
-                                    && !YES.equals(incomingCreq.getResendChallenge()))
+                    shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
+                            && Arrays.asList("01", "02", "03").contains(acsUiType)
+                            && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
+                                    || !YES.equals(incomingCreq.getChallengeNoEntry()))
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                            && ((!Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                    && !YES.equals(incomingCreq.getChallengeNoEntry())));
+                            && (Util.isNullorBlank(incomingCreq.getResendChallenge())
+                                    || !YES.equals(incomingCreq.getResendChallenge()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeDataEntry(),
                     when(conditionForChallengeDataEntry, notBlank()),
                     lengthValidator(DataLengthType.VARIABLE, 45));
+            if (conditionForChallengeDataEntry) {
+                challengeDataCount++;
+            }
 
             boolean conditionForChallengeHTMLDataEntry =
-                    (acsUiType.equals("05"))
-                            && !Util.isNullorBlank(incomingCreq.getChallengeCancel());
+                    shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY, transaction)
+                            && acsInterface.equals("02")
+                            && Util.isNullorBlank(incomingCreq.getChallengeCancel());
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeHTMLDataEntry(),
                     when(conditionForChallengeHTMLDataEntry, notBlank()),
                     lengthValidator(DataLengthType.VARIABLE, 256));
+            if (conditionForChallengeHTMLDataEntry) {
+                challengeDataCount++;
+            }
 
             boolean conditionForChallengeNoEntry =
-                    transaction.getTransactionSdkDetail().getAcsUiType() != null
-                            && shouldValidateThreeDSDataElement(
+                    shouldValidateThreeDSDataElement(
                                     ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
-                            && !(Arrays.asList("01", "02", "03").contains(acsUiType))
+                            && Arrays.asList("01", "02", "03").contains(acsUiType)
                             && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                            && Util.isNullorBlank(incomingCreq.getResendChallenge());
+                            && (Util.isNullorBlank(incomingCreq.getResendChallenge())
+                                    || !YES.equals(incomingCreq.getResendChallenge()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_NO_ENTRY.getFieldName(),
                     incomingCreq.getChallengeNoEntry(),
-                    when(
-                            conditionForChallengeNoEntry,
-                            isIn(ThreeDSDataElement.CHALLENGE_NO_ENTRY.getAcceptedValues())));
+                    when(conditionForChallengeNoEntry, notBlank()),
+                    isIn(ThreeDSDataElement.CHALLENGE_NO_ENTRY.getAcceptedValues()));
+            if (conditionForChallengeNoEntry) {
+                challengeDataCount++;
+            }
+
+            boolean conditionForResendChallenge =
+                    shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.RESEND_CHALLENGE, transaction)
+                            && acsInterface.equals("01")
+                            && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
+                            && Util.isNullorBlank(incomingCreq.getChallengeCancel())
+                            && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
+                                    || !YES.equals(incomingCreq.getChallengeNoEntry()));
+
+            Validation.validate(
+                    ThreeDSDataElement.RESEND_CHALLENGE.getFieldName(),
+                    incomingCreq.getResendChallenge(),
+                    when(conditionForResendChallenge, notBlank()),
+                    isIn(ThreeDSDataElement.RESEND_CHALLENGE.getAcceptedValues()));
+            if (conditionForResendChallenge) {
+                challengeDataCount++;
+            }
+
+            boolean conditionForChallengeCancel =
+                    shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.CHALLENGE_CANCEL, transaction)
+                            && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
+                            && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
+                            && Util.isNullorBlank(incomingCreq.getResendChallenge())
+                            && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
+                                    || !YES.equals(incomingCreq.getChallengeNoEntry()));
+
+            Validation.validate(
+                    ThreeDSDataElement.CHALLENGE_CANCEL.getFieldName(),
+                    incomingCreq.getChallengeCancel(),
+                    when(conditionForChallengeCancel, notBlank()),
+                    isIn(ThreeDSDataElement.CHALLENGE_CANCEL.getAcceptedValues()));
+            if (conditionForChallengeCancel) {
+                challengeDataCount++;
+            }
+
+            if (challengeDataCount != 1) {
+                throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
+            }
         }
     }
 

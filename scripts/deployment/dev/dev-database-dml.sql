@@ -317,6 +317,19 @@ VALUES
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
+
+INSERT INTO `feature`
+VALUES
+    (
+        '15', 'CARD_RANGE', 'R18', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["01", "02", "03", "04", "05"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
 UNLOCK TABLES;
 
 LOCK TABLES `signer_detail` WRITE;
