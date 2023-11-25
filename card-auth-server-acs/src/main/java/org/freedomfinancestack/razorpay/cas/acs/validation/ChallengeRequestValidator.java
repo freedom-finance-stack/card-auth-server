@@ -145,7 +145,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         lengthValidator(DataLengthType.VARIABLE, 256)));
 
         int challengeDataCount = 0;
-
+        // TODO improve this part of code
         if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
                 && transaction.getTransactionSdkDetail().getAcsUiType() != null
                 && !incomingCreq.getSdkCounterStoA().equals("000")) {
@@ -155,6 +155,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
             boolean conditionForChallengeDataEntry =
                     shouldValidateThreeDSDataElement(
                                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
+                            && acsInterface.equals("01")
                             && Arrays.asList("01", "02", "03").contains(acsUiType)
                             && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
                                     || !YES.equals(incomingCreq.getChallengeNoEntry()))
