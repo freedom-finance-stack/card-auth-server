@@ -188,7 +188,6 @@ public class SecurityUtil {
         try {
             objErr = gson.fromJson(strReq, ThreeDSErrorResponse.class);
         } catch (Exception e) {
-            log.info("---------------error checking------------ ");
             return null;
         }
 

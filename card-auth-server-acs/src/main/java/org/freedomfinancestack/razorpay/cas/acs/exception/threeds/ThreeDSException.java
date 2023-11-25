@@ -4,6 +4,8 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.http.HttpStatus;
 
@@ -106,6 +108,9 @@ public class ThreeDSException extends Exception {
             threeDSErrorResponse.setAcsTransID(transaction.getId());
             if (!Util.isNullorBlank(transaction.getMessageVersion())) {
                 threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
+            }
+            if (!transaction.getPhase().equals(Phase.AREQ)) {
+                threeDSErrorResponse.setErrorMessageType(MessageType.CReq.toString());
             }
         }
     }
