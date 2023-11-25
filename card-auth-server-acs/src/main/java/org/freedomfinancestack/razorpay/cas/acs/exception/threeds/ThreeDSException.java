@@ -109,7 +109,8 @@ public class ThreeDSException extends Exception {
             if (!Util.isNullorBlank(transaction.getMessageVersion())) {
                 threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
             }
-            if (!transaction.getPhase().equals(Phase.AREQ)) {
+            if (!transaction.getPhase().equals(Phase.AREQ)
+                    && !transaction.getPhase().equals(Phase.AERROR)) {
                 threeDSErrorResponse.setErrorMessageType(MessageType.CReq.toString());
             }
         }
