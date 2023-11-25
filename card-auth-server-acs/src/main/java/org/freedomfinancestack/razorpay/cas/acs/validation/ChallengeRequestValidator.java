@@ -190,6 +190,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                     ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
                             && Arrays.asList("01", "02", "03").contains(acsUiType)
                             && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
+                            && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                             && (Util.isNullorBlank(incomingCreq.getResendChallenge())
                                     || !YES.equals(incomingCreq.getResendChallenge()));
