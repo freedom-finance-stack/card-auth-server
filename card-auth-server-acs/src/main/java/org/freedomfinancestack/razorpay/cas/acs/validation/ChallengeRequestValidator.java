@@ -77,7 +77,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 incomingCreq.getMessageVersion(),
                 notBlank(),
                 isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()),
-                regexValidator("^" + Pattern.quote(incomingCreq.getMessageVersion()) + "$"));
+                regexValidator("^" + Pattern.quote(transaction.getMessageVersion()) + "$"));
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
