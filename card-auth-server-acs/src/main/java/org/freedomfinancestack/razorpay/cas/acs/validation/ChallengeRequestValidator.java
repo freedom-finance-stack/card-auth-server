@@ -163,7 +163,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                             && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
                                     || !YES.equals(incomingCreq.getChallengeNoEntry()))
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                            && (Util.isNullorBlank(incomingCreq.getResendChallenge())
+                            && (incomingCreq.getResendChallenge() == null
                                     || !YES.equals(incomingCreq.getResendChallenge()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
@@ -195,7 +195,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                             && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                            && (Util.isNullorBlank(incomingCreq.getResendChallenge())
+                            && (incomingCreq.getResendChallenge() == null
                                     || !YES.equals(incomingCreq.getResendChallenge()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_NO_ENTRY.getFieldName(),
