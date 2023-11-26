@@ -192,16 +192,16 @@ public class SecurityUtil {
         return s + "." + jwsObject.getSignature();
     }
 
-    public static ThreeDSErrorResponse isErrorResponse(String strReq) throws ParseException {
+    public static ThreeDSErrorResponse isErrorResponse(String strReq) {
         Gson gson = new Gson();
         ThreeDSErrorResponse objErr = null;
 
         try {
             objErr = gson.fromJson(strReq, ThreeDSErrorResponse.class);
         } catch (Exception e) {
-            throw new ParseException(
-                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
-                    InternalErrorCode.CRES_ENCRYPTION_ERROR);
+            //            throw new ParseException(
+            //                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+            //                    InternalErrorCode.CRES_ENCRYPTION_ERROR);
         }
 
         if (null == objErr.getErrorCode()) {
