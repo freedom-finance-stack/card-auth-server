@@ -174,6 +174,11 @@ public class SignerServiceImpl implements SignerService {
         if (errorObj == null) {
             String decryptedCReq = null;
             if (decryptionRequired) {
+                if (!SecurityUtil.validateBase64UrlEncodedString(strCReq)) {
+                    throw new ParseException(
+                            ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                            InternalErrorCode.CRES_ENCRYPTION_ERROR);
+                }
                 decryptedCReq = decryptCReq(strCReq);
             } else {
                 decryptedCReq = strCReq;
@@ -254,7 +259,7 @@ public class SignerServiceImpl implements SignerService {
             transaction = transactionService.findById(acsTransactionID);
             if (null == transaction || !transaction.isChallengeMandated()) {
                 throw new TransactionDataNotValidException(
-                        ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
+                        ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID,
                         InternalErrorCode.TRANSACTION_NOT_FOUND);
             }
             String strAcsSecretKey = transaction.getTransactionSdkDetail().getAcsSecretKey();
@@ -294,7 +299,7 @@ public class SignerServiceImpl implements SignerService {
                     e);
         } catch (ACSDataAccessException e) {
             throw new TransactionDataNotValidException(
-                    ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
+                    ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID,
                     InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         }
 

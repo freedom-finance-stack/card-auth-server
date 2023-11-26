@@ -13,6 +13,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
@@ -156,6 +158,15 @@ public class SecurityUtil {
                 (RSAPrivateKey) ks.getKey(signerDetail.getSignerKeyPair(), keyPass.toCharArray());
 
         return new KeyPair(publicKey, privateKey);
+    }
+
+    public static boolean validateBase64UrlEncodedString(String encodedString) {
+        String base64urlRegex = "^[A-Za-z0-9_-]*$";
+        Pattern base64urlPattern = Pattern.compile(base64urlRegex);
+
+        Matcher base64urlMatcher = base64urlPattern.matcher(encodedString);
+
+        return base64urlMatcher.matches();
     }
 
     public static String generateDigitalSignatureWithPS256(
