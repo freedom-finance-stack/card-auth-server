@@ -92,17 +92,17 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             //  log creq
             transactionMessageLogService.createAndSave(creq, creq.getAcsTransID());
 
-            // Validating CREQ
-            challengeRequestValidator.validateRequest(creq, transaction);
-
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
-            // Handling whitelisting data entry
-            if (authConfigDto.getChallengeAttemptConfig().isWhitelistingAllowed()) {
+            // Handling whitelisting data entry setting it before validation, as needed for the same
+            if (Util.isWhitelistingDataValid(transaction, creq, authConfigDto)) {
                 transaction
                         .getTransactionReferenceDetail()
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
             }
+
+            // Validating CREQ
+            challengeRequestValidator.validateRequest(creq, transaction);
 
             // Checking Counter Mismatch
             if (!Util.isNullorBlank(creq.getSdkCounterStoA())
