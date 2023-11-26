@@ -25,6 +25,7 @@ import static org.freedomfinancestack.extensions.validation.validator.basic.IsNu
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsUUID.isUUID;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.IsBase64.isBase64;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsDate.isDate;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
@@ -352,7 +353,9 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 when(
                         shouldValidateThreeDSDataElement(ThreeDSDataElement.DEVICE_INFO, request),
                         notBlank()),
-                lengthValidator(DataLengthType.VARIABLE, 64000));
+                lengthValidator(DataLengthType.VARIABLE, 64000),
+                regexValidator("^[A-Za-z0-9_-]*$"),
+                isBase64());
 
         Validation.validate(
                 ThreeDSDataElement.DS_REFERENCE_NUMBER.getFieldName(),
