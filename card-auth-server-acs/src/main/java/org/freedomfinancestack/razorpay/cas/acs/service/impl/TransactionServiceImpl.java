@@ -213,6 +213,7 @@ public class TransactionServiceImpl implements TransactionService {
                 areq.getThreeDSServerRefNumber(),
                 areq.getDsTransID(),
                 areq.getDsURL(),
-                areq.getNotificationURL());
+                areq.getNotificationURL(),
+                areq.getThreeDSRequestorChallengeInd());
     }
 }

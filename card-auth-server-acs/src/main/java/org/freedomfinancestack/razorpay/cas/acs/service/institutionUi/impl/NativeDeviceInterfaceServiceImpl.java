@@ -111,6 +111,14 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
         validInstitutionUiConfig.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
         validInstitutionUiConfig.setWhyInfoText(institutionUiConfig.getWhyInfoText());
 
+        if (transaction
+                .getTransactionReferenceDetail()
+                .getThreeDSRequestorChallengeInd()
+                .equals("09")) {
+            validInstitutionUiConfig.setWhitelistingInfoText(
+                    institutionUiConfig.getWhitelistingInfoText());
+        }
+
         switch (uiType) {
             case TEXT:
                 challengeText = institutionUiConfig.getChallengeInfoText();

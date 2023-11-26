@@ -95,6 +95,11 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             // Validating CREQ
             challengeRequestValidator.validateRequest(creq, transaction);
 
+            // Handling whitelisting data entry
+            transaction
+                    .getTransactionReferenceDetail()
+                    .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
+
             // Checking Counter Mismatch
             if (!Util.isNullorBlank(creq.getSdkCounterStoA())
                     && !creq.getSdkCounterStoA()

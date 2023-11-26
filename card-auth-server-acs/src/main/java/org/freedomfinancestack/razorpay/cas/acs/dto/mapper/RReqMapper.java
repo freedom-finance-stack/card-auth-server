@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ACSRenderingType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
@@ -71,8 +72,10 @@ public interface RReqMapper {
                         + " transaction.getTransactionSdkDetail().getAcsUiType() != null )? new"
                         + " ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
                         + " transaction.getTransactionSdkDetail().getAcsUiType()) : null)")
-    // todo add WhiteListStatus
-    // Based flow
+    @Mapping(target = "whiteListStatus", expression = "java(getWhiteListStatus(transaction))")
+    @Mapping(
+            target = "whiteListStatusSource",
+            expression = "java(getWhiteListStatus(transaction) != null ? \"03\" : null)")
     RREQ toRreq(Transaction transaction);
 
     default String getAuthType(Transaction transaction) {
@@ -95,5 +98,24 @@ public interface RReqMapper {
     default String getAuthMethod(Transaction transaction) {
         // todo add logic for OOB and other auth types
         return "02";
+    }
+
+    default String getWhiteListStatus(Transaction transaction) {
+        if (Util.isNullorBlank(
+                        transaction.getTransactionReferenceDetail().getWhitelistingDataEntry())
+                && transaction
+                        .getTransactionReferenceDetail()
+                        .getWhitelistingDataEntry()
+                        .equals("Y")) {
+            return "Y";
+        } else if (Util.isNullorBlank(
+                        transaction.getTransactionReferenceDetail().getWhitelistingDataEntry())
+                && transaction
+                        .getTransactionReferenceDetail()
+                        .getWhitelistingDataEntry()
+                        .equals("N")) {
+            return "R";
+        }
+        return null;
     }
 }

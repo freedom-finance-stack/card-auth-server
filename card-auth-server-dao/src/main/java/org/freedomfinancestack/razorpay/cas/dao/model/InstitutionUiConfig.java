@@ -52,6 +52,9 @@ public class InstitutionUiConfig extends BaseEntity<InstitutionUiConfigPK> {
     @Column(name = "display_page")
     private String displayPage;
 
+    @Column(name = "whitelisting_info_text")
+    private String whitelistingInfoText;
+
     @Column(name = "created_by", nullable = false)
     private String createdBy;
 

@@ -96,10 +96,12 @@ public interface CResMapper {
             source = "challengeFlowDto.institutionUiConfig.submitAuthenticationLabel")
     @Mapping(target = "whyInfoLabel", source = "challengeFlowDto.institutionUiConfig.whyInfoLabel")
     @Mapping(target = "whyInfoText", source = "challengeFlowDto.institutionUiConfig.whyInfoText")
+    @Mapping(
+            target = "whitelistingInfoText",
+            source = "challengeFlowDto.institutionUiConfig.whitelistingInfoText")
 
     // TODO
     // challengeSelectInfo
-    // whitelistingInfoText
     // messageExtension
     // oobAppURL
     // oobContinueLabel

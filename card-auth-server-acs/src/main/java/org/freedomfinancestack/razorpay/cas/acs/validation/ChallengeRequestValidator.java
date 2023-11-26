@@ -147,6 +147,20 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                         ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
                         lengthValidator(DataLengthType.VARIABLE, 256)));
 
+        Validation.validate(
+                ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getFieldName(),
+                incomingCreq.getWhitelistingDataEntry(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY, transaction)
+                                && !incomingCreq.getSdkCounterStoA().equals("000")
+                                && transaction
+                                        .getTransactionReferenceDetail()
+                                        .getThreeDSRequestorChallengeInd()
+                                        .equals("09"),
+                        notBlank()),
+                isIn(ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getAcceptedValues()));
+
         int challengeDataCount = 0;
         // TODO improve this part of code
         if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
