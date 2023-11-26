@@ -87,7 +87,11 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
                         notBlank()),
-                lengthValidator(DataLengthType.VARIABLE, 36),
+                lengthValidator(DataLengthType.VARIABLE, 36));
+
+        Validation.validate(
+                ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
+                incomingCreq.getThreeDSServerTransID(),
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
@@ -121,7 +125,10 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
                         notBlank()),
-                lengthValidator(DataLengthType.FIXED, 3),
+                lengthValidator(DataLengthType.FIXED, 3));
+        Validation.validate(
+                ThreeDSDataElement.SDK_COUNTER_STOA.getFieldName(),
+                incomingCreq.getSdkCounterStoA(),
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
@@ -132,6 +139,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                                         .getTransactionSdkDetail()
                                                         .getAcsCounterAtoS())
                                         + "$")));
+
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 incomingCreq.getSdkTransID(),
@@ -140,7 +148,11 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                 ThreeDSDataElement.SDK_TRANS_ID, transaction),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 36),
-                isUUID(),
+                isUUID());
+
+        Validation.validate(
+                ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
+                incomingCreq.getSdkTransID(),
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_TRANS_ID, transaction),

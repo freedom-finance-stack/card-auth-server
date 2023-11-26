@@ -353,9 +353,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         shouldValidateThreeDSDataElement(ThreeDSDataElement.DEVICE_INFO, request),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 64000),
-                when(
-                        shouldValidateThreeDSDataElement(ThreeDSDataElement.DEVICE_INFO, request),
-                        regexValidator("^[A-Za-z0-9_-]*$")));
+                regexValidator("^[A-Za-z0-9_-]*$"));
 
         Validation.validate(
                 ThreeDSDataElement.DS_REFERENCE_NUMBER.getFieldName(),
