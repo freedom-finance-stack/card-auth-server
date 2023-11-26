@@ -88,20 +88,19 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 36));
-
-        Validation.validate(
-                ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
-                incomingCreq.getThreeDSServerTransID(),
-                when(
-                        shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
-                        regexValidator(
-                                "^"
-                                        + Pattern.quote(
-                                                transaction
-                                                        .getTransactionReferenceDetail()
-                                                        .getThreedsServerTransactionId())
-                                        + "$")));
+        if (shouldValidateThreeDSDataElement(
+                ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction)) {
+            Validation.validate(
+                    ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
+                    incomingCreq.getThreeDSServerTransID(),
+                    regexValidator(
+                            "^"
+                                    + Pattern.quote(
+                                            transaction
+                                                    .getTransactionReferenceDetail()
+                                                    .getThreedsServerTransactionId())
+                                    + "$"));
+        }
 
         Validation.validate(
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
@@ -126,19 +125,18 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                 ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
                         notBlank()),
                 lengthValidator(DataLengthType.FIXED, 3));
-        Validation.validate(
-                ThreeDSDataElement.SDK_COUNTER_STOA.getFieldName(),
-                incomingCreq.getSdkCounterStoA(),
-                when(
-                        shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
-                        regexValidator(
-                                "^"
-                                        + Pattern.quote(
-                                                transaction
-                                                        .getTransactionSdkDetail()
-                                                        .getAcsCounterAtoS())
-                                        + "$")));
+        if (shouldValidateThreeDSDataElement(ThreeDSDataElement.SDK_COUNTER_STOA, transaction)) {
+            Validation.validate(
+                    ThreeDSDataElement.SDK_COUNTER_STOA.getFieldName(),
+                    incomingCreq.getSdkCounterStoA(),
+                    regexValidator(
+                            "^"
+                                    + Pattern.quote(
+                                            transaction
+                                                    .getTransactionSdkDetail()
+                                                    .getAcsCounterAtoS())
+                                    + "$"));
+        }
 
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
@@ -149,20 +147,16 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 36),
                 isUUID());
-
-        Validation.validate(
-                ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
-                incomingCreq.getSdkTransID(),
-                when(
-                        shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.SDK_TRANS_ID, transaction),
-                        regexValidator(
-                                "^"
-                                        + Pattern.quote(
-                                                transaction
-                                                        .getTransactionSdkDetail()
-                                                        .getSdkTransId())
-                                        + "$")));
+        if (shouldValidateThreeDSDataElement(ThreeDSDataElement.SDK_TRANS_ID, transaction)) {
+            Validation.validate(
+                    ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
+                    incomingCreq.getSdkTransID(),
+                    regexValidator(
+                            "^"
+                                    + Pattern.quote(
+                                            transaction.getTransactionSdkDetail().getSdkTransId())
+                                    + "$"));
+        }
     }
 
     protected void validateOptionalFields(CREQ incomingCreq, Transaction transaction)
