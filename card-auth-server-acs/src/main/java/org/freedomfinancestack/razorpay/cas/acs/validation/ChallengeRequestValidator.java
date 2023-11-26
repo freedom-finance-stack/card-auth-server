@@ -27,6 +27,7 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.L
 import static org.freedomfinancestack.extensions.validation.validator.enriched.RegexValidator.regexValidator;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
+import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.NO;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
 
 /**
@@ -164,7 +165,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                     || !YES.equals(incomingCreq.getChallengeNoEntry()))
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                             && (incomingCreq.getResendChallenge() == null
-                                    || !YES.equals(incomingCreq.getResendChallenge()));
+                                    || NO.equals(incomingCreq.getResendChallenge()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeDataEntry(),
@@ -196,7 +197,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                             && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                             && (incomingCreq.getResendChallenge() == null
-                                    || !YES.equals(incomingCreq.getResendChallenge()));
+                                    || NO.equals(incomingCreq.getResendChallenge()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_NO_ENTRY.getFieldName(),
                     incomingCreq.getChallengeNoEntry(),
