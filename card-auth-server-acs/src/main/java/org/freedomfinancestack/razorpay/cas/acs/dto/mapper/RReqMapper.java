@@ -101,14 +101,14 @@ public interface RReqMapper {
     }
 
     default String getWhiteListStatus(Transaction transaction) {
-        if (Util.isNullorBlank(
+        if (!Util.isNullorBlank(
                         transaction.getTransactionReferenceDetail().getWhitelistingDataEntry())
                 && transaction
                         .getTransactionReferenceDetail()
                         .getWhitelistingDataEntry()
                         .equals("Y")) {
             return "Y";
-        } else if (Util.isNullorBlank(
+        } else if (!Util.isNullorBlank(
                         transaction.getTransactionReferenceDetail().getWhitelistingDataEntry())
                 && transaction
                         .getTransactionReferenceDetail()
