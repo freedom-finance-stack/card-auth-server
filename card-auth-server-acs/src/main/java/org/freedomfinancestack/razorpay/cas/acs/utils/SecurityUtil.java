@@ -161,7 +161,7 @@ public class SecurityUtil {
     }
 
     public static boolean validateBase64UrlEncodedString(String encodedString) {
-        String base64urlRegex = "^[A-Za-z0-9_-]*$";
+        String base64urlRegex = "^[A-Za-z0-9_.-]*$";
         Pattern base64urlPattern = Pattern.compile(base64urlRegex);
 
         Matcher base64urlMatcher = base64urlPattern.matcher(encodedString);
