@@ -253,7 +253,9 @@ public class SignerServiceImpl implements SignerService {
             String acsTransactionID = acsJweObject.getHeader().getKeyID();
             transaction = transactionService.findById(acsTransactionID);
             if (null == transaction || !transaction.isChallengeMandated()) {
-                throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
+                throw new TransactionDataNotValidException(
+                        ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
+                        InternalErrorCode.TRANSACTION_NOT_FOUND);
             }
             String strAcsSecretKey = transaction.getTransactionSdkDetail().getAcsSecretKey();
 
@@ -292,6 +294,7 @@ public class SignerServiceImpl implements SignerService {
                     e);
         } catch (ACSDataAccessException e) {
             throw new TransactionDataNotValidException(
+                    ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
                     InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         }
 

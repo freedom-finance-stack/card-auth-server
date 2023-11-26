@@ -15,4 +15,12 @@ public class TransactionDataNotValidException extends ThreeDSException {
                 internalErrorCode,
                 internalErrorCode.getCode() + " : " + internalErrorCode.getDefaultErrorMessage());
     }
+
+    public TransactionDataNotValidException(
+            ThreeDSecureErrorCode threeDSecureErrorCode, InternalErrorCode internalErrorCode) {
+        super(
+                threeDSecureErrorCode,
+                internalErrorCode,
+                internalErrorCode.getCode() + " : " + internalErrorCode.getDefaultErrorMessage());
+    }
 }

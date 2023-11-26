@@ -188,6 +188,11 @@ VALUES
         "acs_interface" : "01",
         "acs_ui_template": ["01"],
         "preference": 1
+        },
+{
+        "acs_interface" : "02",
+        "acs_ui_template": ["01","02"],
+        "preference": 2
         }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null

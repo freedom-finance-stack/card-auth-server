@@ -27,7 +27,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
-import org.freedomfinancestack.razorpay.cas.dao.model.TransactionReferenceDetail;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -158,7 +157,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         } catch (ParseException | TransactionDataNotValidException ex) {
             log.error("Exception occurred", ex);
             Transaction transactionErr = new Transaction();
-            generateDummyTransactionWithError(ex.getInternalErrorCode(), transactionErr, creq);
+            generateDummyTransactionWithError(ex.getInternalErrorCode(), transactionErr);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (ACSValidationException ex) {
@@ -410,20 +409,12 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private void generateDummyTransactionWithError(
-            InternalErrorCode internalErrorCode, Transaction transaction, CREQ creq) {
-        transaction.setMessageVersion(creq.getMessageVersion());
+            InternalErrorCode internalErrorCode, Transaction transaction) {
         transaction.setErrorCode(internalErrorCode.getCode());
         transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
         transaction.setTransactionStatusReason(
                 internalErrorCode.getTransactionStatusReason().getCode());
         transaction.setPhase(Phase.ERROR);
-        if (creq != null) {
-            TransactionReferenceDetail transactionReferenceDetail =
-                    new TransactionReferenceDetail();
-            transactionReferenceDetail.setThreedsServerTransactionId(
-                    creq.getThreeDSServerTransID());
-            transaction.setTransactionReferenceDetail(transactionReferenceDetail);
-        }
     }
 
     private void updateTransactionForACSException(
