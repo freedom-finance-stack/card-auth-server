@@ -95,10 +95,14 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             // Validating CREQ
             challengeRequestValidator.validateRequest(creq, transaction);
 
+            AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
+
             // Handling whitelisting data entry
-            transaction
-                    .getTransactionReferenceDetail()
-                    .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
+            if (authConfigDto.getChallengeAttemptConfig().isWhitelistingAllowed()) {
+                transaction
+                        .getTransactionReferenceDetail()
+                        .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
+            }
 
             // Checking Counter Mismatch
             if (!Util.isNullorBlank(creq.getSdkCounterStoA())
@@ -117,7 +121,8 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             transaction.getTransactionSdkDetail().setAcsCounterAtoS("00" + acsCounterAtoS);
 
             // Setting Institution Ui Config
-            institutionUiService.populateInstitutionUiConfig(challengeFlowDto, transaction);
+            institutionUiService.populateInstitutionUiConfig(
+                    challengeFlowDto, transaction, authConfigDto);
 
             // 4 flows
             // 1: if Challenge cancelled by user
@@ -142,7 +147,6 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             } else if (!Util.isNullorBlank(creq.getChallengeCancel())) {
                 handleCancelChallenge(transaction, challengeFlowDto, creq);
             } else {
-                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
                 if (creq.getResendChallenge() != null
                         && InternalConstants.YES.equals(creq.getResendChallenge())) {
                     handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);

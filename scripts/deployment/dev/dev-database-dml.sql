@@ -131,6 +131,7 @@ INSERT INTO `card_range` VALUES ('R15', 'I1', 8765451600000000, 8765451699999999
 INSERT INTO `card_range` VALUES ('R16', 'I1', 8765461700000000, 8765461799999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R17', 'I1', 8765471800000000, 8765471899999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R18', 'I1', 9876522800000000, 9876522899999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R19', 'I1', 9876563200000000, 9876563299999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing Whitelisting', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
@@ -322,6 +323,19 @@ VALUES
         "acs_ui_template": ["01", "02", "03", "04", "05"],
         "preference": 1
         }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '16', 'CARD_RANGE', 'R19', 1, 'CHALLENGE_ATTEMPT',
+        '{
+            "attempt_threshold": 3,
+            "resend_threshold": 3,
+            "block_on_exceed_attempt": true,
+            "whitelisting_allowed": false
+        }',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );

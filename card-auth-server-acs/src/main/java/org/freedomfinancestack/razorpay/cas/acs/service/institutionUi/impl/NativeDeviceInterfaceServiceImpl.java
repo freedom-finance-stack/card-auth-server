@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
@@ -37,7 +38,8 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
     public void populateInstitutionUiConfig(
             Transaction transaction,
             AppChallengeFlowDto challengeFlowDto,
-            InstitutionUiConfig institutionUiConfig)
+            InstitutionUiConfig institutionUiConfig,
+            AuthConfigDto authConfigDto)
             throws ACSDataAccessException {
 
         // TODO Need to update it according to the Message Category
@@ -112,9 +114,10 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
         validInstitutionUiConfig.setWhyInfoText(institutionUiConfig.getWhyInfoText());
 
         if (transaction
-                .getTransactionReferenceDetail()
-                .getThreeDSRequestorChallengeInd()
-                .equals("09")) {
+                        .getTransactionReferenceDetail()
+                        .getThreeDSRequestorChallengeInd()
+                        .equals("09")
+                && authConfigDto.getChallengeAttemptConfig().isWhitelistingAllowed()) {
             validInstitutionUiConfig.setWhitelistingInfoText(
                     institutionUiConfig.getWhitelistingInfoText());
         }

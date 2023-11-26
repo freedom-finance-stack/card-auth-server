@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.service.InstitutionUiService;
@@ -35,7 +36,9 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
 
     @Override
     public void populateInstitutionUiConfig(
-            AppChallengeFlowDto challengeFlowDto, Transaction transaction)
+            AppChallengeFlowDto challengeFlowDto,
+            Transaction transaction,
+            AuthConfigDto authConfigDto)
             throws ACSDataAccessException {
 
         DeviceInterface deviceInterface =
@@ -51,7 +54,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
             DeviceInterfaceService deviceInterfaceService =
                     getDeviceInterfaceService(Objects.requireNonNull(deviceInterface));
             deviceInterfaceService.populateInstitutionUiConfig(
-                    transaction, challengeFlowDto, institutionUiConfig.get());
+                    transaction, challengeFlowDto, institutionUiConfig.get(), authConfigDto);
             return;
         }
 

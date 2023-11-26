@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppOtpHtmlParams;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
@@ -22,8 +23,6 @@ import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -42,13 +41,12 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
 
     private final ThymeleafService thymeleafService;
 
-    private final ResourceLoader resourceLoader;
-
     @Override
     public void populateInstitutionUiConfig(
             Transaction transaction,
             AppChallengeFlowDto challengeFlowDto,
-            InstitutionUiConfig institutionUiConfig)
+            InstitutionUiConfig institutionUiConfig,
+            AuthConfigDto authConfigDto)
             throws ACSDataAccessException {
         InstitutionUiConfig validInstitutionUiConfig = new InstitutionUiConfig();
 
@@ -101,12 +99,6 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         appOtpHtmlParams.setMerchantName(transaction.getTransactionMerchant().getMerchantName());
 
         appOtpHtmlParams.setValidationUrl(institutionUiConfiguration.getInstitutionCssUrl());
-
-        Resource templateResource =
-                resourceLoader.getResource(
-                        "classpath:/templates/"
-                                + institutionUiConfiguration.getHtmlOtpTemplate()
-                                + ".html");
 
         String html;
         html =
