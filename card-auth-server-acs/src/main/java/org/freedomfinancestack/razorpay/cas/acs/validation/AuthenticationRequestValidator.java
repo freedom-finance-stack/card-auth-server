@@ -265,7 +265,9 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         shouldValidateThreeDSDataElement(ThreeDSDataElement.BROWSER_TZ, request),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 5),
-                regexValidator("[0-9-.+]{1,5}"));
+                when(
+                        shouldValidateThreeDSDataElement(ThreeDSDataElement.BROWSER_TZ, request),
+                        regexValidator("[0-9-.+]{1,5}")));
         Validation.validate(
                 ThreeDSDataElement.BROWSER_USER_AGENT.getFieldName(),
                 request.getBrowserUserAgent(),
@@ -353,7 +355,9 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         shouldValidateThreeDSDataElement(ThreeDSDataElement.DEVICE_INFO, request),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 64000),
-                regexValidator("^[A-Za-z0-9_-]*$"));
+                when(
+                        shouldValidateThreeDSDataElement(ThreeDSDataElement.DEVICE_INFO, request),
+                        regexValidator("^[A-Za-z0-9_-]*$")));
 
         Validation.validate(
                 ThreeDSDataElement.DS_REFERENCE_NUMBER.getFieldName(),
