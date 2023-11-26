@@ -199,14 +199,7 @@ public class SecurityUtil {
         try {
             objErr = gson.fromJson(strReq, ThreeDSErrorResponse.class);
         } catch (Exception e) {
-            //            throw new ParseException(
-            //                    ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
-            //                    InternalErrorCode.CRES_ENCRYPTION_ERROR);
-        }
-
-        if (null == objErr.getErrorCode()) {
-            // TODO Log Null Obj
-            return null;
+            // Ignore
         }
         return objErr;
     }
