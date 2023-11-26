@@ -87,7 +87,14 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
                         notBlank()),
-                lengthValidator(DataLengthType.VARIABLE, 36));
+                lengthValidator(DataLengthType.VARIABLE, 36),
+                regexValidator(
+                        "^"
+                                + Pattern.quote(
+                                        transaction
+                                                .getTransactionReferenceDetail()
+                                                .getThreedsServerTransactionId())
+                                + "$"));
 
         Validation.validate(
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
@@ -120,7 +127,12 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                 ThreeDSDataElement.SDK_TRANS_ID, transaction),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 36),
-                isUUID());
+                isUUID(),
+                regexValidator(
+                        "^"
+                                + Pattern.quote(
+                                        transaction.getTransactionSdkDetail().getSdkTransId())
+                                + "$"));
     }
 
     protected void validateOptionalFields(CREQ incomingCreq, Transaction transaction)
