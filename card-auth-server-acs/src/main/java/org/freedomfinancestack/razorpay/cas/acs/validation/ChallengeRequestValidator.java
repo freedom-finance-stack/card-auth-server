@@ -118,7 +118,12 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
                         notBlank()),
-                lengthValidator(DataLengthType.FIXED, 3));
+                lengthValidator(DataLengthType.FIXED, 3),
+                regexValidator(
+                        "^"
+                                + Pattern.quote(
+                                        transaction.getTransactionSdkDetail().getAcsCounterAtoS())
+                                + "$"));
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 incomingCreq.getSdkTransID(),

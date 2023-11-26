@@ -104,15 +104,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             // Validating CREQ
             challengeRequestValidator.validateRequest(creq, transaction);
 
-            // Checking Counter Mismatch
-            if (!Util.isNullorBlank(creq.getSdkCounterStoA())
-                    && !creq.getSdkCounterStoA()
-                            .equals(transaction.getTransactionSdkDetail().getAcsCounterAtoS())) {
-                throw new ThreeDSException(
-                        ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                        InternalErrorCode.INVALID_REQUEST,
-                        "Acs Counter Mismatch");
-            }
+            // Handling ACS Counter
             challengeFlowDto.setAcsCounterAtoS(
                     transaction.getTransactionSdkDetail().getAcsCounterAtoS());
             int acsCounterAtoS =
