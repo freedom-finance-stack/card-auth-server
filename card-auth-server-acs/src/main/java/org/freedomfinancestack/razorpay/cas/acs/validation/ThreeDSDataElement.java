@@ -353,6 +353,18 @@ public enum ThreeDSDataElement {
             new DeviceChannel[] {DeviceChannel.APP},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
+    DEVICE_RENDER_OPTIONS_SDK_INTERFACE(
+            ThreeDSConstant.ELEMENT_DEVICE_RENDER_OPTIONS,
+            new String[] {"01", "02", "03"},
+            new DeviceChannel[] {DeviceChannel.APP},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
+    DEVICE_RENDER_OPTIONS_SDK_UI_TYPE(
+            ThreeDSConstant.ELEMENT_DEVICE_RENDER_OPTIONS,
+            new String[] {"01", "02", "03", "04", "05"},
+            new DeviceChannel[] {DeviceChannel.APP},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
 
     DS_REFERENCE_NUMBER(
             ThreeDSConstant.ELEMENT_DS_REF_NUMBER,

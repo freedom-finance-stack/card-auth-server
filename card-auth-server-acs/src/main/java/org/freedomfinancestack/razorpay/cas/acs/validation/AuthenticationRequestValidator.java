@@ -288,20 +288,32 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
                         notBlank()));
-        Validation.validate(
-                ThreeDSDataElement.DEVICE_RENDER_OPTIONS.getFieldName(),
-                request.getDeviceRenderOptions().getSdkInterface(),
-                when(
-                        shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
-                        notBlank()));
-        Validation.validate(
-                ThreeDSDataElement.DEVICE_RENDER_OPTIONS.getFieldName(),
-                request.getDeviceRenderOptions().getSdkUiType(),
-                when(
-                        shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
-                        notBlank()));
+        if (request.getDeviceRenderOptions() != null) {
+            Validation.validate(
+                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS_SDK_INTERFACE.getFieldName(),
+                    request.getDeviceRenderOptions().getSdkInterface(),
+                    when(
+                            shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
+                            notBlank()),
+                    lengthValidator(DataLengthType.FIXED, 2),
+                    isIn(
+                            ThreeDSDataElement.DEVICE_RENDER_OPTIONS_SDK_INTERFACE
+                                    .getAcceptedValues()));
+            Validation.validate(
+                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS.getFieldName(),
+                    Arrays.stream(request.getDeviceRenderOptions().getSdkUiType()).toList(),
+                    when(
+                            shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
+                            notBlank()),
+                    isListLengthValid(DataLengthType.VARIABLE, 5),
+                    isListValid(lengthValidator(DataLengthType.FIXED, 2)),
+                    isListValid(
+                            isIn(
+                                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS_SDK_UI_TYPE
+                                            .getAcceptedValues())));
+        }
         Validation.validate(
                 ThreeDSDataElement.NOTIFICATION_URL.getFieldName(),
                 request.getNotificationURL(),
