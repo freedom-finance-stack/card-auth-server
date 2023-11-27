@@ -96,12 +96,6 @@ public enum
             "SIGNER DETAIL NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
-    //    SIGNER_DETAIL_NOT_FOUND(
-    //            "3017",
-    //            "SIGNER DETAIL NOT FOUND",
-    //            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-    //            TransactionStatusReason.ACS_TECHNICAL_ISSUE
-    //    ),
 
     // Error code for save Transaction
     TRANSACTION_SAVE_EXCEPTION(
