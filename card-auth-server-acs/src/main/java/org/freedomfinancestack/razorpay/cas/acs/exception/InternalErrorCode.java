@@ -118,7 +118,6 @@ public enum
             "DISPLAY PAGE NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
-
     // Error code for save Transaction
     TRANSACTION_SAVE_EXCEPTION(
             "2001",
