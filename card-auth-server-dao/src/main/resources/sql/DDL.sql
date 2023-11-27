@@ -360,21 +360,6 @@ DROP TABLE IF EXISTS `signer_detail`;
 CREATE TABLE `signer_detail`
 (
     `institution_id`      varchar(36) NOT NULL,
-<<<<<<< HEAD
-    `network_code` varchar(2) NOT NULL,
-    `keystore`               VARCHAR(150),
-    `keypass`                VARCHAR(100),
-    `signer_cert_key`     varchar(30),
-    `signer_key_pair`     varchar(30),
-    `root_cert_key`      varchar(30),
-    `inter_cert_key`     varchar(30),
-    `created_at`     timestamp   NOT NULL,
-    `created_by`     varchar(40) NOT NULL,
-    `modified_at`    timestamp   NOT NULL,
-    `modified_by`    varchar(40) NOT NULL,
-    `deleted_at`     timestamp   DEFAULT NULL,
-    `deleted_by`     varchar(40) DEFAULT NULL
-=======
     `network_code`        varchar(2) NOT NULL,
     `keystore`            varchar(150),
     `keypass`             varchar(100),
@@ -388,7 +373,6 @@ CREATE TABLE `signer_detail`
     `modified_by`         varchar(40) NOT NULL,
     `deleted_at`          timestamp   DEFAULT NULL,
     `deleted_by`          varchar(40) DEFAULT NULL
->>>>>>> master
 );
 
 DROP TABLE IF EXISTS `otp_transaction_detail`;
