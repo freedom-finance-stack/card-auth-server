@@ -39,8 +39,6 @@ public class InternalConstants {
     public static final String CHALLENGE_INFORMATION_EMAIL_TEXT =
             "to your registered email address %s";
 
-    public static final String ACS_KEYSTORE = "acs_keystore";
-
     public static final String CHALLENGE_INCORRECT_OTP_TEXT = "You have entered incorrect OTP";
     public static final String CHALLENGE_CORRECT_OTP_TEXT = "OTP Authentication Successful";
     public static final String MODEL_ATTRIBUTE_CRES = "cRes";

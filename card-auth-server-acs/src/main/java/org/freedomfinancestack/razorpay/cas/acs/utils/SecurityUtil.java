@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.utils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.*;
 import java.security.Security;
 import java.security.cert.Certificate;
@@ -16,7 +16,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
@@ -81,18 +80,13 @@ public class SecurityUtil {
         Certificate interCert = null;
 
         String keyPassword = null;
+        String keystore = null;
 
         ks = KeyStore.getInstance(KeyStore.getDefaultType());
         // TODO: Assuming Keypass as decrypted for not, need to store the encrypted one here
         keyPassword = signerDetail.getKeypass();
-        InputStream keystoreStream =
-                SecurityUtil.class
-                        .getClassLoader()
-                        .getResourceAsStream(InternalConstants.ACS_KEYSTORE);
-        if (keystoreStream == null) {
-            throw new IOException("Unable To Read/Find Keystore Resources");
-        }
-        ks.load(keystoreStream, keyPassword.toCharArray());
+        keystore = signerDetail.getKeystore();
+        ks.load(new FileInputStream(keystore), keyPassword.toCharArray());
 
         // Get Signing, Root and Inter Certificate from KeyStore
         String signerCertKey = signerDetail.getSignerCertKey();
@@ -141,16 +135,9 @@ public class SecurityUtil {
                     IOException {
 
         String keyPass = signerDetail.getKeypass();
-
+        String keyStore = signerDetail.getKeystore();
         KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        InputStream keystoreStream =
-                SecurityUtil.class
-                        .getClassLoader()
-                        .getResourceAsStream(InternalConstants.ACS_KEYSTORE);
-        if (keystoreStream == null) {
-            throw new IOException("Unable To Read/Find Keystore Resources");
-        }
-        ks.load(keystoreStream, keyPass.toCharArray());
+        ks.load(new FileInputStream(keyStore), keyPass.toCharArray());
 
         RSAPublicKey publicKey =
                 (RSAPublicKey) X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
