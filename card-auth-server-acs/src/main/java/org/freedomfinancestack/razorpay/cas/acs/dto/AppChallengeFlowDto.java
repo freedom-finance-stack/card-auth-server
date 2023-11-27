@@ -8,6 +8,7 @@ import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import lombok.Data;
 
 @Data
+// TODO create a new InstitutionUIConfig dto
 public class AppChallengeFlowDto {
     private boolean sendRreq;
     private String authValue;

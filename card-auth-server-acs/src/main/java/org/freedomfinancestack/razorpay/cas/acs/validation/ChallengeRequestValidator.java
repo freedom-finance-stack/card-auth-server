@@ -88,6 +88,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 36));
+        // TODO add a method to validate Pattern.quote()
         if (shouldValidateThreeDSDataElement(
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction)) {
             Validation.validate(
@@ -122,7 +123,9 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 incomingCreq.getSdkCounterStoA(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.SDK_COUNTER_STOA, transaction),
+                                        ThreeDSDataElement.SDK_COUNTER_STOA, transaction)
+                                & !Util.isNullorBlank(
+                                        transaction.getTransactionSdkDetail().getAcsCounterAtoS()),
                         notBlank()),
                 lengthValidator(DataLengthType.FIXED, 3));
         if (shouldValidateThreeDSDataElement(ThreeDSDataElement.SDK_COUNTER_STOA, transaction)) {

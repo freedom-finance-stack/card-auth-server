@@ -105,6 +105,7 @@ public class ChallengeRequestController {
             produces = {"application/jose;charset=UTF-8"},
             consumes = {
                 "application/jose; charset=utf-8",
+                // TODO check this
                 "application/jose",
                 "application/json;charset=utf-8"
             })

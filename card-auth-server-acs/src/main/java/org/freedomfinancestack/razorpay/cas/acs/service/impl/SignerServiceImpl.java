@@ -183,6 +183,7 @@ public class SignerServiceImpl implements SignerService {
             } else {
                 decryptedCReq = strCReq;
             }
+            //  TODO use utils from json
             return SecurityUtil.parseCREQ(decryptedCReq);
         } else {
             CREQ objCReq = new CREQ();
@@ -257,6 +258,7 @@ public class SignerServiceImpl implements SignerService {
 
             String acsTransactionID = acsJweObject.getHeader().getKeyID();
             transaction = transactionService.findById(acsTransactionID);
+            // TODO fetch Only Transaction sdk detail
             if (null == transaction || !transaction.isChallengeMandated()) {
                 throw new TransactionDataNotValidException(
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID,
@@ -272,6 +274,7 @@ public class SignerServiceImpl implements SignerService {
 
             transactionService.saveOrUpdate(transaction);
 
+            // TODO check this
             if (acsJweObject.getHeader().getEncryptionMethod().getName().equals("A128GCM")) {
                 // After you already have generated the digest
                 byte[] mdbytes = acsKDFSecretKey;
@@ -280,9 +283,6 @@ public class SignerServiceImpl implements SignerService {
                 for (int I = 0; I < key.length; I++) {
                     // Choice 1 for using only 128 bits of the 256 generated
                     key[I] = mdbytes[I];
-
-                    // Choice 2 for using ALL of the 256 bits generated
-                    // key[I] = mdbytes[I] ^ mdbytes[I + key.length];
                 }
                 acsKDFSecretKey = key;
             }

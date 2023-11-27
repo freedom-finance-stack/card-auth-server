@@ -94,6 +94,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
             // Handling whitelisting data entry setting it before validation, as needed for the same
+            // TODO remove this from here and move to validationrequest
             if (Util.isWhitelistingDataValid(transaction, creq, authConfigDto)) {
                 transaction
                         .getTransactionReferenceDetail()
@@ -109,6 +110,8 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             int acsCounterAtoS =
                     Integer.parseInt(transaction.getTransactionSdkDetail().getAcsCounterAtoS());
             acsCounterAtoS += 1;
+            // TODO create a setter method as integer as a parameter and create a generic util
+            // method to increase a string counter
             transaction.getTransactionSdkDetail().setAcsCounterAtoS("00" + acsCounterAtoS);
 
             // Setting Institution Ui Config

@@ -64,6 +64,7 @@ public interface CResMapper {
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
     @Mapping(target = "acsCounterAtoS", source = "challengeFlowDto.acsCounterAtoS")
+    // TODO ACS UI TYPE/TEMPLATE
     @Mapping(
             target = "acsUiType",
             expression =
