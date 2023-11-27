@@ -25,7 +25,7 @@ CREATE TABLE `transaction`
     `challenge_cancel_ind`      varchar(2),
     `error_code`                varchar(20),
     `created_at`                timestamp NOT NULL,
-    `modified_at`               timestamp,
+    `modified_at`                timestamp,
     `deleted_at`                timestamp
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE `transaction_browser_detail`
     `ip`                 varchar(60),
     `accept_header`      varchar(200),
     `created_at`         timestamp NOT NULL,
-    `modified_at`        timestamp,
+    `modified_at`         timestamp,
     `deleted_at`         timestamp
 );
 
@@ -48,12 +48,12 @@ CREATE TABLE `transaction_sdk_detail`
     `sdk_trans_id`         varchar(36) DEFAULT NULL,
     `sdk_app_id`           varchar(36) DEFAULT NULL,
     `sdk_reference_number` varchar(32) DEFAULT NULL,
-    `acs_interface` char(2) DEFAULT NULL,
+    `acs_interface`        char(2) DEFAULT NULL,
     `acs_ui_type`          char(2) DEFAULT NULL,
-    `acs_secret_key` LONGTEXT NULL,
+    `acs_secret_key`       LONGTEXT NULL,
     `device_info`          text,
     `created_at`           timestamp NOT NULL,
-    `modified_at`          timestamp,
+    `modified_at`           timestamp,
     `deleted_at`           timestamp
 );
 
@@ -65,7 +65,7 @@ CREATE TABLE `transaction_merchant`
     `merchant_name`         varchar(200) NOT NULL,
     `merchant_country_code` smallint,
     `created_at`            timestamp    NOT NULL,
-    `modified_at`           timestamp,
+    `modified_at`            timestamp,
     `deleted_at`            timestamp
 );
 
@@ -77,7 +77,7 @@ CREATE TABLE `transaction_message_log`
     `message`        json,
     `message_type`   ENUM ('AReq', 'ARes', 'CReq', 'CRes', 'RReq', 'RRes', 'CDRes', 'CVReq'),
     `created_at`     timestamp   NOT NULL,
-    `modified_at`    timestamp,
+    `modified_at`     timestamp,
     `deleted_at`     timestamp
 );
 
@@ -92,9 +92,9 @@ CREATE TABLE `transaction_reference_detail`
     `threeds_server_reference_number` varchar(36),
     `ds_transaction_id`               varchar(36),
     `ds_url`                          varchar(2048),
-    `notification_url`                varchar(256),
+    `notification_url`                 varchar(256),
     `created_at`                      timestamp NOT NULL,
-    `modified_at`                     timestamp NOT NULL,
+    `modified_at`                      timestamp NOT NULL,
     `deleted_at`                      timestamp default NULL
 );
 
@@ -106,7 +106,7 @@ CREATE TABLE `transaction_cardholder_detail`
     `email_id`       varchar(100),
     `name`           varchar(50),
     `created_at`     timestamp NOT NULL,
-    `modified_at`    timestamp NOT NULL,
+    `modified_at`     timestamp NOT NULL,
     `deleted_at`     timestamp default NULL
 );
 
@@ -120,7 +120,7 @@ CREATE TABLE `transaction_purchase_detail`
     `purchase_timestamp` timestamp,
     `pay_token_ind`      boolean,
     `created_at`         timestamp NOT NULL,
-    `modified_at`        timestamp NOT NULL,
+    `modified_at`         timestamp NOT NULL,
     `deleted_at`         timestamp default NULL
 );
 
@@ -133,7 +133,7 @@ CREATE TABLE `transaction_card_detail`
     `card_expiry`     varchar(10),
     `network_code`    tinyint,
     `created_at`      timestamp   NOT NULL,
-    `modified_at`     timestamp   NOT NULL,
+    `modified_at`      timestamp   NOT NULL,
     `deleted_at`      timestamp default NULL
 );
 
@@ -148,8 +148,8 @@ CREATE TABLE `institution`
     `status`           ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
     `created_at`       timestamp   NOT NULL,
     `created_by`       varchar(40) NOT NULL,
-    `modified_at`      timestamp,
-    `modified_by`      varchar(40),
+    `modified_at`       timestamp,
+    `modified_by`       varchar(40),
     `deleted_at`       timestamp   default NULL,
     `deleted_by`       varchar(40),
     `message_version`  varchar(10) default NULL
@@ -175,10 +175,10 @@ CREATE TABLE `hsm_config`
     `keypass`                VARCHAR(100),
     `usr_terminal`           varchar(30),
     `created_at`             timestamp   NOT NULL,
-    `modified_at`            timestamp   NOT NULL,
+    `modified_at`             timestamp   NOT NULL,
     `deleted_at`             timestamp default NULL,
     `created_by`             varchar(40) NOT NULL,
-    `modified_by`            varchar(40),
+    `modified_by`             varchar(40),
     `deleted_by`             varchar(40)
 );
 
@@ -191,15 +191,15 @@ CREATE TABLE `card_range`
     `end_range`          decimal(25),
     `status`             ENUM ('ACTIVE', 'INACTIVE')               NOT NULL,
     `card_type`          ENUM ('PREPAID', 'CREDIT', 'DEBIT')       NOT NULL,
-    `risk_flag`          ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA') NOT NULL,
+    `risk_flag`           ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA') NOT NULL,
     `description`        varchar(255),
     `card_details_store` enum ('ACS', 'API_1', 'MOCK'),
     `network_code`       tinyint,
     `created_at`         timestamp   NOT NULL,
-    `modified_at`        timestamp   NOT NULL,
+    `modified_at`         timestamp   NOT NULL,
     `deleted_at`         timestamp default NULL,
     `created_by`         varchar(40) NOT NULL,
-    `modified_by`        varchar(40),
+    `modified_by`         varchar(40),
     `deleted_by`         varchar(40)
 );
 
@@ -210,10 +210,10 @@ CREATE TABLE `card_range_group`
     `name`        varchar(50),
     `description` varchar(150),
     `created_at`  timestamp   NOT NULL,
-    `modified_at` timestamp   NOT NULL,
+    `modified_at`  timestamp   NOT NULL,
     `deleted_at`  timestamp default NULL,
     `created_by`  varchar(40) NOT NULL,
-    `modified_by` varchar(40),
+    `modified_by`  varchar(40),
     `deleted_by`  varchar(40)
 );
 
@@ -228,8 +228,8 @@ CREATE TABLE `feature`
     `properties`  varchar(500)                                                                NOT NULL,
     `created_at`  timestamp                                                                   NOT NULL,
     `created_by`  varchar(40)                                                                 NOT NULL,
-    `modified_at` timestamp,
-    `modified_by` varchar(40),
+    `modified_at`  timestamp,
+    `modified_by`  varchar(40),
     `deleted_at`  timestamp,
     `deleted_by`  varchar(40)
 );
@@ -244,10 +244,10 @@ CREATE TABLE `cardholder`
     `dob`           varchar(10),
     `name`          varchar(50),
     `created_at`    timestamp   NOT NULL,
-    `modified_at`   timestamp   NOT NULL,
+    `modified_at`    timestamp   NOT NULL,
     `deleted_at`    timestamp default NULL,
     `created_by`    varchar(40) NOT NULL,
-    `modified_by`   varchar(40),
+    `modified_by`    varchar(40),
     `deleted_by`    varchar(40)
 );
 
@@ -261,10 +261,10 @@ CREATE TABLE `card_detail`
     `card_expiry`    varchar(4),
     `blocked`        bool,
     `created_at`     timestamp   NOT NULL,
-    `modified_at`    timestamp   NOT NULL,
+    `modified_at`     timestamp   NOT NULL,
     `deleted_at`     timestamp default NULL,
     `created_by`     varchar(40) NOT NULL,
-    `modified_by`    varchar(40),
+    `modified_by`     varchar(40),
     `deleted_by`     varchar(40)
 );
 
@@ -279,10 +279,10 @@ CREATE TABLE `admin_user`
     `status`          ENUM ('ACTIVE', 'INACTIVE') NOT NULL,
     `last_login_dttm` timestamp   DEFAULT NULL,
     `created_at`      timestamp    NOT NULL,
-    `modified_at`     timestamp    NOT NULL,
+    `modified_at`      timestamp    NOT NULL,
     `deleted_at`      timestamp   DEFAULT NULL,
     `created_by`      varchar(40)  NOT NULL,
-    `modified_by`     varchar(40)  NOT NULL,
+    `modified_by`      varchar(40)  NOT NULL,
     `deleted_by`      varchar(40) DEFAULT NULL
 );
 
@@ -293,7 +293,7 @@ CREATE TABLE `admin_user_institution`
     `user_id`        varchar(36) NOT NULL,
     `institution_id` varchar(36) DEFAULT NULL,
     `created_at`     timestamp   NOT NULL,
-    `modified_at`    timestamp   NOT NULL,
+    `modified_at`     timestamp   NOT NULL,
     `deleted_at`     timestamp   DEFAULT NULL
 );
 
@@ -302,12 +302,12 @@ CREATE TABLE `institution_meta`
 (
     `institution_id` varchar(36) PRIMARY KEY,
     `logo_data`      blob        NOT NULL,
-    `logo_filename`  varchar(50) NOT NULL,
+    `logo_filename`   varchar(50) NOT NULL,
     `created_at`     timestamp   NOT NULL,
-    `modified_at`    timestamp   NOT NULL,
+    `modified_at`     timestamp   NOT NULL,
     `deleted_at`     timestamp   DEFAULT NULL,
     `created_by`     varchar(40) NOT NULL,
-    `modified_by`    varchar(40) NOT NULL,
+    `modified_by`     varchar(40) NOT NULL,
     `deleted_by`     varchar(40) DEFAULT NULL
 );
 
@@ -323,7 +323,7 @@ CREATE TABLE `notification_detail`
     `provider`    varchar(36),
     `status`      ENUM ('PENDING', 'SENT', 'FAILED'),
     `created_at`  timestamp NOT NULL,
-    `modified_at` timestamp NOT NULL,
+    `modified_at`  timestamp NOT NULL,
     `deleted_at`  timestamp default NULL
 );
 
@@ -333,9 +333,9 @@ CREATE TABLE `otp_transaction_detail`
     `id`                  varchar(36),
     `transaction_id`      varchar(36) NOT NULL,
     `value`               varchar(10) NOT NULL,
-    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
+    `verification_status`  ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
     `created_at`          timestamp   NOT NULL,
-    `modified_at`         timestamp   NOT NULL,
+    `modified_at`          timestamp   NOT NULL,
     `deleted_at`          timestamp default NULL
 );
 CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
@@ -352,7 +352,7 @@ CREATE TABLE `notification_detail`
     `provider`    varchar(36),
     `status`      ENUM ('PENDING', 'SENT', 'FAILED'),
     `created_at`  timestamp NOT NULL,
-    `modified_at` timestamp NOT NULL,
+    `modified_at`  timestamp NOT NULL,
     `deleted_at`  timestamp default NULL
 );
 
@@ -360,19 +360,19 @@ DROP TABLE IF EXISTS `signer_detail`;
 CREATE TABLE `signer_detail`
 (
     `institution_id`      varchar(36) NOT NULL,
-    `network_code` varchar(2) NOT NULL,
-    `keystore`               VARCHAR(150),
-    `keypass`                VARCHAR(100),
+    `network_code`        varchar(2) NOT NULL,
+    `keystore`            varchar(150),
+    `keypass`             varchar(100),
     `signer_cert_key`     varchar(30),
     `signer_key_pair`     varchar(30),
-    `root_cert_key`      varchar(30),
-    `inter_cert_key`     varchar(30),
-    `created_at`     timestamp   NOT NULL,
-    `created_by`     varchar(40) NOT NULL,
-    `modified_at`    timestamp   NOT NULL,
-    `modified_by`    varchar(40) NOT NULL,
-    `deleted_at`     timestamp   DEFAULT NULL,
-    `deleted_by`     varchar(40) DEFAULT NULL
+    `root_cert_key`       varchar(30),
+    `inter_cert_key`      varchar(30),
+    `created_at`          timestamp   NOT NULL,
+    `created_by`          varchar(40) NOT NULL,
+    `modified_at`          timestamp   NOT NULL,
+    `modified_by`          varchar(40) NOT NULL,
+    `deleted_at`          timestamp   DEFAULT NULL,
+    `deleted_by`          varchar(40) DEFAULT NULL
 );
 
 DROP TABLE IF EXISTS `otp_transaction_detail`;
@@ -381,9 +381,9 @@ CREATE TABLE `otp_transaction_detail`
     `id`                  varchar(36),
     `transaction_id`      varchar(36) NOT NULL,
     `value`               varchar(10) NOT NULL,
-    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
+    `verification_status`  ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
     `created_at`          timestamp   NOT NULL,
-    `modified_at`         timestamp   NOT NULL,
+    `modified_at`          timestamp   NOT NULL,
     `deleted_at`          timestamp default NULL
 );
 CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
