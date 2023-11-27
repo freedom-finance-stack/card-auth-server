@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -12,6 +14,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
@@ -64,9 +67,11 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
+    private final SignerService signerService;
     private final ChallengeDetermineService challengeDetermineService;
     private final Environment environment;
     private final TestConfigProperties testConfigProperties;
+    private final AppConfiguration appConfiguration;
 
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
@@ -88,6 +93,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
         Transaction transaction = new Transaction();
         ARES ares;
         CardRange cardRange = null;
+        AResMapperParams aResMapperParams = new AResMapperParams();
         try {
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
@@ -124,9 +130,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     cardRange.getCardDetailsStore());
 
             if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
-                if (areq.getDeviceRenderOptions() == null) {
-                    throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
-                }
                 featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
             }
 
@@ -139,6 +142,18 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                             transaction, authConfigDto.getChallengeAuthTypeConfig());
             transaction.setAuthenticationType(authType.getValue());
 
+            if (transaction.isChallengeMandated()
+                    && DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
+                log.info("Generating ACSSignedContent");
+                String signedData =
+                        signerService.getAcsSignedContent(
+                                areq,
+                                transaction,
+                                RouteConstants.getAcsChallengeUrl(
+                                        appConfiguration.getHostname(),
+                                        transaction.getDeviceChannel()));
+                aResMapperParams.setAcsSignedContent(signedData);
+            }
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                 String eci =
                         eCommIndicatorService.generateECI(
@@ -213,7 +228,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                         .setThreeRIInd(areq.getThreeRIInd()));
                 transaction.setEci(eci);
             }
-            ares = aResMapper.toAres(areq, transaction);
+            ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTHORIZATION_PROCESSED);
             if (transaction.isChallengeMandated()) {

@@ -195,6 +195,18 @@
             <version>1.16.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>9.29</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.76</version>
+        </dependency>
+
     </dependencies>
 
     <build>
