@@ -131,9 +131,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     cardRange.getCardDetailsStore());
 
             if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
-                if (areq.getDeviceRenderOptions() == null) {
-                    throw new ACSException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
-                }
                 featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
             }
 
@@ -159,6 +156,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     aResMapperParams.setAcsSignedContent(signedData);
                 }
             }
+
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                 String eci =
                         eCommIndicatorService.generateECI(
