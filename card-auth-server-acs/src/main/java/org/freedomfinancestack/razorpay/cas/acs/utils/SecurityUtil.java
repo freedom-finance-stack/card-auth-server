@@ -138,7 +138,6 @@ public class SecurityUtil {
     public static String generateDigitalSignatureWithPS256(
             KeyPair keyPair, List<Base64> x5c, String jwsPayload) throws JOSEException {
 
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
         // Need BouncyCastle for PSS
