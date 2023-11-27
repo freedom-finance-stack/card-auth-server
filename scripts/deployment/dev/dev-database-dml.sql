@@ -313,6 +313,6 @@ VALUES
 UNLOCK TABLES;
 
 LOCK TABLES `signer_detail` WRITE;
-INSERT INTO `signer_detail` VALUES ('I1', '1', 'docs/certs/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `signer_detail` VALUES ('I1', '2', 'docs/certs/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `signer_detail` VALUES ('I1', '1', '/home/ec2-user/Downloads/code-setup', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `signer_detail` VALUES ('I1', '2', '/home/ec2-user/Downloads/code-setup', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;
