@@ -98,9 +98,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             areq.setTransactionId(Util.generateUUID());
             transaction.setId(areq.getTransactionId());
 
-            // Set messageversion before validation as it is required in Erro
-            transaction.setMessageVersion(areq.getMessageVersion());
-
+            // Set message version before validation as it is required in Erro
+            if (Util.isMessageVersionValid(areq.getMessageVersion())) {
+                transaction.setMessageVersion(areq.getMessageVersion());
+            }
             // log incoming request in DB
             transactionMessageLogService.createAndSave(areq, areq.getTransactionId());
 
@@ -136,24 +137,26 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             // Determine if challenge is required and update transaction accordingly
             challengeDetermineService.determineChallenge(
                     areq, transaction, cardRange.getRiskFlag());
-            AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
-            AuthType authType =
-                    AuthenticationServiceLocator.selectAuthType(
-                            transaction, authConfigDto.getChallengeAuthTypeConfig());
-            transaction.setAuthenticationType(authType.getValue());
 
-            if (transaction.isChallengeMandated()
-                    && DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
-                log.info("Generating ACSSignedContent");
-                String signedData =
-                        signerService.getAcsSignedContent(
-                                areq,
-                                transaction,
-                                RouteConstants.getAcsChallengeUrl(
-                                        appConfiguration.getHostname(),
-                                        transaction.getDeviceChannel()));
-                aResMapperParams.setAcsSignedContent(signedData);
+            if (transaction.isChallengeMandated()) {
+                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
+                AuthType authType =
+                        AuthenticationServiceLocator.selectAuthType(
+                                transaction, authConfigDto.getChallengeAuthTypeConfig());
+                transaction.setAuthenticationType(authType.getValue());
+                if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
+                    log.info("Generating ACSSignedContent");
+                    String signedData =
+                            signerService.getAcsSignedContent(
+                                    areq,
+                                    transaction,
+                                    RouteConstants.getAcsChallengeUrl(
+                                            appConfiguration.getHostname(),
+                                            transaction.getDeviceChannel()));
+                    aResMapperParams.setAcsSignedContent(signedData);
+                }
             }
+
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                 String eci =
                         eCommIndicatorService.generateECI(

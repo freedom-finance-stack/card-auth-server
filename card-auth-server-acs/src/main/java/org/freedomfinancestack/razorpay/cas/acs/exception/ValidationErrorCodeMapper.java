@@ -36,9 +36,6 @@ public class ValidationErrorCodeMapper {
         FIELD_TO_THREEDSECURE_ERROR_MAP.put(
                 ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR.getFieldName(),
                 ThreeDSecureErrorCode.CRITICAL_MESSAGE_EXTENSION_NOT_RECOGNISED);
-        FIELD_TO_THREEDSECURE_ERROR_MAP.put(
-                ThreeDSDataElement.ACCT_ID.getFieldName(),
-                ThreeDSecureErrorCode.INVALID_FORMAT_VALUE);
     }
 
     public static ThreeDSecureErrorCode mapValidationToThreeDSecure(

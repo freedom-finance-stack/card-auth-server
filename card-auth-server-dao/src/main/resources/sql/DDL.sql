@@ -191,7 +191,7 @@ CREATE TABLE `card_range`
     `end_range`          decimal(25),
     `status`             ENUM ('ACTIVE', 'INACTIVE')               NOT NULL,
     `card_type`          ENUM ('PREPAID', 'CREDIT', 'DEBIT')       NOT NULL,
-    `risk_flag`          ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA') NOT NULL,
+    `risk_flag`          ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA', 'INFORMATIONAL', 'DECOUPLED_CHALLENGE') NOT NULL,
     `description`        varchar(255),
     `card_details_store` enum ('ACS', 'API_1', 'MOCK'),
     `network_code`       tinyint,

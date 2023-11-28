@@ -124,6 +124,11 @@ INSERT INTO `card_range` VALUES ('R15', 'I1', 8765451600000000, 8765451699999999
 INSERT INTO `card_range` VALUES ('R16', 'I1', 8765461700000000, 8765461799999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R17', 'I1', 8765471800000000, 8765471899999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R18', 'I1', 9876522800000000, 9876522899999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R19', 'I1', 1876542400000000000, 1876542499999999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R20', 'I1', 6543200100000, 6543200199999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R21', 'I1', 9876543000000000, 9876543099999999, 'ACTIVE', 'CREDIT', 'INFORMATIONAL', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+
+
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
@@ -152,6 +157,7 @@ VALUES
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
+
 INSERT INTO `feature`
 VALUES
     (
@@ -310,6 +316,36 @@ VALUES
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
+INSERT INTO `feature`
+VALUES
+    (
+        '15', 'CARD_RANGE', 'R19', 1, 'CHALLENGE_AUTH_TYPE',
+        '{
+            "purchase_amount_threshold" : 20000,
+            "above_threshold_auth_type" :  "UNKNOWN",
+            "default_auth_type" :  "OTP"
+        }',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+
+INSERT INTO `feature`
+VALUES
+    (
+        '16', 'CARD_RANGE', 'R20', 1, 'CHALLENGE_AUTH_TYPE',
+        '{
+            "purchase_amount_threshold" : 20000,
+            "above_threshold_auth_type" :  "UNKNOWN",
+            "default_auth_type" :  "OTP"
+        }',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+UNLOCK TABLES;
+
+LOCK TABLES `signer_detail` WRITE;
+INSERT INTO `signer_detail` VALUES ('I1', '1', 'docs/certs/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `signer_detail` VALUES ('I1', '2', 'docs/certs/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `signer_detail` WRITE;

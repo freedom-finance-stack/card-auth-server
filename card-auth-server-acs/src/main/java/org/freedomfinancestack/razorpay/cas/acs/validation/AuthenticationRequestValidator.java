@@ -25,6 +25,7 @@ import static org.freedomfinancestack.extensions.validation.validator.basic.IsNu
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsUUID.isUUID;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotEmpty.notEmpty;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsDate.isDate;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
@@ -189,15 +190,18 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getAcquirerBIN(),
                 when(
                         shouldValidateThreeDSDataElement(ThreeDSDataElement.ACQUIRER_BIN, request),
-                        notBlank()),
+                        notBlank(),
+                        notEmpty()),
                 lengthValidator(DataLengthType.VARIABLE, 11));
+
         Validation.validate(
                 ThreeDSDataElement.ACQUIRER_MERCHANT_ID.getFieldName(),
                 request.getAcquirerMerchantID(),
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.ACQUIRER_MERCHANT_ID, request),
-                        notBlank()),
+                        notBlank(),
+                        notEmpty()),
                 lengthValidator(DataLengthType.VARIABLE, 15));
 
         Validation.validate(
@@ -376,7 +380,10 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.MCC.getFieldName(),
                 request.getMcc(),
-                when(shouldValidateThreeDSDataElement(ThreeDSDataElement.MCC, request), notBlank()),
+                when(
+                        shouldValidateThreeDSDataElement(ThreeDSDataElement.MCC, request),
+                        notBlank(),
+                        notEmpty()),
                 lengthValidator(DataLengthType.FIXED, 4),
                 isNumeric());
         Validation.validate(
@@ -385,7 +392,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.MERCHANT_COUNTRY_CODE, request),
-                        notBlank()),
+                        notBlank(),
+                        notEmpty()),
                 lengthValidator(DataLengthType.FIXED, 3),
                 isNumeric(),
                 notIn(EMVCOConstant.excludedCountry));
@@ -394,7 +402,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getMerchantName(),
                 when(
                         shouldValidateThreeDSDataElement(ThreeDSDataElement.MERCHANT_NAME, request),
-                        notBlank()),
+                        notBlank(),
+                        notEmpty()),
                 lengthValidator(DataLengthType.VARIABLE, 40));
         Validation.validate(
                 ThreeDSDataElement.PAY_TOKEN_SOURCE.getFieldName(),
@@ -421,7 +430,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         shouldValidateThreeDSDataElement(
                                         ThreeDSDataElement.WHITE_LIST_STATUS_SOURCE, request)
                                 && !Util.isNullorBlank(request.getWhiteListStatus()),
-                        notBlank()),
+                        notBlank(),
+                        notEmpty()),
                 isIn(ThreeDSDataElement.WHITE_LIST_STATUS_SOURCE.getAcceptedValues()));
 
         Validation.validate(
@@ -595,26 +605,29 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_AUTHENTICATION_INFO.getFieldName(),
                 request.getThreeDSRequestorAuthenticationInfo(),
+                notEmpty(),
                 isValidObject());
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_CHALLENGE_IND.getFieldName(),
                 request.getThreeDSRequestorChallengeInd(),
+                notEmpty(),
                 isIn(ThreeDSDataElement.THREEDS_REQUESTOR_CHALLENGE_IND.getAcceptedValues()));
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_PRIOR_AUTHENTICATION_INFO.getFieldName(),
                 request.getThreeDSRequestorPriorAuthenticationInfo(),
+                notEmpty(),
                 isValidObject());
         Validation.validate(
                 ThreeDSDataElement.ADDRESS_MATCH.getFieldName(),
                 request.getAddrMatch(),
+                notEmpty(),
                 isIn(ThreeDSDataElement.ADDRESS_MATCH.getAcceptedValues()));
         Validation.validate(
                 ThreeDSDataElement.ACCT_ID.getFieldName(),
                 request.getAcctID(),
                 when(
-                        shouldValidateThreeDSDataElement(ThreeDSDataElement.ACCT_ID, request)
-                                && request.getAcctID() != null,
-                        notBlank()),
+                        shouldValidateThreeDSDataElement(ThreeDSDataElement.ACCT_ID, request),
+                        notEmpty()),
                 lengthValidator(DataLengthType.VARIABLE, 64));
         Validation.validate(
                 ThreeDSDataElement.ACCT_TYPE.getFieldName(),
@@ -623,6 +636,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.MERCHANT_RISK_INDICATOR.getFieldName(),
                 request.getMerchantRiskIndicator(),
+                notEmpty(),
                 isValidObject());
         Validation.validate(
                 ThreeDSDataElement.WHITE_LIST_STATUS.getFieldName(),
@@ -631,6 +645,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_DEC_REQ_IND.getFieldName(),
                 request.getThreeDSRequestorDecReqInd(),
+                notEmpty(),
                 isIn(ThreeDSDataElement.THREEDS_REQUESTOR_DEC_REQ_IND.getAcceptedValues()));
         Validation.validate(
                 ThreeDSDataElement.TRANS_TYPE.getFieldName(),
@@ -746,6 +761,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.ACCT_INFO.getFieldName(),
                 request.getAcctInfo(),
+                notEmpty(),
                 isValidObject());
     }
 

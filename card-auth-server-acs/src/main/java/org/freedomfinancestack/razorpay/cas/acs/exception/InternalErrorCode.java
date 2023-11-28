@@ -157,11 +157,11 @@ public enum
             "TRANSACTION ID NOT FOUND",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
-    INVALID_CONFIG(
+    AUTH_CONFIG_NOT_PRESENT(
             "8003",
-            "CONFIG ERROR IN ACS",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+            "AUTH CONFIG NOT PRESENT",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.NO_CARD_RECORD),
     CANCELLED_BY_CARDHOLDER(
             "8004",
             "CANCELED BY CARD HOLDER",
