@@ -31,8 +31,6 @@ public class ThreeDSException extends Exception {
             final InternalErrorCode internalErrorCode,
             final String message) {
         super(message);
-        // addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode,
-        // message);
         this.threeDSecureErrorCode = threeDSecureErrorCode;
         this.internalErrorCode = internalErrorCode;
     }
@@ -41,10 +39,6 @@ public class ThreeDSException extends Exception {
             final ThreeDSecureErrorCode threeDSecureErrorCode,
             final InternalErrorCode internalErrorCode) {
         super(internalErrorCode.getDefaultErrorMessage());
-        //        addMetaInThreeDSecureErrorCode(
-        //                this.threeDSErrorResponse,
-        //                threeDSecureErrorCode,
-        //                internalErrorCode.getDefaultErrorMessage());
         this.threeDSecureErrorCode = threeDSecureErrorCode;
         this.internalErrorCode = internalErrorCode;
     }
@@ -55,8 +49,6 @@ public class ThreeDSException extends Exception {
             final String message,
             final Throwable cause) {
         super(message, cause);
-        //   addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode,
-        // message);
         this.threeDSecureErrorCode = threeDSecureErrorCode;
         this.internalErrorCode = internalErrorCode;
     }
@@ -68,9 +60,6 @@ public class ThreeDSException extends Exception {
             final Transaction transaction,
             final Throwable cause) {
         super(message, cause);
-        //        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode,
-        // message);
-        //        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, transaction);
         this.threeDSecureErrorCode = threeDSecureErrorCode;
         this.transaction = transaction;
     }
@@ -80,9 +69,6 @@ public class ThreeDSException extends Exception {
             final String message,
             final Transaction transaction) {
         super(message);
-        //        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode,
-        // message);
-        //        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, transaction);
         this.threeDSecureErrorCode = threeDSecureErrorCode;
         this.transaction = transaction;
     }
