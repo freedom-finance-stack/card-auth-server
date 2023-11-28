@@ -78,12 +78,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         Transaction transaction = null;
         AppChallengeFlowDto challengeFlowDto = new AppChallengeFlowDto();
         String cres = null;
-        // decEncRequired = false for local testing;
-        boolean decEncRequired = true;
         try {
             // Decrypting CREQ
 
-            creq = signerService.parseEncryptedRequest(strCReq, decEncRequired);
+            creq = signerService.parseEncryptedRequest(strCReq);
 
             //  find Transaction and previous request, response
             transaction = fetchTransactionData(creq.getAcsTransID());
@@ -91,28 +89,27 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             //  log creq
             transactionMessageLogService.createAndSave(creq, creq.getAcsTransID());
 
+            // Validating CREQ
+            challengeRequestValidator.validateRequest(creq, transaction);
+
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
-            // Handling whitelisting data entry setting it before validation, as needed for the same
-            // TODO remove this from here and move to validationrequest
             if (Util.isWhitelistingDataValid(transaction, creq, authConfigDto)) {
                 transaction
                         .getTransactionReferenceDetail()
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
             }
 
-            // Validating CREQ
-            challengeRequestValidator.validateRequest(creq, transaction);
-
-            // Handling ACS Counter
+            // Handling ACS Counter for Final CRES
             challengeFlowDto.setAcsCounterAtoS(
                     transaction.getTransactionSdkDetail().getAcsCounterAtoS());
-            int acsCounterAtoS =
-                    Integer.parseInt(transaction.getTransactionSdkDetail().getAcsCounterAtoS());
-            acsCounterAtoS += 1;
-            // TODO create a setter method as integer as a parameter and create a generic util
+
             // method to increase a string counter
-            transaction.getTransactionSdkDetail().setAcsCounterAtoS("00" + acsCounterAtoS);
+            transaction
+                    .getTransactionSdkDetail()
+                    .setAcsCounterAtoS(
+                            Util.incrementString(
+                                    transaction.getTransactionSdkDetail().getAcsCounterAtoS(), 1));
 
             // Setting Institution Ui Config
             institutionUiService.populateInstitutionUiConfig(
@@ -230,9 +227,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
 
         try {
             // Encrypting CRES
-            cres =
-                    signerService.generateEncryptedResponse(
-                            transaction, challengeFlowDto.getCres(), decEncRequired);
+            cres = signerService.generateEncryptedResponse(transaction, challengeFlowDto.getCres());
         } catch (ACSException ex) {
             updateTransactionForACSException(ex.getErrorCode(), transaction);
             throw new ThreeDSException(

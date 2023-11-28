@@ -1,10 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.cert.CertificateException;
 import java.security.interfaces.ECPrivateKey;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,9 +13,10 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.SignedContent;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.EncryptionDecryptionException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
 import org.freedomfinancestack.razorpay.cas.acs.service.SignerService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.HexUtil;
@@ -57,124 +57,101 @@ public class SignerServiceImpl implements SignerService {
 
     private final TransactionService transactionService;
 
+    private final TestConfigProperties testConfigProperties;
+
     @Override
     public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl)
-            throws ThreeDSException {
+            throws EncryptionDecryptionException {
         SignerDetail signerDetail = null;
         String signedData = null;
 
-        try {
-            // 116
-            // step 1 : Generates a fresh ephemeral key pair (QT, dT) as described in Annex C and
-            // makes QT available for inclusion in the ARes message.
-            // Step 1 - Create Ephermal Keyair
-            KeyPair acsKeyPair = SecurityUtil.generateEphermalKeyPair();
+        // 116
+        // step 1 : Generates a fresh ephemeral key pair (QT, dT) as described in Annex C and
+        // makes QT available for inclusion in the ARes message.
+        // Step 1 - Create Ephermal Keyair
+        KeyPair acsKeyPair = SecurityUtil.generateEphermalKeyPair();
 
-            // step 2 : Checks that QC is a point on the curve P-256.
-            // Step 2 - Create JWK with Public key info (Nimbus Jose)
-            JWK acsPublicKeyJWK = SecurityUtil.getPublicKey(acsKeyPair);
+        // step 2 : Checks that QC is a point on the curve P-256.
+        // Step 2 - Create JWK with Public key info (Nimbus Jose)
+        JWK acsPublicKeyJWK = SecurityUtil.getPublicKey(acsKeyPair);
 
-            // step 3 : Completes the Diffie-Hellman key exchange process as a local mechanism
-            // according to JWA (RFC 7518) in Direct Key Agreement mode using curve P-256, dT and QC
-            // to produce a pair of CEKs (one for each direction) which are identified by the ACS
-            // Transaction ID.
-            // Step 3 -  Generate ECPublicKey from JWK (Nimbus Jose)
-            ECKey sdkPubKey = SecurityUtil.getECKey(areq.getSdkEphemPubKey());
+        // step 3 : Completes the Diffie-Hellman key exchange process as a local mechanism
+        // according to JWA (RFC 7518) in Direct Key Agreement mode using curve P-256, dT and QC
+        // to produce a pair of CEKs (one for each direction) which are identified by the ACS
+        // Transaction ID.
+        // Step 3 -  Generate ECPublicKey from JWK (Nimbus Jose)
+        ECKey sdkPubKey = SecurityUtil.getECKey(areq.getSdkEphemPubKey());
 
-            // Generate shared key
-            generateSHA256SecretKey(areq, transaction, sdkPubKey, acsKeyPair);
+        // Generate shared key
+        generateSHA256SecretKey(areq, transaction, sdkPubKey, acsKeyPair);
 
-            EphemPubKey acsPublicKey = new EphemPubKey();
+        EphemPubKey acsPublicKey = new EphemPubKey();
 
-            for (Map.Entry<String, ?> entry : acsPublicKeyJWK.getRequiredParams().entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue().toString();
+        for (Map.Entry<String, ?> entry : acsPublicKeyJWK.getRequiredParams().entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue().toString();
 
-                switch (key) {
-                    case "crv" -> acsPublicKey.setCrv(value);
-                    case "kty" -> acsPublicKey.setKty(value);
-                    case "x" -> acsPublicKey.setX(value);
-                    case "y" -> acsPublicKey.setY(value);
-                    default -> {}
-                }
+            switch (key) {
+                case "crv" -> acsPublicKey.setCrv(value);
+                case "kty" -> acsPublicKey.setKty(value);
+                case "x" -> acsPublicKey.setX(value);
+                case "y" -> acsPublicKey.setY(value);
+                default -> {}
             }
+        }
 
-            SignedContent signedContent = new SignedContent();
-            signedContent.setAcsEphemPubKey(acsPublicKey);
-            signedContent.setSdkEphemPubKey(areq.getSdkEphemPubKey());
-            signedContent.setAcsURL(acsUrl);
-            Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-            String signedJsonObject = gson.toJson(signedContent);
+        SignedContent signedContent = new SignedContent();
+        signedContent.setAcsEphemPubKey(acsPublicKey);
+        signedContent.setSdkEphemPubKey(areq.getSdkEphemPubKey());
+        signedContent.setAcsURL(acsUrl);
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+        String signedJsonObject = gson.toJson(signedContent);
 
-            Byte networkCode = transaction.getTransactionCardDetail().getNetworkCode();
-            Optional<SignerDetail> signerDetailOptional =
-                    signerDetailRepository.findById(
-                            new SignerDetailPK(transaction.getInstitutionId(), networkCode));
+        Byte networkCode = transaction.getTransactionCardDetail().getNetworkCode();
+        Optional<SignerDetail> signerDetailOptional =
+                signerDetailRepository.findById(
+                        new SignerDetailPK(transaction.getInstitutionId(), networkCode));
 
-            if (signerDetailOptional.isPresent()) signerDetail = signerDetailOptional.get();
-            else {
-                log.debug(
-                        "Can't find signerDetail for institution_id: "
-                                + transaction.getInstitutionId());
-                throw new ACSDataAccessException(
-                        InternalErrorCode.SIGNER_DETAIL_NOT_FOUND, "Signer Detail not found");
-            }
-
-            List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail);
-
-            KeyPair keyPair = SecurityUtil.getRSAKeyPairFromKeystore(signerDetail, x509CertChain);
-            signedData =
-                    SecurityUtil.generateDigitalSignatureWithPS256(
-                            keyPair, x509CertChain, signedJsonObject);
-
-        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException e) {
-            throw new ThreeDSException(
-                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR,
-                    "Error during Algorithm Execution",
-                    e);
-        } catch (ACSDataAccessException e) {
-            throw new ThreeDSException(
+        if (signerDetailOptional.isPresent()) signerDetail = signerDetailOptional.get();
+        else {
+            log.debug(
+                    "Can't find signerDetail for institution_id: "
+                            + transaction.getInstitutionId());
+            throw new EncryptionDecryptionException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                     InternalErrorCode.SIGNER_DETAIL_NOT_FOUND,
-                    "Signer Detail Not Found",
-                    e);
-        } catch (JOSEException e) {
-            throw new ThreeDSException(
-                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR,
-                    "Error during Encryption/Decryption",
-                    e);
-        } catch (UnrecoverableKeyException
-                | CertificateException
-                | KeyStoreException
-                | IOException e) {
-            throw new ThreeDSException(
-                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR,
-                    "Error during Keystore Extraction/Parsing",
-                    e);
-        } catch (Exception e) {
-            throw new ThreeDSException(
-                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR);
+                    "Signer Detail not found");
         }
+
+        List<Base64> x509CertChain = SecurityUtil.getKeyInfo(signerDetail);
+
+        KeyPair keyPair = SecurityUtil.getRSAKeyPairFromKeystore(signerDetail, x509CertChain);
+        signedData =
+                SecurityUtil.generateDigitalSignatureWithPS256(
+                        keyPair, x509CertChain, signedJsonObject);
+
         return signedData;
     }
 
     @Override
-    public CREQ parseEncryptedRequest(String strCReq, boolean decryptionRequired)
+    public CREQ parseEncryptedRequest(String strCReq)
             throws ParseException, TransactionDataNotValidException {
         if (Util.isNullorBlank(strCReq)) {
             throw new ParseException(
                     ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR);
         }
-        ThreeDSErrorResponse errorObj = SecurityUtil.isErrorResponse(strCReq);
+        ThreeDSErrorResponse errorObj = null;
+        try {
+            errorObj = Util.fromJson(strCReq, ThreeDSErrorResponse.class);
+        } catch (Exception e) {
+            // Do Nothing
+        }
+        CREQ objCReq = new CREQ();
         if (errorObj == null) {
             String decryptedCReq = null;
-            if (decryptionRequired) {
-                if (!SecurityUtil.validateBase64UrlEncodedString(strCReq)) {
+            if (testConfigProperties.isEnableDecryptionEncryption()) {
+                if (!Util.isValidBase64Url(strCReq)) {
                     throw new ParseException(
                             ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                             InternalErrorCode.CRES_ENCRYPTION_ERROR);
@@ -183,27 +160,37 @@ public class SignerServiceImpl implements SignerService {
             } else {
                 decryptedCReq = strCReq;
             }
-            //  TODO use utils from json
-            return SecurityUtil.parseCREQ(decryptedCReq);
+            try {
+                objCReq = Util.fromJson(decryptedCReq, CREQ.class);
+            } catch (Exception ex) {
+                throw new ParseException(
+                        ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                        InternalErrorCode.CREQ_JSON_PARSING_ERROR,
+                        ex);
+            }
+            if (null == objCReq) {
+                throw new ParseException(
+                        ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                        InternalErrorCode.CREQ_JSON_PARSING_ERROR);
+            }
         } else {
-            CREQ objCReq = new CREQ();
             objCReq.setAcsTransID(errorObj.getAcsTransID());
             objCReq.setThreeDSServerTransID(errorObj.getThreeDSServerTransID());
             objCReq.setMessageVersion(errorObj.getMessageVersion());
             objCReq.setMessageType(errorObj.getMessageType());
             objCReq.setChallengeCancel(ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
             objCReq.setSdkTransID(errorObj.getSdkTransID());
-            return objCReq;
         }
+        return objCReq;
     }
 
     @Override
-    public String generateEncryptedResponse(
-            Transaction transaction, CRES cres, boolean encryptionRequired) throws ACSException {
+    public String generateEncryptedResponse(Transaction transaction, CRES cres)
+            throws ACSException {
         Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
         String strCRes = gson.toJson(cres);
         String encryptedCRes = null;
-        if (encryptionRequired) {
+        if (testConfigProperties.isEnableDecryptionEncryption()) {
             encryptedCRes = encryptResponse(transaction, strCRes);
         } else {
             encryptedCRes = strCRes;
@@ -213,35 +200,45 @@ public class SignerServiceImpl implements SignerService {
 
     private void generateSHA256SecretKey(
             AREQ areq, Transaction transaction, ECKey sdkPubKey, KeyPair acsKeyPair)
-            throws JOSEException {
+            throws EncryptionDecryptionException {
 
-        // Step 4 - Perform KeyAgreement and derive SecretKey
-        SecretKey Z =
-                CustomECDH.deriveSharedSecret(
-                        sdkPubKey.toECPublicKey(), (ECPrivateKey) acsKeyPair.getPrivate(), null);
+        try {
+            // Step 4 - Perform KeyAgreement and derive SecretKey
+            SecretKey Z =
+                    CustomECDH.deriveSharedSecret(
+                            sdkPubKey.toECPublicKey(),
+                            (ECPrivateKey) acsKeyPair.getPrivate(),
+                            null);
 
-        CustomConcatKDF concatKDF = new CustomConcatKDF("SHA-256");
+            CustomConcatKDF concatKDF = new CustomConcatKDF("SHA-256");
 
-        String algIdString = "";
-        String partyVInfoString = areq.getSdkReferenceNumber();
-        int keylength = 256; // A128CBC-HS256
+            String algIdString = "";
+            String partyVInfoString = areq.getSdkReferenceNumber();
+            int keylength = 256; // A128CBC-HS256
 
-        byte[] algID =
-                CustomConcatKDF.encodeDataWithLength(algIdString.getBytes(StandardCharsets.UTF_8));
-        byte[] partyUInfo = CustomConcatKDF.encodeDataWithLength(new byte[0]);
-        byte[] partyVInfo =
-                CustomConcatKDF.encodeDataWithLength(
-                        partyVInfoString.getBytes(StandardCharsets.UTF_8));
-        byte[] suppPubInfo = CustomConcatKDF.encodeIntData(keylength);
-        byte[] suppPrivInfo = CustomConcatKDF.encodeNoData();
+            byte[] algID =
+                    CustomConcatKDF.encodeDataWithLength(
+                            algIdString.getBytes(StandardCharsets.UTF_8));
+            byte[] partyUInfo = CustomConcatKDF.encodeDataWithLength(new byte[0]);
+            byte[] partyVInfo =
+                    CustomConcatKDF.encodeDataWithLength(
+                            partyVInfoString.getBytes(StandardCharsets.UTF_8));
+            byte[] suppPubInfo = CustomConcatKDF.encodeIntData(keylength);
+            byte[] suppPrivInfo = CustomConcatKDF.encodeNoData();
 
-        SecretKey derivedKey =
-                concatKDF.deriveKey(
-                        Z, keylength, algID, partyUInfo, partyVInfo, suppPubInfo, suppPrivInfo);
+            SecretKey derivedKey =
+                    concatKDF.deriveKey(
+                            Z, keylength, algID, partyUInfo, partyVInfo, suppPubInfo, suppPrivInfo);
 
-        transaction
-                .getTransactionSdkDetail()
-                .setAcsSecretKey(HexUtil.byteArrayToHexString(derivedKey.getEncoded()));
+            transaction
+                    .getTransactionSdkDetail()
+                    .setAcsSecretKey(HexUtil.byteArrayToHexString(derivedKey.getEncoded()));
+        } catch (Exception ex) {
+            throw new EncryptionDecryptionException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    ex);
+        }
     }
 
     private String decryptCReq(String encryptedCReq)
@@ -274,17 +271,9 @@ public class SignerServiceImpl implements SignerService {
 
             transactionService.saveOrUpdate(transaction);
 
-            // TODO check this
             if (acsJweObject.getHeader().getEncryptionMethod().getName().equals("A128GCM")) {
-                // After you already have generated the digest
-                byte[] mdbytes = acsKDFSecretKey;
-                byte[] key = new byte[mdbytes.length / 2];
-
-                for (int I = 0; I < key.length; I++) {
-                    // Choice 1 for using only 128 bits of the 256 generated
-                    key[I] = mdbytes[I];
-                }
-                acsKDFSecretKey = key;
+                acsKDFSecretKey =
+                        Arrays.copyOfRange(acsKDFSecretKey, 0, acsKDFSecretKey.length / 2);
             }
             // Step 7 - ASC to decrypt the JWE object using ACS CEK
             acsJweObject.decrypt(new DirectDecrypter(acsKDFSecretKey));

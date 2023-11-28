@@ -64,42 +64,41 @@ public interface CResMapper {
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
     @Mapping(target = "acsCounterAtoS", source = "challengeFlowDto.acsCounterAtoS")
-    // TODO ACS UI TYPE/TEMPLATE
     @Mapping(
             target = "acsUiType",
             expression =
                     "java(transaction.getTransactionSdkDetail().getAcsInterface().equals(\"02\") ?"
                             + " \"05\" : transaction.getTransactionSdkDetail().getAcsUiType())")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
-    @Mapping(target = "acsHTML", source = "challengeFlowDto.institutionUiConfig.displayPage")
+    @Mapping(target = "acsHTML", source = "challengeFlowDto.institutionUIParams.displayPage")
     @Mapping(target = "psImage", source = "challengeFlowDto.psImage")
     @Mapping(target = "issuerImage", source = "challengeFlowDto.issuerImage")
     @Mapping(
             target = "challengeInfoHeader",
-            source = "challengeFlowDto.institutionUiConfig.challengeInfoHeader")
+            source = "challengeFlowDto.institutionUIParams.challengeInfoHeader")
     @Mapping(
             target = "challengeInfoLabel",
-            source = "challengeFlowDto.institutionUiConfig.challengeInfoLabel")
+            source = "challengeFlowDto.institutionUIParams.challengeInfoLabel")
     @Mapping(
             target = "challengeInfoText",
-            source = "challengeFlowDto.institutionUiConfig.challengeInfoText")
+            source = "challengeFlowDto.institutionUIParams.challengeInfoText")
     @Mapping(
             target = "expandInfoLabel",
-            source = "challengeFlowDto.institutionUiConfig.expandInfoLabel")
+            source = "challengeFlowDto.institutionUIParams.expandInfoLabel")
     @Mapping(
             target = "expandInfoText",
-            source = "challengeFlowDto.institutionUiConfig.expandInfoText")
+            source = "challengeFlowDto.institutionUIParams.expandInfoText")
     @Mapping(
             target = "resendInformationLabel",
-            source = "challengeFlowDto.institutionUiConfig.resendInformationLabel")
+            source = "challengeFlowDto.institutionUIParams.resendInformationLabel")
     @Mapping(
             target = "submitAuthenticationLabel",
-            source = "challengeFlowDto.institutionUiConfig.submitAuthenticationLabel")
-    @Mapping(target = "whyInfoLabel", source = "challengeFlowDto.institutionUiConfig.whyInfoLabel")
-    @Mapping(target = "whyInfoText", source = "challengeFlowDto.institutionUiConfig.whyInfoText")
+            source = "challengeFlowDto.institutionUIParams.submitAuthenticationLabel")
+    @Mapping(target = "whyInfoLabel", source = "challengeFlowDto.institutionUIParams.whyInfoLabel")
+    @Mapping(target = "whyInfoText", source = "challengeFlowDto.institutionUIParams.whyInfoText")
     @Mapping(
             target = "whitelistingInfoText",
-            source = "challengeFlowDto.institutionUiConfig.whitelistingInfoText")
+            source = "challengeFlowDto.institutionUIParams.whitelistingInfoText")
 
     // TODO
     // challengeSelectInfo

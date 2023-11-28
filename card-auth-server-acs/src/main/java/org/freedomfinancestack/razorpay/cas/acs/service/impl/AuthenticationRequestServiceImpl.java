@@ -155,22 +155,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                             appConfiguration.getHostname(),
                                             transaction.getDeviceChannel()));
                     aResMapperParams.setAcsSignedContent(signedData);
+                    transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
                 }
             }
 
-            if (transaction.isChallengeMandated()
-                    && DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
-                log.info("Generating ACSSignedContent");
-                String signedData =
-                        signerService.getAcsSignedContent(
-                                areq,
-                                transaction,
-                                RouteConstants.getAcsChallengeUrl(
-                                        appConfiguration.getHostname(),
-                                        transaction.getDeviceChannel()));
-                aResMapperParams.setAcsSignedContent(signedData);
-                transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
-            }
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                 String eci =
                         eCommIndicatorService.generateECI(

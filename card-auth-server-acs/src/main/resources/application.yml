@@ -17,6 +17,7 @@ app:
       challengeValidation: 180 #sec
 
 test:
+  enable-decryption-encryption: true
   enable : false
   attemptedRange:
     start: 4016000000000010

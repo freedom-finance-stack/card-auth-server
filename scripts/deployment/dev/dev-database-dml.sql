@@ -373,8 +373,8 @@ UNLOCK TABLES;
 
 
 LOCK TABLES `signer_detail` WRITE;
-INSERT INTO `signer_detail` VALUES ('I1', '1', '/opt/card-auth-server/cas-acs/bin/config/code-setup', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `signer_detail` VALUES ('I1', '2', '/opt/card-auth-server/cas-acs/bin/config/code-setup', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `signer_detail` VALUES ('I1', '1', '/opt/card-auth-server/cas-acs/bin/config/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `signer_detail` VALUES ('I1', '2', '/opt/card-auth-server/cas-acs/bin/config/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `institution_ui_config` WRITE;

@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppOtpHtmlParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
@@ -48,7 +49,7 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto)
             throws ACSDataAccessException {
-        InstitutionUiConfig validInstitutionUiConfig = new InstitutionUiConfig();
+        InstitutionUIParams validInstitutionUiParams = new InstitutionUIParams();
 
         AppOtpHtmlParams appOtpHtmlParams = new AppOtpHtmlParams();
 
@@ -113,7 +114,7 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
                 Base64.getUrlEncoder()
                         .withoutPadding()
                         .encodeToString(html.getBytes(StandardCharsets.UTF_8));
-        validInstitutionUiConfig.setDisplayPage(encodedHtml);
-        challengeFlowDto.setInstitutionUiConfig(validInstitutionUiConfig);
+        validInstitutionUiParams.setDisplayPage(encodedHtml);
+        challengeFlowDto.setInstitutionUIParams(validInstitutionUiParams);
     }
 }

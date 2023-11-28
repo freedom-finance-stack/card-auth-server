@@ -61,22 +61,9 @@ public class InternalConstants {
     public static final String CHALLENGE_APP_URL = "v1/transaction/challenge/app";
 
     // Placeholders
-
-    public static final String PS_LOGO = "PS_LOGO";
-    public static final String INSTITUTION_LOGO = "INSTITUTION_LOGO";
-    public static final String INSTITUTION_NAME = "INSTITUTION_NAME";
-    public static final String INSTITUTION_TIMEOUT_IN_MINUTES = "INSTITUTION_TIMEOUT_IN_MINUTES";
-    public static final String INSTITUTION_TIMEOUT_IN_SECONDS = "INSTITUTION_TIMEOUT_IN_SECONDS";
-    public static final String INSTITUTION_CSS_URL = "INSTITUTION_CSS_URL";
     public static final String LAST_FOUR_DIGIT_MOBILE_NUMBER = "LAST_FOUR_DIGIT_MOBILE_NUMBER";
-    public static final String MASKED_MOBILE_NUMBER = "MASKED_MOBILE_NUMBER";
     public static final String MASKED_CARD_NUMBER = "MASKED_CARD_NUMBER";
     public static final String MERCHANT_NAME = "MERCHANT_NAME";
-
-    public static final String NETWORK_SCHEMA_NAME = "NETWORK_SCHEMA_NAME";
-
-    public static final String INSTITUTION_CHALLENGE_TEXT = "INSTITUTION_CHALLENGE_TEXT";
-    public static final String INSTITUTION_CHALLENGE_INFO_TEXT = "INSTITUTION_CHALLENGE_INFO_TEXT";
     public static final String AMOUNT_WITH_CURRENCY = "AMOUNT_WITH_CURRENCY";
     public static final String TRANSACTION_DATE = "TRANSACTION_DATE";
 
