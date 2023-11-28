@@ -485,6 +485,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 isListValid(isValidObject()),
                 isListLengthValid(DataLengthType.VARIABLE, 10));
 
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
+                request.getMessageExtension(),
+                isJsonObjectLengthValid(81920));
+
         if (request.getMessageExtension() != null) {
             for (MessageExtension messageExtension : request.getMessageExtension()) {
                 Validation.validate(
@@ -495,11 +500,6 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                         .getAcceptedValues()));
             }
         }
-
-        Validation.validate(
-                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
-                request.getMessageExtension(),
-                isJsonObjectLengthValid(81920));
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())
