@@ -244,7 +244,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
                 updateEci(transaction);
                 if (challengeFlowDto.isSendRreq()) {
-                    if (!resultRequestService.processRreq(transaction)) {
+
+                    try {
+                        resultRequestService.handleRreq(transaction);
+                    } catch (Exception ex) {
                         transaction.setTransactionStatus(TransactionStatus.FAILED);
                         CRES cres = cResMapper.toCres(transaction);
                         challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
@@ -407,7 +410,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 if (challengeFlowDto.isSendRreq()) {
                     log.info("Sending Result request for transaction {}", transaction.getId());
                     // sendRreq and if it fails update response
-                    if (!resultRequestService.processRreq(transaction)) {
+                    try {
+                        resultRequestService.handleRreq(transaction);
+                    } catch (Exception ex) {
                         transaction.setTransactionStatus(TransactionStatus.FAILED);
                         CRES cres = cResMapper.toCres(transaction);
                         challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));

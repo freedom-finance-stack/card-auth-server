@@ -86,7 +86,11 @@ public class TransactionTimeOutService {
         StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
         transaction = transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
-        resultRequestService.processRreq(transaction);
+        try {
+            resultRequestService.handleRreq(transaction);
+        } catch (Exception ex) {
+            log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
+        }
     }
 
     private void updateEci(Transaction transaction) {

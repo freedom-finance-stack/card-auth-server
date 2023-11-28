@@ -100,6 +100,7 @@ public enum Phase implements State<Phase.PhaseEvent> {
         public Phase nextState(PhaseEvent event) throws InvalidStateTransactionException {
             switch (event) {
                 case RREQ_FAILED:
+                    return Phase.RREQ;
                 case RRES_RECEIVED:
                     return Phase.CRES;
                 case ERROR_OCCURRED:
