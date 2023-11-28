@@ -210,7 +210,12 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 if (challengeFlowDto.isSendRreq()) {
                     log.info("Sending Result request for transaction {}", transaction.getId());
                     // sendRreq and if it fails update response
-                    resultRequestService.handleRreq(transaction);
+                    try {
+                        resultRequestService.handleRreq(transaction);
+                    } catch (ThreeDSException ex) {
+                        throw new ThreeDSException(
+                                ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
+                    }
                 }
                 transactionService.saveOrUpdate(transaction);
                 if (challengeFlowDto.getCres() != null) {

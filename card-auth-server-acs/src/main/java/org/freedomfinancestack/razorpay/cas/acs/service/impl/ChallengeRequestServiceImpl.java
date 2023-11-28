@@ -248,7 +248,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     try {
                         resultRequestService.handleRreq(transaction);
                     } catch (Exception ex) {
-                        transaction.setTransactionStatus(TransactionStatus.FAILED);
                         CRES cres = cResMapper.toCres(transaction);
                         challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
                     }

@@ -92,6 +92,7 @@ public class ResultRequestServiceImpl implements ResultRequestService {
         } finally {
             if (!success) {
                 try {
+                    transaction.setTransactionStatus(TransactionStatus.FAILED);
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.RREQ_FAILED);
                 } catch (InvalidStateTransactionException e) {
                     log.error(
