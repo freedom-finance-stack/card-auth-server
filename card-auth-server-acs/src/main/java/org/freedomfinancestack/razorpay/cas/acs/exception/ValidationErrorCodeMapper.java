@@ -38,7 +38,7 @@ public class ValidationErrorCodeMapper {
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(), messageVersionRules);
 
         HashMap<ValidationErrorCode, ThreeDSecureErrorCode> messageExtensionRules = new HashMap<>();
-        messageVersionRules.put(
+        messageExtensionRules.put(
                 ValidationErrorCode.INVALID_FORMAT_VALUE,
                 ThreeDSecureErrorCode.CRITICAL_MESSAGE_EXTENSION_NOT_RECOGNISED);
         FIELD_TO_THREEDSECURE_ERROR_MAP.put(
