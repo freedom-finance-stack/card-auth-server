@@ -58,7 +58,7 @@ public class AuthenticationServiceLocator {
                 //                break;
             default:
                 throw new OperationNotSupportedException(
-                        InternalErrorCode.INVALID_CONFIG, "Invalid Auth Type");
+                        InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
         }
         return authenticationService;
     }

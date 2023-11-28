@@ -4,5 +4,6 @@ public enum RiskFlag {
     NO_CHALLENGE,
     CHALLENGE,
     RBA,
-    DECOUPLED_CHALLENGE
+    DECOUPLED_CHALLENGE,
+    INFORMATIONAL
 }

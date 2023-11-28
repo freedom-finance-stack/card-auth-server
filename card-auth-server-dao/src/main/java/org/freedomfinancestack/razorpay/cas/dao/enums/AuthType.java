@@ -7,7 +7,8 @@ public enum AuthType {
     OTP(2),
     PASSWORD(1),
     NetBankingOOB(3),
-    Decoupled(4);
+    Decoupled(4),
+    UNKNOWN(5);
 
     private final int value;
 

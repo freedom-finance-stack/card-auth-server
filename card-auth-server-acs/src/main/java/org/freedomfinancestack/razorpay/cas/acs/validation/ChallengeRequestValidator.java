@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsUUID.isUUID;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
+import static org.freedomfinancestack.extensions.validation.validator.basic.NotEmpty.notEmpty;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.RegexValidator.regexValidator;
@@ -160,6 +161,14 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                             transaction.getTransactionSdkDetail().getSdkTransId())
                                     + "$"));
         }
+        Validation.validate(
+                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL.getFieldName(),
+                incomingCreq.getThreeDSRequestorAppURL(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
+                        notEmpty()),
+                lengthValidator(DataLengthType.VARIABLE, 256));
     }
 
     protected void validateOptionalFields(CREQ incomingCreq, Transaction transaction)

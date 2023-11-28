@@ -48,10 +48,10 @@ CREATE TABLE `transaction_sdk_detail`
     `sdk_trans_id`         varchar(36) DEFAULT NULL,
     `sdk_app_id`           varchar(36) DEFAULT NULL,
     `sdk_reference_number` varchar(32) DEFAULT NULL,
-    `acs_interface` char(2) DEFAULT NULL,
+    `acs_interface`        char(2) DEFAULT NULL,
     `acs_ui_type`          char(2) DEFAULT NULL,
-    `acs_secret_key` LONGTEXT NULL,
-    `encryption_algo` VARCHAR(45) DEFAULT NULL,
+    `acs_secret_key`       LONGTEXT NULL,
+    `encryption_algo`      VARCHAR(45) DEFAULT NULL,
     `device_info`          text,
     `acs_counter_a_to_s` char(3) DEFAULT '000',
     `created_at`           timestamp NOT NULL,
@@ -195,7 +195,7 @@ CREATE TABLE `card_range`
     `end_range`          decimal(25),
     `status`             ENUM ('ACTIVE', 'INACTIVE')               NOT NULL,
     `card_type`          ENUM ('PREPAID', 'CREDIT', 'DEBIT')       NOT NULL,
-    `risk_flag`          ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA') NOT NULL,
+    `risk_flag`          ENUM ('NO_CHALLENGE', 'CHALLENGE', 'RBA', 'INFORMATIONAL', 'DECOUPLED_CHALLENGE') NOT NULL,
     `description`        varchar(255),
     `card_details_store` enum ('ACS', 'API_1', 'MOCK'),
     `network_code`       tinyint,
@@ -351,19 +351,19 @@ DROP TABLE IF EXISTS `signer_detail`;
 CREATE TABLE `signer_detail`
 (
     `institution_id`      varchar(36) NOT NULL,
-    `network_code` varchar(2) NOT NULL,
-    `keystore`               VARCHAR(150),
-    `keypass`                VARCHAR(100),
+    `network_code`        varchar(2) NOT NULL,
+    `keystore`            varchar(150),
+    `keypass`             varchar(100),
     `signer_cert_key`     varchar(30),
     `signer_key_pair`     varchar(30),
-    `root_cert_key`      varchar(30),
-    `inter_cert_key`     varchar(30),
-    `created_at`     timestamp   NOT NULL,
-    `created_by`     varchar(40) NOT NULL,
-    `modified_at`    timestamp   NOT NULL,
-    `modified_by`    varchar(40) NOT NULL,
-    `deleted_at`     timestamp   DEFAULT NULL,
-    `deleted_by`     varchar(40) DEFAULT NULL
+    `root_cert_key`       varchar(30),
+    `inter_cert_key`      varchar(30),
+    `created_at`          timestamp   NOT NULL,
+    `created_by`          varchar(40) NOT NULL,
+    `modified_at`         timestamp   NOT NULL,
+    `modified_by`         varchar(40) NOT NULL,
+    `deleted_at`          timestamp   DEFAULT NULL,
+    `deleted_by`          varchar(40) DEFAULT NULL
 );
 
 DROP TABLE IF EXISTS `institution_ui_config`;
