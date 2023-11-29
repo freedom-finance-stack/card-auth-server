@@ -71,8 +71,8 @@ public interface CResMapper {
                             + " \"05\" : transaction.getTransactionSdkDetail().getAcsUiType())")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
     @Mapping(target = "acsHTML", source = "challengeFlowDto.institutionUIParams.displayPage")
-    @Mapping(target = "psImage", source = "challengeFlowDto.psImage")
-    @Mapping(target = "issuerImage", source = "challengeFlowDto.issuerImage")
+    @Mapping(target = "psImage", source = "challengeFlowDto.institutionUIParams.psImage")
+    @Mapping(target = "issuerImage", source = "challengeFlowDto.institutionUIParams.issuerImage")
     @Mapping(
             target = "challengeInfoHeader",
             source = "challengeFlowDto.institutionUIParams.challengeInfoHeader")
