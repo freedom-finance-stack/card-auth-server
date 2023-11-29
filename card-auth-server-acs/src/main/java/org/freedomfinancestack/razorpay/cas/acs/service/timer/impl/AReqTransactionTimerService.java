@@ -6,6 +6,7 @@ import org.freedomfinancestack.extensions.scheduledTask.exception.TaskAlreadyExi
 import org.freedomfinancestack.extensions.timer.TimerService;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.TransactionTimerService;
+import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -20,21 +21,34 @@ import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.getIdFromTaskI
 public class AReqTransactionTimerService implements TransactionTimerService {
     private final TimerService timerService;
     private final AppConfiguration appConfiguration;
+
     private final TransactionTimeOutService transactionTimeOutService;
     public static final String AREQ_TIMER_TASK_IDENTIFIER_KEY = "AREQ_TIMER_TASK";
 
     @Override
-    public void scheduleTask(String transactionId) {
+    public void scheduleTask(
+            String transactionId, TransactionStatus transactionStatus, int decoupledTimeOut) {
         log.info("Scheduling timer task for transactionId: {}", transactionId);
         TimerTask task =
                 new TimerTask(
                         generateTaskIdentifier(AREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
                         this);
         try {
+            int timeout = appConfiguration.getAcs().getTimeout().getChallengeRequest();
+            if (transactionStatus.equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)) {
+                timeout =
+                        decoupledTimeOut != 0
+                                ? decoupledTimeOut
+                                : appConfiguration
+                                                .getAcs()
+                                                .getTimeout()
+                                                .getDecoupledChallengeCompletion()
+                                        * 60;
+            }
             timerService.scheduleTimeoutTask(
                     generateTaskIdentifier(AREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
                     task,
-                    appConfiguration.getAcs().getTimeout().getChallengeRequest(),
+                    timeout,
                     TimeUnit.SECONDS);
         } catch (TaskAlreadyExistException e) {
             log.error("Task already scheduled for transactionId: {}", transactionId);

@@ -386,7 +386,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         transaction.setInteractionCount(transaction.getInteractionCount() + 1);
         transaction.setTransactionStatus(TransactionStatus.FAILED);
         transaction.setTransactionStatusReason(
-                TransactionStatusReason.EXCEED_MAX_CHALLANGES.getCode());
+                TransactionStatusReason.EXCEED_MAX_CHALLENGES.getCode());
         transaction.setErrorCode(InternalErrorCode.CANCELLED_BY_CARDHOLDER.getCode());
         transaction.setChallengeCancelInd(creq.getChallengeCancel());
 

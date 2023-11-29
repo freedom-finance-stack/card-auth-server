@@ -51,6 +51,7 @@ public class AppConfiguration {
         @Setter
         public static class TimeoutConfig {
             private int challengeRequest;
+            private int decoupledChallengeCompletion;
             private int challengeCompletion;
             private int challengeValidation;
         }

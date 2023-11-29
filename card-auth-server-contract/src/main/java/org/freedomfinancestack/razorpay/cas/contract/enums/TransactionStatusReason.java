@@ -24,13 +24,18 @@ public enum TransactionStatusReason {
     MEDIUM_CONFIDENCE("16", "Medium confidence"),
     HIGH_CONFIDENCE("17", "High confidence"),
     VERY_HIGH_CONFIDENCE("18", "Very High confidence"),
-    EXCEED_MAX_CHALLANGES("19", "Exceeds ACS maximum challenges"),
+    EXCEED_MAX_CHALLENGES("19", "Exceeds ACS maximum challenges"),
     NON_PAYMENT_TRANSACTION_NOT_SUPPORTED("20", "Non-Payment transaction not supported"),
     TRI_TRANSACTION_NOT_SUPPORTED("21", "3RI transaction not supported"),
-    // This is other than EMVCo
-    USER_CANCELLED("22", "Cancelled by User"),
-    ACS_TECHNICAL_ISSUE("23", " ACS technical Issue"),
-    AUTHENTICATION_ATTEMPTED_BUT_NOT_PERFORMED_BY_CARDHOLDER(
+    ACS_TECHNICAL_ISSUE("22", " ACS technical Issue"),
+    DECOUPLED_AUTH_REQUIRED_BY_ACS_NOT_BY_REQUESTOR(
+            "23", "Decoupled Authentication required by ACS but not requested by 3DS Requestor"),
+    DECOUPLED_EXPIRY_TIME_EXCEEDED("24", "3DS Requestor Decoupled Max Expiry Time exceeded"),
+    INSUFFICIENT_TIME_FOR_DECOUPLED_AUTH(
+            "25",
+            "Decoupled Authentication was provided insufficient time to authenticate cardholder."
+                    + " ACS will not make attempt"),
+    AUTH_ATTEMPTED_BUT_NOT_PERFORMED(
             "26", "Authentication attempted but not performed by the cardholder");
 
     private final String code;

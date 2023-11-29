@@ -585,7 +585,7 @@ public enum ThreeDSDataElement {
 
     AUTHENTICATION_TYPE(
             ThreeDSConstant.ELEMENT_AUTHENTICATION_TYPE,
-            new String[] {"01", "03"},
+            new String[] {"01", "02", "03", "04"},
             new DeviceChannel[] {DeviceChannel.APP, DeviceChannel.BRW, DeviceChannel.TRI},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),

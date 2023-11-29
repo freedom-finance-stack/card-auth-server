@@ -140,11 +140,22 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     areq, transaction, cardRange.getRiskFlag());
 
             if (transaction.isChallengeMandated()) {
-                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
-                AuthType authType =
-                        AuthenticationServiceLocator.selectAuthType(
-                                transaction, authConfigDto.getChallengeAuthTypeConfig());
-                transaction.setAuthenticationType(authType.getValue());
+
+                if (transaction
+                        .getTransactionStatus()
+                        .equals(TransactionStatus.CHALLENGE_REQUIRED)) {
+                    AuthConfigDto authConfigDto =
+                            featureService.getAuthenticationConfig(transaction);
+                    AuthType authType =
+                            AuthenticationServiceLocator.selectAuthType(
+                                    transaction, authConfigDto.getChallengeAuthTypeConfig());
+                    transaction.setAuthenticationType(authType.getValue());
+                } else if (transaction
+                        .getTransactionStatus()
+                        .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)) {
+                    transaction.setAuthenticationType(AuthType.Decoupled.getValue());
+                }
+
                 if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
                     log.info("Generating ACSSignedContent");
                     String signedData =
@@ -251,7 +262,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             if (transaction.isChallengeMandated()) {
                 transactionTimeoutServiceLocator
                         .locateService(MessageType.AReq)
-                        .scheduleTask(transaction.getId());
+                        .scheduleTask(
+                                transaction.getId(),
+                                transaction.getTransactionStatus(),
+                                Integer.parseInt(areq.getThreeDSRequestorDecMaxTime()));
             }
 
         } catch (Exception ex) {
