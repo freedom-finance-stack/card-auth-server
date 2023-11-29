@@ -106,8 +106,8 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                                 .get(network)
                                 .getExtraHighPs());
 
-        challengeFlowDto.getInstitutionUIParams().setIssuerImage(issuerLogo);
-        challengeFlowDto.getInstitutionUIParams().setPsImage(psImage);
+        validInstitutionUIParams.setIssuerImage(issuerLogo);
+        validInstitutionUIParams.setPsImage(psImage);
 
         validInstitutionUIParams.setChallengeInfoHeader(
                 institutionUiConfig.getChallengeInfoHeader());
