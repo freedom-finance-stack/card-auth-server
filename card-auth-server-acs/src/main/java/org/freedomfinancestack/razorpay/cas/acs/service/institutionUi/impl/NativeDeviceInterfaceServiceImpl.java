@@ -47,17 +47,20 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
 
         InstitutionUIParams validInstitutionUIParams = new InstitutionUIParams();
 
-        String challengeText = null;
+        String challengeText;
 
         UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
+        if (uiType == null) {
+            throw new ACSDataAccessException(InternalErrorCode.UNSUPPORTED_UI_TYPE);
+        }
 
         String transactionDate =
                 new SimpleDateFormat("dd/MM/yyyy").format(transaction.getModifiedAt());
         String cardNumber = transaction.getTransactionCardDetail().getCardNumber();
 
         MessageCategory messageCategory = transaction.getMessageCategory();
-        String purchaseAmount = null;
-        String exponent = null;
+        String purchaseAmount;
+        String exponent;
         String amount = null;
         String currency = null;
         if (messageCategory.equals(MessageCategory.PA)) {
@@ -193,11 +196,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 // TODO set OOB Constants
                 break;
 
-            case HTML_OTHER:
-                throw new ACSDataAccessException(
-                        InternalErrorCode.UNSUPPORTED_UI_TYPE,
-                        "UI Type Implementation not available with the given option " + uiType);
-
+                // This handles HTML_OTHER cases too
             default:
                 throw new ACSDataAccessException(
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,

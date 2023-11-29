@@ -73,13 +73,13 @@ public class SecurityUtil {
 
         List<Base64> x5c = new ArrayList<>();
 
-        KeyStore ks = null;
-        Certificate signingCert = null;
-        Certificate rootCert = null;
-        Certificate interCert = null;
+        KeyStore ks;
+        Certificate signingCert;
+        Certificate rootCert;
+        Certificate interCert;
 
-        String keyPassword = null;
-        String keystore = null;
+        String keyPassword;
+        String keystore;
 
         try {
             ks = KeyStore.getInstance(KeyStore.getDefaultType());

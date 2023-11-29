@@ -62,8 +62,8 @@ public class SignerServiceImpl implements SignerService {
     @Override
     public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl)
             throws EncryptionDecryptionException {
-        SignerDetail signerDetail = null;
-        String signedData = null;
+        SignerDetail signerDetail;
+        String signedData;
 
         // 116
         // step 1 : Generates a fresh ephemeral key pair (QT, dT) as described in Annex C and
@@ -149,7 +149,7 @@ public class SignerServiceImpl implements SignerService {
         }
         CREQ objCReq = new CREQ();
         if (errorObj == null) {
-            String decryptedCReq = null;
+            String decryptedCReq;
             if (testConfigProperties.isEnableDecryptionEncryption()) {
                 if (!Util.isValidBase64Url(strCReq)) {
                     throw new ParseException(
@@ -189,7 +189,7 @@ public class SignerServiceImpl implements SignerService {
             throws ACSException {
         Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
         String strCRes = gson.toJson(cres);
-        String encryptedCRes = null;
+        String encryptedCRes;
         if (testConfigProperties.isEnableDecryptionEncryption()) {
             encryptedCRes = encryptResponse(transaction, strCRes);
         } else {
@@ -243,12 +243,12 @@ public class SignerServiceImpl implements SignerService {
 
     private String decryptCReq(String encryptedCReq)
             throws ParseException, TransactionDataNotValidException {
-        String decryptedCReq = null;
-        byte[] acsKDFSecretKey = null;
-        Transaction transaction = null;
+        String decryptedCReq;
+        byte[] acsKDFSecretKey;
+        Transaction transaction;
 
         // Step 6 - ACS to Parse JWE object received from SDK
-        JWEObject acsJweObject = null;
+        JWEObject acsJweObject;
         try {
             encryptedCReq = encryptedCReq.replaceAll("\\s+", "");
             acsJweObject = JWEObject.parse(encryptedCReq);
@@ -279,8 +279,7 @@ public class SignerServiceImpl implements SignerService {
             acsJweObject.decrypt(new DirectDecrypter(acsKDFSecretKey));
 
             // Step 8 - ACS to fetch the CREQ for processing
-            String payload = acsJweObject.getPayload().toString();
-            decryptedCReq = payload;
+            decryptedCReq = acsJweObject.getPayload().toString();
         } catch (java.text.ParseException | JOSEException e) {
             throw new ParseException(
                     ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
@@ -298,11 +297,11 @@ public class SignerServiceImpl implements SignerService {
     private String encryptResponse(Transaction transaction, String challangeResponse)
             throws ACSException {
 
-        String encryptedCRes = null;
-        byte[] acsKDFSecretKey = null;
+        String encryptedCRes;
+        byte[] acsKDFSecretKey;
 
         // Step 6 - ACS to Parse JWE object received from SDK
-        JWEObject acsJweObject = null;
+        JWEObject acsJweObject;
         EncryptionMethod encryptionMethod = EncryptionMethod.A128CBC_HS256;
 
         try {
@@ -312,19 +311,11 @@ public class SignerServiceImpl implements SignerService {
             acsKDFSecretKey = HexUtil.hexStringToByteArray(strAcsSecretKey);
 
             if (transaction.getTransactionSdkDetail().getEncryptionAlgorithm().equals("A128GCM")) {
-
-                byte[] mdbytes = acsKDFSecretKey;
-                byte[] key = new byte[mdbytes.length / 2];
-
-                // for(int I = 0; I < key.length; I++){
-                for (int i = 0; i < key.length; i++) {
-                    // Choice 1 for using only 128 bits of the 256 generated
-                    key[i] = mdbytes[i + (mdbytes.length / 2)];
-
-                    // Choice 2 for using ALL of the 256 bits generated
-                    // key[I] = mdbytes[I] ^ mdbytes[I + key.length];
-                }
-                acsKDFSecretKey = key;
+                acsKDFSecretKey =
+                        Arrays.copyOfRange(
+                                acsKDFSecretKey,
+                                acsKDFSecretKey.length / 2,
+                                acsKDFSecretKey.length);
                 encryptionMethod = EncryptionMethod.A128GCM;
             }
 
@@ -334,7 +325,6 @@ public class SignerServiceImpl implements SignerService {
                             .build();
 
             // Step 3 - Create JWE object
-            // ieyJraWQiOiJhZGM0NjI4Ny0zZWZmLTRjNTUtODVlZC04NGM3MjdjZDU5M2MiLCJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..jPj3nEb-A-6adCHsUZA02g.8rPub9hscfiH-zuNfYOZuH1nUi3_ZVlxyS1ZEIeUX_26EBytNnCr0bCUhWu1KCC1Ik_euORXAcBZqOpP0cfMt_1FiY4yhH-IE8R1eiyOWx4gggZsgU596-J0k9RyPZvu9mtQ0HPHM6qlV9Iqr_zzLzmh0bPsft5jqyuvsPGLDDNJbp6S95bQVNNTuDFg9zthIDtpsFdTyk2HcMH7Jb3B0UhZRiM4wlUI4onaXBC1S_KRyo_G4w2sYShpU7qVPwIC_VZgPRx1zU_0rMvC0FPAWOBF5oBmNV8aTLJQVfs9wIvNm9tizbyXsitmpHUPnObi.RyJgCU8zpcCgzFVeod9vtAn SDK
             acsJweObject =
                     new JWEObject(
                             acsEncHeader,

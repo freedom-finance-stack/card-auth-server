@@ -409,7 +409,7 @@ public class Util {
         int exponentNumber = 0;
         if (exponent != null) {
             exponentNumber = Integer.parseInt(exponent);
-            int count = 0;
+            int count;
             if (exponentNumber > 0) {
                 if (amount.length() <= exponentNumber) {
                     count = exponentNumber - amount.length();

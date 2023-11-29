@@ -82,10 +82,10 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         appOtpHtmlParams.setCardNumber(transaction.getTransactionCardDetail().getCardNumber());
 
         MessageCategory messageCategory = transaction.getMessageCategory();
-        String purchaseAmount = null;
-        String exponent = null;
-        String amount = null;
-        String currency = null;
+        String purchaseAmount;
+        String exponent;
+        String amount;
+        String currency;
         if (messageCategory.equals(MessageCategory.PA)) {
             purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
             exponent = transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();

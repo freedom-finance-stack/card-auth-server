@@ -12,7 +12,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationE
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
-import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.PlrqService;
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
@@ -51,7 +50,6 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final InstitutionUiService institutionUiService;
     private final SignerService signerService;
-    private final PlrqService plrqService;
 
     @Override
     public String processAppChallengeRequest(String strCReq)
@@ -74,10 +72,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     @Override
     public String processAppChallengeRequestHandler(String strCReq)
             throws ThreeDSException, ACSDataAccessException, InvalidStateTransactionException {
-        CREQ creq = null;
+        CREQ creq;
         Transaction transaction = null;
         AppChallengeFlowDto challengeFlowDto = new AppChallengeFlowDto();
-        String cres = null;
+        String cres;
         try {
             // Decrypting CREQ
 
@@ -94,6 +92,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
 
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
+            // Validating this outside, as authConfigDto is needed to validate this
             if (Util.isWhitelistingDataValid(transaction, creq, authConfigDto)) {
                 transaction
                         .getTransactionReferenceDetail()

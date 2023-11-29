@@ -369,26 +369,26 @@ CREATE TABLE `signer_detail`
 DROP TABLE IF EXISTS `institution_ui_config`;
 CREATE TABLE `institution_ui_config`
 (
-    `institution_id`      varchar(36) NOT NULL,
-    `auth_type` ENUM('OTP', 'PASSWORD', 'NetBankingOOB', 'Decoupled'),
-    `ui_type` ENUM('TEXT', 'SINGLE_SELECT', 'MULTI_SELECT', 'OOB', 'HTML_OTHER'),
-    `display_page` varchar(99) DEFAULT NULL,
-    `challenge_info_header` varchar(45) DEFAULT NULL,
-    `challenge_info_label` varchar(45) DEFAULT NULL,
-    `challenge_info_text` varchar(256) DEFAULT NULL,
-    `expand_info_label` varchar(45) DEFAULT NULL,
-    `expand_info_text` varchar(256) DEFAULT NULL,
+    `institution_id`              varchar(36) NOT NULL,
+    `auth_type`                   ENUM('OTP', 'PASSWORD', 'NetBankingOOB', 'Decoupled'),
+    `ui_type`                     ENUM('TEXT', 'SINGLE_SELECT', 'MULTI_SELECT', 'OOB', 'HTML_OTHER'),
+    `display_page`                varchar(99) DEFAULT NULL,
+    `challenge_info_header`       varchar(45) DEFAULT NULL,
+    `challenge_info_label`        varchar(45) DEFAULT NULL,
+    `challenge_info_text`         varchar(256) DEFAULT NULL,
+    `expand_info_label`           varchar(45) DEFAULT NULL,
+    `expand_info_text`            varchar(256) DEFAULT NULL,
     `submit_authentication_label` varchar(45) DEFAULT NULL,
-    `resend_information_label` varchar(45) DEFAULT NULL,
-    `why_info_label` varchar(45) DEFAULT NULL,
-    `why_info_text` varchar(256) DEFAULT NULL,
-    `whitelisting_info_text` varchar(64) DEFAULT NULL,
-    `created_at`     timestamp   NOT NULL,
-    `created_by`     varchar(40) NOT NULL,
-    `modified_at`    timestamp   NOT NULL,
-    `modified_by`    varchar(40) NOT NULL,
-    `deleted_at`     timestamp   DEFAULT NULL,
-    `deleted_by`     varchar(40) DEFAULT NULL
+    `resend_information_label`    varchar(45) DEFAULT NULL,
+    `why_info_label`              varchar(45) DEFAULT NULL,
+    `why_info_text`               varchar(256) DEFAULT NULL,
+    `whitelisting_info_text`      varchar(64) DEFAULT NULL,
+    `created_at`                  timestamp   NOT NULL,
+    `created_by`                  varchar(40) NOT NULL,
+    `modified_at`                  timestamp   NOT NULL,
+    `modified_by`                  varchar(40) NOT NULL,
+    `deleted_at`                  timestamp   DEFAULT NULL,
+    `deleted_by`                  varchar(40) DEFAULT NULL
 );
 
 DROP TABLE IF EXISTS `otp_transaction_detail`;
