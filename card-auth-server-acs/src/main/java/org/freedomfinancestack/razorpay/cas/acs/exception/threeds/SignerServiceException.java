@@ -5,29 +5,29 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 
 import lombok.NonNull;
 
-public class EncryptionDecryptionException extends ThreeDSException {
+public class SignerServiceException extends ThreeDSException {
 
-    public EncryptionDecryptionException(
+    public SignerServiceException(
             @NonNull final ThreeDSecureErrorCode errorCode,
             @NonNull final InternalErrorCode internalErrorCode) {
         super(errorCode, internalErrorCode, internalErrorCode.getDefaultErrorMessage());
     }
 
-    public EncryptionDecryptionException(
+    public SignerServiceException(
             @NonNull final ThreeDSecureErrorCode errorCode,
             @NonNull final InternalErrorCode internalErrorCode,
             Throwable cause) {
         super(errorCode, internalErrorCode, internalErrorCode.getDefaultErrorMessage(), cause);
     }
 
-    public EncryptionDecryptionException(
+    public SignerServiceException(
             @NonNull final ThreeDSecureErrorCode errorCode,
             @NonNull final InternalErrorCode internalErrorCode,
             @NonNull final String message) {
         super(errorCode, internalErrorCode, message);
     }
 
-    public EncryptionDecryptionException(
+    public SignerServiceException(
             @NonNull final ThreeDSecureErrorCode errorCode,
             @NonNull final InternalErrorCode internalErrorCode,
             @NonNull final String message,

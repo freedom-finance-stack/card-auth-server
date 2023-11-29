@@ -5,9 +5,9 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
-public interface InstitutionUiService {
+public interface AppUIGenerator {
 
-    void populateInstitutionUiConfig(
+    void generateAppUIParams(
             AppChallengeFlowDto challengeFlowDto,
             Transaction transaction,
             AuthConfigDto authConfigDto)

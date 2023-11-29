@@ -31,7 +31,6 @@ public class PlrqService extends HttpsGatewayService {
     public static final String BRW_CANCEL_FORM_DATA = "transactionId=%s&cancelChallenge=true";
     public static final String PLRQ_MESSAGE_TYPE = "pIrq";
     public static final String PLRQ_MESSAGE_VERSION = "1.0.6";
-    public static final String APP_CORRECT_DATA = "123456";
     public static final String APP_INCORRECT_DATA = "000000";
     public static final String APP_DEVICE_CHANNEL = "01";
     public static final String BRW_DEVICE_CHANNEL = "02";

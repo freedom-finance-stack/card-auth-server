@@ -56,7 +56,7 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
         if (institution.isEmpty()) {
-            return;
+            throw new ACSDataAccessException(InternalErrorCode.INSTITUTION_NOT_FOUND);
         }
         appOtpHtmlParams.setInstitutionName(institution.get().getName());
         appOtpHtmlParams.setTimeoutInSeconds(
@@ -82,15 +82,12 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         appOtpHtmlParams.setCardNumber(transaction.getTransactionCardDetail().getCardNumber());
 
         MessageCategory messageCategory = transaction.getMessageCategory();
-        String purchaseAmount;
-        String exponent;
-        String amount;
-        String currency;
         if (messageCategory.equals(MessageCategory.PA)) {
-            purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
-            exponent = transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
-            amount = Util.formatAmount(purchaseAmount, exponent);
-            currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
+            String purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
+            String exponent =
+                    transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
+            String amount = Util.formatAmount(purchaseAmount, exponent);
+            String currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
             appOtpHtmlParams.setAmountWithCurrency(amount + InternalConstants.SPACE + currency);
         }
 

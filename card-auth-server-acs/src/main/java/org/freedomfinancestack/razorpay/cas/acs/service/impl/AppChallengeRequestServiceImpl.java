@@ -19,6 +19,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.Transactio
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
 import org.freedomfinancestack.razorpay.cas.contract.*;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
@@ -48,7 +49,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     private final CResMapper cResMapper;
     private final AuthValueGeneratorService authValueGeneratorService;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
-    private final InstitutionUiService institutionUiService;
+    private final AppUIGenerator appUIGenerator;
     private final SignerService signerService;
 
     @Override
@@ -69,8 +70,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         }
     }
 
-    @Override
-    public String processAppChallengeRequestHandler(String strCReq)
+    private String processAppChallengeRequestHandler(String strCReq)
             throws ThreeDSException, ACSDataAccessException, InvalidStateTransactionException {
         CREQ creq;
         Transaction transaction = null;
@@ -93,26 +93,15 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
             // Validating this outside, as authConfigDto is needed to validate this
-            if (Util.isWhitelistingDataValid(transaction, creq, authConfigDto)) {
+            if (challengeRequestValidator.isWhitelistingDataValid(
+                    transaction, creq, authConfigDto)) {
                 transaction
-                        .getTransactionReferenceDetail()
+                        .getTransactionSdkDetail()
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
             }
 
-            // Handling ACS Counter for Final CRES
-            challengeFlowDto.setAcsCounterAtoS(
-                    transaction.getTransactionSdkDetail().getAcsCounterAtoS());
-
-            // method to increase a string counter
-            transaction
-                    .getTransactionSdkDetail()
-                    .setAcsCounterAtoS(
-                            Util.incrementString(
-                                    transaction.getTransactionSdkDetail().getAcsCounterAtoS(), 1));
-
             // Setting Institution Ui Config
-            institutionUiService.populateInstitutionUiConfig(
-                    challengeFlowDto, transaction, authConfigDto);
+            appUIGenerator.generateAppUIParams(challengeFlowDto, transaction, authConfigDto);
 
             // 4 flows
             // 1: if Challenge cancelled by user
@@ -144,7 +133,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else {
-                    if (transaction.getTransactionSdkDetail().getAcsInterface().equals("02")) {
+                    if (transaction
+                            .getTransactionSdkDetail()
+                            .getAcsInterface()
+                            .equals(DeviceInterface.HTML.getValue())) {
                         challengeFlowDto.setAuthValue(creq.getChallengeHTMLDataEntry());
                     } else {
                         challengeFlowDto.setAuthValue(creq.getChallengeDataEntry());
@@ -216,6 +208,14 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                                 transaction);
                     }
                 }
+                // method to increase a string counter
+                // TODO handle these in case above exception is thrown
+                transaction
+                        .getTransactionSdkDetail()
+                        .setAcsCounterAtoS(
+                                Util.incrementString(
+                                        transaction.getTransactionSdkDetail().getAcsCounterAtoS(),
+                                        1));
                 transactionService.saveOrUpdate(transaction);
                 if (challengeFlowDto.getCres() != null) {
                     transactionMessageLogService.createAndSave(
@@ -264,7 +264,8 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     InternalErrorCode.CHALLENGE_RESEND_THRESHOLD_EXCEEDED
                             .getTransactionStatusReason()
                             .getCode());
-            CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
+            CRES cres =
+                    cResMapper.toAppCres(transaction, challengeFlowDto.getInstitutionUIParams());
             challengeFlowDto.setCres(cres);
             transactionMessageLogService.createAndSave(cres, transaction.getId());
             challengeFlowDto.setSendRreq(true);
@@ -313,7 +314,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
             updateEci(transaction);
             transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
-            CRES cres = cResMapper.toFinalCres(transaction, challengeFlowDto);
+            CRES cres = cResMapper.toCres(transaction);
             challengeFlowDto.setCres(cres);
 
             transactionMessageLogService.createAndSave(cres, transaction.getId());
@@ -324,8 +325,13 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             if (authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
                     > transaction.getInteractionCount()) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.INVALID_AUTH_VAL);
-                CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
-                if (transaction.getTransactionSdkDetail().getAcsInterface().equals("01")) {
+                CRES cres =
+                        cResMapper.toAppCres(
+                                transaction, challengeFlowDto.getInstitutionUIParams());
+                if (transaction
+                        .getTransactionSdkDetail()
+                        .getAcsInterface()
+                        .equals(DeviceInterface.NATIVE.getValue())) {
                     cres.setChallengeInfoText(authResponse.getDisplayMessage());
                 }
                 challengeFlowDto.setCres(cres);
@@ -348,7 +354,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                                     transaction.getTransactionCardDetail().getCardNumber()),
                             cardRange.getCardDetailsStore());
                 }
-                CRES cres = cResMapper.toFinalCres(transaction, challengeFlowDto);
+                CRES cres = cResMapper.toCres(transaction);
                 challengeFlowDto.setCres(cres);
                 transactionMessageLogService.createAndSave(cres, transaction.getId());
                 challengeFlowDto.setSendRreq(true);
@@ -371,7 +377,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                         .build());
         log.info("Sent challenge for transaction {}", transaction.getId());
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
-        CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto);
+        CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto.getInstitutionUIParams());
         challengeFlowDto.setCres(cres);
     }
 
@@ -388,7 +394,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         transaction.setChallengeCancelInd(creq.getChallengeCancel());
 
         challengeFlowDto.setSendRreq(true);
-        CRES cres = cResMapper.toFinalCres(transaction, challengeFlowDto);
+        CRES cres = cResMapper.toCres(transaction);
         challengeFlowDto.setCres(cres);
         log.info("challenge cancelled for transaction {}", transaction.getId());
     }

@@ -1,8 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.EncryptionDecryptionException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.SignerServiceException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
@@ -17,5 +17,5 @@ public interface SignerService {
     String generateEncryptedResponse(Transaction transaction, CRES cres) throws ACSException;
 
     String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl)
-            throws EncryptionDecryptionException;
+            throws SignerServiceException;
 }

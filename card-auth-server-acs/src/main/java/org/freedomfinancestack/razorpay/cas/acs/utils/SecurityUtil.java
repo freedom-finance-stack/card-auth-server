@@ -1,9 +1,11 @@
 package org.freedomfinancestack.razorpay.cas.acs.utils;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.*;
 import java.security.Security;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -13,16 +15,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.EncryptionDecryptionException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.SignerServiceException;
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 
 import com.nimbusds.jose.*;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.bc.BouncyCastleProviderSingleton;
 import com.nimbusds.jose.jwk.Curve;
@@ -36,16 +34,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SecurityUtil {
-    public static KeyPair generateEphermalKeyPair() throws EncryptionDecryptionException {
+    public static KeyPair generateEphermalKeyPair() throws SignerServiceException {
 
         try {
             KeyPairGenerator gen = KeyPairGenerator.getInstance("EC");
             gen.initialize(Curve.P_256.toECParameterSpec());
             return gen.generateKeyPair();
-        } catch (Exception ex) {
-            throw new EncryptionDecryptionException(
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException ex) {
+            throw new SignerServiceException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_ALGORITHM_EXCEPTION,
                     ex);
         }
     }
@@ -68,8 +66,7 @@ public class SecurityUtil {
         return ecKey;
     }
 
-    public static List<Base64> getKeyInfo(SignerDetail signerDetail)
-            throws EncryptionDecryptionException {
+    public static List<Base64> getKeyInfo(SignerDetail signerDetail) throws SignerServiceException {
 
         List<Base64> x5c = new ArrayList<>();
 
@@ -124,17 +121,26 @@ public class SecurityUtil {
             }
 
             return x5c;
-        } catch (Exception ex) {
-            throw new EncryptionDecryptionException(
+        } catch (CertificateException ex) {
+            throw new SignerServiceException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_CERTIFICATE_EXCEPTION,
+                    ex);
+        } catch (KeyStoreException | IOException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_KEY_STORE_EXCEPTION,
+                    ex);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_ALGORITHM_EXCEPTION,
                     ex);
         }
     }
 
     public static KeyPair getRSAKeyPairFromKeystore(
-            SignerDetail signerDetail, List<Base64> x509CertChain)
-            throws EncryptionDecryptionException {
+            SignerDetail signerDetail, List<Base64> x509CertChain) throws SignerServiceException {
 
         try {
             String keyPass = signerDetail.getKeypass();
@@ -150,17 +156,26 @@ public class SecurityUtil {
                             ks.getKey(signerDetail.getSignerKeyPair(), keyPass.toCharArray());
 
             return new KeyPair(publicKey, privateKey);
-        } catch (Exception ex) {
-            throw new EncryptionDecryptionException(
+        } catch (KeyStoreException | IOException | UnrecoverableKeyException ex) {
+            throw new SignerServiceException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_KEY_STORE_EXCEPTION,
+                    ex);
+        } catch (CertificateException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_CERTIFICATE_EXCEPTION,
+                    ex);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_ALGORITHM_EXCEPTION,
                     ex);
         }
     }
 
     public static String generateDigitalSignatureWithPS256(
-            KeyPair keyPair, List<Base64> x5c, String jwsPayload)
-            throws EncryptionDecryptionException {
+            KeyPair keyPair, List<Base64> x5c, String jwsPayload) throws SignerServiceException {
 
         try {
             RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
@@ -183,10 +198,10 @@ public class SecurityUtil {
             jwsObject.sign(signer);
 
             return s + "." + jwsObject.getSignature();
-        } catch (Exception ex) {
-            throw new EncryptionDecryptionException(
+        } catch (JOSEException ex) {
+            throw new SignerServiceException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_JOSE_EXCEPTION,
                     ex);
         }
     }

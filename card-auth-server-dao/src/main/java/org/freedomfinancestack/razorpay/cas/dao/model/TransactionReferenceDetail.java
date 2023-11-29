@@ -37,9 +37,6 @@ public class TransactionReferenceDetail extends BaseEntity<String> {
     @Column(name = "threeds_requestor_challenge_ind")
     private String threeDSRequestorChallengeInd;
 
-    @Column(name = "whitelisting_data_entry")
-    private String whitelistingDataEntry;
-
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
     @MapsId

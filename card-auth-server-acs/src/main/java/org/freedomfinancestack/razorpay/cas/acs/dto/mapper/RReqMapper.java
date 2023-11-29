@@ -1,11 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
-import org.freedomfinancestack.razorpay.cas.contract.enums.ACSRenderingType;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -30,6 +28,7 @@ import org.mapstruct.Mapping;
             MessageType.class,
             DeviceChannel.class,
             ACSRenderingType.class,
+            WhitelistStatusSource.class,
         })
 public interface RReqMapper {
 
@@ -75,7 +74,9 @@ public interface RReqMapper {
     @Mapping(target = "whiteListStatus", expression = "java(getWhiteListStatus(transaction))")
     @Mapping(
             target = "whiteListStatusSource",
-            expression = "java(getWhiteListStatus(transaction) != null ? \"03\" : null)")
+            expression =
+                    "java(getWhiteListStatus(transaction) != null ?"
+                            + " WhitelistStatusSource.ACS.getValue() : null)")
     RREQ toRreq(Transaction transaction);
 
     default String getAuthType(Transaction transaction) {
@@ -101,20 +102,19 @@ public interface RReqMapper {
     }
 
     default String getWhiteListStatus(Transaction transaction) {
-        if (!Util.isNullorBlank(
-                        transaction.getTransactionReferenceDetail().getWhitelistingDataEntry())
+        if (!Util.isNullorBlank(transaction.getTransactionSdkDetail().getWhitelistingDataEntry())
                 && transaction
-                        .getTransactionReferenceDetail()
+                        .getTransactionSdkDetail()
                         .getWhitelistingDataEntry()
-                        .equals("Y")) {
-            return "Y";
+                        .equals(InternalConstants.YES)) {
+            return InternalConstants.YES;
         } else if (!Util.isNullorBlank(
-                        transaction.getTransactionReferenceDetail().getWhitelistingDataEntry())
+                        transaction.getTransactionSdkDetail().getWhitelistingDataEntry())
                 && transaction
-                        .getTransactionReferenceDetail()
+                        .getTransactionSdkDetail()
                         .getWhitelistingDataEntry()
-                        .equals("N")) {
-            return "R";
+                        .equals(InternalConstants.NO)) {
+            return InternalConstants.PADDED_SYMBOL_R;
         }
         return null;
     }

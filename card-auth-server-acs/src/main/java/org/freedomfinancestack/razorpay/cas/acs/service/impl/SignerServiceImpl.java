@@ -13,8 +13,8 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.SignedContent;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.EncryptionDecryptionException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.SignerServiceException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
 import org.freedomfinancestack.razorpay.cas.acs.service.SignerService;
@@ -61,7 +61,7 @@ public class SignerServiceImpl implements SignerService {
 
     @Override
     public String getAcsSignedContent(AREQ areq, Transaction transaction, String acsUrl)
-            throws EncryptionDecryptionException {
+            throws SignerServiceException {
         SignerDetail signerDetail;
         String signedData;
 
@@ -117,7 +117,7 @@ public class SignerServiceImpl implements SignerService {
             log.debug(
                     "Can't find signerDetail for institution_id: "
                             + transaction.getInstitutionId());
-            throw new EncryptionDecryptionException(
+            throw new SignerServiceException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                     InternalErrorCode.SIGNER_DETAIL_NOT_FOUND,
                     "Signer Detail not found");
@@ -200,7 +200,7 @@ public class SignerServiceImpl implements SignerService {
 
     private void generateSHA256SecretKey(
             AREQ areq, Transaction transaction, ECKey sdkPubKey, KeyPair acsKeyPair)
-            throws EncryptionDecryptionException {
+            throws SignerServiceException {
 
         try {
             // Step 4 - Perform KeyAgreement and derive SecretKey
@@ -233,10 +233,10 @@ public class SignerServiceImpl implements SignerService {
             transaction
                     .getTransactionSdkDetail()
                     .setAcsSecretKey(HexUtil.byteArrayToHexString(derivedKey.getEncoded()));
-        } catch (Exception ex) {
-            throw new EncryptionDecryptionException(
+        } catch (JOSEException ex) {
+            throw new SignerServiceException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_JOSE_EXCEPTION,
                     ex);
         }
     }
@@ -266,8 +266,7 @@ public class SignerServiceImpl implements SignerService {
             acsKDFSecretKey = HexUtil.hexStringToByteArray(strAcsSecretKey);
             transaction
                     .getTransactionSdkDetail()
-                    .setEncryptionAlgorithm(
-                            acsJweObject.getHeader().getEncryptionMethod().getName());
+                    .setEncryptionMethod(acsJweObject.getHeader().getEncryptionMethod().getName());
 
             transactionService.saveOrUpdate(transaction);
 
@@ -310,7 +309,7 @@ public class SignerServiceImpl implements SignerService {
 
             acsKDFSecretKey = HexUtil.hexStringToByteArray(strAcsSecretKey);
 
-            if (transaction.getTransactionSdkDetail().getEncryptionAlgorithm().equals("A128GCM")) {
+            if (transaction.getTransactionSdkDetail().getEncryptionMethod().equals("A128GCM")) {
                 acsKDFSecretKey =
                         Arrays.copyOfRange(
                                 acsKDFSecretKey,

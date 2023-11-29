@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
 import lombok.Getter;
@@ -18,7 +17,6 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class InstitutionUiConfiguration {
-    private final ApplicationContext applicationContext;
 
     private String institutionUrl;
     private String mediumLogo;

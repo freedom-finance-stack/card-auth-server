@@ -39,11 +39,14 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "acs_secret_key")
     private String acsSecretKey;
 
-    @Column(name = "encryption_algo")
-    private String encryptionAlgorithm;
+    @Column(name = "encryption_method")
+    private String encryptionMethod;
 
     @Column(name = "acs_counter_a_to_s")
     private String acsCounterAtoS;
+
+    @Column(name = "whitelisting_data_entry")
+    private String whitelistingDataEntry;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")

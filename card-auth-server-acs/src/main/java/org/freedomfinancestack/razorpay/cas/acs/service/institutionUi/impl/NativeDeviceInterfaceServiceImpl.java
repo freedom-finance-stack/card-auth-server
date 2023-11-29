@@ -59,13 +59,12 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
         String cardNumber = transaction.getTransactionCardDetail().getCardNumber();
 
         MessageCategory messageCategory = transaction.getMessageCategory();
-        String purchaseAmount;
-        String exponent;
         String amount = null;
         String currency = null;
         if (messageCategory.equals(MessageCategory.PA)) {
-            purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
-            exponent = transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
+            String purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
+            String exponent =
+                    transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
             amount = Util.formatAmount(purchaseAmount, exponent);
             currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
         }

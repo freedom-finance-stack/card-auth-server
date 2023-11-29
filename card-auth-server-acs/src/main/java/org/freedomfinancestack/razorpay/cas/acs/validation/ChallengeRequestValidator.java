@@ -7,12 +7,16 @@ import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationErrorCode;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
@@ -183,14 +187,16 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
         // TODO improve this part of code
         if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
                 && transaction.getTransactionSdkDetail().getAcsUiType() != null
-                && !incomingCreq.getSdkCounterStoA().equals("000")) {
+                && !incomingCreq
+                        .getSdkCounterStoA()
+                        .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)) {
             String acsUiType = transaction.getTransactionSdkDetail().getAcsUiType();
             String acsInterface = transaction.getTransactionSdkDetail().getAcsInterface();
 
             boolean conditionForChallengeDataEntry =
                     shouldValidateThreeDSDataElement(
                                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
-                            && acsInterface.equals("01")
+                            && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                             && Arrays.asList("01", "02", "03").contains(acsUiType)
                             && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
                                     || !YES.equals(incomingCreq.getChallengeNoEntry()))
@@ -209,7 +215,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
             boolean conditionForChallengeHTMLDataEntry =
                     shouldValidateThreeDSDataElement(
                                     ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY, transaction)
-                            && acsInterface.equals("02")
+                            && acsInterface.equals(DeviceInterface.HTML.getValue())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel());
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY.getFieldName(),
@@ -241,7 +247,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
             boolean conditionForResendChallenge =
                     shouldValidateThreeDSDataElement(
                                     ThreeDSDataElement.RESEND_CHALLENGE, transaction)
-                            && acsInterface.equals("01")
+                            && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                             && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                             && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
@@ -318,5 +324,33 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     data,
                     regexValidator("^" + Pattern.quote(matcher) + "$"));
         }
+    }
+
+    public boolean isWhitelistingDataValid(
+            Transaction transaction, CREQ creq, AuthConfigDto authConfigDto)
+            throws ACSValidationException {
+        try {
+            Validation.validate(
+                    ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getFieldName(),
+                    creq.getWhitelistingDataEntry(),
+                    when(
+                            !creq.getSdkCounterStoA()
+                                            .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                                    && transaction
+                                            .getTransactionReferenceDetail()
+                                            .getThreeDSRequestorChallengeInd()
+                                            .equals(
+                                                    ThreeDSRequestorChallengeInd
+                                                            .WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
+                                                            .getValue())
+                                    && authConfigDto
+                                            .getChallengeAttemptConfig()
+                                            .isWhitelistingAllowed(),
+                            notBlank()),
+                    isIn(ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getAcceptedValues()));
+        } catch (ValidationException vex) {
+            throw new ACSValidationException(vex);
+        }
+        return true;
     }
 }
