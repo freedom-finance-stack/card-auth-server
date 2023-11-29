@@ -151,7 +151,7 @@ public class SignerServiceImpl implements SignerService {
         if (errorObj == null) {
             String decryptedCReq;
             if (testConfigProperties.isEnableDecryptionEncryption()) {
-                if (!Util.isValidBase64Url(strCReq)) {
+                if (!Util.validateBase64UrlEncodedString(strCReq)) {
                     throw new ParseException(
                             ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                             InternalErrorCode.CRES_ENCRYPTION_ERROR);
