@@ -182,6 +182,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 aResMapperParams.setAcsSignedContent(signedData);
                 transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
             }
+
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                 String eci =
                         eCommIndicatorService.generateECI(
@@ -192,7 +193,11 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                         .setThreeRIInd(areq.getThreeRIInd()));
                 transaction.setEci(eci);
                 transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
+            } else if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
+                    transaction.getTransactionStatus())) {
+
             }
+
         } catch (ThreeDSException ex) {
             // NOTE : to send Erro in response throw ThreeDSException, otherwise
 

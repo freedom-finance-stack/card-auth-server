@@ -50,10 +50,20 @@ public class AppConfiguration {
         @Getter
         @Setter
         public static class TimeoutConfig {
+            /** Timeout value (in seconds) for getting challenge requests after Ares is sent. */
             private int challengeRequest;
+
+            /** Timeout value (in seconds) for completing decoupled challenge authentication. */
             private int decoupledChallengeCompletion;
+
+            /** Timeout value (in seconds) for completing challenge authentication. */
             private int challengeCompletion;
+
+            /** Timeout value (in seconds) for UI to enter challenge task by user. */
             private int challengeValidation;
+
+            /** Delay (in seconds) to trigger decoupled authentication after Ares is sent. */
+            private int decoupledAuthDelay;
         }
     }
 }

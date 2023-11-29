@@ -43,10 +43,10 @@ public class PlrqService extends HttpsGatewayService {
     @Autowired
     public PlrqService(
             AppConfiguration appConfiguration,
-            @Qualifier("ulTestRestTemplate") RestTemplate visaDsRestTemplate,
+            @Qualifier("ulTestRestTemplate") RestTemplate ulTestRestTemplate,
             GatewayConfig gatewayConfig) {
         this.appConfiguration = appConfiguration;
-        this.ulRestTemplate = visaDsRestTemplate;
+        this.ulRestTemplate = ulTestRestTemplate;
         this.serviceConfig = gatewayConfig.getServices().get(ClientType.UL_TEST_PORTAL);
     }
 

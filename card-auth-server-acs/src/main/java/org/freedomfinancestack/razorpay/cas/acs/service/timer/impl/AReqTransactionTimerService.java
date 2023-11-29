@@ -38,12 +38,11 @@ public class AReqTransactionTimerService implements TransactionTimerService {
             if (transactionStatus.equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)) {
                 timeout =
                         decoupledTimeOut != 0
-                                ? decoupledTimeOut
+                                ? decoupledTimeOut * 60
                                 : appConfiguration
-                                                .getAcs()
-                                                .getTimeout()
-                                                .getDecoupledChallengeCompletion()
-                                        * 60;
+                                        .getAcs()
+                                        .getTimeout()
+                                        .getDecoupledChallengeCompletion();
             }
             timerService.scheduleTimeoutTask(
                     generateTaskIdentifier(AREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),

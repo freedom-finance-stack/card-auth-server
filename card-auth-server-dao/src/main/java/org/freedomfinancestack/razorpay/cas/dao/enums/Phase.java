@@ -27,6 +27,7 @@ public enum Phase implements State<Phase.PhaseEvent> {
                     return Phase.CREQ;
                 case ERROR_OCCURRED:
                     return Phase.ERROR;
+                case DECOUPLED_AUTH_COMPLETED:
                 case TIMEOUT:
                     return Phase.RREQ;
             }
@@ -143,6 +144,7 @@ public enum Phase implements State<Phase.PhaseEvent> {
         CHALLENGE_COMPLETED,
         ERROR_OCCURRED,
         TRANSACTION_FAILED,
-        CHALLENGE_DATA_ENTRY
+        CHALLENGE_DATA_ENTRY,
+        DECOUPLED_AUTH_COMPLETED
     }
 }

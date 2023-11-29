@@ -16,6 +16,7 @@ app:
       challengeCompletion: 600 #sec
       challengeValidation: 180 #sec
       decoupledChallengeCompletion: 600 #sec
+      decoupledAuthDelay : 5 #sec
 
 test:
   enable : false
