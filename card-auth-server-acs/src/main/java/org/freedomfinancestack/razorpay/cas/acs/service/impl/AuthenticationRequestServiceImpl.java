@@ -102,6 +102,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             if (Util.isMessageVersionValid(areq.getMessageVersion())) {
                 transaction.setMessageVersion(areq.getMessageVersion());
             }
+
             // log incoming request in DB
             transactionMessageLogService.createAndSave(areq, areq.getTransactionId());
 
@@ -154,6 +155,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                             appConfiguration.getHostname(),
                                             transaction.getDeviceChannel()));
                     aResMapperParams.setAcsSignedContent(signedData);
+                    transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
                 }
             }
 

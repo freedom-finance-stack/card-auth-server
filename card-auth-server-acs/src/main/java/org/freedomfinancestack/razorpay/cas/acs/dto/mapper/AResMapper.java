@@ -80,7 +80,6 @@ public interface AResMapper {
     @Mapping(target = "sdkTransID", source = "areq.sdkTransID")
     @Mapping(target = "messageVersion", source = "areq.messageVersion")
     @Mapping(target = "broadInfo", expression = "java(null)")
-    @Mapping(target = "sdkEphemPubKey", expression = "java(null)")
     @Mapping(target = "cardholderInfo", expression = "java(null)")
     @Mapping(
             target = "whiteListStatus",
@@ -99,9 +98,9 @@ public interface AResMapper {
             target = "acsRenderingType",
             expression =
                     "java((DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) &&"
-                        + " transaction.getTransactionSdkDetail().getAcsUiType() != null )? new"
+                        + " transaction.getTransactionSdkDetail().getAcsUiTemplate() != null )? new"
                         + " ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
-                        + " transaction.getTransactionSdkDetail().getAcsUiType()) : null)")
+                        + " transaction.getTransactionSdkDetail().getAcsUiTemplate()) : null)")
     @Mapping(target = "acsSignedContent", source = "aResMapperParams.acsSignedContent")
     ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 

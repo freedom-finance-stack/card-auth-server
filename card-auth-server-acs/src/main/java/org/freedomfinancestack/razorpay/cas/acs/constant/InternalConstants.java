@@ -12,14 +12,19 @@ public class InternalConstants {
     public static final String YES = "Y";
     public static final String NO = "N";
     public static final String SPACE = " ";
+
+    public static final String INITIAL_ACS_SDK_COUNTER = "000";
     public static final String COLON_SEPARATOR = " : ";
     public static final String COMMA = ",";
     public static final String SEMICOLON = ";";
     public static final String PADDED_SYMBOL_X = "X";
+    public static final String PADDED_SYMBOL_R = "R";
     public static final Character PADDED_SYMBOL_0 = '0';
     public static final String HYPEN_WITH_SPACE = " - ";
     public static final String AMPERSAND = "&";
     public static final String DOT = ".";
+
+    public static final String LAST_FOUR_DIGIT_PLACEHOLDER = "XXXX";
     public static final String PAD_LEFT = "LEFT";
     public static final String PAD_RIGHT = "RIGHT";
     public static final String NO_OP_HSM = "NoOpHSM";
@@ -48,6 +53,14 @@ public class InternalConstants {
     public static final String MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE = "cdRes";
     public static final String THREE_RI_WHILE_LIST_STATUS_SOURCE = "03";
     public static final String THREE_RI_IND_WHILE_LIST = "10";
+
+    // Placeholders
+    public static final String LAST_FOUR_DIGIT_MOBILE_NUMBER = "LAST_FOUR_DIGIT_MOBILE_NUMBER";
+    public static final String MASKED_CARD_NUMBER = "MASKED_CARD_NUMBER";
+    public static final String MERCHANT_NAME = "MERCHANT_NAME";
+    public static final String AMOUNT_WITH_CURRENCY = "AMOUNT_WITH_CURRENCY";
+    public static final String TRANSACTION_DATE = "TRANSACTION_DATE";
+
     public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_02 = "02";
     public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_03 = "03";
 }
