@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+// TODO merge this into InstitutionUIParams
 public class AppOtpHtmlParams {
     String transactionId;
     String institutionName;

@@ -168,6 +168,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                             appConfiguration.getHostname(),
                                             transaction.getDeviceChannel()));
                     aResMapperParams.setAcsSignedContent(signedData);
+                    transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
                 }
             }
 

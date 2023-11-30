@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
@@ -13,6 +14,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInte
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.Image;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
 import org.freedomfinancestack.razorpay.cas.contract.enums.UIType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
@@ -35,7 +37,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
     private final InstitutionUiConfiguration institutionUiConfiguration;
 
     @Override
-    public void populateInstitutionUiConfig(
+    public void generateAppUIParams(
             Transaction transaction,
             AppChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
@@ -44,24 +46,26 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
 
         // TODO Need to update it according to the Message Category
 
-        InstitutionUiConfig validInstitutionUiConfig = new InstitutionUiConfig();
+        InstitutionUIParams validInstitutionUIParams = new InstitutionUIParams();
 
-        String challengeText = null;
+        String challengeText;
 
-        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
+        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiTemplate());
+        if (uiType == null) {
+            throw new ACSDataAccessException(InternalErrorCode.UNSUPPORTED_UI_TYPE);
+        }
 
         String transactionDate =
                 new SimpleDateFormat("dd/MM/yyyy").format(transaction.getModifiedAt());
         String cardNumber = transaction.getTransactionCardDetail().getCardNumber();
 
         MessageCategory messageCategory = transaction.getMessageCategory();
-        String purchaseAmount = null;
-        String exponent = null;
         String amount = null;
         String currency = null;
         if (messageCategory.equals(MessageCategory.PA)) {
-            purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
-            exponent = transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
+            String purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
+            String exponent =
+                    transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
             amount = Util.formatAmount(purchaseAmount, exponent);
             currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
         }
@@ -102,23 +106,26 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                                 .get(network)
                                 .getExtraHighPs());
 
-        challengeFlowDto.setIssuerImage(issuerLogo);
-        challengeFlowDto.setPsImage(psImage);
+        validInstitutionUIParams.setIssuerImage(issuerLogo);
+        validInstitutionUIParams.setPsImage(psImage);
 
-        validInstitutionUiConfig.setChallengeInfoHeader(
+        validInstitutionUIParams.setChallengeInfoHeader(
                 institutionUiConfig.getChallengeInfoHeader());
-        validInstitutionUiConfig.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
-        validInstitutionUiConfig.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
-        validInstitutionUiConfig.setExpandInfoText(institutionUiConfig.getExpandInfoText());
-        validInstitutionUiConfig.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
-        validInstitutionUiConfig.setWhyInfoText(institutionUiConfig.getWhyInfoText());
+        validInstitutionUIParams.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
+        validInstitutionUIParams.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
+        validInstitutionUIParams.setExpandInfoText(institutionUiConfig.getExpandInfoText());
+        validInstitutionUIParams.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
+        validInstitutionUIParams.setWhyInfoText(institutionUiConfig.getWhyInfoText());
 
         if (transaction
                         .getTransactionReferenceDetail()
                         .getThreeDSRequestorChallengeInd()
-                        .equals("09")
+                        .equals(
+                                ThreeDSRequestorChallengeInd
+                                        .WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
+                                        .getValue())
                 && authConfigDto.getChallengeAttemptConfig().isWhitelistingAllowed()) {
-            validInstitutionUiConfig.setWhitelistingInfoText(
+            validInstitutionUIParams.setWhitelistingInfoText(
                     institutionUiConfig.getWhitelistingInfoText());
         }
 
@@ -143,13 +150,13 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                         challengeText.replaceFirst(
                                 InternalConstants.TRANSACTION_DATE, transactionDate);
 
-                validInstitutionUiConfig.setChallengeInfoText(challengeText);
-                validInstitutionUiConfig.setSubmitAuthenticationLabel(
+                validInstitutionUIParams.setChallengeInfoText(challengeText);
+                validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
-                validInstitutionUiConfig.setResendInformationLabel(
+                validInstitutionUIParams.setResendInformationLabel(
                         institutionUiConfig.getResendInformationLabel());
 
-                validInstitutionUiConfig.setSubmitAuthenticationLabel(
+                validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
                 break;
 
@@ -162,9 +169,9 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                                 username,
                                 network.getName(),
                                 institution.get().getName());
-                validInstitutionUiConfig.setChallengeInfoText(challengeText);
+                validInstitutionUIParams.setChallengeInfoText(challengeText);
 
-                validInstitutionUiConfig.setSubmitAuthenticationLabel(
+                validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
 
                 // TODO challengeSelectInfo
@@ -173,9 +180,9 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
             case MULTI_SELECT:
                 challengeText = institutionUiConfig.getChallengeInfoText();
                 challengeText = String.format(challengeText, institution.get().getName());
-                validInstitutionUiConfig.setChallengeInfoText(challengeText);
+                validInstitutionUIParams.setChallengeInfoText(challengeText);
 
-                validInstitutionUiConfig.setSubmitAuthenticationLabel(
+                validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
 
                 // TODO challengeSelectInfo
@@ -184,24 +191,20 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
             case OOB:
                 challengeText = institutionUiConfig.getChallengeInfoText();
 
-                validInstitutionUiConfig.setChallengeInfoText(challengeText);
+                validInstitutionUIParams.setChallengeInfoText(challengeText);
 
-                validInstitutionUiConfig.setResendInformationLabel(
+                validInstitutionUIParams.setResendInformationLabel(
                         institutionUiConfig.getResendInformationLabel());
 
                 // TODO set OOB Constants
                 break;
 
-            case HTML_OTHER:
-                throw new ACSDataAccessException(
-                        InternalErrorCode.UNSUPPORTED_UI_TYPE,
-                        "UI Type Implementation not available with the given option " + uiType);
-
+                // This handles HTML_OTHER cases too
             default:
                 throw new ACSDataAccessException(
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,
                         "UI Type Implementation not available with the given option " + uiType);
         }
-        challengeFlowDto.setInstitutionUiConfig(validInstitutionUiConfig);
+        challengeFlowDto.setInstitutionUIParams(validInstitutionUIParams);
     }
 }

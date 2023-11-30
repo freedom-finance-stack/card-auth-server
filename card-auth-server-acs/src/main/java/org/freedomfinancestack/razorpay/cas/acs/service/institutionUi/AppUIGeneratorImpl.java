@@ -7,7 +7,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
-import org.freedomfinancestack.razorpay.cas.acs.service.InstitutionUiService;
+import org.freedomfinancestack.razorpay.cas.acs.service.AppUIGenerator;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.impl.HtmlDeviceInterfaceServiceImpl;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.impl.NativeDeviceInterfaceServiceImpl;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
@@ -26,16 +26,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service(value = "institutionUiServiceImpl")
+@Service(value = "AppUIGeneratorImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class InstitutionUiServiceImpl implements InstitutionUiService {
+public class AppUIGeneratorImpl implements AppUIGenerator {
 
     private final ApplicationContext applicationContext;
 
     private final InstitutionUiConfigRepository institutionUiConfigRepository;
 
     @Override
-    public void populateInstitutionUiConfig(
+    public void generateAppUIParams(
             AppChallengeFlowDto challengeFlowDto,
             Transaction transaction,
             AuthConfigDto authConfigDto)
@@ -45,7 +45,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                 DeviceInterface.getDeviceInterface(
                         transaction.getTransactionSdkDetail().getAcsInterface());
         AuthType authType = AuthType.getAuthType(transaction.getAuthenticationType());
-        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
+        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiTemplate());
         Optional<InstitutionUiConfig> institutionUiConfig =
                 institutionUiConfigRepository.findById(
                         new InstitutionUiConfigPK(
@@ -53,7 +53,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
         if (institutionUiConfig.isPresent()) {
             DeviceInterfaceService deviceInterfaceService =
                     getDeviceInterfaceService(Objects.requireNonNull(deviceInterface));
-            deviceInterfaceService.populateInstitutionUiConfig(
+            deviceInterfaceService.generateAppUIParams(
                     transaction, challengeFlowDto, institutionUiConfig.get(), authConfigDto);
             return;
         }
@@ -67,13 +67,14 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
     }
 
     private DeviceInterfaceService getDeviceInterfaceService(
-            @NonNull final DeviceInterface deviceInterface) {
+            @NonNull final DeviceInterface deviceInterface) throws ACSDataAccessException {
         switch (deviceInterface) {
             case NATIVE:
                 return applicationContext.getBean(NativeDeviceInterfaceServiceImpl.class);
             case HTML:
                 return applicationContext.getBean(HtmlDeviceInterfaceServiceImpl.class);
+            default:
+                throw new ACSDataAccessException(InternalErrorCode.UNSUPPORTED_DEVICE_INTERFACE);
         }
-        return null;
     }
 }

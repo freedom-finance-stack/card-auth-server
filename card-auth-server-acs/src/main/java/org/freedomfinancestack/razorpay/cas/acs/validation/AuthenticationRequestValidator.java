@@ -685,7 +685,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         Validation.validate(
                 ThreeDSDataElement.WHITE_LIST_STATUS.getFieldName(),
                 request.getWhiteListStatus(),
-                isIn(new String[] {"Y", "N"}));
+                isIn(ThreeDSDataElement.WHITE_LIST_STATUS.getAcceptedValues()));
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_DEC_REQ_IND.getFieldName(),
                 request.getThreeDSRequestorDecReqInd(),

@@ -53,6 +53,7 @@ public class FeatureServiceImpl implements FeatureService {
                     Util.findFirstCommonString(
                             Arrays.asList(deviceRenderOptions.getSdkUiType()),
                             renderingTypeConfig.getAcsUiTemplate());
+            
             if (acsUiType == null) {
                 continue;
             }
@@ -62,7 +63,7 @@ public class FeatureServiceImpl implements FeatureService {
                 transaction
                         .getTransactionSdkDetail()
                         .setAcsInterface(renderingTypeConfig.getAcsInterface());
-                transaction.getTransactionSdkDetail().setAcsUiType(acsUiType);
+                transaction.getTransactionSdkDetail().setAcsUiTemplate(acsUiType);
                 return;
             } else if (deviceRenderOptions.getSdkInterface().equals("03")) {
                 if (finalRenderingTypeConfig == null
@@ -72,7 +73,7 @@ public class FeatureServiceImpl implements FeatureService {
                     transaction
                             .getTransactionSdkDetail()
                             .setAcsInterface(renderingTypeConfig.getAcsInterface());
-                    transaction.getTransactionSdkDetail().setAcsUiType(acsUiType);
+                    transaction.getTransactionSdkDetail().setAcsUiTemplate(acsUiType);
                 }
             }
         }

@@ -16,13 +16,9 @@ public enum AuthType {
         this.value = value;
     }
 
-    public Integer getValue() {
-        return value;
-    }
-
     public static AuthType getAuthType(Integer value) {
         for (AuthType authType : AuthType.values()) {
-            if (authType.getValue().equals(value)) {
+            if (authType.getValue() == value) {
                 return authType;
             }
         }
