@@ -8,10 +8,13 @@ import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.extensions.timer.TimerService;
 import org.freedomfinancestack.razorpay.cas.acs.dto.DecoupledAuthenticationRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.DecoupledAuthenticationResponse;
+import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.DecoupledAuthenticationService;
+import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
+import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.TransactionTimerService;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -33,7 +36,9 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
     // todo add factory method, once more than one implementation
     private final DecoupledAuthenticationService decoupledAuthenticationService;
     private final TransactionService transactionService;
+    private final AuthValueGeneratorService authValueGeneratorService;
     private final ResultRequestService resultRequestService;
+    private final ECommIndicatorService eCommIndicatorService;
     private static final String[] DA_TIMEOUT_TEST_RANGE = new String[] {"R_TEST_1"};
     public static String DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY = "DECOUPLED_AUTH_TIMER_TASK";
 
@@ -93,7 +98,17 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                 transaction.setTransactionStatus(TransactionStatus.FAILED);
             } else {
                 transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+                transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
             }
+
+            String eci =
+                    eCommIndicatorService.generateECI(
+                            new GenerateECIRequest(
+                                            transaction.getTransactionStatus(),
+                                            transaction.getTransactionCardDetail().getNetworkCode(),
+                                            transaction.getMessageCategory())
+                                    .setThreeRIInd(transaction.getThreeRIInd()));
+            transaction.setEci(eci);
 
             try {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.DECOUPLED_AUTH_COMPLETED);
