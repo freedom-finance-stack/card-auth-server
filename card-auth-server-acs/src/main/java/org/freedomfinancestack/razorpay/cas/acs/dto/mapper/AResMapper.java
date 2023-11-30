@@ -81,7 +81,6 @@ public interface AResMapper {
     @Mapping(target = "messageVersion", source = "areq.messageVersion")
     @Mapping(target = "broadInfo", expression = "java(null)")
     @Mapping(target = "sdkEphemPubKey", expression = "java(null)")
-    @Mapping(target = "cardholderInfo", expression = "java(null)")
     @Mapping(
             target = "whiteListStatus",
             expression =
@@ -103,6 +102,13 @@ public interface AResMapper {
                         + " ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
                         + " transaction.getTransactionSdkDetail().getAcsUiType()) : null)")
     @Mapping(target = "acsSignedContent", source = "aResMapperParams.acsSignedContent")
+    @Mapping(
+            target = "cardholderInfo",
+            expression =
+                    "java(transaction.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)"
+                        + " && transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)"
+                        + " ? \"Additional authentication is needed for this transaction, please"
+                        + " contact (Issuer Name) at xxx-xxx-xxxx.\" : null)")
     ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
