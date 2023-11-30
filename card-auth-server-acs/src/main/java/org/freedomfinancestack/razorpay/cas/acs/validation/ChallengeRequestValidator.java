@@ -186,11 +186,11 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
         int challengeDataCount = 0;
         // TODO improve this part of code
         if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
-                && transaction.getTransactionSdkDetail().getAcsUiType() != null
+                && transaction.getTransactionSdkDetail().getAcsUiTemplate() != null
                 && !incomingCreq
                         .getSdkCounterStoA()
                         .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)) {
-            String acsUiType = transaction.getTransactionSdkDetail().getAcsUiType();
+            String acsUiType = transaction.getTransactionSdkDetail().getAcsUiTemplate();
             String acsInterface = transaction.getTransactionSdkDetail().getAcsInterface();
 
             boolean conditionForChallengeDataEntry =

@@ -49,7 +49,7 @@ CREATE TABLE `transaction_sdk_detail`
     `sdk_app_id`           varchar(36) DEFAULT NULL,
     `sdk_reference_number` varchar(32) DEFAULT NULL,
     `acs_interface`        char(2) DEFAULT NULL,
-    `acs_ui_type`          char(2) DEFAULT NULL,
+    `acs_ui_template`      char(2) DEFAULT NULL,
     `acs_secret_key`       LONGTEXT NULL,
     `encryption_method`      VARCHAR(45) DEFAULT NULL,
     `device_info`          text,

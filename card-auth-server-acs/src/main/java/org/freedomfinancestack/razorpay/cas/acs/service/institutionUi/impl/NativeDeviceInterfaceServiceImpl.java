@@ -50,7 +50,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
 
         String challengeText;
 
-        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
+        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiTemplate());
         if (uiType == null) {
             throw new ACSDataAccessException(InternalErrorCode.UNSUPPORTED_UI_TYPE);
         }

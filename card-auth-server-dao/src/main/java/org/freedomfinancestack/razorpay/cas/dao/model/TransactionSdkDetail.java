@@ -33,8 +33,8 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "acs_interface")
     private String acsInterface;
 
-    @Column(name = "acs_ui_type")
-    private String acsUiType;
+    @Column(name = "acs_ui_template")
+    private String acsUiTemplate;
 
     @Column(name = "device_info")
     private String deviceInfo;
@@ -52,21 +52,13 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     private String whitelistingDataEntry;
 
     public String getAcsUiType() {
-        return acsUiType;
-    }
-
-    public String GetAcsUiType() {
         if (acsInterface.equals(DeviceInterface.HTML.getValue())) {
             return UIType.HTML_OTHER.getType();
         }
-        return acsUiType;
+        return acsUiTemplate;
     }
 
-    public String GetAcsUiTemplate() {
-        return acsUiType;
-    }
-
-    public void SetIncrementedAcsCounterAtoS(int counter) {
+    public void setIncrementedAcsCounterAtoS(int counter) {
         acsCounterAtoS = Util.incrementString(acsCounterAtoS, counter);
     }
 

@@ -77,7 +77,7 @@ public interface CResMapper {
     @Mapping(target = "acsCounterAtoS", source = "transaction.transactionSdkDetail.acsCounterAtoS")
     @Mapping(
             target = "acsUiType",
-            expression = "java(transaction.getTransactionSdkDetail().GetAcsUiType())")
+            expression = "java(transaction.getTransactionSdkDetail().getAcsUiType())")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
     @Mapping(target = "acsHTML", source = "institutionUIParams.displayPage")
     @Mapping(target = "psImage", source = "institutionUIParams.psImage")

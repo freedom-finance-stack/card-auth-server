@@ -98,9 +98,9 @@ public interface AResMapper {
             target = "acsRenderingType",
             expression =
                     "java((DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) &&"
-                        + " transaction.getTransactionSdkDetail().getAcsUiType() != null )? new"
+                        + " transaction.getTransactionSdkDetail().getAcsUiTemplate() != null )? new"
                         + " ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
-                        + " transaction.getTransactionSdkDetail().GetAcsUiTemplate()) : null)")
+                        + " transaction.getTransactionSdkDetail().getAcsUiTemplate()) : null)")
     @Mapping(target = "acsSignedContent", source = "aResMapperParams.acsSignedContent")
     ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 

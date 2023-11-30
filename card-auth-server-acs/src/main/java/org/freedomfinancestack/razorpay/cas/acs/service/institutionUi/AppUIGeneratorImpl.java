@@ -45,7 +45,7 @@ public class AppUIGeneratorImpl implements AppUIGenerator {
                 DeviceInterface.getDeviceInterface(
                         transaction.getTransactionSdkDetail().getAcsInterface());
         AuthType authType = AuthType.getAuthType(transaction.getAuthenticationType());
-        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
+        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiTemplate());
         Optional<InstitutionUiConfig> institutionUiConfig =
                 institutionUiConfigRepository.findById(
                         new InstitutionUiConfigPK(

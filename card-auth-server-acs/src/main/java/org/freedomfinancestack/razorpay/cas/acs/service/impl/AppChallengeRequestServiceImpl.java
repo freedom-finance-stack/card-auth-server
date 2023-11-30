@@ -212,7 +212,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 }
                 // method to increase a string counter
                 // TODO handle these in case above exception is thrown
-                transaction.getTransactionSdkDetail().SetIncrementedAcsCounterAtoS(1);
+                transaction.getTransactionSdkDetail().setIncrementedAcsCounterAtoS(1);
                 transactionService.saveOrUpdate(transaction);
                 if (challengeFlowDto.getCres() != null) {
                     transactionMessageLogService.createAndSave(
