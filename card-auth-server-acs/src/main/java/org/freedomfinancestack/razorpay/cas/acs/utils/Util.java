@@ -13,11 +13,8 @@ import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSDataElement;
-import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
@@ -32,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
-import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
 
 /**
  * The {@code Util} class provides various utility methods used across the ACS (Access Control
@@ -339,30 +335,6 @@ public class Util {
                     isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
         } catch (ValidationException e) {
             return false;
-        }
-        return true;
-    }
-
-    public static boolean isWhitelistingDataValid(
-            Transaction transaction, CREQ creq, AuthConfigDto authConfigDto)
-            throws ACSValidationException {
-        try {
-            Validation.validate(
-                    ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getFieldName(),
-                    creq.getWhitelistingDataEntry(),
-                    when(
-                            !creq.getSdkCounterStoA().equals("000")
-                                    && transaction
-                                            .getTransactionReferenceDetail()
-                                            .getThreeDSRequestorChallengeInd()
-                                            .equals("09")
-                                    && authConfigDto
-                                            .getChallengeAttemptConfig()
-                                            .isWhitelistingAllowed(),
-                            notBlank()),
-                    isIn(ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getAcceptedValues()));
-        } catch (ValidationException vex) {
-            throw new ACSValidationException(vex);
         }
         return true;
     }

@@ -51,6 +51,18 @@ public interface CResMapper {
     @Mapping(target = "transStatus", source = "transaction.transactionStatus.status")
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
+    @Mapping(
+            target = "sdkTransID",
+            expression =
+                    "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
+                            + " transaction.getTransactionSdkDetail().getSdkTransId() : null)")
+    @Mapping(
+            target = "acsCounterAtoS",
+            expression =
+                    "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
+                            + " transaction.getTransactionSdkDetail().getAcsCounterAtoS() : null)")
+    @Mapping(target = "psImage", expression = "java(null)")
+    @Mapping(target = "issuerImage", expression = "java(null)")
     CRES toCres(Transaction transaction);
 
     @Mapping(target = "acsTransID", source = "transaction.id")
@@ -62,11 +74,19 @@ public interface CResMapper {
             expression = "java(getChallengeCompletionInd(transaction))")
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
-    @Mapping(target = "acsCounterAtoS", source = "transaction.transactionSdkDetail.acsCounterAtoS")
+    @Mapping(
+            target = "sdkTransID",
+            expression =
+                    "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
+                            + " transaction.getTransactionSdkDetail().getSdkTransId() : null)")
+    @Mapping(
+            target = "acsCounterAtoS",
+            expression =
+                    "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
+                            + " transaction.getTransactionSdkDetail().getAcsCounterAtoS() : null)")
     @Mapping(
             target = "acsUiType",
             expression = "java(transaction.getTransactionSdkDetail().getAcsUiType())")
-    @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
     @Mapping(target = "acsHTML", source = "institutionUIParams.displayPage")
     @Mapping(target = "psImage", source = "institutionUIParams.psImage")
     @Mapping(target = "issuerImage", source = "institutionUIParams.issuerImage")
