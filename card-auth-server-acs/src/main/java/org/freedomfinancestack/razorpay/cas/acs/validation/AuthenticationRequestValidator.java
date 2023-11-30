@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 import java.util.Arrays;
 
 import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
+import org.freedomfinancestack.extensions.validation.exception.ValidationErrorCode;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
@@ -477,7 +478,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 && !Util.isNullorBlank(request.getThreeDSRequestorDecReqInd())
                                 && InternalConstants.YES.equals(
                                         request.getThreeDSRequestorDecReqInd()),
-                        notBlank()));
+                        notBlank()),
+                s -> {
+                    int threeDSRequestorDecMaxTime = Integer.parseInt(s);
+                    if (threeDSRequestorDecMaxTime > 10080 || threeDSRequestorDecMaxTime < 1) {
+                        throw new ValidationException(
+                                ValidationErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
+                    }
+                });
 
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
