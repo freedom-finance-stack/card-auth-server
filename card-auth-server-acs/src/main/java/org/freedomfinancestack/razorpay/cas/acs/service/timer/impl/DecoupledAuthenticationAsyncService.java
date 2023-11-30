@@ -94,21 +94,20 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                 return;
             }
 
-            if (response == null || !response.isSuccessful()) {
-                transaction.setTransactionStatus(TransactionStatus.FAILED);
-            } else {
-                transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-                transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
-            }
 
+            transaction.setTransactionStatus(response == null || !response.isSuccessful() ?  TransactionStatus.FAILED : TransactionStatus.SUCCESS);
             String eci =
                     eCommIndicatorService.generateECI(
                             new GenerateECIRequest(
-                                            transaction.getTransactionStatus(),
-                                            transaction.getTransactionCardDetail().getNetworkCode(),
-                                            transaction.getMessageCategory())
+                                    transaction.getTransactionStatus(),
+                                    transaction.getTransactionCardDetail().getNetworkCode(),
+                                    transaction.getMessageCategory())
                                     .setThreeRIInd(transaction.getThreeRIInd()));
             transaction.setEci(eci);
+
+            if(transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)){
+                transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
+            }
 
             try {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.DECOUPLED_AUTH_COMPLETED);
