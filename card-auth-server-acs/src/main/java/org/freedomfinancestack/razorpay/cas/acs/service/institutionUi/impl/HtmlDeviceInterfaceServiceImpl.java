@@ -12,7 +12,6 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
-import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.ThymeleafService;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInterfaceService;
@@ -38,12 +37,10 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
 
     private final InstitutionUiConfiguration institutionUiConfiguration;
 
-    private final AppConfiguration appConfiguration;
-
     private final ThymeleafService thymeleafService;
 
     @Override
-    public void populateInstitutionUiConfig(
+    public void generateAppUIParams(
             Transaction transaction,
             AppChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
@@ -60,10 +57,9 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         }
         appOtpHtmlParams.setInstitutionName(institution.get().getName());
         appOtpHtmlParams.setTimeoutInSeconds(
-                String.valueOf(appConfiguration.getAcs().getTimeout().getChallengeValidation()));
+                String.valueOf(institutionUiConfiguration.getHtmlPageTimer()));
         appOtpHtmlParams.setTimeoutInMinutes(
-                String.valueOf(
-                        appConfiguration.getAcs().getTimeout().getChallengeValidation() / 60));
+                String.valueOf(institutionUiConfiguration.getHtmlPageTimer() / 60));
 
         String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
         Network network =

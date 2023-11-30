@@ -80,7 +80,6 @@ public interface AResMapper {
     @Mapping(target = "sdkTransID", source = "areq.sdkTransID")
     @Mapping(target = "messageVersion", source = "areq.messageVersion")
     @Mapping(target = "broadInfo", expression = "java(null)")
-    @Mapping(target = "sdkEphemPubKey", expression = "java(null)")
     @Mapping(target = "cardholderInfo", expression = "java(null)")
     @Mapping(
             target = "whiteListStatus",

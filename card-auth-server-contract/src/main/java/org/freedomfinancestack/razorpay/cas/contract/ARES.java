@@ -28,8 +28,6 @@ public class ARES extends ThreeDSObject {
 
     private String messageVersion = EMVCOConstant.DEFAULT_MESSAGE_TYPE_VERSION;
 
-    private String sdkEphemPubKey;
-
     private String sdkTransID;
 
     private String transStatus;

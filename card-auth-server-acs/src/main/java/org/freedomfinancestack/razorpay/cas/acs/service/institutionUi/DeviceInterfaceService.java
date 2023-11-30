@@ -7,7 +7,7 @@ import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
 public interface DeviceInterfaceService {
-    void populateInstitutionUiConfig(
+    void generateAppUIParams(
             Transaction transaction,
             AppChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,

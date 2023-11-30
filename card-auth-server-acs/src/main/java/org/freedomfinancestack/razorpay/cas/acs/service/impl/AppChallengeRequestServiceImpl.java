@@ -100,7 +100,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
             }
 
-            // Setting Institution Ui Config
+            // Generating App Ui Params
             appUIGenerator.generateAppUIParams(challengeFlowDto, transaction, authConfigDto);
 
             // 4 flows

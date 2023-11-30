@@ -36,7 +36,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
     private final InstitutionUiConfiguration institutionUiConfiguration;
 
     @Override
-    public void populateInstitutionUiConfig(
+    public void generateAppUIParams(
             Transaction transaction,
             AppChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,

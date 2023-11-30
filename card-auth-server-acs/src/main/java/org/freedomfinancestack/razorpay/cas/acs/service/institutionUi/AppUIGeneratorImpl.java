@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service(value = "institutionUiServiceImpl")
+@Service(value = "AppUIGeneratorImpl")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AppUIGeneratorImpl implements AppUIGenerator {
 
@@ -53,7 +53,7 @@ public class AppUIGeneratorImpl implements AppUIGenerator {
         if (institutionUiConfig.isPresent()) {
             DeviceInterfaceService deviceInterfaceService =
                     getDeviceInterfaceService(Objects.requireNonNull(deviceInterface));
-            deviceInterfaceService.populateInstitutionUiConfig(
+            deviceInterfaceService.generateAppUIParams(
                     transaction, challengeFlowDto, institutionUiConfig.get(), authConfigDto);
             return;
         }

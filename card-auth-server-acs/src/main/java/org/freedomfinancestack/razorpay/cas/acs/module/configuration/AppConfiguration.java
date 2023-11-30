@@ -52,7 +52,6 @@ public class AppConfiguration {
         public static class TimeoutConfig {
             private int challengeRequest;
             private int challengeCompletion;
-            private int challengeValidation;
         }
     }
 }

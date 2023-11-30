@@ -24,6 +24,8 @@ public class InstitutionUiConfiguration {
     private String extraHighLogo;
     private String institutionCssUrl;
     private String htmlOtpTemplate;
+    // TODO handle this timer when updating HTML page for APP based flow
+    private int htmlPageTimer;
     private Map<Network, UiConfig> networkUiConfig = new EnumMap<>(Network.class);
 
     @Getter
