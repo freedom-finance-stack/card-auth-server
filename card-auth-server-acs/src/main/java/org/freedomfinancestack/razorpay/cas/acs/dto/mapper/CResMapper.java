@@ -1,13 +1,11 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -31,7 +29,8 @@ import org.mapstruct.Mapping;
             MessageCategory.class,
             Network.class,
             MessageType.class,
-            Util.class
+            Util.class,
+            DeviceInterface.class,
         })
 public interface CResMapper {
 
@@ -63,44 +62,28 @@ public interface CResMapper {
             expression = "java(getChallengeCompletionInd(transaction))")
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
-    @Mapping(target = "acsCounterAtoS", source = "challengeFlowDto.acsCounterAtoS")
-    // TODO ACS UI TYPE/TEMPLATE
+    @Mapping(target = "acsCounterAtoS", source = "transaction.transactionSdkDetail.acsCounterAtoS")
     @Mapping(
             target = "acsUiType",
-            expression =
-                    "java(transaction.getTransactionSdkDetail().getAcsInterface().equals(\"02\") ?"
-                            + " \"05\" : transaction.getTransactionSdkDetail().getAcsUiType())")
+            expression = "java(transaction.getTransactionSdkDetail().getAcsUiType())")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
-    @Mapping(target = "acsHTML", source = "challengeFlowDto.institutionUiConfig.displayPage")
-    @Mapping(target = "psImage", source = "challengeFlowDto.psImage")
-    @Mapping(target = "issuerImage", source = "challengeFlowDto.issuerImage")
-    @Mapping(
-            target = "challengeInfoHeader",
-            source = "challengeFlowDto.institutionUiConfig.challengeInfoHeader")
-    @Mapping(
-            target = "challengeInfoLabel",
-            source = "challengeFlowDto.institutionUiConfig.challengeInfoLabel")
-    @Mapping(
-            target = "challengeInfoText",
-            source = "challengeFlowDto.institutionUiConfig.challengeInfoText")
-    @Mapping(
-            target = "expandInfoLabel",
-            source = "challengeFlowDto.institutionUiConfig.expandInfoLabel")
-    @Mapping(
-            target = "expandInfoText",
-            source = "challengeFlowDto.institutionUiConfig.expandInfoText")
+    @Mapping(target = "acsHTML", source = "institutionUIParams.displayPage")
+    @Mapping(target = "psImage", source = "institutionUIParams.psImage")
+    @Mapping(target = "issuerImage", source = "institutionUIParams.issuerImage")
+    @Mapping(target = "challengeInfoHeader", source = "institutionUIParams.challengeInfoHeader")
+    @Mapping(target = "challengeInfoLabel", source = "institutionUIParams.challengeInfoLabel")
+    @Mapping(target = "challengeInfoText", source = "institutionUIParams.challengeInfoText")
+    @Mapping(target = "expandInfoLabel", source = "institutionUIParams.expandInfoLabel")
+    @Mapping(target = "expandInfoText", source = "institutionUIParams.expandInfoText")
     @Mapping(
             target = "resendInformationLabel",
-            source = "challengeFlowDto.institutionUiConfig.resendInformationLabel")
+            source = "institutionUIParams.resendInformationLabel")
     @Mapping(
             target = "submitAuthenticationLabel",
-            source = "challengeFlowDto.institutionUiConfig.submitAuthenticationLabel")
-    @Mapping(target = "whyInfoLabel", source = "challengeFlowDto.institutionUiConfig.whyInfoLabel")
-    @Mapping(target = "whyInfoText", source = "challengeFlowDto.institutionUiConfig.whyInfoText")
-    @Mapping(
-            target = "whitelistingInfoText",
-            source = "challengeFlowDto.institutionUiConfig.whitelistingInfoText")
-
+            source = "institutionUIParams.submitAuthenticationLabel")
+    @Mapping(target = "whyInfoLabel", source = "institutionUIParams.whyInfoLabel")
+    @Mapping(target = "whyInfoText", source = "institutionUIParams.whyInfoText")
+    @Mapping(target = "whitelistingInfoText", source = "institutionUIParams.whitelistingInfoText")
     // TODO
     // challengeSelectInfo
     // messageExtension
@@ -108,23 +91,7 @@ public interface CResMapper {
     // oobContinueLabel
     // oobAppLabel
 
-    CRES toAppCres(Transaction transaction, AppChallengeFlowDto challengeFlowDto);
-
-    @Mapping(target = "acsTransID", source = "transaction.id")
-    @Mapping(
-            target = "threeDSServerTransID",
-            source = "transaction.transactionReferenceDetail.threedsServerTransactionId")
-    @Mapping(
-            target = "challengeCompletionInd",
-            expression = "java(getChallengeCompletionInd(transaction))")
-    @Mapping(target = "transStatus", source = "transaction.transactionStatus.status")
-    @Mapping(target = "messageVersion", source = "transaction.messageVersion")
-    @Mapping(target = "messageType", expression = "java(MessageType.CRes.toString())")
-    @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
-    @Mapping(target = "acsCounterAtoS", source = "challengeFlowDto.acsCounterAtoS")
-    @Mapping(target = "psImage", expression = "java(null)")
-    @Mapping(target = "issuerImage", expression = "java(null)")
-    CRES toFinalCres(Transaction transaction, AppChallengeFlowDto challengeFlowDto);
+    CRES toAppCres(Transaction transaction, InstitutionUIParams institutionUIParams);
 
     default String getChallengeCompletionInd(Transaction transaction) {
         return Util.isChallengeCompleted(transaction)

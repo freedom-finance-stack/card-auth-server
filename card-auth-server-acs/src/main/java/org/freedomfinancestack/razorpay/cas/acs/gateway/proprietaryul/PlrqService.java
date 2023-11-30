@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.hc.core5.http.ContentType;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
@@ -31,10 +32,7 @@ public class PlrqService extends HttpsGatewayService {
     public static final String BRW_CANCEL_FORM_DATA = "transactionId=%s&cancelChallenge=true";
     public static final String PLRQ_MESSAGE_TYPE = "pIrq";
     public static final String PLRQ_MESSAGE_VERSION = "1.0.6";
-    public static final String APP_CORRECT_DATA = "123456";
     public static final String APP_INCORRECT_DATA = "000000";
-    public static final String APP_DEVICE_CHANNEL = "01";
-    public static final String BRW_DEVICE_CHANNEL = "02";
 
     private final AppConfiguration appConfiguration;
     private final RestTemplate ulRestTemplate;
@@ -80,10 +78,9 @@ public class PlrqService extends HttpsGatewayService {
         plrq.p_messageVersion = PLRQ_MESSAGE_VERSION;
         plrq.messageVersion = messageVersion;
 
-        switch (deviceChannel) {
-            case APP_DEVICE_CHANNEL -> plrq.p_formValues_APP = createPlrqApp(authVal);
-            case BRW_DEVICE_CHANNEL -> plrq.p_formValues_BRW =
-                    createPlrqBrw(transactionId, authVal);
+        switch (Objects.requireNonNull(DeviceChannel.getDeviceChannel(deviceChannel))) {
+            case APP -> plrq.p_formValues_APP = createPlrqApp(authVal);
+            case BRW -> plrq.p_formValues_BRW = createPlrqBrw(transactionId, authVal);
             default -> {}
         }
         return plrq;

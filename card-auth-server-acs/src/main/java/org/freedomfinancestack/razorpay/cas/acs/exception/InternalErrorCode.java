@@ -117,6 +117,37 @@ public enum
             "DISPLAY PAGE NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
+    UNSUPPORTED_DEVICE_INTERFACE(
+            "3021",
+            "UNSUPPORTED DEVICE INTERFACE",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
+    SIGNER_SERVICE_ALGORITHM_EXCEPTION(
+            "3022",
+            "SIGNER SERVICE ALGORITHM EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    SIGNER_SERVICE_JOSE_EXCEPTION(
+            "3023",
+            "SIGNER SERVICE JOSE EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    SIGNER_SERVICE_ENCRYPTION_EXCEPTION(
+            "3024",
+            "SIGNER SERVICE ENCRYPTION EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    SIGNER_SERVICE_CERTIFICATE_EXCEPTION(
+            "3025",
+            "SIGNER SERVICE CERTIFICATE EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    SIGNER_SERVICE_KEY_STORE_EXCEPTION(
+            "3026",
+            "SIGNER SERVICE KEY STORE EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
     // Error code for save Transaction
     TRANSACTION_SAVE_EXCEPTION(
             "2001",

@@ -9,9 +9,9 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AppOtpHtmlParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
-import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.ThymeleafService;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInterfaceService;
@@ -37,32 +37,29 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
 
     private final InstitutionUiConfiguration institutionUiConfiguration;
 
-    private final AppConfiguration appConfiguration;
-
     private final ThymeleafService thymeleafService;
 
     @Override
-    public void populateInstitutionUiConfig(
+    public void generateAppUIParams(
             Transaction transaction,
             AppChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto)
             throws ACSDataAccessException {
-        InstitutionUiConfig validInstitutionUiConfig = new InstitutionUiConfig();
+        InstitutionUIParams validInstitutionUiParams = new InstitutionUIParams();
 
         AppOtpHtmlParams appOtpHtmlParams = new AppOtpHtmlParams();
 
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
         if (institution.isEmpty()) {
-            return;
+            throw new ACSDataAccessException(InternalErrorCode.INSTITUTION_NOT_FOUND);
         }
         appOtpHtmlParams.setInstitutionName(institution.get().getName());
         appOtpHtmlParams.setTimeoutInSeconds(
-                String.valueOf(appConfiguration.getAcs().getTimeout().getChallengeValidation()));
+                String.valueOf(institutionUiConfiguration.getHtmlPageTimer()));
         appOtpHtmlParams.setTimeoutInMinutes(
-                String.valueOf(
-                        appConfiguration.getAcs().getTimeout().getChallengeValidation() / 60));
+                String.valueOf(institutionUiConfiguration.getHtmlPageTimer() / 60));
 
         String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
         Network network =
@@ -72,24 +69,21 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         appOtpHtmlParams.setPsImage(
                 logoBaseUrl
                         + institutionUiConfiguration
-                                .getNetworkUiConfig()
-                                .get(network)
-                                .getMediumPs());
+                        .getNetworkUiConfig()
+                        .get(network)
+                        .getMediumPs());
 
         appOtpHtmlParams.setTransactionDate(
                 new SimpleDateFormat("dd/MM/yyyy").format(transaction.getModifiedAt()));
         appOtpHtmlParams.setCardNumber(transaction.getTransactionCardDetail().getCardNumber());
 
         MessageCategory messageCategory = transaction.getMessageCategory();
-        String purchaseAmount = null;
-        String exponent = null;
-        String amount = null;
-        String currency = null;
         if (messageCategory.equals(MessageCategory.PA)) {
-            purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
-            exponent = transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
-            amount = Util.formatAmount(purchaseAmount, exponent);
-            currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
+            String purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
+            String exponent =
+                    transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
+            String amount = Util.formatAmount(purchaseAmount, exponent);
+            String currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
             appOtpHtmlParams.setAmountWithCurrency(amount + InternalConstants.SPACE + currency);
         }
 
@@ -113,7 +107,7 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
                 Base64.getUrlEncoder()
                         .withoutPadding()
                         .encodeToString(html.getBytes(StandardCharsets.UTF_8));
-        validInstitutionUiConfig.setDisplayPage(encodedHtml);
-        challengeFlowDto.setInstitutionUiConfig(validInstitutionUiConfig);
+        validInstitutionUiParams.setDisplayPage(encodedHtml);
+        challengeFlowDto.setInstitutionUIParams(validInstitutionUiParams);
     }
 }

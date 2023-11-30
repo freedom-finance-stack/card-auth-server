@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+<<<<<<< HEAD
 import org.springframework.context.ApplicationContext;
+=======
+>>>>>>> master
 import org.springframework.context.annotation.Configuration;
 
 import lombok.Getter;
@@ -18,7 +21,10 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class InstitutionUiConfiguration {
+<<<<<<< HEAD
     private final ApplicationContext applicationContext;
+=======
+>>>>>>> master
 
     private String institutionUrl;
     private String mediumLogo;
@@ -26,6 +32,11 @@ public class InstitutionUiConfiguration {
     private String extraHighLogo;
     private String institutionCssUrl;
     private String htmlOtpTemplate;
+<<<<<<< HEAD
+=======
+    // TODO handle this timer when updating HTML page for APP based flow
+    private int htmlPageTimer;
+>>>>>>> master
     private Map<Network, UiConfig> networkUiConfig = new EnumMap<>(Network.class);
 
     @Getter

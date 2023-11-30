@@ -409,7 +409,7 @@ public class Util {
         int exponentNumber = 0;
         if (exponent != null) {
             exponentNumber = Integer.parseInt(exponent);
-            int count = 0;
+            int count;
             if (exponentNumber > 0) {
                 if (amount.length() <= exponentNumber) {
                     count = exponentNumber - amount.length();
@@ -435,5 +435,14 @@ public class Util {
         } else {
             return InternalConstants.LAST_FOUR_DIGIT_PLACEHOLDER;
         }
+    }
+
+    public static boolean validateBase64UrlEncodedString(String encodedString) {
+        String base64urlRegex = "^[A-Za-z0-9_.-]*$";
+        Pattern base64urlPattern = Pattern.compile(base64urlRegex);
+
+        Matcher base64urlMatcher = base64urlPattern.matcher(encodedString);
+
+        return base64urlMatcher.matches();
     }
 }

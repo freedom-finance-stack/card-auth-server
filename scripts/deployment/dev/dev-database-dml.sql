@@ -195,7 +195,7 @@ VALUES
         "acs_ui_template": ["01"],
         "preference": 1
         },
-        {
+{
         "acs_interface" : "02",
         "acs_ui_template": ["01","02"],
         "preference": 2

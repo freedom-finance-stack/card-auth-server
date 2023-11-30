@@ -103,18 +103,9 @@ public class ChallengeRequestController {
             value = RouteConstants.CHALLENGE_APP_ROUTE,
             method = RequestMethod.POST,
             produces = {"application/jose;charset=UTF-8"},
-            consumes = {
-                "application/jose; charset=utf-8",
-                // TODO check this
-                "application/jose",
-                "application/json;charset=utf-8"
-            })
+            consumes = {"application/jose; charset=utf-8", "application/json;charset=utf-8"})
     @ResponseBody
-    public String handleChallengeRequest(
-            @RequestBody String strCReq,
-            HttpServletRequest httpServletRequest,
-            @RequestHeader HttpHeaders headers,
-            HttpServletResponse httpServletResponse)
+    public String handleChallengeRequest(@RequestBody String strCReq)
             throws ThreeDSException, ACSDataAccessException {
         return appChallengeRequestService.processAppChallengeRequest(strCReq);
     }
