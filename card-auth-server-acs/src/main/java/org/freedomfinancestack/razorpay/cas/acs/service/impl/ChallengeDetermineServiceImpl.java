@@ -6,7 +6,6 @@ import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSReqAuthMethodInd;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
-import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -79,11 +78,8 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
                 transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
                 transaction.setChallengeMandated(true);
             } else {
-                transaction.setTransactionStatus(TransactionStatus.UNABLE_TO_AUTHENTICATE);
+                transaction.setTransactionStatus(TransactionStatus.SUCCESS);
                 transaction.setChallengeMandated(false);
-                transaction.setTransactionStatusReason(
-                        TransactionStatusReason.DECOUPLED_AUTH_REQUIRED_BY_ACS_NOT_BY_REQUESTOR
-                                .getCode());
             }
         } else if (RiskFlag.INFORMATIONAL == riskFlag) {
             transaction.setTransactionStatus(TransactionStatus.INFORMATIONAL);

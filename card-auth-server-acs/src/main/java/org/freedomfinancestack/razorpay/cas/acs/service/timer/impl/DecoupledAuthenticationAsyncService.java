@@ -16,6 +16,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.TransactionTimerService;
+import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -98,6 +99,7 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                     response == null || !response.isSuccessful()
                             ? TransactionStatus.FAILED
                             : TransactionStatus.SUCCESS);
+
             String eci =
                     eCommIndicatorService.generateECI(
                             new GenerateECIRequest(
@@ -109,6 +111,9 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
 
             if (transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)) {
                 transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
+            } else {
+                transaction.setTransactionStatusReason(
+                        TransactionStatusReason.CARD_AUTHENTICATION_FAILED.getCode());
             }
 
             try {
