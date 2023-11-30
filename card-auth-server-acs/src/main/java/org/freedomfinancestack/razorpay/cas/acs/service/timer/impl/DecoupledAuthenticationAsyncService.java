@@ -94,18 +94,20 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                 return;
             }
 
-
-            transaction.setTransactionStatus(response == null || !response.isSuccessful() ?  TransactionStatus.FAILED : TransactionStatus.SUCCESS);
+            transaction.setTransactionStatus(
+                    response == null || !response.isSuccessful()
+                            ? TransactionStatus.FAILED
+                            : TransactionStatus.SUCCESS);
             String eci =
                     eCommIndicatorService.generateECI(
                             new GenerateECIRequest(
-                                    transaction.getTransactionStatus(),
-                                    transaction.getTransactionCardDetail().getNetworkCode(),
-                                    transaction.getMessageCategory())
+                                            transaction.getTransactionStatus(),
+                                            transaction.getTransactionCardDetail().getNetworkCode(),
+                                            transaction.getMessageCategory())
                                     .setThreeRIInd(transaction.getThreeRIInd()));
             transaction.setEci(eci);
 
-            if(transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)){
+            if (transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)) {
                 transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
             }
 
