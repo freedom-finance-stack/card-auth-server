@@ -175,10 +175,12 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     transaction,
                     ex);
         } catch (ACSException ex) {
+            log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
             updateTransactionWithError(ex.getErrorCode(), transaction);
-            throw new ThreeDSException(
-                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
+            transaction.setChallengeCancelInd(
+                    ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
+            challengeFlowDto.setCres(cResMapper.toCres(transaction));
         } catch (Exception ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
@@ -210,12 +212,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 }
                 // method to increase a string counter
                 // TODO handle these in case above exception is thrown
-                transaction
-                        .getTransactionSdkDetail()
-                        .setAcsCounterAtoS(
-                                Util.incrementString(
-                                        transaction.getTransactionSdkDetail().getAcsCounterAtoS(),
-                                        1));
+                transaction.getTransactionSdkDetail().SetIncrementedAcsCounterAtoS(1);
                 transactionService.saveOrUpdate(transaction);
                 if (challengeFlowDto.getCres() != null) {
                     transactionMessageLogService.createAndSave(

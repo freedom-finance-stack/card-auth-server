@@ -14,6 +14,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInte
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.Image;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
 import org.freedomfinancestack.razorpay.cas.contract.enums.UIType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
@@ -119,7 +120,10 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
         if (transaction
                         .getTransactionReferenceDetail()
                         .getThreeDSRequestorChallengeInd()
-                        .equals("09")
+                        .equals(
+                                ThreeDSRequestorChallengeInd
+                                        .WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
+                                        .getValue())
                 && authConfigDto.getChallengeAttemptConfig().isWhitelistingAllowed()) {
             validInstitutionUIParams.setWhitelistingInfoText(
                     institutionUiConfig.getWhitelistingInfoText());

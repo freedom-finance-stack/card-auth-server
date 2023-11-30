@@ -1,5 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
+import org.freedomfinancestack.razorpay.cas.contract.enums.UIType;
+import org.freedomfinancestack.razorpay.cas.dao.utils.Util;
 import org.hibernate.annotations.Where;
 
 import jakarta.persistence.*;
@@ -47,6 +50,25 @@ public class TransactionSdkDetail extends BaseEntity<String> {
 
     @Column(name = "whitelisting_data_entry")
     private String whitelistingDataEntry;
+
+    public String getAcsUiType() {
+        return acsUiType;
+    }
+
+    public String GetAcsUiType() {
+        if (acsInterface.equals(DeviceInterface.HTML.getValue())) {
+            return UIType.HTML_OTHER.getType();
+        }
+        return acsUiType;
+    }
+
+    public String GetAcsUiTemplate() {
+        return acsUiType;
+    }
+
+    public void SetIncrementedAcsCounterAtoS(int counter) {
+        acsCounterAtoS = Util.incrementString(acsCounterAtoS, counter);
+    }
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")

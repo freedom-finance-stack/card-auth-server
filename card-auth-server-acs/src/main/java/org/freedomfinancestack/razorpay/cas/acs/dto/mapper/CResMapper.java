@@ -31,7 +31,6 @@ import org.mapstruct.Mapping;
             MessageType.class,
             Util.class,
             DeviceInterface.class,
-            UIType.class,
         })
 public interface CResMapper {
 
@@ -78,10 +77,7 @@ public interface CResMapper {
     @Mapping(target = "acsCounterAtoS", source = "transaction.transactionSdkDetail.acsCounterAtoS")
     @Mapping(
             target = "acsUiType",
-            expression =
-                    "java(transaction.getTransactionSdkDetail().getAcsInterface().equals(DeviceInterface.HTML.getValue())"
-                        + " ? UIType.HTML_OTHER.getType() :"
-                        + " transaction.getTransactionSdkDetail().getAcsUiType())")
+            expression = "java(transaction.getTransactionSdkDetail().GetAcsUiType())")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
     @Mapping(target = "acsHTML", source = "institutionUIParams.displayPage")
     @Mapping(target = "psImage", source = "institutionUIParams.psImage")
