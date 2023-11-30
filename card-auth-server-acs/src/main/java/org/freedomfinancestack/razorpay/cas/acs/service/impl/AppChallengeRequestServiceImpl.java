@@ -206,7 +206,8 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                         log.info(
                                 "Failed to send Result request for transaction {}",
                                 transaction.getId());
-                        throw new ThreeDSException(ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
+                        throw new ThreeDSException(
+                                ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
                     }
                 }
                 // method to increase a string counter

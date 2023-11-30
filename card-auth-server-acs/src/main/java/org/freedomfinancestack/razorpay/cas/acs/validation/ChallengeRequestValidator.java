@@ -123,9 +123,9 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 incomingCreq.getSdkCounterStoA(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.SDK_COUNTER_STOA, transaction)
+                                        ThreeDSDataElement.SDK_COUNTER_STOA, transaction)
                                 & !Util.isNullorBlank(
-                                transaction.getTransactionSdkDetail().getAcsCounterAtoS()),
+                                        transaction.getTransactionSdkDetail().getAcsCounterAtoS()),
                         notBlank()),
                 lengthValidator(DataLengthType.FIXED, 3));
         validateRegexString(
@@ -180,7 +180,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 when(
                         incomingCreq.getThreeDSRequestorAppURL() != null
                                 && shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
+                                        ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
                         lengthValidator(DataLengthType.VARIABLE, 256)));
 
         int challengeDataCount = 0;
@@ -188,21 +188,21 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
         if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
                 && transaction.getTransactionSdkDetail().getAcsUiTemplate() != null
                 && !incomingCreq
-                .getSdkCounterStoA()
-                .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)) {
+                        .getSdkCounterStoA()
+                        .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)) {
             String acsUiType = transaction.getTransactionSdkDetail().getAcsUiTemplate();
             String acsInterface = transaction.getTransactionSdkDetail().getAcsInterface();
 
             boolean conditionForChallengeDataEntry =
                     shouldValidateThreeDSDataElement(
-                            ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
+                                    ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
                             && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                             && Arrays.asList("01", "02", "03").contains(acsUiType)
                             && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                            || !YES.equals(incomingCreq.getChallengeNoEntry()))
+                                    || !YES.equals(incomingCreq.getChallengeNoEntry()))
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                             && (incomingCreq.getResendChallenge() == null
-                            || NO.equals(incomingCreq.getResendChallenge()));
+                                    || NO.equals(incomingCreq.getResendChallenge()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
                     incomingCreq.getChallengeDataEntry(),
@@ -214,7 +214,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
             boolean conditionForChallengeHTMLDataEntry =
                     shouldValidateThreeDSDataElement(
-                            ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY, transaction)
+                                    ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY, transaction)
                             && acsInterface.equals(DeviceInterface.HTML.getValue())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel());
             Validation.validate(
@@ -228,13 +228,13 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
             boolean conditionForChallengeNoEntry =
                     shouldValidateThreeDSDataElement(
-                            ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
+                                    ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
                             && Arrays.asList("01", "02", "03").contains(acsUiType)
                             && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                             && (incomingCreq.getResendChallenge() == null
-                            || NO.equals(incomingCreq.getResendChallenge()));
+                                    || NO.equals(incomingCreq.getResendChallenge()));
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_NO_ENTRY.getFieldName(),
                     incomingCreq.getChallengeNoEntry(),
@@ -246,12 +246,12 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
             boolean conditionForResendChallenge =
                     shouldValidateThreeDSDataElement(
-                            ThreeDSDataElement.RESEND_CHALLENGE, transaction)
+                                    ThreeDSDataElement.RESEND_CHALLENGE, transaction)
                             && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                             && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                             && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                            || !YES.equals(incomingCreq.getChallengeNoEntry()));
+                                    || !YES.equals(incomingCreq.getChallengeNoEntry()));
 
             Validation.validate(
                     ThreeDSDataElement.RESEND_CHALLENGE.getFieldName(),
@@ -264,12 +264,12 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
             boolean conditionForChallengeCancel =
                     shouldValidateThreeDSDataElement(
-                            ThreeDSDataElement.CHALLENGE_CANCEL, transaction)
+                                    ThreeDSDataElement.CHALLENGE_CANCEL, transaction)
                             && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                             && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
                             && Util.isNullorBlank(incomingCreq.getResendChallenge())
                             && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                            || !YES.equals(incomingCreq.getChallengeNoEntry()));
+                                    || !YES.equals(incomingCreq.getChallengeNoEntry()));
 
             Validation.validate(
                     ThreeDSDataElement.CHALLENGE_CANCEL.getFieldName(),
@@ -335,17 +335,17 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     creq.getWhitelistingDataEntry(),
                     when(
                             !creq.getSdkCounterStoA()
-                                    .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                                            .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
                                     && transaction
-                                    .getTransactionReferenceDetail()
-                                    .getThreeDSRequestorChallengeInd()
-                                    .equals(
-                                            ThreeDSRequestorChallengeInd
-                                                    .WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
-                                                    .getValue())
+                                            .getTransactionReferenceDetail()
+                                            .getThreeDSRequestorChallengeInd()
+                                            .equals(
+                                                    ThreeDSRequestorChallengeInd
+                                                            .WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
+                                                            .getValue())
                                     && authConfigDto
-                                    .getChallengeAttemptConfig()
-                                    .isWhitelistingAllowed(),
+                                            .getChallengeAttemptConfig()
+                                            .isWhitelistingAllowed(),
                             notBlank()),
                     isIn(ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getAcceptedValues()));
         } catch (ValidationException vex) {

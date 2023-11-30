@@ -69,9 +69,9 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         appOtpHtmlParams.setPsImage(
                 logoBaseUrl
                         + institutionUiConfiguration
-                        .getNetworkUiConfig()
-                        .get(network)
-                        .getMediumPs());
+                                .getNetworkUiConfig()
+                                .get(network)
+                                .getMediumPs());
 
         appOtpHtmlParams.setTransactionDate(
                 new SimpleDateFormat("dd/MM/yyyy").format(transaction.getModifiedAt()));

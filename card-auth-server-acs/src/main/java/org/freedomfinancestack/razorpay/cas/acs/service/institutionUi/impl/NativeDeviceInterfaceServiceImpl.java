@@ -93,18 +93,18 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
         psImage.setMedium(
                 logoBaseUrl
                         + institutionUiConfiguration
-                        .getNetworkUiConfig()
-                        .get(network)
-                        .getMediumPs());
+                                .getNetworkUiConfig()
+                                .get(network)
+                                .getMediumPs());
         psImage.setHigh(
                 logoBaseUrl
                         + institutionUiConfiguration.getNetworkUiConfig().get(network).getHighPs());
         psImage.setExtraHigh(
                 logoBaseUrl
                         + institutionUiConfiguration
-                        .getNetworkUiConfig()
-                        .get(network)
-                        .getExtraHighPs());
+                                .getNetworkUiConfig()
+                                .get(network)
+                                .getExtraHighPs());
 
         validInstitutionUIParams.setIssuerImage(issuerLogo);
         validInstitutionUIParams.setPsImage(psImage);
@@ -118,12 +118,12 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
         validInstitutionUIParams.setWhyInfoText(institutionUiConfig.getWhyInfoText());
 
         if (transaction
-                .getTransactionReferenceDetail()
-                .getThreeDSRequestorChallengeInd()
-                .equals(
-                        ThreeDSRequestorChallengeInd
-                                .WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
-                                .getValue())
+                        .getTransactionReferenceDetail()
+                        .getThreeDSRequestorChallengeInd()
+                        .equals(
+                                ThreeDSRequestorChallengeInd
+                                        .WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
+                                        .getValue())
                 && authConfigDto.getChallengeAttemptConfig().isWhitelistingAllowed()) {
             validInstitutionUIParams.setWhitelistingInfoText(
                     institutionUiConfig.getWhitelistingInfoText());
@@ -199,7 +199,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 // TODO set OOB Constants
                 break;
 
-            // This handles HTML_OTHER cases too
+                // This handles HTML_OTHER cases too
             default:
                 throw new ACSDataAccessException(
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,
