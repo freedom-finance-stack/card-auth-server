@@ -23,6 +23,12 @@ public class DecoupledAuthenticationServiceTestImpl implements DecoupledAuthenti
     private final TransactionService transactionService;
     private final ResultRequestService resultRequestService;
 
+    // NOTE: This approach assume that Decoupled authentication will finish in SYNC request, it will
+    // get response in same request.
+    // Ideally, to make it true async we need to expose endpoint that authentication server will
+    // call after completing authentication,
+    // meanwhile timer thread might mark transaction timeout in case of time taken is longer. 2nd
+    // approach should be considered for decoupled authentication
     @Override
     public DecoupledAuthenticationResponse processAuthenticationRequest(
             Transaction transaction, DecoupledAuthenticationRequest decoupledAuthenticationRequest)

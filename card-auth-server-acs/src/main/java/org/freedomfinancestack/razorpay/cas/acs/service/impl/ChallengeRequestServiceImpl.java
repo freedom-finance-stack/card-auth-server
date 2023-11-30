@@ -182,7 +182,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
                 transactionTimeoutServiceLocator
                         .locateService(MessageType.CReq)
-                        .scheduleTask(transaction.getId(), transaction.getTransactionStatus(), 0);
+                        .scheduleTask(
+                                transaction.getId(), transaction.getTransactionStatus(), null);
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
@@ -338,7 +339,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transactionTimeoutServiceLocator
                             .locateService(MessageType.CReq)
                             .scheduleTask(
-                                    transaction.getId(), transaction.getTransactionStatus(), 0);
+                                    transaction.getId(), transaction.getTransactionStatus(), null);
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 } else {
                     handleChallengeValidation(cvReq, transaction, authConfigDto, challengeFlowDto);

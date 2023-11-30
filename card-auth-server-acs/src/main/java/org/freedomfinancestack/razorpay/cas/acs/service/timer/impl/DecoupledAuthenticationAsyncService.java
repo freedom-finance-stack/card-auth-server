@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.freedomfinancestack.extensions.scheduledTask.exception.TaskAlreadyExistException;
@@ -23,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskIdentifier;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.getIdFromTaskIdentifier;
 
-@Service("cReqTransactionTimerService")
+@Service("decoupledAuthenticationAsyncService")
 @RequiredArgsConstructor
 @Slf4j
 public class DecoupledAuthenticationAsyncService implements TransactionTimerService {
@@ -33,28 +34,30 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
     private final DecoupledAuthenticationService decoupledAuthenticationService;
     private final TransactionService transactionService;
     private final ResultRequestService resultRequestService;
+    private static final String[] DA_TIMEOUT_TEST_RANGE = new String[] {"R_TEST_1"};
     public static String DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY = "DECOUPLED_AUTH_TIMER_TASK";
 
     @Override
     public void scheduleTask(
-            String transactionId, TransactionStatus transactionStatus, int decoupledTimer) {
+            String transactionId, TransactionStatus transactionStatus, String decoupledTimer) {
         log.info("Scheduling timer task for transactionId: {}", transactionId);
-
-        TimerTask task =
-                new TimerTask(
-                        generateTaskIdentifier(
-                                DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                        this);
-        try {
-            timerService.scheduleTimeoutTask(
-                    task.getTimerTaskId(),
-                    task,
-                    appConfiguration.getAcs().getTimeout().getDecoupledAuthDelay(),
-                    TimeUnit.SECONDS);
-        } catch (TaskAlreadyExistException e) {
-            log.error("Task already scheduled for transactionId: {}", transactionId);
+        if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(transactionStatus)) {
+            TimerTask task =
+                    new TimerTask(
+                            generateTaskIdentifier(
+                                    DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY, transactionId),
+                            this);
+            try {
+                timerService.scheduleTimeoutTask(
+                        task.getTimerTaskId(),
+                        task,
+                        appConfiguration.getAcs().getTimeout().getDecoupledAuthDelay(),
+                        TimeUnit.SECONDS);
+            } catch (TaskAlreadyExistException e) {
+                log.error("Task already scheduled for transactionId: {}", transactionId);
+            }
+            log.info("Timer task scheduled for transactionId: {}", transactionId);
         }
-        log.info("Timer task scheduled for transactionId: {}", transactionId);
     }
 
     @Override
@@ -76,14 +79,22 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                     getIdFromTaskIdentifier(DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY, timerTaskId);
 
             Transaction transaction = transactionService.findById(transactionId);
+
             DecoupledAuthenticationResponse response =
                     decoupledAuthenticationService.processAuthenticationRequest(
                             transaction, new DecoupledAuthenticationRequest());
+
+            if (Arrays.stream(DA_TIMEOUT_TEST_RANGE)
+                    .anyMatch(testRange -> transaction.getCardRangeId().equals(testRange))) {
+                return;
+            }
+
             if (response == null || !response.isSuccessful()) {
                 transaction.setTransactionStatus(TransactionStatus.FAILED);
             } else {
                 transaction.setTransactionStatus(TransactionStatus.SUCCESS);
             }
+
             try {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.DECOUPLED_AUTH_COMPLETED);
                 resultRequestService.handleRreq(transaction);
@@ -91,6 +102,7 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                 log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
             }
             transactionService.saveOrUpdate(transaction);
+
         } catch (Exception e) {
             log.error("Error while performing timer task waiting for challenge completion", e);
         }

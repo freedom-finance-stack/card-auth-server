@@ -4,7 +4,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 
 public interface TransactionTimerService {
     void scheduleTask(
-            String transactionId, TransactionStatus transactionStatus, int decoupledTimeOut);
+            String transactionId, TransactionStatus transactionStatus, String decoupledTimeOut);
 
     void cancelTask(String transactionId);
 

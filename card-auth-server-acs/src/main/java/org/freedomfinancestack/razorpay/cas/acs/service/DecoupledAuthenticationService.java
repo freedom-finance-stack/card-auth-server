@@ -7,6 +7,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSExcepti
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
 public interface DecoupledAuthenticationService {
+
     DecoupledAuthenticationResponse processAuthenticationRequest(
             final Transaction transaction,
             final DecoupledAuthenticationRequest decoupledAuthenticationRequest)

@@ -19,6 +19,7 @@ import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigP
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
+import org.freedomfinancestack.razorpay.cas.acs.service.timer.impl.DecoupledAuthenticationAsyncService;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
@@ -65,6 +66,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
+    private final DecoupledAuthenticationAsyncService decoupledAuthenticationAsyncService;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
     private final SignerService signerService;
@@ -195,7 +197,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
             } else if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
                     transaction.getTransactionStatus())) {
-
+                decoupledAuthenticationAsyncService.scheduleTask(
+                        transaction.getId(),
+                        transaction.getTransactionStatus(),
+                        areq.getThreeDSRequestorDecMaxTime());
             }
 
         } catch (ThreeDSException ex) {
@@ -270,7 +275,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                         .scheduleTask(
                                 transaction.getId(),
                                 transaction.getTransactionStatus(),
-                                Integer.parseInt(areq.getThreeDSRequestorDecMaxTime()));
+                                areq.getThreeDSRequestorDecMaxTime());
             }
 
         } catch (Exception ex) {

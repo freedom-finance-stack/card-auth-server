@@ -27,7 +27,7 @@ public class AReqTransactionTimerService implements TransactionTimerService {
 
     @Override
     public void scheduleTask(
-            String transactionId, TransactionStatus transactionStatus, int decoupledTimeOut) {
+            String transactionId, TransactionStatus transactionStatus, String decoupledTimeOut) {
         log.info("Scheduling timer task for transactionId: {}", transactionId);
         TimerTask task =
                 new TimerTask(
@@ -37,8 +37,8 @@ public class AReqTransactionTimerService implements TransactionTimerService {
             int timeout = appConfiguration.getAcs().getTimeout().getChallengeRequest();
             if (transactionStatus.equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)) {
                 timeout =
-                        decoupledTimeOut != 0
-                                ? decoupledTimeOut * 60
+                        decoupledTimeOut != null
+                                ? Integer.parseInt(decoupledTimeOut) * 60
                                 : appConfiguration
                                         .getAcs()
                                         .getTimeout()

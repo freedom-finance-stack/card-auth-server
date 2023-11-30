@@ -28,7 +28,7 @@ public class CReqTransactionTimerService implements TransactionTimerService {
 
     @Override
     public void scheduleTask(
-            String transactionId, TransactionStatus transactionStatus, int decoupledTimer) {
+            String transactionId, TransactionStatus transactionStatus, String decoupledTimer) {
         log.info("Scheduling timer task for transactionId: {}", transactionId);
         // deleting Areq task if exist
         aReqTransactionTimeoutService.cancelTask(

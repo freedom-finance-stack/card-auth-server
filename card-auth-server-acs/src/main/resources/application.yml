@@ -78,7 +78,7 @@ gateway:
       url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/info/project_id
       useSSL: false
       connectTimeout: 5000
-      responseTimeout: 5000
+      responseTimeout: 30000
       keyStore:
         path: ${UL_TEST_PORTAL_KEYSTORE_PATH:}
         password: ${UL_TEST_PORTAL_KEYSTORE_PASSWORD:}
@@ -96,7 +96,7 @@ spring:
   datasource:
     url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_db}
     username: ${ACS_MYSQL_USER:root}
-    password: ${ACS_MYSQL_PASSWORD:password}
+    password: ${ACS_MYSQL_PASSWORD:Mysql@123}
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     showSql: true
