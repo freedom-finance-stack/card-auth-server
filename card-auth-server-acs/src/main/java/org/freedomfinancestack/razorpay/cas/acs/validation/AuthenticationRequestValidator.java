@@ -617,7 +617,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
 
         Validation.validate(
                 ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0.getFieldName(),
-                request.getThreeDSServerURL(),
+                request.getRecurringFrequency(),
                 when(
                         shouldValidateThreeDSDataElement(
                                         ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0, request)
@@ -636,7 +636,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
 
         Validation.validate(
                 ThreeDSDataElement.RECURRING_EXPIRY_2_1_0.getFieldName(),
-                request.getThreeDSServerURL(),
+                request.getRecurringExpiry(),
                 when(
                         shouldValidateThreeDSDataElement(
                                         ThreeDSDataElement.RECURRING_EXPIRY_2_1_0, request)
