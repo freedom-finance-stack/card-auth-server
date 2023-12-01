@@ -620,7 +620,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getThreeDSServerURL(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0, request),
+                                        ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0, request)
+                                && isAuthenticationIndValid,
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
 
@@ -638,7 +639,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getThreeDSServerURL(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.RECURRING_EXPIRY_2_1_0, request),
+                                        ThreeDSDataElement.RECURRING_EXPIRY_2_1_0, request)
+                                && isAuthenticationIndValid,
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
     }
