@@ -519,18 +519,18 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                                 InternalConstants
                                                         .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03)
                                         .contains(request.getThreeDSRequestorAuthenticationInd()))
-                        || (!Util.isNullorBlank(request.getThreeRIInd())
+                        || (ThreeDSConstant.MESSAGE_VERSION_2_2_0.equals(
+                                        request.getMessageVersion())
+                                && !Util.isNullorBlank(request.getThreeRIInd())
                                 && Arrays.asList(
-                                                ThreeRIInd.RECURRING_TRANSACTION,
-                                                ThreeRIInd.INSTALMENT_TRANSACTION,
-                                                ThreeRIInd.SPLIT_DELAYED_SHIPMENT,
-                                                ThreeRIInd.TOP_UP,
-                                                ThreeRIInd.MAIL_ORDER,
-                                                ThreeRIInd.TELEPHONE_ORDER,
-                                                ThreeRIInd.OTHER_PAYMENT)
-                                        .contains(request.getThreeRIInd())
-                                && ThreeDSConstant.MESSAGE_VERSION_2_2_0.equals(
-                                        request.getMessageVersion()));
+                                                ThreeRIInd.RECURRING_TRANSACTION.getValue(),
+                                                ThreeRIInd.INSTALMENT_TRANSACTION.getValue(),
+                                                ThreeRIInd.SPLIT_DELAYED_SHIPMENT.getValue(),
+                                                ThreeRIInd.TOP_UP.getValue(),
+                                                ThreeRIInd.MAIL_ORDER.getValue(),
+                                                ThreeRIInd.TELEPHONE_ORDER.getValue(),
+                                                ThreeRIInd.OTHER_PAYMENT.getValue())
+                                        .contains(request.getThreeRIInd()));
         boolean purchaseElementsWhenRule =
                 validateDeviceChannel(ThreeDSDataElement.PURCHASE_AMOUNT, request)
                         && (request.getMessageCategory().equals(MessageCategory.PA.getCategory())
