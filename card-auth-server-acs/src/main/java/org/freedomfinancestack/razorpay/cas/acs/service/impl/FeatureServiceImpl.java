@@ -53,7 +53,7 @@ public class FeatureServiceImpl implements FeatureService {
                     Util.findFirstCommonString(
                             Arrays.asList(deviceRenderOptions.getSdkUiType()),
                             renderingTypeConfig.getAcsUiTemplate());
-            
+
             if (acsUiType == null) {
                 continue;
             }
