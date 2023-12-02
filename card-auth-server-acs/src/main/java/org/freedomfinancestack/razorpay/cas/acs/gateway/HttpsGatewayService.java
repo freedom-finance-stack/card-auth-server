@@ -33,6 +33,7 @@ public abstract class HttpsGatewayService {
         if (queryParam == null) {
             queryParam = new HashMap<>();
         }
+        log.info("sending request to : {}", this.getServiceConfig().getUrl());
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> responseEntity =
                 this.getRestTemplate()
