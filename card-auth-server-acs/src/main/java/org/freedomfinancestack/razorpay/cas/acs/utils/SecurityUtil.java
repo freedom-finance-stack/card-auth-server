@@ -14,7 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.SignerServiceException;
 import org.freedomfinancestack.razorpay.cas.contract.EphemPubKey;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.model.SignerDetail;
 
 import com.nimbusds.jose.*;
@@ -31,12 +34,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SecurityUtil {
-    public static KeyPair generateEphermalKeyPair()
-            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    public static KeyPair generateEphermalKeyPair() throws SignerServiceException {
 
-        KeyPairGenerator gen = KeyPairGenerator.getInstance("EC");
-        gen.initialize(Curve.P_256.toECParameterSpec());
-        return gen.generateKeyPair();
+        try {
+            KeyPairGenerator gen = KeyPairGenerator.getInstance("EC");
+            gen.initialize(Curve.P_256.toECParameterSpec());
+            return gen.generateKeyPair();
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_ALGORITHM_EXCEPTION,
+                    ex);
+        }
     }
 
     public static JWK getPublicKey(KeyPair keyPair) {
@@ -57,103 +66,143 @@ public class SecurityUtil {
         return ecKey;
     }
 
-    public static List<Base64> getKeyInfo(SignerDetail signerDetail)
-            throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException {
+    public static List<Base64> getKeyInfo(SignerDetail signerDetail) throws SignerServiceException {
 
         List<Base64> x5c = new ArrayList<>();
 
-        KeyStore ks = null;
-        Certificate signingCert = null;
-        Certificate rootCert = null;
-        Certificate interCert = null;
+        KeyStore ks;
+        Certificate signingCert;
+        Certificate rootCert;
+        Certificate interCert;
 
-        String keyPassword = null;
-        String keystore = null;
+        String keyPassword;
+        String keystore;
 
-        ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        // TODO: Assuming Keypass as decrypted for not, need to store the encrypted one here
-        keyPassword = signerDetail.getKeypass();
-        keystore = signerDetail.getKeystore();
-        ks.load(new FileInputStream(keystore), keyPassword.toCharArray());
+        try {
+            ks = KeyStore.getInstance(KeyStore.getDefaultType());
+            // TODO: Assuming Keypass as decrypted for not, need to store the encrypted one here
+            keyPassword = signerDetail.getKeypass();
+            keystore = signerDetail.getKeystore();
+            ks.load(new FileInputStream(keystore), keyPassword.toCharArray());
 
-        // Get Signing, Root and Inter Certificate from KeyStore
-        String signerCertKey = signerDetail.getSignerCertKey();
-        signingCert = ks.getCertificate(signerCertKey);
-        String rootCertKey = signerDetail.getRootCertKey();
-        rootCert = ks.getCertificate(rootCertKey);
-        String interCertKey = signerDetail.getInterCertKey();
-        interCert = ks.getCertificate(interCertKey);
+            // Get Signing, Root and Inter Certificate from KeyStore
+            String signerCertKey = signerDetail.getSignerCertKey();
+            signingCert = ks.getCertificate(signerCertKey);
+            String rootCertKey = signerDetail.getRootCertKey();
+            rootCert = ks.getCertificate(rootCertKey);
+            String interCertKey = signerDetail.getInterCertKey();
+            interCert = ks.getCertificate(interCertKey);
 
-        // Signing
-        if (signingCert instanceof java.security.cert.X509Certificate) {
-            java.security.cert.X509Certificate x509cert =
-                    (java.security.cert.X509Certificate) signingCert;
-            byte[] VALUE = x509cert.getEncoded();
-            Base64 encodedValue = Base64.encode(VALUE);
-            x5c.add(encodedValue);
+            // Signing
+            if (signingCert instanceof java.security.cert.X509Certificate) {
+                java.security.cert.X509Certificate x509cert =
+                        (java.security.cert.X509Certificate) signingCert;
+                byte[] VALUE = x509cert.getEncoded();
+                Base64 encodedValue = Base64.encode(VALUE);
+                x5c.add(encodedValue);
+            }
+
+            // Inter - no intermediate cert in case of UL testing
+            if (interCert instanceof java.security.cert.X509Certificate) {
+                java.security.cert.X509Certificate x509cert =
+                        (java.security.cert.X509Certificate) interCert;
+                byte[] VALUE = x509cert.getEncoded();
+                Base64 encodedValue = Base64.encode(VALUE);
+                x5c.add(encodedValue);
+            }
+
+            // Root
+            if (rootCert instanceof java.security.cert.X509Certificate) {
+                java.security.cert.X509Certificate x509cert =
+                        (java.security.cert.X509Certificate) rootCert;
+                byte[] VALUE = x509cert.getEncoded();
+                Base64 encodedValue = Base64.encode(VALUE);
+                x5c.add(encodedValue);
+            }
+
+            return x5c;
+        } catch (CertificateException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_CERTIFICATE_EXCEPTION,
+                    ex);
+        } catch (KeyStoreException | IOException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_KEY_STORE_EXCEPTION,
+                    ex);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_ALGORITHM_EXCEPTION,
+                    ex);
         }
-
-        // Inter - no intermediate cert in case of UL testing
-        if (interCert instanceof java.security.cert.X509Certificate) {
-            java.security.cert.X509Certificate x509cert =
-                    (java.security.cert.X509Certificate) interCert;
-            byte[] VALUE = x509cert.getEncoded();
-            Base64 encodedValue = Base64.encode(VALUE);
-            x5c.add(encodedValue);
-        }
-
-        // Root
-        if (rootCert instanceof java.security.cert.X509Certificate) {
-            java.security.cert.X509Certificate x509cert =
-                    (java.security.cert.X509Certificate) rootCert;
-            byte[] VALUE = x509cert.getEncoded();
-            Base64 encodedValue = Base64.encode(VALUE);
-            x5c.add(encodedValue);
-        }
-
-        return x5c;
     }
 
     public static KeyPair getRSAKeyPairFromKeystore(
-            SignerDetail signerDetail, List<Base64> x509CertChain)
-            throws UnrecoverableKeyException,
-                    KeyStoreException,
-                    NoSuchAlgorithmException,
-                    CertificateException,
-                    IOException {
+            SignerDetail signerDetail, List<Base64> x509CertChain) throws SignerServiceException {
 
-        String keyPass = signerDetail.getKeypass();
-        String keyStore = signerDetail.getKeystore();
-        KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-        ks.load(new FileInputStream(keyStore), keyPass.toCharArray());
+        try {
+            String keyPass = signerDetail.getKeypass();
+            String keyStore = signerDetail.getKeystore();
+            KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+            ks.load(new FileInputStream(keyStore), keyPass.toCharArray());
 
-        RSAPublicKey publicKey =
-                (RSAPublicKey) X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
-        RSAPrivateKey privateKey =
-                (RSAPrivateKey) ks.getKey(signerDetail.getSignerKeyPair(), keyPass.toCharArray());
+            RSAPublicKey publicKey =
+                    (RSAPublicKey)
+                            X509CertUtils.parse(x509CertChain.get(0).decode()).getPublicKey();
+            RSAPrivateKey privateKey =
+                    (RSAPrivateKey)
+                            ks.getKey(signerDetail.getSignerKeyPair(), keyPass.toCharArray());
 
-        return new KeyPair(publicKey, privateKey);
+            return new KeyPair(publicKey, privateKey);
+        } catch (KeyStoreException | IOException | UnrecoverableKeyException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_KEY_STORE_EXCEPTION,
+                    ex);
+        } catch (CertificateException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_CERTIFICATE_EXCEPTION,
+                    ex);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_ALGORITHM_EXCEPTION,
+                    ex);
+        }
     }
 
     public static String generateDigitalSignatureWithPS256(
-            KeyPair keyPair, List<Base64> x5c, String jwsPayload) throws JOSEException {
+            KeyPair keyPair, List<Base64> x5c, String jwsPayload) throws SignerServiceException {
 
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        try {
+            RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-        // Need BouncyCastle for PSS
-        Security.addProvider(BouncyCastleProviderSingleton.getInstance());
+            // Need BouncyCastle for PSS
+            Security.addProvider(BouncyCastleProviderSingleton.getInstance());
 
-        RSASSASigner signer = new RSASSASigner(privateKey);
+            RSASSASigner signer = new RSASSASigner(privateKey);
 
-        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.PS256).x509CertChain(x5c).build();
+            JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.PS256).x509CertChain(x5c).build();
 
-        Payload payload = new Payload(jwsPayload);
-        JWSObject jwsObject = new JWSObject(header, payload);
+            Payload payload = new Payload(jwsPayload);
+            JWSObject jwsObject = new JWSObject(header, payload);
 
-        String s = jwsObject.getHeader().toBase64URL() + "." + jwsObject.getPayload().toBase64URL();
+            String s =
+                    jwsObject.getHeader().toBase64URL()
+                            + "."
+                            + jwsObject.getPayload().toBase64URL();
 
-        jwsObject.sign(signer);
+            jwsObject.sign(signer);
 
-        return s + "." + jwsObject.getSignature();
+            return s + "." + jwsObject.getSignature();
+        } catch (JOSEException ex) {
+            throw new SignerServiceException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                    InternalErrorCode.SIGNER_SERVICE_JOSE_EXCEPTION,
+                    ex);
+        }
     }
 }

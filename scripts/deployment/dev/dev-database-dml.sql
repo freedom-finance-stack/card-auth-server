@@ -103,6 +103,13 @@ INSERT INTO `card_detail` VALUES ('103', '1', 'I1','7654310438709295', '0535', 0
 INSERT INTO `card_detail` VALUES ('104', '1', 'I1','7654310438709311', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('105', '1', 'I1','7654310438747253', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 INSERT INTO `card_detail` VALUES ('106', '1', 'I1','7654310438709329', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+
+INSERT INTO `card_detail` VALUES ('107', '1', 'I1','7654370980201119', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('108', '1', 'I1','7654370980263596', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('109', '1', 'I1','7654381005551236', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('110', '1', 'I1','8765431458777319', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+INSERT INTO `card_detail` VALUES ('111', '1', 'I1','7654370980201455', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
+
 UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;
@@ -114,7 +121,7 @@ INSERT INTO `card_range` VALUES ('R3', 'I1', 7654350700000000, 7654350799999999,
 INSERT INTO `card_range` VALUES ('R4', 'I1', 7654340600000000, 7654340699999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R6', 'I1', 7654320500000000, 7654320599999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Testing CardholderNotAuth', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R8', 'I1', 765430270000000,  765430279999999,   'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing CardholderNotAuth', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R9', 'I1', 7654370900000000, 7654370999999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'ACS', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R9', 'I1', 7654370900000000, 7654370999999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R10', 'I1', 7654381000000000, 7654381099999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R11', 'I1', 7654391100000000, 7654391199999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R12', 'I1', 8765411200000000, 8765411299999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
@@ -127,8 +134,7 @@ INSERT INTO `card_range` VALUES ('R18', 'I1', 9876522800000000, 9876522899999999
 INSERT INTO `card_range` VALUES ('R19', 'I1', 1876542400000000000, 1876542499999999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R20', 'I1', 6543200100000, 6543200199999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R21', 'I1', 9876543000000000, 9876543099999999, 'ACTIVE', 'CREDIT', 'INFORMATIONAL', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-
-
+INSERT INTO `card_range` VALUES ('R22', 'I1', 9876563200000000, 9876563299999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing Whitelisting', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
@@ -184,12 +190,12 @@ VALUES
         '4', 'CARD_RANGE', 'R8', 1, 'RENDERING_TYPE',
         '{"rendering_type_configs":[{
         "acs_interface" : "01",
-        "acs_ui_template": ["01", "02"],
+        "acs_ui_template": ["01"],
         "preference": 1
         },
-        {
+{
         "acs_interface" : "02",
-        "acs_ui_template": ["03"],
+        "acs_ui_template": ["01","02"],
         "preference": 2
         }]}',
         NOW(), 'dev-user', NOW(), 'dev-user',
@@ -341,14 +347,58 @@ VALUES
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
+
+INSERT INTO `feature`
+VALUES
+    (
+        '17', 'CARD_RANGE', 'R18', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "02",
+        "acs_ui_template": ["01", "02", "03", "04", "05"],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
+INSERT INTO `feature`
+VALUES ('18', 'CARD_RANGE', 'R22', 1, 'CHALLENGE_ATTEMPT',
+        '{
+            "attempt_threshold": 3,
+            "resend_threshold": 3,
+            "block_on_exceed_attempt": true,
+            "whitelisting_allowed": false
+        }',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null);
+
 UNLOCK TABLES;
+
+
 
 LOCK TABLES `signer_detail` WRITE;
 INSERT INTO `signer_detail` VALUES ('I1', '1', 'docs/certs/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `signer_detail` VALUES ('I1', '2', 'docs/certs/acs_keystore', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;
 
-LOCK TABLES `signer_detail` WRITE;
-INSERT INTO `signer_detail` VALUES ('I1', '1', '/opt/card-auth-server/cas-acs/bin/config/code-setup', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `signer_detail` VALUES ('I1', '2', '/opt/card-auth-server/cas-acs/bin/config/code-setup', 'password', 'acs', 'acs', 'root', 'inter', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+LOCK TABLES `institution_ui_config` WRITE;
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'OOB', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'OOB', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'OOB', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'OOB', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;

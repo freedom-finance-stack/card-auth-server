@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.validation;
 
+import java.util.regex.Pattern;
+
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.RegexValidator.regexValidator;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 
 /**
@@ -63,7 +66,8 @@ public class ResultResponseValidator {
                 ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
                 incomingRres.getMessageVersion(),
                 notBlank(),
-                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
+                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()),
+                regexValidator("^" + Pattern.quote(rreq.getMessageVersion()) + "$"));
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),

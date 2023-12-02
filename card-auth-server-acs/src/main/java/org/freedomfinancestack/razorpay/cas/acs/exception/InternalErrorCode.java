@@ -97,6 +97,57 @@ public enum
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
+    INSTITUTION_UI_CONFIG_NOT_FOUND(
+            "3017",
+            "INSTITUTION UI CONFIG NOT FOUND",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    UNSUPPORTED_UI_TYPE(
+            "3018",
+            "UNSUPPORTED UI TYPE",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
+    DISPLAY_PAGE_PARSING_EXCEPTION(
+            "3019",
+            "DISPLAY PAGE PARSING EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
+    DISPLAY_PAGE_NOT_FOUND(
+            "3020",
+            "DISPLAY PAGE NOT FOUND",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
+    UNSUPPORTED_DEVICE_INTERFACE(
+            "3021",
+            "UNSUPPORTED DEVICE INTERFACE",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
+    SIGNER_SERVICE_ALGORITHM_EXCEPTION(
+            "3022",
+            "SIGNER SERVICE ALGORITHM EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    SIGNER_SERVICE_JOSE_EXCEPTION(
+            "3023",
+            "SIGNER SERVICE JOSE EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    SIGNER_SERVICE_ENCRYPTION_EXCEPTION(
+            "3024",
+            "SIGNER SERVICE ENCRYPTION EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    SIGNER_SERVICE_CERTIFICATE_EXCEPTION(
+            "3025",
+            "SIGNER SERVICE CERTIFICATE EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    SIGNER_SERVICE_KEY_STORE_EXCEPTION(
+            "3026",
+            "SIGNER SERVICE KEY STORE EXCEPTION",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
     // Error code for save Transaction
     TRANSACTION_SAVE_EXCEPTION(
             "2001",
@@ -108,6 +159,11 @@ public enum
             "Error while finding transaction",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    TRANSACTION_ID_NOT_RECOGNISED(
+            "2003",
+            "Transaction not Recognised",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
 
     // Error code for invalid request
     INVALID_REQUEST(
@@ -141,7 +197,7 @@ public enum
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     CREQ_JSON_PARSING_ERROR(
-            "8001",
+            "8000",
             "Can't parse Creq message",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.INVALID_TRANSACTION),
@@ -218,6 +274,12 @@ public enum
             "UNEXPECTED ERROR OCCURRED",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
+
+    CRES_ENCRYPTION_ERROR(
+            "8017",
+            "Can't encrypt CRES response",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     TEST_TRANSACTION_UA(
             "9001",

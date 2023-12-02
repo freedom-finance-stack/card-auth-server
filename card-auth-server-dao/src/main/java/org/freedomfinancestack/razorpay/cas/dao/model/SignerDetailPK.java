@@ -4,10 +4,14 @@ import java.io.Serializable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignerDetailPK implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -16,9 +20,4 @@ public class SignerDetailPK implements Serializable {
 
     @Column(name = "network_code", length = 2)
     private byte networkCode;
-
-    public SignerDetailPK(String institutionId, byte networkCode) {
-        this.institutionId = institutionId;
-        this.networkCode = networkCode;
-    }
 }

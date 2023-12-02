@@ -4,6 +4,8 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.http.HttpStatus;
 
@@ -68,6 +70,16 @@ public class ThreeDSException extends Exception {
         this.threeDSecureErrorCode = threeDSecureErrorCode;
     }
 
+    public ThreeDSException(
+            final ThreeDSecureErrorCode threeDSecureErrorCode,
+            final String message,
+            final Transaction transaction) {
+        super(message);
+        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode, message);
+        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, transaction);
+        this.threeDSecureErrorCode = threeDSecureErrorCode;
+    }
+
     public ThreeDSErrorResponse getErrorResponse() {
         return this.threeDSErrorResponse.setHttpStatus(HttpStatus.OK.value());
     }
@@ -84,15 +96,23 @@ public class ThreeDSException extends Exception {
 
     private void addMetaInThreeDSecureErrorCode(
             final ThreeDSErrorResponse threeDSErrorResponse, final Transaction transaction) {
-        if (transaction.getTransactionReferenceDetail() != null) {
-            threeDSErrorResponse.setThreeDSServerTransID(
-                    transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
-            threeDSErrorResponse.setDsTransID(
-                    transaction.getTransactionReferenceDetail().getDsTransactionId());
-        }
-        threeDSErrorResponse.setAcsTransID(transaction.getId());
-        if (!Util.isNullorBlank(transaction.getMessageVersion())) {
-            threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
+        if (transaction != null) {
+            if (transaction.getTransactionReferenceDetail() != null) {
+                threeDSErrorResponse.setThreeDSServerTransID(
+                        transaction
+                                .getTransactionReferenceDetail()
+                                .getThreedsServerTransactionId());
+                threeDSErrorResponse.setDsTransID(
+                        transaction.getTransactionReferenceDetail().getDsTransactionId());
+            }
+            threeDSErrorResponse.setAcsTransID(transaction.getId());
+            if (!Util.isNullorBlank(transaction.getMessageVersion())) {
+                threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
+            }
+            if (!transaction.getPhase().equals(Phase.AREQ)
+                    && !transaction.getPhase().equals(Phase.AERROR)) {
+                threeDSErrorResponse.setErrorMessageType(MessageType.CReq.toString());
+            }
         }
     }
 }

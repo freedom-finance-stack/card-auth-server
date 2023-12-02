@@ -21,6 +21,7 @@ public class TestConfigProperties {
 
     private boolean enable;
     private AttemptedRange attemptedRange;
+    private boolean enableDecryptionEncryption;
 
     @Getter
     @Setter

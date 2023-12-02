@@ -114,7 +114,11 @@ public class OTPAuthenticationServiceImpl implements AuthenticationService {
                     log.error("Unable to send SMS!!!");
                 }
             }
-            plrqService.sendPlrq(transaction.getId(), otp, transaction.getMessageVersion());
+            plrqService.sendPlrq(
+                    transaction.getId(),
+                    otp,
+                    transaction.getMessageVersion(),
+                    transaction.getDeviceChannel());
         } catch (NotificationException e) {
             throw new NotificationSentException(
                     ThreeDSecureErrorCode.SYSTEM_CONNECTION_FAILURE,

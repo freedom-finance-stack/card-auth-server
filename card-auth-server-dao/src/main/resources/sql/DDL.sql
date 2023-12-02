@@ -49,9 +49,12 @@ CREATE TABLE `transaction_sdk_detail`
     `sdk_app_id`           varchar(36) DEFAULT NULL,
     `sdk_reference_number` varchar(32) DEFAULT NULL,
     `acs_interface`        char(2) DEFAULT NULL,
-    `acs_ui_type`          char(2) DEFAULT NULL,
+    `acs_ui_template`      char(2) DEFAULT NULL,
     `acs_secret_key`       LONGTEXT NULL,
+    `encryption_method`      VARCHAR(45) DEFAULT NULL,
     `device_info`          text,
+    `acs_counter_a_to_s`   char(3) DEFAULT '000',
+    `whitelisting_data_entry` char(1),
     `created_at`           timestamp NOT NULL,
     `modified_at`          timestamp,
     `deleted_at`           timestamp
@@ -92,6 +95,7 @@ CREATE TABLE `transaction_reference_detail`
     `threeds_server_reference_number` varchar(36),
     `ds_transaction_id`               varchar(36),
     `ds_url`                          varchar(2048),
+    `threeds_requestor_challenge_ind` char(2),
     `notification_url`                varchar(256),
     `created_at`                      timestamp NOT NULL,
     `modified_at`                     timestamp NOT NULL,
@@ -327,19 +331,6 @@ CREATE TABLE `notification_detail`
     `deleted_at`  timestamp default NULL
 );
 
-DROP TABLE IF EXISTS `otp_transaction_detail`;
-CREATE TABLE `otp_transaction_detail`
-(
-    `id`                  varchar(36),
-    `transaction_id`      varchar(36) NOT NULL,
-    `value`               varchar(10) NOT NULL,
-    `verification_status` ENUM ('CREATED', 'EXPIRED', 'VERIFIED', 'ATTEMPTED'),
-    `created_at`          timestamp   NOT NULL,
-    `modified_at`         timestamp   NOT NULL,
-    `deleted_at`          timestamp default NULL
-);
-CREATE INDEX `otp_transaction_detail_transaction_id_idx` ON otp_transaction_detail (`transaction_id`);
-
 DROP TABLE IF EXISTS `notification_detail`;
 CREATE TABLE `notification_detail`
 (
@@ -373,6 +364,31 @@ CREATE TABLE `signer_detail`
     `modified_by`         varchar(40) NOT NULL,
     `deleted_at`          timestamp   DEFAULT NULL,
     `deleted_by`          varchar(40) DEFAULT NULL
+);
+
+DROP TABLE IF EXISTS `institution_ui_config`;
+CREATE TABLE `institution_ui_config`
+(
+    `institution_id`              varchar(36) NOT NULL,
+    `auth_type`                   ENUM('OTP', 'PASSWORD', 'NetBankingOOB', 'Decoupled'),
+    `ui_type`                     ENUM('TEXT', 'SINGLE_SELECT', 'MULTI_SELECT', 'OOB', 'HTML_OTHER'),
+    `display_page`                varchar(99) DEFAULT NULL,
+    `challenge_info_header`       varchar(45) DEFAULT NULL,
+    `challenge_info_label`        varchar(45) DEFAULT NULL,
+    `challenge_info_text`         varchar(256) DEFAULT NULL,
+    `expand_info_label`           varchar(45) DEFAULT NULL,
+    `expand_info_text`            varchar(256) DEFAULT NULL,
+    `submit_authentication_label` varchar(45) DEFAULT NULL,
+    `resend_information_label`    varchar(45) DEFAULT NULL,
+    `why_info_label`              varchar(45) DEFAULT NULL,
+    `why_info_text`               varchar(256) DEFAULT NULL,
+    `whitelisting_info_text`      varchar(64) DEFAULT NULL,
+    `created_at`                  timestamp   NOT NULL,
+    `created_by`                  varchar(40) NOT NULL,
+    `modified_at`                  timestamp   NOT NULL,
+    `modified_by`                  varchar(40) NOT NULL,
+    `deleted_at`                  timestamp   DEFAULT NULL,
+    `deleted_by`                  varchar(40) DEFAULT NULL
 );
 
 DROP TABLE IF EXISTS `otp_transaction_detail`;

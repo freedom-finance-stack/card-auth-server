@@ -375,4 +375,46 @@ public class Util {
 
         return null; // Return null if no common string is found
     }
+
+    public static String formatAmount(String amount, String exponent) {
+        String fractionAmount = "";
+        int exponentNumber = 0;
+        if (exponent != null) {
+            exponentNumber = Integer.parseInt(exponent);
+            int count;
+            if (exponentNumber > 0) {
+                if (amount.length() <= exponentNumber) {
+                    count = exponentNumber - amount.length();
+                    while (count >= 0) {
+                        amount = InternalConstants.PADDED_SYMBOL_0 + amount;
+                        count--;
+                    }
+                }
+                fractionAmount = amount.substring(amount.length() - exponentNumber);
+            } else {
+                fractionAmount =
+                        String.valueOf(InternalConstants.PADDED_SYMBOL_0)
+                                + InternalConstants.PADDED_SYMBOL_0;
+            }
+        }
+        return amount.substring(0, amount.length() - exponentNumber) + "." + fractionAmount;
+    }
+
+    public static String getLastFourDigit(String data) {
+        if (!isNullorBlank(data)) {
+            data = data.substring((data.length() - 4), data.length());
+            return data;
+        } else {
+            return InternalConstants.LAST_FOUR_DIGIT_PLACEHOLDER;
+        }
+    }
+
+    public static boolean validateBase64UrlEncodedString(String encodedString) {
+        String base64urlRegex = "^[A-Za-z0-9_.-]*$";
+        Pattern base64urlPattern = Pattern.compile(base64urlRegex);
+
+        Matcher base64urlMatcher = base64urlPattern.matcher(encodedString);
+
+        return base64urlMatcher.matches();
+    }
 }

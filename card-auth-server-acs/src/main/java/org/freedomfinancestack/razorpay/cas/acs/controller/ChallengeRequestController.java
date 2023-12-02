@@ -4,7 +4,9 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.service.AppChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
@@ -34,6 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ChallengeRequestController {
 
     private final ChallengeRequestService challengeRequestService;
+
+    private final AppChallengeRequestService appChallengeRequestService;
 
     /**
      * Handles Challenge Request (CReq) received from the 3DS Server and generates HTML pages for
@@ -76,6 +80,31 @@ public class ChallengeRequestController {
             return createCresAndErrorMessageResponse(model, cdRes);
         }
         return createCdRes(model, cdRes);
+    }
+
+    // APP based flow CREQ
+    @Operation(summary = "Handles App Based Challenge Request")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "Request Successfully handled and validated"),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "Server Exception Occurred during request handling"),
+                @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request or Request not according to CReq Schema")
+            })
+    @RequestMapping(
+            value = RouteConstants.CHALLENGE_APP_ROUTE,
+            method = RequestMethod.POST,
+            produces = {"application/jose;charset=UTF-8"},
+            consumes = {"application/jose; charset=utf-8", "application/json;charset=utf-8"})
+    @ResponseBody
+    public String handleChallengeRequest(@RequestBody String strCReq)
+            throws ThreeDSException, ACSDataAccessException {
+        return appChallengeRequestService.processAppChallengeRequest(strCReq);
     }
 
     private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes)

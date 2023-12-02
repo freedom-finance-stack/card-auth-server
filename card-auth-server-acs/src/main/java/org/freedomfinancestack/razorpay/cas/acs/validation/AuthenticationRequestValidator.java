@@ -291,8 +291,33 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 when(
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
-                        notBlank()),
-                isValidObject());
+                        notBlank()));
+        if (request.getDeviceRenderOptions() != null) {
+            Validation.validate(
+                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS_SDK_INTERFACE.getFieldName(),
+                    request.getDeviceRenderOptions().getSdkInterface(),
+                    when(
+                            shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
+                            notBlank()),
+                    lengthValidator(DataLengthType.FIXED, 2),
+                    isIn(
+                            ThreeDSDataElement.DEVICE_RENDER_OPTIONS_SDK_INTERFACE
+                                    .getAcceptedValues()));
+            Validation.validate(
+                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS.getFieldName(),
+                    Arrays.stream(request.getDeviceRenderOptions().getSdkUiType()).toList(),
+                    when(
+                            shouldValidateThreeDSDataElement(
+                                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS, request),
+                            notBlank()),
+                    isListLengthValid(DataLengthType.VARIABLE, 5),
+                    isListValid(lengthValidator(DataLengthType.FIXED, 2)),
+                    isListValid(
+                            isIn(
+                                    ThreeDSDataElement.DEVICE_RENDER_OPTIONS_SDK_UI_TYPE
+                                            .getAcceptedValues())));
+        }
         Validation.validate(
                 ThreeDSDataElement.NOTIFICATION_URL.getFieldName(),
                 request.getNotificationURL(),
@@ -335,6 +360,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                         notBlank()),
                 isValidObject());
         Validation.validate(
+                ThreeDSDataElement.SDK_EPHEM_PUB_KEY.getFieldName(),
+                request.getSdkEphemPubKey(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.SDK_EPHEM_PUB_KEY, request),
+                        notBlank()),
+                isJsonObjectLengthValid(256));
+        Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 request.getSdkTransID(),
                 when(
@@ -348,7 +381,8 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 when(
                         shouldValidateThreeDSDataElement(ThreeDSDataElement.DEVICE_INFO, request),
                         notBlank()),
-                lengthValidator(DataLengthType.VARIABLE, 64000));
+                lengthValidator(DataLengthType.VARIABLE, 64000),
+                regexValidator("^[A-Za-z0-9_-]*$"));
 
         Validation.validate(
                 ThreeDSDataElement.DS_REFERENCE_NUMBER.getFieldName(),

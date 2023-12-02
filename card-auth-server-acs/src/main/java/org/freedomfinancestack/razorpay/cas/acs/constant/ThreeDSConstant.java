@@ -145,6 +145,7 @@ public class ThreeDSConstant {
     public static final String ELEMENT_CHALLENGE_CANCEL = "challengeCancel";
     public static final String ELEMENT_CHALLENGE_DATA_ENTRY = "challengeDataEntry";
     public static final String ELEMENT_CHALLENGE_HTML_DATA_ENTRY = "challengeHTMLDataEntry";
+    public static final String ELEMENT_CHALLENGE_NO_ENTRY = "challengeNoEntry";
     public static final String ELEMENT_OOB_CONTINUE = "oobContinue";
     public static final String ELEMENT_RESEND_CHALLENGE = "resendChallenge";
 
@@ -191,6 +192,4 @@ public class ThreeDSConstant {
     public static final String ELEMENT_THREEDS_REQUESTOR_DEC_REQ_IND = "threeDSRequestorDecReqInd";
 
     public static final String ELEMENT_THREEDS_REQUESTOR_APP_URL = "threeDSRequestorAppURL";
-
-    public static final String ELEMENT_CHALLENGE_NO_ENTRY = "challengeNoEntry";
 }
