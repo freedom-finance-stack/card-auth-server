@@ -116,18 +116,21 @@ public class SignerServiceImpl implements SignerService {
                             keyPair, x509CertChain, signedJsonObject);
 
         } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException e) {
+            log.error("error : ", e);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                     InternalErrorCode.INTERNAL_SERVER_ERROR,
                     "Error during Algorithm Execution",
                     e);
         } catch (ACSDataAccessException e) {
+            log.error("error : ", e);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                     InternalErrorCode.SIGNER_DETAIL_NOT_FOUND,
                     "Signer Detail Not Found",
                     e);
         } catch (JOSEException e) {
+            log.error("error : ", e);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                     InternalErrorCode.INTERNAL_SERVER_ERROR,
@@ -137,12 +140,14 @@ public class SignerServiceImpl implements SignerService {
                 | CertificateException
                 | KeyStoreException
                 | IOException e) {
+            log.error("error : ", e);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                     InternalErrorCode.INTERNAL_SERVER_ERROR,
                     "Error during Keystore Extraction/Parsing",
                     e);
         } catch (Exception e) {
+            log.error("error : ", e);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
                     InternalErrorCode.INTERNAL_SERVER_ERROR);
