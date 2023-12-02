@@ -30,7 +30,7 @@ public class PlrqService extends HttpsGatewayService {
     public static final String BRW_FORM_DATA = "transactionId=%s&authVal=%s";
     public static final String BRW_CANCEL_FORM_DATA = "transactionId=%s&cancelChallenge=true";
     public static final String PLRQ_MESSAGE_TYPE = "pIrq";
-    public static final String PLRQ_MESSAGE_VERSION = "1.0.6";
+    public static final String PLRQ_MESSAGE_VERSION = "1.0.5";
 
     private final AppConfiguration appConfiguration;
     private final RestTemplate ulRestTemplate;
