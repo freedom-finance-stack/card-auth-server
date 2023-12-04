@@ -12,7 +12,6 @@ public enum ThreeDSecureErrorCode {
             "A",
             "A message element required as defined in Table A.1 is missing from the message."),
     CRITICAL_MESSAGE_EXTENSION_NOT_RECOGNISED("202", "A", "Message extension not recognised"),
-
     INVALID_FORMAT("203", "A", "Format of one or more elements is invalid"),
     INVALID_FORMAT_LENGTH("203", "A", "Invalid Format - Length"),
     INVALID_FORMAT_VALUE("203", "A", "Invalid Format - Value"),
