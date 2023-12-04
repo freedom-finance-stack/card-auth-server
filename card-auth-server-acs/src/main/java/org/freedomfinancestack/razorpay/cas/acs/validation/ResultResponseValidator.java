@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
-import org.freedomfinancestack.extensions.validation.validator.enriched.IsEqual;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;

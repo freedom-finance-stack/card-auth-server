@@ -25,8 +25,7 @@ public class ValidationErrorCodeMapper {
                 ValidationErrorCode.INVALID_FORMAT_VALUE,
                 ThreeDSecureErrorCode.INVALID_FORMAT_VALUE);
         VALIDATION_TO_THREEDSECURE_ERROR_MAP.put(
-                ValidationErrorCode.NOT_EQUAL,
-                ThreeDSecureErrorCode.INVALID_FORMAT_VALUE);
+                ValidationErrorCode.NOT_EQUAL, ThreeDSecureErrorCode.INVALID_FORMAT_VALUE);
         VALIDATION_TO_THREEDSECURE_ERROR_MAP.put(
                 ValidationErrorCode.REQUIRED_DATA_ELEMENT_MISSING,
                 ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING);
