@@ -16,22 +16,47 @@ public class EphemPubKey implements Validatable {
     private String y;
 
     public boolean isValid() {
-        if (this.kty == null) {
-            return false;
+        return this.kty != null && this.crv != null && this.x != null && this.y != null;
+    }
+
+    private boolean isEmpty() {
+        return alg == null
+                && kid == null
+                && use == null
+                && kty == null
+                && crv == null
+                && x == null
+                && y == null;
+    }
+
+    @Override
+    public String toString() {
+        if (isEmpty()) {
+            return "";
         }
 
-        if (this.crv == null) {
-            return false;
-        }
-
-        if (this.x == null) {
-            return false;
-        }
-
-        if (this.y == null) {
-            return false;
-        }
-
-        return true;
+        return "EphemPubKey{"
+                + "alg='"
+                + alg
+                + '\''
+                + ", kid='"
+                + kid
+                + '\''
+                + ", use='"
+                + use
+                + '\''
+                + ", kty='"
+                + kty
+                + '\''
+                + ", crv='"
+                + crv
+                + '\''
+                + ", x='"
+                + x
+                + '\''
+                + ", y='"
+                + y
+                + '\''
+                + '}';
     }
 }

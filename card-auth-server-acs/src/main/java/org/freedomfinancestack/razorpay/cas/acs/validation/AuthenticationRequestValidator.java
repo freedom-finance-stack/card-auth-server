@@ -368,6 +368,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 ThreeDSDataElement.SDK_EPHEM_PUB_KEY, request),
                         notBlank()),
                 isJsonObjectLengthValid(256));
+
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 request.getSdkTransID(),

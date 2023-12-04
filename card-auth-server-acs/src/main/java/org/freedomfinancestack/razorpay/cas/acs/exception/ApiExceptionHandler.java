@@ -113,7 +113,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         "Request parameter missing",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
+        return handleExceptionInternal(ex, errorResponse, headers, HttpStatus.OK, request);
     }
 
     @ExceptionHandler(Throwable.class)
