@@ -111,7 +111,6 @@ INSERT INTO `card_detail` VALUES ('110', '1', 'I1','8765431458777319', '0535', 0
 INSERT INTO `card_detail` VALUES ('111', '1', 'I1','7654370980201455', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 
 UNLOCK TABLES;
-
 LOCK TABLES `card_range` WRITE;
 INSERT INTO `card_range` VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R7', 'I1', 4030000000000000, 4030000000000100, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
@@ -135,8 +134,8 @@ INSERT INTO `card_range` VALUES ('R19', 'I1', 1876542400000000000, 1876542499999
 INSERT INTO `card_range` VALUES ('R20', 'I1', 6543200100000, 6543200199999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R21', 'I1', 9876543000000000, 9876543099999999, 'ACTIVE', 'CREDIT', 'INFORMATIONAL', '3DS Portal Testing AcsRenderingType', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R22', 'I1', 9876563200000000, 9876563299999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing Whitelisting', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R_TEST_1', 'I1', 9876553100000000, 9876553199999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing Whitelisting', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R23', 'I1',9876532900000000, 9876532999999999, 'ACTIVE', 'CREDIT', 'CHALLENGE', '3DS Portal Testing Whitelisting', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R_TEST_1', 'I1', 9876553100000000, 9876553199999999, 'ACTIVE', 'CREDIT', 'DECOUPLED_CHALLENGE', '3DS Portal Testing Whitelisting', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R23', 'I1',9876532900000000, 9876532999999999, 'ACTIVE', 'CREDIT', 'DECOUPLED_CHALLENGE', '3DS Portal Testing Whitelisting', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `card_range_group` WRITE;
@@ -371,33 +370,6 @@ VALUES ('18', 'CARD_RANGE', 'R22', 1, 'CHALLENGE_ATTEMPT',
         }',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null);
-
-INSERT INTO `feature`
-VALUES
-    (
-        '19', 'CARD_RANGE', 'R23', 1, 'CHALLENGE_AUTH_TYPE',
-        '{
-            "purchase_amount_threshold" : 20000,
-            "above_threshold_auth_type" :  "Decoupled",
-            "default_auth_type" :  "Decoupled"
-        }',
-        NOW(), 'dev-user', NOW(), 'dev-user',
-        null, null
-    );
-
-
-INSERT INTO `feature`
-VALUES
-    (
-        '20', 'CARD_RANGE', 'R_TEST_1', 1, 'CHALLENGE_AUTH_TYPE',
-        '{
-            "purchase_amount_threshold" : 20000,
-            "above_threshold_auth_type" :  "Decoupled",
-            "default_auth_type" :  "Decoupled"
-        }',
-        NOW(), 'dev-user', NOW(), 'dev-user',
-        null, null
-    );
 
 UNLOCK TABLES;
 
