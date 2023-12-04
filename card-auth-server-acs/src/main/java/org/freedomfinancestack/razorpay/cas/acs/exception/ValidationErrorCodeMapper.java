@@ -50,21 +50,21 @@ public class ValidationErrorCodeMapper {
                 messageExtensionRules);
 
         HashMap<ValidationErrorCode, ThreeDSecureErrorCode> dsTransIdRules = new HashMap<>();
-        messageExtensionRules.put(
+        dsTransIdRules.put(
                 ValidationErrorCode.NOT_EQUAL, ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         FIELD_TO_THREEDSECURE_ERROR_MAP.put(
                 ThreeDSDataElement.DS_TRANS_ID.getFieldName(), dsTransIdRules);
 
         HashMap<ValidationErrorCode, ThreeDSecureErrorCode> threedsServerTransIdRules =
                 new HashMap<>();
-        messageExtensionRules.put(
+        threedsServerTransIdRules.put(
                 ValidationErrorCode.NOT_EQUAL, ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         FIELD_TO_THREEDSECURE_ERROR_MAP.put(
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
                 threedsServerTransIdRules);
 
         HashMap<ValidationErrorCode, ThreeDSecureErrorCode> acsTransIdRules = new HashMap<>();
-        messageExtensionRules.put(
+        acsTransIdRules.put(
                 ValidationErrorCode.NOT_EQUAL, ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         FIELD_TO_THREEDSECURE_ERROR_MAP.put(
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(), acsTransIdRules);
