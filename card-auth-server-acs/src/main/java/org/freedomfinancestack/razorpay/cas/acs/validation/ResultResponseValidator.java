@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
+import org.freedomfinancestack.extensions.validation.validator.enriched.IsEqual;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.extensions.validation.validator.basic.IsValidObject.isValidObject;
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.IsEqual.isEqual;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 
@@ -64,25 +66,25 @@ public class ResultResponseValidator {
                 incomingRres.getMessageVersion(),
                 notBlank(),
                 isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()),
-                isIn(new String[] {rreq.getMessageVersion()}));
+                isEqual(rreq.getMessageVersion()));
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
                 incomingRres.getThreeDSServerTransID(),
                 notBlank(),
-                isIn(new String[] {rreq.getThreeDSServerTransID()}));
+                isEqual(rreq.getThreeDSServerTransID()));
 
         Validation.validate(
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                 incomingRres.getAcsTransID(),
                 notBlank(),
-                isIn(new String[] {rreq.getAcsTransID()}));
+                isEqual(rreq.getAcsTransID()));
 
         Validation.validate(
                 ThreeDSDataElement.DS_TRANS_ID.getFieldName(),
                 incomingRres.getDsTransID(),
                 notBlank(),
-                isIn(new String[] {rreq.getDsTransID()}));
+                isEqual(rreq.getDsTransID()));
 
         Validation.validate(
                 ThreeDSDataElement.RESULTS_STATUS.getFieldName(),
