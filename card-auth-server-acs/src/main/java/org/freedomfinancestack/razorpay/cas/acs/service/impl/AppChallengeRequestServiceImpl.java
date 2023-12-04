@@ -154,8 +154,6 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
-            transaction.setChallengeCancelInd(
-                    ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
             updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
@@ -172,8 +170,6 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
             updateTransactionWithError(ex.getErrorCode(), transaction);
-            transaction.setChallengeCancelInd(
-                    ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
             challengeFlowDto.setCres(cResMapper.toCres(transaction));
         } catch (Exception ex) {
             log.error("Exception occurred", ex);
@@ -191,7 +187,9 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                             .cancelTask(transaction.getId());
                 }
                 updateEci(transaction);
+
                 if (challengeFlowDto.isSendRreq()) {
+
                     log.info("Sending Result request for transaction {}", transaction.getId());
                     // sendRreq and if it fails update response
                     try {
@@ -398,6 +396,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             InternalErrorCode internalErrorCode, Transaction transaction)
             throws InvalidStateTransactionException {
         if (transaction != null) {
+            if (Util.isNullorBlank(transaction.getChallengeCancelInd())) {
+                transaction.setChallengeCancelInd(
+                        ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
+            }
             transaction.setErrorCode(internalErrorCode.getCode());
             transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
             transaction.setTransactionStatusReason(

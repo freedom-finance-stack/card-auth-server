@@ -197,8 +197,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
             challengeFlowDto.setSendRreq(true);
-            transaction.setChallengeCancelInd(
-                    ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
                     ex.getThreeDSecureErrorCode(),
@@ -611,6 +609,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             throws InvalidStateTransactionException {
         generateErrorResponse(cdRes, error, transaction, errorDetail);
         if (null != transaction) {
+            if (Util.isNullorBlank(transaction.getChallengeCancelInd())) {
+                transaction.setChallengeCancelInd(
+                        ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
+            }
             transaction.setErrorCode(internalErrorCode.getCode());
             transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
             transaction.setTransactionStatusReason(
