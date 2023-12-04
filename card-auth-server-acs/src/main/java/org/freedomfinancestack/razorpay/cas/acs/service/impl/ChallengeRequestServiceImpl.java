@@ -135,8 +135,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             // validate threeDSSessionData
             if (!Util.isNullorBlank(threeDSSessionData)) {
                 if (!Util.isValidBase64Url(threeDSSessionData)) {
-                    transaction.setChallengeCancelInd(
-                            ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
                     throw new ACSValidationException(
                             ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                             " ThreeDsSessionData incorrect");
@@ -198,6 +196,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
+            challengeFlowDto.setSendRreq(true);
+            transaction.setChallengeCancelInd(
+                    ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
                     ex.getThreeDSecureErrorCode(),

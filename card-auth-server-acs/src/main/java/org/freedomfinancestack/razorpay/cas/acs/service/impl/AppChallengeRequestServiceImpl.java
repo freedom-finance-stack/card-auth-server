@@ -151,17 +151,11 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             generateDummyTransactionWithError(ex.getInternalErrorCode(), transactionErr);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
-        } catch (ACSValidationException ex) {
-            log.error("Exception occurred", ex);
-            challengeFlowDto.setSendRreq(true);
-            updateTransactionWithError(ex.getInternalErrorCode(), transaction);
-            transaction.setChallengeCancelInd(
-                    ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
-            throw new ThreeDSException(
-                    ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
+            transaction.setChallengeCancelInd(
+                    ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
             updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
@@ -232,7 +226,14 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private Transaction fetchTransactionData(String transactionId)
-            throws ACSDataAccessException, TransactionDataNotValidException {
+            throws ACSDataAccessException,
+                    TransactionDataNotValidException,
+                    ACSValidationException {
+        if (transactionId == null) {
+            throw new ACSValidationException(
+                    ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING,
+                    "ACS TRANSACTION ID NOT FOUND");
+        }
         Transaction transaction = transactionService.findById(transactionId);
         if (null == transaction || !transaction.isChallengeMandated()) {
             throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);

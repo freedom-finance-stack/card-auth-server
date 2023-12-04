@@ -66,7 +66,6 @@ public class ResultResponseValidator {
                 notBlank(),
                 isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()),
                 isEqual(rreq.getMessageVersion()));
-
         Validation.validate(
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
                 incomingRres.getThreeDSServerTransID(),
