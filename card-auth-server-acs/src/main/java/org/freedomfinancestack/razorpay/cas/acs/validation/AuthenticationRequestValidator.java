@@ -482,7 +482,12 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 s -> {
                     if (!Util.isNullorBlank(s)) {
                         int threeDSRequestorDecMaxTime = Integer.parseInt(s);
-                        if (threeDSRequestorDecMaxTime > 10080 || threeDSRequestorDecMaxTime < 1) {
+                        if (threeDSRequestorDecMaxTime
+                                        > InternalConstants
+                                                .THREE_DS_REQUESTOR_DEC_MAX_TIME_UPPER_LIMIT
+                                || threeDSRequestorDecMaxTime
+                                        < InternalConstants
+                                                .THREE_DS_REQUESTOR_DEC_MAX_TIME_LOWER_LIMIT) {
                             throw new ValidationException(
                                     ValidationErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
                         }

@@ -80,38 +80,50 @@ public interface AResMapper {
     @Mapping(target = "sdkTransID", source = "areq.sdkTransID")
     @Mapping(target = "messageVersion", source = "areq.messageVersion")
     @Mapping(target = "broadInfo", expression = "java(null)")
-    @Mapping(
-            target = "whiteListStatus",
-            expression =
-                    "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
-                        + " areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)"
-                        + " ?  InternalConstants.NO : null)")
-    @Mapping(
-            target = "whiteListStatusSource",
-            expression =
-                    "java(!Util.isNullorBlank(areq.getThreeRIInd()) &&"
-                        + " areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)"
-                        + " ? InternalConstants.THREE_RI_WHILE_LIST_STATUS_SOURCE : null)")
+    @Mapping(target = "whiteListStatus", expression = "java(getWhiteListStatus(areq))")
+    @Mapping(target = "whiteListStatusSource", expression = "java(getWhiteListStatusSource(areq))")
     @Mapping(target = "messageType", expression = "java(MessageType.ARes.toString())")
-    @Mapping(
-            target = "acsRenderingType",
-            expression =
-                    "java((DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) &&"
-                        + " transaction.getTransactionSdkDetail().getAcsUiTemplate() != null )? new"
-                        + " ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
-                        + " transaction.getTransactionSdkDetail().getAcsUiTemplate()) : null)")
+    @Mapping(target = "acsRenderingType", expression = "java(getAcsRenderingType(transaction))")
     @Mapping(target = "acsSignedContent", source = "aResMapperParams.acsSignedContent")
-    @Mapping(
-            target = "cardholderInfo",
-            expression =
-                    "java(transaction.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)"
-                        + " && transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)"
-                        + " ? \"Additional authentication is needed for this transaction, please"
-                        + " contact (Issuer Name) at xxx-xxx-xxxx.\" : null)")
+    @Mapping(target = "cardholderInfo", expression = "java(getCardholderInfo(transaction))")
     ARES toAres(AREQ areq, Transaction transaction, AResMapperParams aResMapperParams);
 
+    default String getWhiteListStatus(AREQ areq) {
+        return !Util.isNullorBlank(areq.getThreeRIInd())
+                        && areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)
+                ? InternalConstants.NO
+                : null;
+    }
+
+    default String getWhiteListStatusSource(AREQ areq) {
+        return !Util.isNullorBlank(areq.getThreeRIInd())
+                        && areq.getThreeRIInd().equals(InternalConstants.THREE_RI_IND_WHILE_LIST)
+                ? InternalConstants.THREE_RI_WHILE_LIST_STATUS_SOURCE
+                : null;
+    }
+
+    default ACSRenderingType getAcsRenderingType(Transaction transaction) {
+        if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
+                && transaction.getTransactionSdkDetail().getAcsUiTemplate() != null) {
+            return new ACSRenderingType(
+                    transaction.getTransactionSdkDetail().getAcsInterface(),
+                    transaction.getTransactionSdkDetail().getAcsUiTemplate());
+        }
+        return null;
+    }
+
+    default String getCardholderInfo(Transaction transaction) {
+        return transaction.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)
+                        && transaction
+                                .getTransactionStatus()
+                                .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)
+                ? "Additional authentication is needed for this transaction, please  contact"
+                        + " (Issuer Name) at xxx-xxx-xxxx."
+                : null;
+    }
+
     default String getTransStatusReason(AREQ areq, Transaction transaction) {
-        String transStatusReason = "";
+        String transStatusReason;
         if (MessageCategory.PA.getCategory().equals(areq.getMessageCategory())
                 && (TransactionStatus.FAILED.equals(transaction.getTransactionStatus())
                         || TransactionStatus.UNABLE_TO_AUTHENTICATE.equals(
