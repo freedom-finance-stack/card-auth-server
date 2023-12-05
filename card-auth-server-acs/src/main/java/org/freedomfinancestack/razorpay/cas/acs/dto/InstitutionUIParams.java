@@ -27,4 +27,5 @@ public class InstitutionUIParams {
     private String whyInfoText;
     private String displayPage;
     private String whitelistingInfoText;
+    private String oobContinueLabel;
 }

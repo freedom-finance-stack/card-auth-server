@@ -159,6 +159,7 @@ public enum
             "Error while finding transaction",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
     TRANSACTION_ID_NOT_RECOGNISED(
             "2003",
             "Transaction not Recognised",

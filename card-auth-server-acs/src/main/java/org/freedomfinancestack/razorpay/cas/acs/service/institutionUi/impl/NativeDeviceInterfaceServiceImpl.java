@@ -150,7 +150,6 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                         challengeText.replaceFirst(
                                 InternalConstants.TRANSACTION_DATE, transactionDate);
 
-                validInstitutionUIParams.setChallengeInfoText(challengeText);
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
                 validInstitutionUIParams.setResendInformationLabel(
@@ -169,7 +168,6 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                                 username,
                                 network.getName(),
                                 institution.get().getName());
-                validInstitutionUIParams.setChallengeInfoText(challengeText);
 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
@@ -180,7 +178,6 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
             case MULTI_SELECT:
                 challengeText = institutionUiConfig.getChallengeInfoText();
                 challengeText = String.format(challengeText, institution.get().getName());
-                validInstitutionUIParams.setChallengeInfoText(challengeText);
 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
@@ -191,12 +188,10 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
             case OOB:
                 challengeText = institutionUiConfig.getChallengeInfoText();
 
-                validInstitutionUIParams.setChallengeInfoText(challengeText);
-
                 validInstitutionUIParams.setResendInformationLabel(
                         institutionUiConfig.getResendInformationLabel());
+                validInstitutionUIParams.setOobContinueLabel(InternalConstants.OOB_CONTINUE_LABEL);
 
-                // TODO set OOB Constants
                 break;
 
                 // This handles HTML_OTHER cases too
@@ -205,6 +200,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,
                         "UI Type Implementation not available with the given option " + uiType);
         }
+        validInstitutionUIParams.setChallengeInfoText(challengeText);
         challengeFlowDto.setInstitutionUIParams(validInstitutionUIParams);
     }
 }
