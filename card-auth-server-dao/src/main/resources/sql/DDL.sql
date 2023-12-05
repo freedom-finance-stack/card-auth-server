@@ -375,7 +375,7 @@ CREATE TABLE `institution_ui_config`
     `display_page`                varchar(99) DEFAULT NULL,
     `challenge_info_header`       varchar(45) DEFAULT NULL,
     `challenge_info_label`        varchar(45) DEFAULT NULL,
-    `challenge_info_text`         varchar(256) DEFAULT NULL,
+    `challenge_info_text`         varchar(512) DEFAULT NULL,
     `expand_info_label`           varchar(45) DEFAULT NULL,
     `expand_info_text`            varchar(256) DEFAULT NULL,
     `submit_authentication_label` varchar(45) DEFAULT NULL,

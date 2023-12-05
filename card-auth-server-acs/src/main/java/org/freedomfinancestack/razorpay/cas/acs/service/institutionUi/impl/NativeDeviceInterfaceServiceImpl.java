@@ -161,31 +161,9 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
                 break;
-
             case SINGLE_SELECT:
-                String username = transaction.getTransactionCardHolderDetail().getName();
-                challengeText = institutionUiConfig.getChallengeInfoText();
-                challengeText =
-                        String.format(
-                                challengeText,
-                                username,
-                                network.getName(),
-                                institution.get().getName());
-
-                validInstitutionUIParams.setSubmitAuthenticationLabel(
-                        institutionUiConfig.getSubmitAuthenticationLabel());
-                if (testConfigProperties.isEnable()) {
-                    validInstitutionUIParams.setChallengeSelectInfo(
-                            new ChallengeSelectInfo[] {
-                                ChallengeSelectInfo.builder().yes("yes").build(),
-                                ChallengeSelectInfo.builder().yes("no").build()
-                            });
-                }
-                break;
-
             case MULTI_SELECT:
                 challengeText = institutionUiConfig.getChallengeInfoText();
-                challengeText = String.format(challengeText, institution.get().getName());
 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
