@@ -12,8 +12,8 @@ public class ValidationErrorCodeMapper {
     private static final Map<ValidationErrorCode, ThreeDSecureErrorCode>
             VALIDATION_TO_THREEDSECURE_ERROR_MAP = new EnumMap<>(ValidationErrorCode.class);
 
-    private static final Map<String, ThreeDSecureErrorCode> FIELD_TO_THREEDSECURE_ERROR_MAP =
-            new HashMap<>();
+    private static final Map<String, HashMap<ValidationErrorCode, ThreeDSecureErrorCode>>
+            FIELD_TO_THREEDSECURE_ERROR_MAP = new HashMap<>();
 
     static {
         VALIDATION_TO_THREEDSECURE_ERROR_MAP.put(
@@ -30,18 +30,29 @@ public class ValidationErrorCodeMapper {
     }
 
     static {
-        FIELD_TO_THREEDSECURE_ERROR_MAP.put(
-                ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
+        HashMap<ValidationErrorCode, ThreeDSecureErrorCode> messageVersionRules = new HashMap<>();
+        messageVersionRules.put(
+                ValidationErrorCode.INVALID_FORMAT_VALUE,
                 ThreeDSecureErrorCode.MESSAGE_VERSION_NUMBER_NOT_SUPPORTED);
         FIELD_TO_THREEDSECURE_ERROR_MAP.put(
-                ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR.getFieldName(),
+                ThreeDSDataElement.MESSAGE_VERSION.getFieldName(), messageVersionRules);
+
+        HashMap<ValidationErrorCode, ThreeDSecureErrorCode> messageExtensionRules = new HashMap<>();
+        messageExtensionRules.put(
+                ValidationErrorCode.INVALID_FORMAT_VALUE,
                 ThreeDSecureErrorCode.CRITICAL_MESSAGE_EXTENSION_NOT_RECOGNISED);
+        FIELD_TO_THREEDSECURE_ERROR_MAP.put(
+                ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR.getFieldName(),
+                messageExtensionRules);
     }
 
     public static ThreeDSecureErrorCode mapValidationToThreeDSecure(
             ValidationErrorCode validationErrorCode, String fieldName) {
-        if (FIELD_TO_THREEDSECURE_ERROR_MAP.containsKey(fieldName)) {
-            return FIELD_TO_THREEDSECURE_ERROR_MAP.get(fieldName);
+        if (FIELD_TO_THREEDSECURE_ERROR_MAP.containsKey(fieldName)
+                && FIELD_TO_THREEDSECURE_ERROR_MAP
+                        .get(fieldName)
+                        .containsKey(validationErrorCode)) {
+            return FIELD_TO_THREEDSECURE_ERROR_MAP.get(fieldName).get(validationErrorCode);
         }
         return VALIDATION_TO_THREEDSECURE_ERROR_MAP.getOrDefault(
                 validationErrorCode, ThreeDSecureErrorCode.INVALID_FORMAT);

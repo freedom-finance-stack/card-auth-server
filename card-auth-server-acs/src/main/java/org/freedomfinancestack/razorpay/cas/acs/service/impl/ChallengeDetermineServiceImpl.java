@@ -77,7 +77,6 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
             if (InternalConstants.YES.equals(objAReq.getThreeDSRequestorDecReqInd())) {
                 transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
                 transaction.setChallengeMandated(true);
-                transaction.setAuthenticationType(4);
             } else {
                 transaction.setTransactionStatus(TransactionStatus.SUCCESS);
                 transaction.setChallengeMandated(false);

@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 import java.util.Arrays;
 
 import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
+import org.freedomfinancestack.extensions.validation.exception.ValidationErrorCode;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
@@ -477,13 +478,32 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 && !Util.isNullorBlank(request.getThreeDSRequestorDecReqInd())
                                 && InternalConstants.YES.equals(
                                         request.getThreeDSRequestorDecReqInd()),
-                        notBlank()));
+                        notBlank()),
+                s -> {
+                    if (!Util.isNullorBlank(s)) {
+                        int threeDSRequestorDecMaxTime = Integer.parseInt(s);
+                        if (threeDSRequestorDecMaxTime
+                                        > InternalConstants
+                                                .THREE_DS_REQUESTOR_DEC_MAX_TIME_UPPER_LIMIT
+                                || threeDSRequestorDecMaxTime
+                                        < InternalConstants
+                                                .THREE_DS_REQUESTOR_DEC_MAX_TIME_LOWER_LIMIT) {
+                            throw new ValidationException(
+                                    ValidationErrorCode.INVALID_FORMAT_VALUE, "Invalid value");
+                        }
+                    }
+                });
 
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 request.getMessageExtension(),
                 isListValid(isValidObject()),
                 isListLengthValid(DataLengthType.VARIABLE, 10));
+
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
+                request.getMessageExtension(),
+                isJsonObjectLengthValid(81920));
 
         if (request.getMessageExtension() != null) {
             for (MessageExtension messageExtension : request.getMessageExtension()) {
@@ -495,11 +515,6 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                         .getAcceptedValues()));
             }
         }
-
-        Validation.validate(
-                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
-                request.getMessageExtension(),
-                isJsonObjectLengthValid(81920));
 
         boolean purchaseNPARule =
                 (!Util.isNullorBlank(request.getThreeDSRequestorAuthenticationInd())

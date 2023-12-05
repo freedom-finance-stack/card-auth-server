@@ -38,11 +38,20 @@ public class TransactionTimeOutService {
                     && (transaction.getPhase() == Phase.ARES
                             || transaction.getPhase() == Phase.AREQ)) {
                 log.info("Timeout : CREQ not received for transactionId: {}", transactionId);
-                timeOutTransaction(
-                        transaction,
-                        ChallengeCancelIndicator
-                                .TRANSACTION_TIMED_OUT_AT_ACS_FIRST_CREQ_NOT_RECEIVED_BY_ACS,
-                        InternalErrorCode.TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ);
+
+                if (transaction.getTransactionStatus()
+                        == TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED) {
+                    timeOutTransaction(
+                            transaction,
+                            ChallengeCancelIndicator.TRANSACTION_TIMED_OUT_DECOUPLED_AUTH,
+                            InternalErrorCode.TRANSACTION_TIMED_OUT_DECOUPLED_AUTH);
+                } else {
+                    timeOutTransaction(
+                            transaction,
+                            ChallengeCancelIndicator
+                                    .TRANSACTION_TIMED_OUT_AT_ACS_FIRST_CREQ_NOT_RECEIVED_BY_ACS,
+                            InternalErrorCode.TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ);
+                }
             }
 
         } catch (ACSDataAccessException | InvalidStateTransactionException ex) {
@@ -86,7 +95,11 @@ public class TransactionTimeOutService {
         StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
         transaction = transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
-        resultRequestService.processRreq(transaction);
+        try {
+            resultRequestService.handleRreq(transaction);
+        } catch (Exception ex) {
+            log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
+        }
     }
 
     private void updateEci(Transaction transaction) {

@@ -237,7 +237,7 @@ public enum
             "8007",
             "attempts exceeded",
             TransactionStatus.FAILED,
-            TransactionStatusReason.EXCEED_MAX_CHALLANGES),
+            TransactionStatusReason.EXCEED_MAX_CHALLENGES),
     INVALID_RRES(
             "8008",
             "invalid RRes received from DS",
@@ -252,7 +252,7 @@ public enum
             "8010",
             "challenge resend threshold exceeded",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.EXCEED_MAX_CHALLANGES),
+            TransactionStatusReason.EXCEED_MAX_CHALLENGES),
     TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ(
             "8011",
             "transaction timed out waiting for CREQ",
@@ -263,6 +263,11 @@ public enum
             "transaction timed out for challenge completion",
             TransactionStatus.FAILED,
             TransactionStatusReason.TRANSACTION_TIMEOUT),
+    TRANSACTION_TIMED_OUT_DECOUPLED_AUTH(
+            "8014",
+            "transaction timed out waiting for decoupled auth to complete",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.DECOUPLED_EXPIRY_TIME_EXCEEDED),
     UNABLE_TO_SEND_OTP(
             "8015",
             "UNABLE TO SEND OTP",

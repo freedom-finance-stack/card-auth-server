@@ -19,6 +19,7 @@ import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigP
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
+import org.freedomfinancestack.razorpay.cas.acs.service.timer.impl.DecoupledAuthenticationAsyncService;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
@@ -65,6 +66,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
+    private final DecoupledAuthenticationAsyncService decoupledAuthenticationAsyncService;
     private final FeatureService featureService;
     private final AuthenticationServiceLocator authenticationServiceLocator;
     private final SignerService signerService;
@@ -140,11 +142,22 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     areq, transaction, cardRange.getRiskFlag());
 
             if (transaction.isChallengeMandated()) {
-                AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
-                AuthType authType =
-                        AuthenticationServiceLocator.selectAuthType(
-                                transaction, authConfigDto.getChallengeAuthTypeConfig());
-                transaction.setAuthenticationType(authType.getValue());
+
+                if (transaction
+                        .getTransactionStatus()
+                        .equals(TransactionStatus.CHALLENGE_REQUIRED)) {
+                    AuthConfigDto authConfigDto =
+                            featureService.getAuthenticationConfig(transaction);
+                    AuthType authType =
+                            AuthenticationServiceLocator.selectAuthType(
+                                    transaction, authConfigDto.getChallengeAuthTypeConfig());
+                    transaction.setAuthenticationType(authType.getValue());
+                } else if (transaction
+                        .getTransactionStatus()
+                        .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)) {
+                    transaction.setAuthenticationType(AuthType.Decoupled.getValue());
+                }
+
                 if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
                     log.info("Generating ACSSignedContent");
                     String signedData =
@@ -159,6 +172,20 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 }
             }
 
+            if (transaction.isChallengeMandated()
+                    && DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
+                log.info("Generating ACSSignedContent");
+                String signedData =
+                        signerService.getAcsSignedContent(
+                                areq,
+                                transaction,
+                                RouteConstants.getAcsChallengeUrl(
+                                        appConfiguration.getHostname(),
+                                        transaction.getDeviceChannel()));
+                aResMapperParams.setAcsSignedContent(signedData);
+                transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
+            }
+
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
                 String eci =
                         eCommIndicatorService.generateECI(
@@ -169,7 +196,14 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                                         .setThreeRIInd(areq.getThreeRIInd()));
                 transaction.setEci(eci);
                 transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
+            } else if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
+                    transaction.getTransactionStatus())) {
+                decoupledAuthenticationAsyncService.scheduleTask(
+                        transaction.getId(),
+                        transaction.getTransactionStatus(),
+                        areq.getThreeDSRequestorDecMaxTime());
             }
+
         } catch (ThreeDSException ex) {
             // NOTE : to send Erro in response throw ThreeDSException, otherwise
 
@@ -239,7 +273,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             if (transaction.isChallengeMandated()) {
                 transactionTimeoutServiceLocator
                         .locateService(MessageType.AReq)
-                        .scheduleTask(transaction.getId());
+                        .scheduleTask(
+                                transaction.getId(),
+                                transaction.getTransactionStatus(),
+                                areq.getThreeDSRequestorDecMaxTime());
             }
 
         } catch (Exception ex) {

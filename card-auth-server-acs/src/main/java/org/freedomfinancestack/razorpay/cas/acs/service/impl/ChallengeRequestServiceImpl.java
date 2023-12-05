@@ -182,7 +182,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
                 transactionTimeoutServiceLocator
                         .locateService(MessageType.CReq)
-                        .scheduleTask(transaction.getId());
+                        .scheduleTask(
+                                transaction.getId(), transaction.getTransactionStatus(), null);
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
@@ -244,8 +245,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
                 updateEci(transaction);
                 if (challengeFlowDto.isSendRreq()) {
-                    if (!resultRequestService.processRreq(transaction)) {
-                        transaction.setTransactionStatus(TransactionStatus.FAILED);
+
+                    try {
+                        resultRequestService.handleRreq(transaction);
+                    } catch (Exception ex) {
                         CRES cres = cResMapper.toCres(transaction);
                         challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
                     }
@@ -335,7 +338,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 if (cvReq.isResendChallenge()) {
                     transactionTimeoutServiceLocator
                             .locateService(MessageType.CReq)
-                            .scheduleTask(transaction.getId());
+                            .scheduleTask(
+                                    transaction.getId(), transaction.getTransactionStatus(), null);
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 } else {
                     handleChallengeValidation(cvReq, transaction, authConfigDto, challengeFlowDto);
@@ -407,7 +411,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 if (challengeFlowDto.isSendRreq()) {
                     log.info("Sending Result request for transaction {}", transaction.getId());
                     // sendRreq and if it fails update response
-                    if (!resultRequestService.processRreq(transaction)) {
+                    try {
+                        resultRequestService.handleRreq(transaction);
+                    } catch (Exception ex) {
                         transaction.setTransactionStatus(TransactionStatus.FAILED);
                         CRES cres = cResMapper.toCres(transaction);
                         challengeFlowDto.getCdRes().setEncryptedCRes(Util.encodeBase64Url(cres));
@@ -551,7 +557,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         transaction.setInteractionCount(transaction.getInteractionCount() + 1);
         transaction.setTransactionStatus(TransactionStatus.FAILED);
         transaction.setTransactionStatusReason(
-                TransactionStatusReason.EXCEED_MAX_CHALLANGES.getCode());
+                TransactionStatusReason.EXCEED_MAX_CHALLENGES.getCode());
         transaction.setErrorCode(InternalErrorCode.CANCELLED_BY_CARDHOLDER.getCode());
         transaction.setChallengeCancelInd(
                 ChallengeCancelIndicator.CARDHOLDER_SELECTED_CANCEL.getIndicator());

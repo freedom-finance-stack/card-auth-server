@@ -53,33 +53,13 @@ public class ResultRequestServiceImpl implements ResultRequestService {
     }
 
     @Override
-    public boolean processRreq(Transaction transaction) {
-        boolean isSuccessful;
-        try {
-            handleRreq(transaction);
-            isSuccessful = true;
-        } catch (Exception ex) {
-            isSuccessful = false;
-            // Ignore any exception in sending RReq after retries and complete transaction
-            log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
-            try {
-                StateMachine.Trigger(transaction, Phase.PhaseEvent.RREQ_FAILED);
-            } catch (InvalidStateTransactionException e) {
-                log.error(
-                        "An exception occurred: {} while making transition for RReq failed",
-                        e.getMessage(),
-                        e);
-            }
-        }
-        return isSuccessful;
-    }
-
-    private void handleRreq(Transaction transaction)
+    public void handleRreq(Transaction transaction)
             throws GatewayHttpStatusCodeException,
                     InvalidStateTransactionException,
                     ACSValidationException {
         RREQ rreq = rReqMapper.toRreq(transaction);
         transactionMessageLogService.createAndSave(rreq, transaction.getId());
+        boolean success = false;
         try {
             RRES rres =
                     dsGatewayService.sendRReq(
@@ -89,6 +69,7 @@ public class ResultRequestServiceImpl implements ResultRequestService {
             transactionMessageLogService.createAndSave(rres, transaction.getId());
             resultResponseValidator.validateRequest(rres, rreq);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RRES_RECEIVED);
+            success = true;
         } catch (ACSValidationException e) {
             transaction.setTransactionStatus(e.getInternalErrorCode().getTransactionStatus());
             transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
@@ -108,6 +89,18 @@ public class ResultRequestServiceImpl implements ResultRequestService {
                 transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
             }
             throw e;
+        } finally {
+            if (!success) {
+                try {
+                    transaction.setTransactionStatus(TransactionStatus.FAILED);
+                    StateMachine.Trigger(transaction, Phase.PhaseEvent.RREQ_FAILED);
+                } catch (InvalidStateTransactionException e) {
+                    log.error(
+                            "An exception occurred: {} while making transition for RReq failed",
+                            e.getMessage(),
+                            e);
+                }
+            }
         }
     }
 

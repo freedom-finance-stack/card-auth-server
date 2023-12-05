@@ -5,9 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ChallengeCancelIndicator {
     CARDHOLDER_SELECTED_CANCEL("01", "Cardholder selected Cancel"),
-    REQUESTER_CANCELLED_AUTHENTICATION("02", "3DS Requester cancelled Authentication"),
-    TRANSACTION_ABANDONED("03", "Transaction Abandoned"),
-    TRANSACTION_TIMED_OUT("04", "Transaction Timed Out at ACS other timeouts"),
+    TRANSACTION_TIMED_OUT_DECOUPLED_AUTH("03", "Transaction Timed Out— Decoupled Authentication"),
+    TRANSACTION_TIMED_OUT("04", "= Transaction Timed Out at ACS— other timeouts"),
     TRANSACTION_TIMED_OUT_AT_ACS_FIRST_CREQ_NOT_RECEIVED_BY_ACS(
             "05", "Transaction Timed Out at ACS First CReq not received by ACS"),
     TRANSACTION_ERROR("06", "Transaction Error"),

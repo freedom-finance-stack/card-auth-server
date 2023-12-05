@@ -53,6 +53,7 @@ public class FeatureServiceImpl implements FeatureService {
                     Util.findFirstCommonString(
                             Arrays.asList(deviceRenderOptions.getSdkUiType()),
                             renderingTypeConfig.getAcsUiTemplate());
+
             if (acsUiType == null) {
                 continue;
             }
@@ -165,6 +166,9 @@ public class FeatureServiceImpl implements FeatureService {
                             InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Password Config not found");
                 }
                 authConfigDto.setPasswordConfig(passwordConfig);
+                break;
+            case Decoupled:
+                log.info("CONFIG FOR DECOUPLED IS YET TO ADD");
                 break;
             default:
                 throw new ACSDataAccessException(

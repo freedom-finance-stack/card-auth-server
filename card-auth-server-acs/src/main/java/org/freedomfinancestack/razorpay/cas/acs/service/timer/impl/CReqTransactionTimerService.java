@@ -6,6 +6,7 @@ import org.freedomfinancestack.extensions.scheduledTask.exception.TaskAlreadyExi
 import org.freedomfinancestack.extensions.timer.TimerService;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.TransactionTimerService;
+import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,8 @@ public class CReqTransactionTimerService implements TransactionTimerService {
     public static String CREQ_TIMER_TASK_IDENTIFIER_KEY = "CREQ_TIMER_TASK";
 
     @Override
-    public void scheduleTask(String transactionId) {
+    public void scheduleTask(
+            String transactionId, TransactionStatus transactionStatus, String decoupledTimer) {
         log.info("Scheduling timer task for transactionId: {}", transactionId);
         // deleting Areq task if exist
         aReqTransactionTimeoutService.cancelTask(

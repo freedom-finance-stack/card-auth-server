@@ -200,14 +200,11 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 if (challengeFlowDto.isSendRreq()) {
                     log.info("Sending Result request for transaction {}", transaction.getId());
                     // sendRreq and if it fails update response
-                    if (!resultRequestService.processRreq(transaction)) {
-                        log.info(
-                                "Failed to send Result request for transaction {}",
-                                transaction.getId());
+                    try {
+                        resultRequestService.handleRreq(transaction);
+                    } catch (ThreeDSException ex) {
                         throw new ThreeDSException(
-                                ThreeDSecureErrorCode.SENT_MESSAGES_LIMIT_EXCEEDED,
-                                "Couldn't Communicate to DS",
-                                transaction);
+                                ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
                     }
                 }
                 // method to increase a string counter
@@ -386,7 +383,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         transaction.setInteractionCount(transaction.getInteractionCount() + 1);
         transaction.setTransactionStatus(TransactionStatus.FAILED);
         transaction.setTransactionStatusReason(
-                TransactionStatusReason.EXCEED_MAX_CHALLANGES.getCode());
+                TransactionStatusReason.EXCEED_MAX_CHALLENGES.getCode());
         transaction.setErrorCode(InternalErrorCode.CANCELLED_BY_CARDHOLDER.getCode());
         transaction.setChallengeCancelInd(creq.getChallengeCancel());
 

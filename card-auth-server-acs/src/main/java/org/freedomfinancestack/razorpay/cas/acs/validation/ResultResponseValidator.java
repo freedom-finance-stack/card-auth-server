@@ -72,6 +72,7 @@ public class ResultResponseValidator {
         Validation.validate(
                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID.getFieldName(),
                 incomingRres.getThreeDSServerTransID(),
+                notBlank(),
                 isIn(new String[] {rreq.getThreeDSServerTransID()}));
 
         Validation.validate(

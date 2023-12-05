@@ -17,6 +17,7 @@ import lombok.Getter;
 public class ThreeDSException extends Exception {
 
     @Getter private final ThreeDSecureErrorCode threeDSecureErrorCode;
+    @Getter private Transaction transaction;
     @Getter private InternalErrorCode internalErrorCode;
     private final ThreeDSErrorResponse threeDSErrorResponse = new ThreeDSErrorResponse();
 
@@ -30,7 +31,6 @@ public class ThreeDSException extends Exception {
             final InternalErrorCode internalErrorCode,
             final String message) {
         super(message);
-        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode, message);
         this.threeDSecureErrorCode = threeDSecureErrorCode;
         this.internalErrorCode = internalErrorCode;
     }
@@ -39,10 +39,6 @@ public class ThreeDSException extends Exception {
             final ThreeDSecureErrorCode threeDSecureErrorCode,
             final InternalErrorCode internalErrorCode) {
         super(internalErrorCode.getDefaultErrorMessage());
-        addMetaInThreeDSecureErrorCode(
-                this.threeDSErrorResponse,
-                threeDSecureErrorCode,
-                internalErrorCode.getDefaultErrorMessage());
         this.threeDSecureErrorCode = threeDSecureErrorCode;
         this.internalErrorCode = internalErrorCode;
     }
@@ -53,7 +49,6 @@ public class ThreeDSException extends Exception {
             final String message,
             final Throwable cause) {
         super(message, cause);
-        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode, message);
         this.threeDSecureErrorCode = threeDSecureErrorCode;
         this.internalErrorCode = internalErrorCode;
     }
@@ -65,9 +60,8 @@ public class ThreeDSException extends Exception {
             final Transaction transaction,
             final Throwable cause) {
         super(message, cause);
-        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode, message);
-        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, transaction);
         this.threeDSecureErrorCode = threeDSecureErrorCode;
+        this.transaction = transaction;
     }
 
     public ThreeDSException(
@@ -75,43 +69,45 @@ public class ThreeDSException extends Exception {
             final String message,
             final Transaction transaction) {
         super(message);
-        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, threeDSecureErrorCode, message);
-        addMetaInThreeDSecureErrorCode(this.threeDSErrorResponse, transaction);
         this.threeDSecureErrorCode = threeDSecureErrorCode;
+        this.transaction = transaction;
     }
 
     public ThreeDSErrorResponse getErrorResponse() {
+        addMetaInThreeDSecureErrorCode(threeDSecureErrorCode);
+        addMetaInThreeDSecureErrorCode(transaction);
         return this.threeDSErrorResponse.setHttpStatus(HttpStatus.OK.value());
     }
 
-    private void addMetaInThreeDSecureErrorCode(
-            final ThreeDSErrorResponse threeDSErrorResponse,
-            final ThreeDSecureErrorCode errorCode,
-            final String message) {
-        threeDSErrorResponse.setErrorCode(errorCode.getErrorCode());
-        threeDSErrorResponse.setErrorComponent(errorCode.getErrorComponent());
-        threeDSErrorResponse.setErrorDescription(errorCode.getErrorDescription());
-        threeDSErrorResponse.setErrorDetail(message);
+    private void addMetaInThreeDSecureErrorCode(final ThreeDSecureErrorCode errorCode) {
+        this.threeDSErrorResponse.setErrorCode(errorCode.getErrorCode());
+        this.threeDSErrorResponse.setErrorComponent(errorCode.getErrorComponent());
+        this.threeDSErrorResponse.setErrorDescription(errorCode.getErrorDescription());
+        this.threeDSErrorResponse.setErrorDetail(this.getMessage());
     }
 
-    private void addMetaInThreeDSecureErrorCode(
-            final ThreeDSErrorResponse threeDSErrorResponse, final Transaction transaction) {
+    private void addMetaInThreeDSecureErrorCode(final Transaction transaction) {
         if (transaction != null) {
             if (transaction.getTransactionReferenceDetail() != null) {
-                threeDSErrorResponse.setThreeDSServerTransID(
+                this.threeDSErrorResponse.setThreeDSServerTransID(
                         transaction
                                 .getTransactionReferenceDetail()
                                 .getThreedsServerTransactionId());
-                threeDSErrorResponse.setDsTransID(
+                this.threeDSErrorResponse.setDsTransID(
                         transaction.getTransactionReferenceDetail().getDsTransactionId());
             }
-            threeDSErrorResponse.setAcsTransID(transaction.getId());
+            this.threeDSErrorResponse.setAcsTransID(transaction.getId());
             if (!Util.isNullorBlank(transaction.getMessageVersion())) {
-                threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
+                this.threeDSErrorResponse.setMessageVersion(transaction.getMessageVersion());
             }
-            if (!transaction.getPhase().equals(Phase.AREQ)
-                    && !transaction.getPhase().equals(Phase.AERROR)) {
-                threeDSErrorResponse.setErrorMessageType(MessageType.CReq.toString());
+
+            if (transaction.getPhase().equals(Phase.AREQ)
+                    || transaction.getPhase().equals(Phase.AERROR)) {
+                this.threeDSErrorResponse.setErrorMessageType(MessageType.AReq.toString());
+            } else if (transaction.getPhase().equals(Phase.RREQ)) {
+                this.threeDSErrorResponse.setErrorMessageType(MessageType.RRes.toString());
+            } else {
+                this.threeDSErrorResponse.setErrorMessageType(MessageType.CReq.toString());
             }
         }
     }
