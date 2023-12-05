@@ -10,8 +10,10 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInterfaceService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.contract.ChallengeSelectInfo;
 import org.freedomfinancestack.razorpay.cas.contract.Image;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
@@ -35,6 +37,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
     private final InstitutionRepository institutionRepository;
 
     private final InstitutionUiConfiguration institutionUiConfiguration;
+    private final TestConfigProperties testConfigProperties;
 
     @Override
     public void generateAppUIParams(
@@ -171,8 +174,13 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
-
-                // TODO challengeSelectInfo
+                if (testConfigProperties.isEnable()) {
+                    validInstitutionUIParams.setChallengeSelectInfo(
+                            new ChallengeSelectInfo[] {
+                                ChallengeSelectInfo.builder().yes("yes").build(),
+                                ChallengeSelectInfo.builder().yes("no").build()
+                            });
+                }
                 break;
 
             case MULTI_SELECT:
@@ -181,8 +189,13 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
-
-                // TODO challengeSelectInfo
+                if (testConfigProperties.isEnable()) {
+                    validInstitutionUIParams.setChallengeSelectInfo(
+                            new ChallengeSelectInfo[] {
+                                ChallengeSelectInfo.builder().yes("yes").build(),
+                                ChallengeSelectInfo.builder().yes("no").build()
+                            });
+                }
                 break;
 
             case OOB:
