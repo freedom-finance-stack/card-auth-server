@@ -111,6 +111,7 @@ INSERT INTO `card_detail` VALUES ('110', '1', 'I1','8765431458777319', '0535', 0
 INSERT INTO `card_detail` VALUES ('111', '1', 'I1','7654370980201455', '0535', 0, NOW(),NOW(),NULL,'dev-user','dev-user',NULL);
 
 UNLOCK TABLES;
+
 LOCK TABLES `card_range` WRITE;
 INSERT INTO `card_range` VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R7', 'I1', 4030000000000000, 4030000000000100, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
@@ -370,7 +371,6 @@ VALUES ('18', 'CARD_RANGE', 'R22', 1, 'CHALLENGE_ATTEMPT',
         }',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null);
-
 UNLOCK TABLES;
 
 

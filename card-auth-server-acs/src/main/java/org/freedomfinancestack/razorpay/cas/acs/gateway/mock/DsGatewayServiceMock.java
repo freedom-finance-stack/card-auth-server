@@ -21,8 +21,8 @@ public class DsGatewayServiceMock implements DsGatewayService {
         RRES rres = new RRES();
         rres.setAcsTransID(rReq.getAcsTransID());
         rres.setMessageType(MessageType.RRes.toString());
-        rres.setDsTransID("DSTRANSID");
         rres.setThreeDSServerTransID(rReq.getThreeDSServerTransID());
+        rres.setDsTransID(rReq.getDsTransID());
         rres.setMessageVersion(rReq.getMessageVersion());
         rres.setResultsStatus("01");
         return rres;
