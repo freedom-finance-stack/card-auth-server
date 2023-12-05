@@ -196,7 +196,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
-            challengeFlowDto.setSendRreq(true);
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
                     ex.getThreeDSecureErrorCode(),
