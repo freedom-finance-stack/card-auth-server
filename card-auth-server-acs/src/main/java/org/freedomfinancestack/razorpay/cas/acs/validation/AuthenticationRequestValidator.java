@@ -36,6 +36,7 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.i
 import static org.freedomfinancestack.extensions.validation.validator.enriched.isListLengthValid.isListLengthValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
+import static org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant.MESSAGE_VERSION_2_1_0;
 
 /**
  * The {@code AuthenticationRequestValidator} class is responsible for validating the Authentication
@@ -91,7 +92,13 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 ThreeDSDataElement.MESSAGE_CATEGORY.getFieldName(),
                 request.getMessageCategory(),
                 notBlank(),
-                isIn(ThreeDSDataElement.MESSAGE_CATEGORY.getAcceptedValues()));
+                isIn(ThreeDSDataElement.MESSAGE_CATEGORY.getAcceptedValues()),
+                when(
+                        request.getMessageVersion().equals(MESSAGE_VERSION_2_1_0)
+                                && request.getDeviceChannel()
+                                        .equals(DeviceChannel.TRI.getChannel()),
+                        isIn(new String[] {MessageCategory.NPA.getCategory()})));
+
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_TYPE.getFieldName(),
                 request.getMessageType(),
