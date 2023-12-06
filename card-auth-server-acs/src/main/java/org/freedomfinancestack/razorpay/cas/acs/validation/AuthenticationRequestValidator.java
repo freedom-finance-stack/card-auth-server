@@ -88,6 +88,14 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getDeviceChannel(),
                 notBlank(),
                 isIn(ThreeDSDataElement.DEVICE_CHANNEL.getAcceptedValues()));
+
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
+                request.getMessageVersion(),
+                notBlank(),
+                lengthValidator(DataLengthType.VARIABLE, 8),
+                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
+
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_CATEGORY.getFieldName(),
                 request.getMessageCategory(),
@@ -104,12 +112,6 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                 request.getMessageType(),
                 notBlank(),
                 isIn(ThreeDSDataElement.MESSAGE_TYPE.getAcceptedValues()));
-        Validation.validate(
-                ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
-                request.getMessageVersion(),
-                notBlank(),
-                lengthValidator(DataLengthType.VARIABLE, 8),
-                isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_COMPIND.getFieldName(),
