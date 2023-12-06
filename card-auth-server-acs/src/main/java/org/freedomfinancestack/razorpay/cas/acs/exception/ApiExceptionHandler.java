@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.exception;
 
 import java.util.Set;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
@@ -105,6 +106,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatusCode httpStatusCode,
             WebRequest request) {
+        if (isChallengeBrowserRoute(request)) {
+            return handleExceptionInternal(ex, "{}", headers, HttpStatus.OK, request);
+        }
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
                 new ThreeDSErrorResponse(
@@ -114,6 +118,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
         return handleExceptionInternal(ex, errorResponse, headers, HttpStatus.OK, request);
+    }
+
+    private boolean isChallengeBrowserRoute(WebRequest request) {
+        String requestUrl = request.getDescription(false); // Get the request URL
+        return requestUrl.contains(RouteConstants.CHALLENGE_BROWSER_ROUTE);
     }
 
     @ExceptionHandler(Throwable.class)
