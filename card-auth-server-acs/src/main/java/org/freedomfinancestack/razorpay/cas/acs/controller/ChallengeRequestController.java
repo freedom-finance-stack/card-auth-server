@@ -3,14 +3,12 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
-import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.AppChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -70,15 +68,10 @@ public class ChallengeRequestController {
                         description = "Bad Request or Request not according to Areq Schema")
             })
     public String handleChallengeRequest(
-            @RequestParam(name = "creq") String strCReq,
+            @RequestParam(name = "creq", required = false) String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model)
             throws ThreeDSException {
-        if (strCReq == null) {
-            throw new ThreeDSException(
-                    ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR);
-        }
         CdRes cdRes =
                 challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
