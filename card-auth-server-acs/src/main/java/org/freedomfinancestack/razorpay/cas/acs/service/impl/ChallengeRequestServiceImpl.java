@@ -571,9 +571,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     private Transaction fetchTransactionData(String transactionId)
             throws ACSDataAccessException, ThreeDSException {
-        if (Util.isNullorBlank(transactionId)) {
-            throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_ID_EMPTY);
-        }
+        //        if (Util.isNullorBlank(transactionId)) {
+        //            throw new
+        // TransactionDataNotValidException(InternalErrorCode.TRANSACTION_ID_EMPTY);
+        //        }
         Transaction transaction = transactionService.findById(transactionId);
         if (null == transaction || !transaction.isChallengeMandated()) {
             throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
