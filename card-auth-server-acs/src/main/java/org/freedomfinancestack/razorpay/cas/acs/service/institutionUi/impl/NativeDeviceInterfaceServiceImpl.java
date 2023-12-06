@@ -179,8 +179,6 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
             case OOB:
                 challengeText = institutionUiConfig.getChallengeInfoText();
 
-                validInstitutionUIParams.setResendInformationLabel(
-                        institutionUiConfig.getResendInformationLabel());
                 validInstitutionUIParams.setOobContinueLabel(InternalConstants.OOB_CONTINUE_LABEL);
 
                 break;

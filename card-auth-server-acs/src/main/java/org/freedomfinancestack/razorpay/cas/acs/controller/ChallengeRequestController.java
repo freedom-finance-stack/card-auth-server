@@ -3,14 +3,12 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
-import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.AppChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -109,11 +107,11 @@ public class ChallengeRequestController {
 
     private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes)
             throws ThreeDSException {
-        if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
-            throw new ThreeDSException(
-                    ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
-                    InternalErrorCode.INTERNAL_SERVER_ERROR);
-        }
+        //        if (Util.isNullorBlank(cdRes.getNotificationUrl())) {
+        //            throw new ThreeDSException(
+        //                    ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED,
+        //                    InternalErrorCode.INTERNAL_SERVER_ERROR);
+        //        }
         if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
             model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedErro());
         } else {
