@@ -166,6 +166,12 @@ public enum
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.INVALID_TRANSACTION),
 
+    TRANSACTION_ID_EMPTY(
+            "2004",
+            "Transaction not Recognised",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
     // Error code for invalid request
     INVALID_REQUEST(
             "4001",
