@@ -68,7 +68,7 @@ public class ChallengeRequestController {
                         description = "Bad Request or Request not according to Areq Schema")
             })
     public String handleChallengeRequest(
-            @RequestParam(name = "creq" ) String strCReq,
+            @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model)
             throws ThreeDSException {
