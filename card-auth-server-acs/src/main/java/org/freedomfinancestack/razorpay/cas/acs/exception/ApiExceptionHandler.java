@@ -107,8 +107,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode httpStatusCode,
             WebRequest request) {
         if (isChallengeBrowserRoute(request)) {
-
-            return handleExceptionInternal(ex, "{}", headers, HttpStatus.OK, request);
+            return handleExceptionInternal(ex, "", headers, HttpStatus.OK, request);
         }
         log.error(ex.getMessage(), ex);
         ThreeDSErrorResponse errorResponse =
