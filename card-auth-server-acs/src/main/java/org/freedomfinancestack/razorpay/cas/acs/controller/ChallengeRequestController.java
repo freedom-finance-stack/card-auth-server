@@ -73,10 +73,10 @@ public class ChallengeRequestController {
             Model model) {
         CdRes cdRes =
                 challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
-        if (cdRes.isSendEmptyResponse() || cdRes.isError()) {
+        if (cdRes.isSendEmptyResponse()) {
             return "threeDSecureEmptyResponse";
         }
-        if (cdRes.isChallengeCompleted()) {
+        if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
         }
         return createCdRes(model, cdRes);
@@ -109,9 +109,7 @@ public class ChallengeRequestController {
 
     private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes) {
         if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
-            return "threeDSecureEmptyResponse";
-            //            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES,
-            // cdRes.getEncryptedErro());
+            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedErro());
         } else {
             model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
         }

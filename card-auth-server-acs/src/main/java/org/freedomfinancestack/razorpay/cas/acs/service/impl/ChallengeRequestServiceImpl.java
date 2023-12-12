@@ -187,7 +187,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         } catch (ParseException | TransactionDataNotValidException ex) {
             log.error("Exception occurred", ex);
             // don't send Rres for ParseException
-            if (ex.getInternalErrorCode().equals(InternalErrorCode.TRANSACTION_ID_EMPTY)) {
+            if (ex.getInternalErrorCode().equals(InternalErrorCode.TRANSACTION_ID_EMPTY)
+                    || ex.getInternalErrorCode()
+                            .equals(InternalErrorCode.CREQ_JSON_PARSING_ERROR)) {
                 challengeFlowDto.getCdRes().setSendEmptyResponse(true);
             }
             generateErrorResponseAndUpdateTransaction(
