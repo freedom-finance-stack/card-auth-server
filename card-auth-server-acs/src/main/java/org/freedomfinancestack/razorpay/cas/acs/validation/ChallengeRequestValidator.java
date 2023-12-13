@@ -171,6 +171,8 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                         ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
                         lengthValidator(DataLengthType.VARIABLE, 256)));
 
+        Validation.validate();
+
         validateAppChallengeData(transaction, incomingCreq);
     }
 

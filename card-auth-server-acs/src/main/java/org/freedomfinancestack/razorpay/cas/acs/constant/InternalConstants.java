@@ -11,6 +11,8 @@ public class InternalConstants {
     public static final String IOS = "iOS";
     public static final String YES = "Y";
     public static final String NO = "N";
+
+    public static final String TRUE = "true";
     public static final String SPACE = " ";
 
     public static final String INITIAL_ACS_SDK_COUNTER = "000";

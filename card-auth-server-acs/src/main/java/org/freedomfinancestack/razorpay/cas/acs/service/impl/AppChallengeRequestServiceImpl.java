@@ -17,10 +17,12 @@ import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailSer
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
+import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSDataElement;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
+import org.freedomfinancestack.razorpay.cas.contract.enums.UIType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -125,23 +127,30 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             } else if (!Util.isNullorBlank(creq.getChallengeCancel())) {
                 handleCancelChallenge(transaction, challengeFlowDto, creq);
             } else {
-                if (creq.getResendChallenge() != null
-                        && InternalConstants.YES.equals(creq.getResendChallenge())) {
-                    handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
-                } else if (transaction.getPhase().equals(Phase.ARES)) {
-                    StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
-                    handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
-                } else {
-                    if (transaction
-                            .getTransactionSdkDetail()
-                            .getAcsInterface()
-                            .equals(DeviceInterface.HTML.getValue())) {
-                        challengeFlowDto.setAuthValue(creq.getChallengeHTMLDataEntry());
-                    } else {
-                        challengeFlowDto.setAuthValue(creq.getChallengeDataEntry());
+                if (transaction.getTransactionSdkDetail().getAcsUiType().equals(UIType.OOB.getType())) {
+                    if (creq.getOobContinue().equals(InternalConstants.TRUE)) {
+
                     }
-                    handleChallengeValidation(transaction, authConfigDto, challengeFlowDto);
+                } else {
+                    if (creq.getResendChallenge() != null
+                            && InternalConstants.YES.equals(creq.getResendChallenge())) {
+                        handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
+                    } else if (transaction.getPhase().equals(Phase.ARES)) {
+                        StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
+                        handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
+                    } else {
+                        if (transaction
+                                .getTransactionSdkDetail()
+                                .getAcsInterface()
+                                .equals(DeviceInterface.HTML.getValue())) {
+                            challengeFlowDto.setAuthValue(creq.getChallengeHTMLDataEntry());
+                        } else {
+                            challengeFlowDto.setAuthValue(creq.getChallengeDataEntry());
+                        }
+                        handleChallengeValidation(transaction, authConfigDto, challengeFlowDto);
+                    }
                 }
+
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
