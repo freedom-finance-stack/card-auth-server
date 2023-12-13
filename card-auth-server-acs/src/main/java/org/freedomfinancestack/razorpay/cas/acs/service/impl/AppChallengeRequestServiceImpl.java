@@ -149,7 +149,6 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             Transaction transactionErr = new Transaction();
             generateDummyTransactionWithError(ex.getInternalErrorCode(), transactionErr);
             throw new ThreeDSException(
-
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transactionErr, ex);
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
