@@ -28,8 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class PlrqService extends HttpsGatewayService {
-    public static final String BRW_FORM_DATA = "transactionId=%s&authVal=%s";
-    public static final String BRW_CANCEL_FORM_DATA = "transactionId=%s&cancelChallenge=true";
+
+    public static final String BRW_FORM_DATA =
+            "acsTransID=%s&challengeHTMLDataEntry=%s&messageVersion=%s&threeDSServerTransID=%s";
+    public static final String BRW_CANCEL_FORM_DATA =
+            "acsTransID=%s&cancelChallenge=true&messageVersion=%s&threeDSServerTransID=%s";
     public static final String PLRQ_MESSAGE_TYPE = "pIrq";
     public static final String PLRQ_MESSAGE_VERSION = "1.0.6";
     public static final String APP_INCORRECT_DATA = "000000";
@@ -49,14 +52,24 @@ public class PlrqService extends HttpsGatewayService {
     }
 
     public void sendPlrq(
-            String transactionId, String otpAuthVal, String messageVersion, String deviceChannel)
+            String transactionId,
+            String otpAuthVal,
+            String messageVersion,
+            String threeDSServerTransID,
+            String deviceChannel)
             throws ACSValidationException {
         if (serviceConfig.isMock()) {
             log.info("Mocking PLRQ");
             return;
         }
 
-        Plrq plrq = createPlrq(transactionId, otpAuthVal, messageVersion, deviceChannel);
+        Plrq plrq =
+                createPlrq(
+                        transactionId,
+                        otpAuthVal,
+                        messageVersion,
+                        threeDSServerTransID,
+                        deviceChannel);
         try {
             log.info("Sending PLRQ: " + Util.toJson(plrq));
             Map<String, String> headerMap = new HashMap<>();
@@ -71,7 +84,11 @@ public class PlrqService extends HttpsGatewayService {
     }
 
     private Plrq createPlrq(
-            String transactionId, String authVal, String messageVersion, String deviceChannel) {
+            String transactionId,
+            String authVal,
+            String messageVersion,
+            String threeDSServerTransID,
+            String deviceChannel) {
         Plrq plrq = new Plrq();
         plrq.acsTransID = transactionId;
         plrq.messageType = PLRQ_MESSAGE_TYPE;
@@ -80,7 +97,8 @@ public class PlrqService extends HttpsGatewayService {
 
         switch (Objects.requireNonNull(DeviceChannel.getDeviceChannel(deviceChannel))) {
             case APP -> plrq.p_formValues_APP = createPlrqApp(authVal);
-            case BRW -> plrq.p_formValues_BRW = createPlrqBrw(transactionId, authVal);
+            case BRW -> plrq.p_formValues_BRW =
+                    createPlrqBrw(transactionId, authVal, messageVersion, threeDSServerTransID);
             default -> {}
         }
         return plrq;
@@ -93,11 +111,29 @@ public class PlrqService extends HttpsGatewayService {
         return pFormValuesAPP;
     }
 
-    private Plrq.PFormValuesBRW createPlrqBrw(String transactionId, String authVal) {
+    private Plrq.PFormValuesBRW createPlrqBrw(
+            String transactionId,
+            String authVal,
+            String messageVersion,
+            String threeDSServerTransID) {
         Plrq.PFormValuesBRW pFormValuesBRW = new Plrq.PFormValuesBRW();
-        pFormValuesBRW.cancelFormData = String.format(BRW_CANCEL_FORM_DATA, transactionId);
-        pFormValuesBRW.correctFormData = String.format(BRW_FORM_DATA, transactionId, authVal);
-        pFormValuesBRW.incorrectFormData = String.format(BRW_FORM_DATA, transactionId, "00000");
+        pFormValuesBRW.cancelFormData =
+                String.format(
+                        BRW_CANCEL_FORM_DATA, transactionId, messageVersion, threeDSServerTransID);
+        pFormValuesBRW.correctFormData =
+                String.format(
+                        BRW_FORM_DATA,
+                        transactionId,
+                        authVal,
+                        messageVersion,
+                        threeDSServerTransID);
+        pFormValuesBRW.incorrectFormData =
+                String.format(
+                        BRW_FORM_DATA,
+                        transactionId,
+                        "00000",
+                        messageVersion,
+                        threeDSServerTransID);
         pFormValuesBRW.action =
                 RouteConstants.getAcsChallengeValidationUrl(
                         appConfiguration.getHostname(), DeviceChannel.BRW.getChannel());
