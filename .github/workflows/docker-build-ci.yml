@@ -57,11 +57,7 @@ jobs:
       - name: Push
         uses: docker/build-push-action@v4
         with:
-<<<<<<< HEAD
           tags: razorpay/freedomfinancestack:challenge-app-portal-testing
-=======
-          tags: razorpay/freedomfinancestack:${{ github.sha }}
->>>>>>> refactor-app-challenge-flow
           context: .
           file: ./scripts/deployment/dockerconf/card-auth-server-acs/Dockerfile
           push: true
