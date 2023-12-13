@@ -8,6 +8,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSExcepti
 import org.freedomfinancestack.razorpay.cas.acs.service.AppChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -122,8 +123,8 @@ public class ChallengeRequestController {
     }
 
     private static String createCdRes(Model model, CdRes cdRes) {
-        CVReq cVReq = new CVReq();
-        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_VALIDATION_REQUEST, cVReq);
+        CREQ creq = new CREQ();
+        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_VALIDATION_REQUEST, creq);
         model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE, cdRes);
         return "acsOtp";
     }
@@ -132,7 +133,7 @@ public class ChallengeRequestController {
      * Handles Challenge Validation Request (ValidateCReq) received from the client browser for OTP
      * verification and generates CRes for the Browser.
      *
-     * @param cVReq The {@link CVReq} object representing the * Challenge Validation Request message
+     * @param cReq The {@link CVReq} object representing the * Challenge Validation Request message
      *     received from the browser.
      * @param model The {@link Model} object representing the UI Model for HTML template data
      *     binding.
@@ -157,9 +158,9 @@ public class ChallengeRequestController {
                         responseCode = "400",
                         description = "Bad Request or Request not according to Areq Schema")
             })
-    public String handleChallengeValidationRequest(Model model, @ModelAttribute("cReq") String cReq)
+    public String handleChallengeValidationRequest(Model model, @ModelAttribute("cReq") CREQ cReq)
             throws ThreeDSException {
-        CdRes cdRes = challengeRequestService.processBrwChallengeRequest(cReq, null);
+        CdRes cdRes = challengeRequestService.processBrwChallengeRequest(Util.toJson(cReq), null);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
         }

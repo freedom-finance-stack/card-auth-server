@@ -88,12 +88,13 @@
     <h2>Enter Verification Code</h2>
     <p><span th:text="${cdRes.challengeText}"></span></p>
     <p>You have <strong th:text="${cdRes.attemptLeft}"></strong> attempts left.</p>
-    <form action="#" th:action="${cdRes.validationUrl}" method="post"
-          th:object="${cVReq}">
-        <label for="otp">Verification Code</label>
-        <input type="text" id="otp" name="otp" th:field="*{authVal}" required>
-        <input type="hidden" name="transactionId" th:value="${cdRes.transactionId}">
-<!--        <input type="hidden" name="resendChallenge" value="true">-->
+    <form action="#" th:action="${cdRes.validationUrl}" method="post" th:object="${cReq}">
+        <label for="challengeHTMLDataEntry">Verification Code</label>
+        <input type="text" id="challengeHTMLDataEntry" name="challengeHTMLDataEntry" th:field="*{challengeHTMLDataEntry}" required>
+        <input type="hidden" name="acsTransID" th:value="${cdRes.acsTransID}" >
+        <input type="hidden" name="messageType" value="CReq">
+        <input type="hidden" name="messageVersion" th:value="${cdRes.messageVersion}">
+        <input type="hidden" name="threeDSServerTransID" th:value="${cdRes.threeDSServerTransID}">
         <button type="submit">Submit</button>
     </form>
     <p class="alert"> <span th:text="${cdRes.challengeInfoText}"> incorrect otp </span> </p>
