@@ -45,7 +45,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         "Request method '" + ex.getMethod() + "' not supported",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
+        return handleExceptionInternal(ex, errorResponse, headers, HttpStatus.OK, request);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         "Request has missing path variable",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
+        return handleExceptionInternal(ex, errorResponse, headers, HttpStatus.OK, request);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         "Request has invalid method argument",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
+        return handleExceptionInternal(ex, errorResponse, headers, HttpStatus.OK, request);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         "Request parameter missing",
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorComponent(),
                         ThreeDSecureErrorCode.MESSAGE_RECEIVED_INVALID.getErrorDescription());
-        return handleExceptionInternal(ex, errorResponse, headers, httpStatusCode, request);
+        return handleExceptionInternal(ex, errorResponse, headers, HttpStatus.OK, request);
     }
 
     @ExceptionHandler(Throwable.class)

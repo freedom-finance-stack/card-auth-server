@@ -360,6 +360,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 ThreeDSDataElement.SDK_EPHEM_PUB_KEY, request),
                         notBlank()),
                 isValidObject());
+
         Validation.validate(
                 ThreeDSDataElement.SDK_EPHEM_PUB_KEY.getFieldName(),
                 request.getSdkEphemPubKey(),
@@ -368,6 +369,7 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                 ThreeDSDataElement.SDK_EPHEM_PUB_KEY, request),
                         notBlank()),
                 isJsonObjectLengthValid(256));
+
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
                 request.getSdkTransID(),
@@ -524,18 +526,18 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
                                                 InternalConstants
                                                         .THREE_DS_REQUESTOR_AUTHENTICATION_IND_03)
                                         .contains(request.getThreeDSRequestorAuthenticationInd()))
-                        || (!Util.isNullorBlank(request.getThreeRIInd())
+                        || (ThreeDSConstant.MESSAGE_VERSION_2_2_0.equals(
+                                        request.getMessageVersion())
+                                && !Util.isNullorBlank(request.getThreeRIInd())
                                 && Arrays.asList(
-                                                ThreeRIInd.RECURRING_TRANSACTION,
-                                                ThreeRIInd.INSTALMENT_TRANSACTION,
-                                                ThreeRIInd.SPLIT_DELAYED_SHIPMENT,
-                                                ThreeRIInd.TOP_UP,
-                                                ThreeRIInd.MAIL_ORDER,
-                                                ThreeRIInd.TELEPHONE_ORDER,
-                                                ThreeRIInd.OTHER_PAYMENT)
-                                        .contains(request.getThreeRIInd())
-                                && ThreeDSConstant.MESSAGE_VERSION_2_2_0.equals(
-                                        request.getMessageVersion()));
+                                                ThreeRIInd.RECURRING_TRANSACTION.getValue(),
+                                                ThreeRIInd.INSTALMENT_TRANSACTION.getValue(),
+                                                ThreeRIInd.SPLIT_DELAYED_SHIPMENT.getValue(),
+                                                ThreeRIInd.TOP_UP.getValue(),
+                                                ThreeRIInd.MAIL_ORDER.getValue(),
+                                                ThreeRIInd.TELEPHONE_ORDER.getValue(),
+                                                ThreeRIInd.OTHER_PAYMENT.getValue())
+                                        .contains(request.getThreeRIInd()));
         boolean purchaseElementsWhenRule =
                 validateDeviceChannel(ThreeDSDataElement.PURCHASE_AMOUNT, request)
                         && (request.getMessageCategory().equals(MessageCategory.PA.getCategory())
@@ -622,10 +624,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
 
         Validation.validate(
                 ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0.getFieldName(),
-                request.getThreeDSServerURL(),
+                request.getRecurringFrequency(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0, request),
+                                        ThreeDSDataElement.RECURRING_FREQUENCY_2_1_0, request)
+                                && isAuthenticationIndValid,
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
 
@@ -640,10 +643,11 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
 
         Validation.validate(
                 ThreeDSDataElement.RECURRING_EXPIRY_2_1_0.getFieldName(),
-                request.getThreeDSServerURL(),
+                request.getRecurringExpiry(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.RECURRING_EXPIRY_2_1_0, request),
+                                        ThreeDSDataElement.RECURRING_EXPIRY_2_1_0, request)
+                                && isAuthenticationIndValid,
                         notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 2048));
     }

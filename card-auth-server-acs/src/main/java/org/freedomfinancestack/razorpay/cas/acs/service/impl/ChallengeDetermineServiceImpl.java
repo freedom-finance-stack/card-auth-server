@@ -74,11 +74,13 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
             transaction.setChallengeMandated(true);
             transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
         } else if (RiskFlag.DECOUPLED_CHALLENGE == riskFlag) {
-            if (InternalConstants.YES.equals(objAReq.getThreeDSRequestorDecReqInd())) {
+            if (InternalConstants.YES.equals(objAReq.getThreeDSRequestorDecReqInd())
+                    && riskFlagAcs.equals(RiskFlag.DECOUPLED_CHALLENGE)) {
                 transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
                 transaction.setChallengeMandated(true);
             } else {
-                transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+                transaction.setTransactionStatus(
+                        TransactionStatus.SUCCESS); // Marking it successful for portal testing.
                 transaction.setChallengeMandated(false);
             }
         } else if (RiskFlag.INFORMATIONAL == riskFlag) {
