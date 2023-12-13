@@ -45,7 +45,7 @@ import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.fromJson;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ChallengeRequestServiceImplV1 implements ChallengeRequestService {
+public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     private final TransactionService transactionService;
     private final TransactionMessageLogService transactionMessageLogService;
