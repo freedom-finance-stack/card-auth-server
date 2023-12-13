@@ -19,7 +19,7 @@ app:
       decoupledAuthDelay : 5 #sec
 
 test:
-  enable-decryption-encryption: true
+  enable-decryption-encryption: true #todo rename this variable
   enable : false
   attemptedRange:
     start: 4016000000000010

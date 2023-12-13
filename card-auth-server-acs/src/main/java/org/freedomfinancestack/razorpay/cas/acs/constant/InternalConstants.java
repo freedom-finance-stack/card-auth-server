@@ -65,4 +65,5 @@ public class InternalConstants {
     public static final String THREE_DS_REQUESTOR_AUTHENTICATION_IND_03 = "03";
     public static final int THREE_DS_REQUESTOR_DEC_MAX_TIME_UPPER_LIMIT = 10080;
     public static final int THREE_DS_REQUESTOR_DEC_MAX_TIME_LOWER_LIMIT = 1;
+    public static final String OOB_CONTINUE_LABEL = "Continue";
 }

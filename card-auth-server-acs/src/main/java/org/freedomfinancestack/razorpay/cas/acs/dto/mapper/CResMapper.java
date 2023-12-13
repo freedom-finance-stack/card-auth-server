@@ -96,13 +96,9 @@ public interface CResMapper {
     @Mapping(target = "whyInfoLabel", source = "institutionUIParams.whyInfoLabel")
     @Mapping(target = "whyInfoText", source = "institutionUIParams.whyInfoText")
     @Mapping(target = "whitelistingInfoText", source = "institutionUIParams.whitelistingInfoText")
-
-    // TODO
-    // challengeSelectInfo
+    @Mapping(target = "oobContinueLabel", source = "institutionUIParams.oobContinueLabel")
+    @Mapping(target = "challengeSelectInfo", source = "institutionUIParams.challengeSelectInfo")
     // messageExtension
-    // oobAppURL
-    // oobContinueLabel
-    // oobAppLabel
     CRES toAppCres(Transaction transaction, InstitutionUIParams institutionUIParams);
 
     default String getChallengeCompletionInd(Transaction transaction) {

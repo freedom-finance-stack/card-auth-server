@@ -8,7 +8,6 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
@@ -150,7 +149,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             Transaction transactionErr = new Transaction();
             generateDummyTransactionWithError(ex.getInternalErrorCode(), transactionErr);
             throw new ThreeDSException(
-                    ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
+                    ex.getThreeDSecureErrorCode(), ex.getMessage(), transactionErr, ex);
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
@@ -224,13 +223,11 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private Transaction fetchTransactionData(String transactionId)
-            throws ACSDataAccessException,
-                    TransactionDataNotValidException,
-                    ACSValidationException {
+            throws ACSDataAccessException, TransactionDataNotValidException {
         if (transactionId == null) {
-            throw new ACSValidationException(
+            throw new TransactionDataNotValidException(
                     ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING,
-                    "ACS TRANSACTION ID NOT FOUND");
+                    InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         }
         Transaction transaction = transactionService.findById(transactionId);
         if (null == transaction || !transaction.isChallengeMandated()) {

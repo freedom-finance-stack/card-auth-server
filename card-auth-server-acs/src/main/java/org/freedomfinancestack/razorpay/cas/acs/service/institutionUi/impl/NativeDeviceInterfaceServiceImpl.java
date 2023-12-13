@@ -10,8 +10,10 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInterfaceService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.contract.ChallengeSelectInfo;
 import org.freedomfinancestack.razorpay.cas.contract.Image;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
@@ -35,6 +37,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
     private final InstitutionRepository institutionRepository;
 
     private final InstitutionUiConfiguration institutionUiConfiguration;
+    private final TestConfigProperties testConfigProperties;
 
     @Override
     public void generateAppUIParams(
@@ -150,7 +153,6 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                         challengeText.replaceFirst(
                                 InternalConstants.TRANSACTION_DATE, transactionDate);
 
-                validInstitutionUIParams.setChallengeInfoText(challengeText);
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
                 validInstitutionUIParams.setResendInformationLabel(
@@ -159,44 +161,26 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
                 break;
-
             case SINGLE_SELECT:
-                String username = transaction.getTransactionCardHolderDetail().getName();
-                challengeText = institutionUiConfig.getChallengeInfoText();
-                challengeText =
-                        String.format(
-                                challengeText,
-                                username,
-                                network.getName(),
-                                institution.get().getName());
-                validInstitutionUIParams.setChallengeInfoText(challengeText);
-
-                validInstitutionUIParams.setSubmitAuthenticationLabel(
-                        institutionUiConfig.getSubmitAuthenticationLabel());
-
-                // TODO challengeSelectInfo
-                break;
-
             case MULTI_SELECT:
                 challengeText = institutionUiConfig.getChallengeInfoText();
-                challengeText = String.format(challengeText, institution.get().getName());
-                validInstitutionUIParams.setChallengeInfoText(challengeText);
 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());
-
-                // TODO challengeSelectInfo
+                if (testConfigProperties.isEnable()) {
+                    validInstitutionUIParams.setChallengeSelectInfo(
+                            new ChallengeSelectInfo[] {
+                                ChallengeSelectInfo.builder().yes("yes").build(),
+                                ChallengeSelectInfo.builder().yes("no").build()
+                            });
+                }
                 break;
 
             case OOB:
                 challengeText = institutionUiConfig.getChallengeInfoText();
 
-                validInstitutionUIParams.setChallengeInfoText(challengeText);
+                validInstitutionUIParams.setOobContinueLabel(InternalConstants.OOB_CONTINUE_LABEL);
 
-                validInstitutionUIParams.setResendInformationLabel(
-                        institutionUiConfig.getResendInformationLabel());
-
-                // TODO set OOB Constants
                 break;
 
                 // This handles HTML_OTHER cases too
@@ -205,6 +189,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,
                         "UI Type Implementation not available with the given option " + uiType);
         }
+        validInstitutionUIParams.setChallengeInfoText(challengeText);
         challengeFlowDto.setInstitutionUIParams(validInstitutionUIParams);
     }
 }

@@ -18,6 +18,13 @@ public enum ThreeDSDataElement {
             MessageCategory.getCategoryValues(),
             ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),
 
+    MESSAGE_CATEGORY_2_1_0(
+            ThreeDSConstant.ELEMENT_MESSAGE_CATEGORY,
+            new String[] {MessageCategory.NPA.getCategory()},
+            new DeviceChannel[] {DeviceChannel.TRI},
+            new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
+            new String[] {ThreeDSConstant.MESSAGE_VERSION_2_1_0}),
+
     THREEDS_COMPIND(
             ThreeDSConstant.ELEMENT_THREEDS_COMPIND,
             new String[] {"Y", "N", "U"},
