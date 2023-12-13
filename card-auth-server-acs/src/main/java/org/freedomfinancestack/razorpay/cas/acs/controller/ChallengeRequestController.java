@@ -157,10 +157,9 @@ public class ChallengeRequestController {
                         responseCode = "400",
                         description = "Bad Request or Request not according to Areq Schema")
             })
-    public String handleChallengeValidationRequest(
-            Model model, @ModelAttribute("cVReq") CVReq cVReq) throws ThreeDSException {
-
-        CdRes cdRes = challengeRequestService.processBrwChallengeValidationRequest(cVReq);
+    public String handleChallengeValidationRequest(Model model, @ModelAttribute("cReq") String cReq)
+            throws ThreeDSException {
+        CdRes cdRes = challengeRequestService.processBrwChallengeRequest(cReq, null);
         if (cdRes.isChallengeCompleted() || cdRes.isError()) {
             return createCresAndErrorMessageResponse(model, cdRes);
         }

@@ -25,13 +25,4 @@ public interface ChallengeRequestService {
      * @return Cdres challenge display response
      */
     CdRes processBrwChallengeRequest(final String creq, final String threeDSSessionData);
-
-    /**
-     * Process the challenge validation request (CVReq) and generate the challenge display response
-     * (CDRes) for the browser based request
-     *
-     * @param CVReq
-     * @return
-     */
-    CdRes processBrwChallengeValidationRequest(final CVReq CVReq);
 }
