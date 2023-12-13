@@ -131,7 +131,7 @@ public class PlrqService extends HttpsGatewayService {
                 String.format(
                         BRW_FORM_DATA,
                         transactionId,
-                        "00000",
+                        APP_INCORRECT_DATA,
                         messageVersion,
                         threeDSServerTransID);
         pFormValuesBRW.action =
