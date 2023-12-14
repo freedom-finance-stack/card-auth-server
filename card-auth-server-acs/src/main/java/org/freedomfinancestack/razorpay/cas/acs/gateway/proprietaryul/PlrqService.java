@@ -30,9 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 public class PlrqService extends HttpsGatewayService {
 
     public static final String BRW_FORM_DATA =
-            "acsTransID=%s&challengeHTMLDataEntry=%s&messageVersion=%s&threeDSServerTransID=%s";
+            "acsTransID=%s&challengeHTMLDataEntry=%s&messageVersion=%s&threeDSServerTransID=%s&messageType=CReq";
     public static final String BRW_CANCEL_FORM_DATA =
-            "acsTransID=%s&cancelChallenge=true&messageVersion=%s&threeDSServerTransID=%s";
+            "acsTransID=%s&cancelChallenge=true&messageVersion=%s&threeDSServerTransID=%s&messageType=CReq";
     public static final String PLRQ_MESSAGE_TYPE = "pIrq";
     public static final String PLRQ_MESSAGE_VERSION = "1.0.6";
     public static final String APP_INCORRECT_DATA = "000000";
