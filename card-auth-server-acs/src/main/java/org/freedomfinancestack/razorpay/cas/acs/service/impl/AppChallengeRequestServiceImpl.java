@@ -136,7 +136,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 } else {
                     if (!transaction
                             .getTransactionSdkDetail()
-                            .getAcsUiTemplate()
+                            .getAcsUiType()
                             .equals(UIType.OOB.getType())) {
                         if (transaction
                                 .getTransactionSdkDetail()
@@ -298,7 +298,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         DecoupledAuthenticationResponse response = null;
         AuthResponse authResponse = null;
 
-        if (transaction.getTransactionSdkDetail().getAcsUiTemplate().equals(UIType.OOB.getType())) {
+        if (transaction.getTransactionSdkDetail().getAcsUiType().equals(UIType.OOB.getType())) {
             response =
                     decoupledAuthenticationService.processAuthenticationRequest(
                             transaction, new DecoupledAuthenticationRequest());
@@ -373,10 +373,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             AuthConfigDto authConfigDto,
             AppChallengeFlowDto challengeFlowDto)
             throws ThreeDSException, InvalidStateTransactionException {
-        if (!transaction
-                .getTransactionSdkDetail()
-                .getAcsUiTemplate()
-                .equals(UIType.OOB.getType())) {
+        if (!transaction.getTransactionSdkDetail().getAcsUiType().equals(UIType.OOB.getType())) {
             AuthenticationService authenticationService =
                     authenticationServiceLocator.locateTransactionAuthenticationService(
                             transaction, authConfigDto.getChallengeAuthTypeConfig());

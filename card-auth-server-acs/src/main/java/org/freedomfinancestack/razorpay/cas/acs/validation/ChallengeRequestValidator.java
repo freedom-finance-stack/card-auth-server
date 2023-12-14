@@ -181,7 +181,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
             String acsUiType = transaction.getTransactionSdkDetail().getAcsUiTemplate();
             String acsInterface = transaction.getTransactionSdkDetail().getAcsInterface();
 
-            if (acsUiType.equals(UIType.OOB.getType())) {
+            if (transaction.getTransactionSdkDetail().getAcsUiType().equals(UIType.OOB.getType())) {
 
                 boolean conditionForOobContinue =
                         shouldValidateThreeDSDataElement(
