@@ -92,7 +92,7 @@
         <label for="challengeHTMLDataEntry">Verification Code</label>
         <input type="text" id="challengeHTMLDataEntry" name="challengeHTMLDataEntry" th:field="*{challengeHTMLDataEntry}" required>
         <input type="hidden" name="acsTransID" th:value="${cdRes.acsTransID}" >
-        <input type="hidden" name="messageType" value="CReq">
+        <input type="hidden" name="messageType" th:value="CReq">
         <input type="hidden" name="messageVersion" th:value="${cdRes.messageVersion}">
         <input type="hidden" name="threeDSServerTransID" th:value="${cdRes.threeDSServerTransID}">
         <button type="submit">Submit</button>
