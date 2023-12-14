@@ -17,7 +17,6 @@ import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailSer
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
-import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSDataElement;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
@@ -135,7 +134,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else {
-                    if (!transaction.getTransactionSdkDetail().getAcsUiTemplate().equals(UIType.OOB.getType())) {
+                    if (!transaction
+                            .getTransactionSdkDetail()
+                            .getAcsUiTemplate()
+                            .equals(UIType.OOB.getType())) {
                         if (transaction
                                 .getTransactionSdkDetail()
                                 .getAcsInterface()
@@ -147,12 +149,6 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     }
                     handleChallengeValidation(transaction, authConfigDto, challengeFlowDto);
                 }
-                if (transaction.getTransactionSdkDetail().getAcsUiTemplate().equals(UIType.OOB.getType())) {
-                    if (creq.getOobContinue().equals(InternalConstants.TRUE)) {
-
-                    }
-                }
-
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
@@ -299,36 +295,35 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         transaction.setInteractionCount(transaction.getInteractionCount() + 1);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.VALIDATION_REQ_RECEIVED);
 
-        DecoupledAuthenticationResponse response;
-        AuthResponse authResponse;
+        DecoupledAuthenticationResponse response = null;
+        AuthResponse authResponse = null;
 
         if (transaction.getTransactionSdkDetail().getAcsUiTemplate().equals(UIType.OOB.getType())) {
             response =
                     decoupledAuthenticationService.processAuthenticationRequest(
                             transaction, new DecoupledAuthenticationRequest());
+        } else {
+            AuthenticationService authenticationService =
+                    authenticationServiceLocator.locateTransactionAuthenticationService(
+                            transaction, authConfigDto.getChallengeAuthTypeConfig());
+            authResponse =
+                    authenticationService.authenticate(
+                            AuthenticationDto.builder()
+                                    .authConfigDto(authConfigDto)
+                                    .transaction(transaction)
+                                    .authValue(challengeFlowDto.getAuthValue())
+                                    .build());
         }
 
-        AuthenticationService authenticationService =
-                authenticationServiceLocator.locateTransactionAuthenticationService(
-                        transaction, authConfigDto.getChallengeAuthTypeConfig());
-        AuthResponse authResponse =
-                authenticationService.authenticate(
-                        AuthenticationDto.builder()
-                                .authConfigDto(authConfigDto)
-                                .transaction(transaction)
-                                .authValue(challengeFlowDto.getAuthValue())
-                                .build());
-
-        if (authResponse.isAuthenticated()) {
+        if ((authResponse != null && authResponse.isAuthenticated())
+                || (response != null && response.isSuccessful())) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
             updateEci(transaction);
             transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
             CRES cres = cResMapper.toCres(transaction);
             challengeFlowDto.setCres(cres);
-
             transactionMessageLogService.createAndSave(cres, transaction.getId());
-
             challengeFlowDto.setSendRreq(true);
         } else { // If the authentication has failed, is not completed or the Cardholder has
             // selected to cancel the authentication
@@ -339,9 +334,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                         cResMapper.toAppCres(
                                 transaction, challengeFlowDto.getInstitutionUIParams());
                 if (transaction
-                        .getTransactionSdkDetail()
-                        .getAcsInterface()
-                        .equals(DeviceInterface.NATIVE.getValue())) {
+                                .getTransactionSdkDetail()
+                                .getAcsInterface()
+                                .equals(DeviceInterface.NATIVE.getValue())
+                        && authResponse != null) {
                     cres.setChallengeInfoText(authResponse.getDisplayMessage());
                 }
                 challengeFlowDto.setCres(cres);
@@ -377,7 +373,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             AuthConfigDto authConfigDto,
             AppChallengeFlowDto challengeFlowDto)
             throws ThreeDSException, InvalidStateTransactionException {
-        if (!transaction.getTransactionSdkDetail().getAcsUiTemplate().equals(UIType.OOB.getType())) {
+        if (!transaction
+                .getTransactionSdkDetail()
+                .getAcsUiTemplate()
+                .equals(UIType.OOB.getType())) {
             AuthenticationService authenticationService =
                     authenticationServiceLocator.locateTransactionAuthenticationService(
                             transaction, authConfigDto.getChallengeAuthTypeConfig());

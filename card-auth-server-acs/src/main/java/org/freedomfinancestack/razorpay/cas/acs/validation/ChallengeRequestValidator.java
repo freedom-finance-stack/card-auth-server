@@ -183,22 +183,22 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
             if (acsUiType.equals(UIType.OOB.getType())) {
 
-                boolean conditionForOobContinue = shouldValidateThreeDSDataElement(ThreeDSDataElement.OOB_CONTINUE, transaction) && Util.isNullorBlank(incomingCreq.getChallengeCancel()) && (incomingCreq.getResendChallenge() == null
-                        || NO.equals(incomingCreq.getResendChallenge()));
+                boolean conditionForOobContinue =
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.OOB_CONTINUE, transaction)
+                                && Util.isNullorBlank(incomingCreq.getChallengeCancel())
+                                && (incomingCreq.getResendChallenge() == null
+                                        || NO.equals(incomingCreq.getResendChallenge()));
 
                 Validation.validate(
                         ThreeDSDataElement.OOB_CONTINUE.getFieldName(),
                         incomingCreq.getOobContinue(),
-                        when(
-                                conditionForOobContinue,
-                                    notBlank()
-                                ),
-                        isIn(ThreeDSDataElement.OOB_CONTINUE.getAcceptedValues())
-                );
+                        when(conditionForOobContinue, notBlank()),
+                        isIn(ThreeDSDataElement.OOB_CONTINUE.getAcceptedValues()));
 
                 boolean conditionForResendChallenge =
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.RESEND_CHALLENGE, transaction)
+                                        ThreeDSDataElement.RESEND_CHALLENGE, transaction)
                                 && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                                 && Util.isNullorBlank(incomingCreq.getOobContinue())
                                 && Util.isNullorBlank(incomingCreq.getChallengeCancel());
@@ -211,10 +211,10 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
                 boolean conditionForChallengeCancel =
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.CHALLENGE_CANCEL, transaction)
+                                        ThreeDSDataElement.CHALLENGE_CANCEL, transaction)
                                 && Util.isNullorBlank(incomingCreq.getOobContinue())
                                 && (incomingCreq.getResendChallenge() == null
-                                || NO.equals(incomingCreq.getResendChallenge()));
+                                        || NO.equals(incomingCreq.getResendChallenge()));
 
                 Validation.validate(
                         ThreeDSDataElement.CHALLENGE_CANCEL.getFieldName(),
@@ -224,25 +224,25 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
                 // Exactly one of the condition should pass
                 if (Stream.of(
-                                conditionForChallengeCancel,
-                                conditionForOobContinue,
-                                conditionForResendChallenge)
-                        .filter(Boolean::valueOf)
-                        .count()
+                                        conditionForChallengeCancel,
+                                        conditionForOobContinue,
+                                        conditionForResendChallenge)
+                                .filter(Boolean::valueOf)
+                                .count()
                         != 1) {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
             } else {
                 boolean conditionForChallengeDataEntry =
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
+                                        ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
                                 && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                                 && Arrays.asList("01", "02", "03").contains(acsUiType)
                                 && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                || !YES.equals(incomingCreq.getChallengeNoEntry()))
+                                        || !YES.equals(incomingCreq.getChallengeNoEntry()))
                                 && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                                 && (incomingCreq.getResendChallenge() == null
-                                || NO.equals(incomingCreq.getResendChallenge()));
+                                        || NO.equals(incomingCreq.getResendChallenge()));
                 Validation.validate(
                         ThreeDSDataElement.CHALLENGE_DATA_ENTRY.getFieldName(),
                         incomingCreq.getChallengeDataEntry(),
@@ -251,7 +251,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
                 boolean conditionForChallengeHTMLDataEntry =
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY, transaction)
+                                        ThreeDSDataElement.CHALLENGE_HTML_DATA_ENTRY, transaction)
                                 && acsInterface.equals(DeviceInterface.HTML.getValue())
                                 && Util.isNullorBlank(incomingCreq.getChallengeCancel());
                 Validation.validate(
@@ -262,13 +262,13 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
                 boolean conditionForChallengeNoEntry =
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
+                                        ThreeDSDataElement.CHALLENGE_NO_ENTRY, transaction)
                                 && Arrays.asList("01", "02", "03").contains(acsUiType)
                                 && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                                 && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
                                 && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                                 && (incomingCreq.getResendChallenge() == null
-                                || NO.equals(incomingCreq.getResendChallenge()));
+                                        || NO.equals(incomingCreq.getResendChallenge()));
                 Validation.validate(
                         ThreeDSDataElement.CHALLENGE_NO_ENTRY.getFieldName(),
                         incomingCreq.getChallengeNoEntry(),
@@ -277,12 +277,12 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
                 boolean conditionForResendChallenge =
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.RESEND_CHALLENGE, transaction)
+                                        ThreeDSDataElement.RESEND_CHALLENGE, transaction)
                                 && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                                 && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                                 && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                                 && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                || !YES.equals(incomingCreq.getChallengeNoEntry()));
+                                        || !YES.equals(incomingCreq.getChallengeNoEntry()));
 
                 Validation.validate(
                         ThreeDSDataElement.RESEND_CHALLENGE.getFieldName(),
@@ -292,12 +292,12 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
                 boolean conditionForChallengeCancel =
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.CHALLENGE_CANCEL, transaction)
+                                        ThreeDSDataElement.CHALLENGE_CANCEL, transaction)
                                 && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                                 && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
                                 && Util.isNullorBlank(incomingCreq.getResendChallenge())
                                 && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                || !YES.equals(incomingCreq.getChallengeNoEntry()));
+                                        || !YES.equals(incomingCreq.getChallengeNoEntry()));
 
                 Validation.validate(
                         ThreeDSDataElement.CHALLENGE_CANCEL.getFieldName(),
@@ -307,13 +307,13 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
                 // Exactly one of the condition should pass
                 if (Stream.of(
-                                conditionForChallengeCancel,
-                                conditionForChallengeNoEntry,
-                                conditionForChallengeHTMLDataEntry,
-                                conditionForChallengeDataEntry,
-                                conditionForResendChallenge)
-                        .filter(Boolean::valueOf)
-                        .count()
+                                        conditionForChallengeCancel,
+                                        conditionForChallengeNoEntry,
+                                        conditionForChallengeHTMLDataEntry,
+                                        conditionForChallengeDataEntry,
+                                        conditionForResendChallenge)
+                                .filter(Boolean::valueOf)
+                                .count()
                         != 1) {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
