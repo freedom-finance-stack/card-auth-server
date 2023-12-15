@@ -20,8 +20,12 @@ public class ChallengeRequestParserFactory {
     public CREQ parseEncryptedRequest(String creq, DeviceChannel deviceChannel)
             throws ParseException, TransactionDataNotValidException {
         switch (deviceChannel) {
-            case APP -> appChallengeRequestParser.parseEncryptedRequest(creq);
-            case BRW -> browserChallengeRequestParser.parseEncryptedRequest(creq);
+            case APP -> {
+                return appChallengeRequestParser.parseEncryptedRequest(creq);
+            }
+            case BRW -> {
+                return browserChallengeRequestParser.parseEncryptedRequest(creq);
+            }
         }
         throw new TransactionDataNotValidException(InternalErrorCode.INVALID_REQUEST);
     }
