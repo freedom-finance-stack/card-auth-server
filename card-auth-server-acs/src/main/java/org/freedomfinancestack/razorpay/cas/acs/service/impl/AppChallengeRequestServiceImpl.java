@@ -8,6 +8,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
@@ -87,6 +88,16 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
 
             //  log creq
             transactionMessageLogService.createAndSave(creq, creq.getAcsTransID());
+
+            // TC_ACS_10284_001 special case
+            if (!Util.isNullorBlank(transaction.getTransactionSdkDetail().getAcsCounterAtoS())
+                    && !transaction
+                            .getTransactionSdkDetail()
+                            .getAcsCounterAtoS()
+                            .equals(creq.getSdkCounterStoA())) {
+                throw new ACSValidationException(
+                        ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE, "sdkCounterStoA Mismatch");
+            }
 
             // Validating CREQ
             challengeRequestValidator.validateRequest(creq, transaction);
