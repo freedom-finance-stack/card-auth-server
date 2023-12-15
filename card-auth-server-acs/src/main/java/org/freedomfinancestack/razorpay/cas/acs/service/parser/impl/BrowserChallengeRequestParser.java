@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.acs.service.parser.impl;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.service.parser.ChallengeRequestParser;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -53,7 +52,12 @@ public class BrowserChallengeRequestParser implements ChallengeRequestParser {
 
     @Override
     public String generateEncryptedResponse(
-            ChallengeFlowDto challengeFlowDto, Transaction transaction) throws ACSException {
-        return null;
+            ChallengeFlowDto challengeFlowDto, Transaction transaction) {
+        if (challengeFlowDto.isSendEmptyResponse()) {
+            return null;
+        } else if (challengeFlowDto.getErrorResponse() != null) {
+            return Util.encodeBase64Url(challengeFlowDto.getErrorResponse());
+        }
+        return Util.encodeBase64Url(challengeFlowDto.getCres());
     }
 }

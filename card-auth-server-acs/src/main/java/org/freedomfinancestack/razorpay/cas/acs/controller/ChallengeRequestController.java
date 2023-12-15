@@ -2,14 +2,14 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
-import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
+import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
-import org.freedomfinancestack.razorpay.cas.acs.service.AppChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CVReq;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChallengeRequestController {
 
     private final ChallengeRequestService challengeRequestService;
-
-    private final AppChallengeRequestService appChallengeRequestService;
 
     /**
      * Handles Challenge Request (CReq) received from the 3DS Server and generates HTML pages for
@@ -71,16 +69,18 @@ public class ChallengeRequestController {
     public String handleChallengeRequest(
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
-            Model model) {
-        CdRes cdRes =
-                challengeRequestService.processBrwChallengeRequest(strCReq, threeDSSessionData);
-        if (cdRes.isSendEmptyResponse()) {
+            Model model)
+            throws ACSDataAccessException, ThreeDSException {
+        ChallengeFlowDto challengeFlowDto =
+                challengeRequestService.processChallengeRequest(
+                        DeviceChannel.BRW, strCReq, threeDSSessionData);
+        if (challengeFlowDto.isSendEmptyResponse()) {
             return "threeDSecureEmptyResponse";
         }
-        if (cdRes.isChallengeCompleted() || cdRes.isError()) {
-            return createCresAndErrorMessageResponse(model, cdRes);
+        if (Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
+            return createCresAndErrorMessageResponse(model, challengeFlowDto);
         }
-        return createCdRes(model, cdRes);
+        return createCdRes(model, challengeFlowDto);
     }
 
     // APP based flow CREQ
@@ -104,28 +104,31 @@ public class ChallengeRequestController {
             consumes = {"application/jose; charset=utf-8", "application/json;charset=utf-8"})
     @ResponseBody
     public String handleChallengeRequest(@RequestBody String strCReq)
-            throws ThreeDSException, ACSDataAccessException {
-        return appChallengeRequestService.processAppChallengeRequest(strCReq);
+            throws ACSDataAccessException, ThreeDSException {
+        return challengeRequestService
+                .processChallengeRequest(DeviceChannel.APP, strCReq, null)
+                .getEncryptedResponse();
     }
 
-    private static String createCresAndErrorMessageResponse(Model model, CdRes cdRes) {
-        if (!Util.isNullorBlank(cdRes.getEncryptedErro())) {
-            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedErro());
-        } else {
-            model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CRES, cdRes.getEncryptedCRes());
-        }
+    private static String createCresAndErrorMessageResponse(
+            Model model, ChallengeFlowDto challengeFlowDto) {
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_CRES, challengeFlowDto.getEncryptedResponse());
         model.addAttribute(
                 InternalConstants.MODEL_ATTRIBUTE_THREEDS_SESSION_DATA,
-                cdRes.getThreeDSSessionData());
+                challengeFlowDto.getThreeDSSessionData());
         model.addAttribute(
-                InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL, cdRes.getNotificationUrl());
+                InternalConstants.MODEL_ATTRIBUTE_NOTIFICATION_URL,
+                challengeFlowDto.getNotificationUrl());
         return "threeDSecureResponseSubmit";
     }
 
-    private static String createCdRes(Model model, CdRes cdRes) {
+    private static String createCdRes(Model model, ChallengeFlowDto challengeFlowDto) {
         CREQ creq = new CREQ();
         model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_VALIDATION_REQUEST, creq);
-        model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE, cdRes);
+        model.addAttribute(
+                InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE,
+                challengeFlowDto.getInstitutionUIParams());
         return "acsOtp";
     }
 
@@ -159,11 +162,16 @@ public class ChallengeRequestController {
                         description = "Bad Request or Request not according to Areq Schema")
             })
     public String handleChallengeValidationRequest(Model model, @ModelAttribute("cReq") CREQ cReq)
-            throws ThreeDSException {
-        CdRes cdRes = challengeRequestService.processBrwChallengeRequest(Util.toJson(cReq), null);
-        if (cdRes.isChallengeCompleted() || cdRes.isError()) {
-            return createCresAndErrorMessageResponse(model, cdRes);
+            throws ThreeDSException, ACSDataAccessException {
+        ChallengeFlowDto challengeFlowDto =
+                challengeRequestService.processChallengeRequest(
+                        DeviceChannel.BRW, Util.toJson(cReq), null);
+        if (challengeFlowDto.isSendEmptyResponse()) {
+            return "threeDSecureEmptyResponse";
         }
-        return createCdRes(model, cdRes);
+        if (Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
+            return createCresAndErrorMessageResponse(model, challengeFlowDto);
+        }
+        return createCdRes(model, challengeFlowDto);
     }
 }
