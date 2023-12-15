@@ -127,12 +127,18 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         } catch (ThreeDSException ex) {
             challengeFlowDto.setErrorResponse(ex.getErrorResponse());
         } finally {
-            challengeFlowDto.setEncryptedResponse(
-                    challengeRequestParserFactory
-                            .getService(flowType)
-                            .generateEncryptedResponse(
-                                    challengeFlowDto, challengeFlowDto.getTransaction()));
+            try {
+                challengeFlowDto.setEncryptedResponse(
+                        challengeRequestParserFactory
+                                .getService(flowType)
+                                .generateEncryptedResponse(
+                                        challengeFlowDto, challengeFlowDto.getTransaction()));
+            } catch (ACSException acsException){
+                // this case will never occur
+                challengeFlowDto.setSendEmptyResponse(true);
+            }
         }
+        return  challengeFlowDto;
     }
 
     private void processChallengeRequestHandler(
