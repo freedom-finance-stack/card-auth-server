@@ -1,11 +1,14 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.parser.impl;
 
+import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.service.parser.ChallengeRequestParser;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -46,5 +49,11 @@ public class BrowserChallengeRequestParser implements ChallengeRequestParser {
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR);
         }
         return creq;
+    }
+
+    @Override
+    public String generateEncryptedResponse(
+            ChallengeFlowDto challengeFlowDto, Transaction transaction) throws ACSException {
+        return null;
     }
 }

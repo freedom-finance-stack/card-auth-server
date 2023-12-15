@@ -54,31 +54,13 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final AppUIGenerator appUIGenerator;
     private final ChallengeRequestParserFactory challengeRequestParserFactory;
-    private final SignerService signerService;
 
     @Override
     public String processAppChallengeRequest(String strCReq)
             throws ThreeDSException, ACSDataAccessException {
         try {
-            Transaction transaction = null;
-            ChallengeFlowDto challengeFlowDto =
-                    processChallengeRequestHandler(strCReq, DeviceChannel.APP);
-            String cres;
-            try {
-                // Encrypting CRES
-                cres =
-                        signerService.generateEncryptedResponse(
-                                transaction, challengeFlowDto.getCres());
-            } catch (ACSException ex) {
-                updateTransactionForACSException(ex.getErrorCode(), transaction);
-                throw new ThreeDSException(
-                        ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                        ex.getMessage(),
-                        transaction,
-                        ex);
-            }
-            return cres;
-        } catch (InvalidStateTransactionException e) {
+            return processChallengeRequestHandler(strCReq, DeviceChannel.APP);
+        } catch (InvalidStateTransactionException e) { // todo handle ACSDataAccessException
             log.error(
                     "Invalid State Transaction occurred in processAppChallengeRequest {}",
                     e.getMessage(),
@@ -94,10 +76,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     public String processBrwChallengeRequest(String strCReq)
             throws ThreeDSException, ACSDataAccessException {
         try {
-            Transaction transaction = null;
-            ChallengeFlowDto challengeFlowDto =
-                    processChallengeRequestHandler(strCReq, DeviceChannel.BRW);
-
+            return processChallengeRequestHandler(strCReq, DeviceChannel.BRW);
             // 3 things
             // UI
             // Final Output
@@ -113,16 +92,18 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     "Invalid State Transaction occurred",
                     e);
         }
-        return null;
     }
 
-    private ChallengeFlowDto processChallengeRequestHandler(String strCReq, DeviceChannel flowType)
+    private String processChallengeRequestHandler(String strCReq, DeviceChannel flowType)
             throws ThreeDSException, InvalidStateTransactionException, ACSDataAccessException {
         Transaction transaction = null;
         CREQ creq;
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         try {
-            creq = challengeRequestParserFactory.parseEncryptedRequest(strCReq, flowType);
+            creq =
+                    challengeRequestParserFactory
+                            .getService(flowType)
+                            .parseEncryptedRequest(strCReq);
             //  find Transaction and previous request, response
             transaction = fetchTransactionData(creq.getAcsTransID());
 
@@ -251,7 +232,20 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 }
             }
         }
-        return challengeFlowDto;
+
+        String cres;
+        try {
+            // Encrypting CRES
+            cres =
+                    challengeRequestParserFactory
+                            .getService(flowType)
+                            .generateEncryptedResponse(challengeFlowDto, transaction);
+        } catch (ACSException ex) {
+            updateTransactionForACSException(ex.getErrorCode(), transaction);
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
+        }
+        return cres;
     }
 
     private Transaction fetchTransactionData(String transactionId)

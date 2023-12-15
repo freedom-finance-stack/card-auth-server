@@ -2,8 +2,10 @@ package org.freedomfinancestack.razorpay.cas.acs.service.parser.impl;
 
 import java.util.Arrays;
 
+import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
@@ -18,9 +20,9 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.DirectDecrypter;
+import com.nimbusds.jose.crypto.DirectEncrypter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -79,6 +81,69 @@ public class AppChallengeRequestParser implements ChallengeRequestParser {
             objCReq.setSdkTransID(errorObj.getSdkTransID());
         }
         return objCReq;
+    }
+
+    @Override
+    public String generateEncryptedResponse(
+            ChallengeFlowDto challengeFlowDto, Transaction transaction) throws ACSException {
+        String strCRes = Util.toJson(challengeFlowDto.getCres());
+        String encryptedCRes;
+        if (testConfigProperties.isEnableDecryptionEncryption()) {
+            encryptedCRes = encryptResponse(transaction, strCRes);
+        } else {
+            encryptedCRes = strCRes;
+        }
+        return encryptedCRes;
+    }
+
+    private String encryptResponse(Transaction transaction, String challangeResponse)
+            throws ACSException { // todo why ACSexception?
+
+        String encryptedCRes;
+        byte[] acsKDFSecretKey;
+
+        // Step 6 - ACS to Parse JWE object received from SDK
+        JWEObject acsJweObject;
+        EncryptionMethod encryptionMethod = EncryptionMethod.A128CBC_HS256;
+
+        try {
+            String acsTransactionID = transaction.getId();
+            String strAcsSecretKey = transaction.getTransactionSdkDetail().getAcsSecretKey();
+
+            acsKDFSecretKey = HexUtil.hexStringToByteArray(strAcsSecretKey);
+
+            if (transaction.getTransactionSdkDetail().getEncryptionMethod().equals("A128GCM")) {
+                acsKDFSecretKey =
+                        Arrays.copyOfRange(
+                                acsKDFSecretKey,
+                                acsKDFSecretKey.length / 2,
+                                acsKDFSecretKey.length);
+                encryptionMethod = EncryptionMethod.A128GCM;
+            }
+
+            JWEHeader acsEncHeader =
+                    new JWEHeader.Builder(JWEAlgorithm.DIR, encryptionMethod)
+                            .keyID(acsTransactionID)
+                            .build();
+
+            // Step 3 - Create JWE object
+            acsJweObject =
+                    new JWEObject(
+                            acsEncHeader,
+                            new Payload(challangeResponse)); // JWE Object with Header and Payload
+            // (CRES/Error)
+
+            // Step 4 - Encrypt the JWE using SDK CEK
+            acsJweObject.encrypt(new DirectEncrypter(acsKDFSecretKey)); // JWE Compact SErialization
+
+            // Step 5 - Serialise to compact JOSE form and send it to ACS
+            encryptedCRes = acsJweObject.serialize();
+
+        } catch (Exception e) {
+            throw new ACSException(InternalErrorCode.CRES_ENCRYPTION_ERROR, e);
+        }
+
+        return encryptedCRes;
     }
 
     private String decryptCReq(String encryptedCReq)
