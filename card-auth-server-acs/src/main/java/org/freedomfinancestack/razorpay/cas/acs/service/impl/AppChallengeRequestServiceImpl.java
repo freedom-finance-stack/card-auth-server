@@ -138,13 +138,13 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                         .equals(TransactionStatusReason.TRANSACTION_TIMEOUT.getCode())) {
                     throw new ThreeDSException(
                             ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT,
-                            "Timeout expiry reached for the transaction",
-                            transaction);
+                            InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION,
+                            "Timeout expiry reached for the transaction");
                 } else {
                     throw new ThreeDSException(
                             ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                            "Challenge resend threshold exceeded",
-                            transaction);
+                            InternalErrorCode.INVALID_REQUEST,
+                            "Transaction already in completed state");
                 }
             } else if (!Util.isNullorBlank(creq.getChallengeCancel())) {
                 handleCancelChallenge(transaction, challengeFlowDto, creq);

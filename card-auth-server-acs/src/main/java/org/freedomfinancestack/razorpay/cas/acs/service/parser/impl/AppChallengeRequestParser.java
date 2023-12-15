@@ -16,6 +16,7 @@ import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,8 @@ public class AppChallengeRequestParser implements ChallengeRequestParser {
             // Do Nothing
         }
         CREQ objCReq = new CREQ();
-        if (errorObj == null) {
+
+        if (errorObj == null || !errorObj.getMessageType().equals(MessageType.Erro.toString())) {
             String decryptedCReq;
             if (testConfigProperties.isEnableDecryptionEncryption()) {
                 if (!Util.validateBase64UrlEncodedString(strCReq)) {
