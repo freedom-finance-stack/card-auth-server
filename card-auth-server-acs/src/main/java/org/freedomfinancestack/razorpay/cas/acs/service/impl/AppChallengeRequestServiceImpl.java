@@ -14,10 +14,14 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDat
 import org.freedomfinancestack.razorpay.cas.acs.service.*;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGeneratorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailService;
+import org.freedomfinancestack.razorpay.cas.acs.service.parser.ChallengeRequestParserFactory;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValidator;
-import org.freedomfinancestack.razorpay.cas.contract.*;
+import org.freedomfinancestack.razorpay.cas.contract.CREQ;
+import org.freedomfinancestack.razorpay.cas.contract.CRES;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
@@ -49,13 +53,31 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     private final AuthValueGeneratorService authValueGeneratorService;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final AppUIGenerator appUIGenerator;
+    private final ChallengeRequestParserFactory challengeRequestParserFactory;
     private final SignerService signerService;
 
     @Override
     public String processAppChallengeRequest(String strCReq)
             throws ThreeDSException, ACSDataAccessException {
         try {
-            return processAppChallengeRequestHandler(strCReq);
+            Transaction transaction = null;
+            ChallengeFlowDto challengeFlowDto =
+                    processChallengeRequestHandler(strCReq, DeviceChannel.APP);
+            String cres;
+            try {
+                // Encrypting CRES
+                cres =
+                        signerService.generateEncryptedResponse(
+                                transaction, challengeFlowDto.getCres());
+            } catch (ACSException ex) {
+                updateTransactionForACSException(ex.getErrorCode(), transaction);
+                throw new ThreeDSException(
+                        ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
+                        ex.getMessage(),
+                        transaction,
+                        ex);
+            }
+            return cres;
         } catch (InvalidStateTransactionException e) {
             log.error(
                     "Invalid State Transaction occurred in processAppChallengeRequest {}",
@@ -69,17 +91,38 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
         }
     }
 
-    private String processAppChallengeRequestHandler(String strCReq)
-            throws ThreeDSException, ACSDataAccessException, InvalidStateTransactionException {
-        CREQ creq;
-        Transaction transaction = null;
-        AppChallengeFlowDto challengeFlowDto = new AppChallengeFlowDto();
-        String cres;
+    public String processBrwChallengeRequest(String strCReq)
+            throws ThreeDSException, ACSDataAccessException {
         try {
-            // Decrypting CREQ
+            Transaction transaction = null;
+            ChallengeFlowDto challengeFlowDto =
+                    processChallengeRequestHandler(strCReq, DeviceChannel.BRW);
 
-            creq = signerService.parseEncryptedRequest(strCReq);
+            // 3 things
+            // UI
+            // Final Output
+            // Exception handling
+        } catch (InvalidStateTransactionException e) {
+            log.error(
+                    "Invalid State Transaction occurred in processAppChallengeRequest {}",
+                    e.getMessage(),
+                    e);
+            throw new ThreeDSException(
+                    ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                    InternalErrorCode.INVALID_STATE_TRANSITION,
+                    "Invalid State Transaction occurred",
+                    e);
+        }
+        return null;
+    }
 
+    private ChallengeFlowDto processChallengeRequestHandler(String strCReq, DeviceChannel flowType)
+            throws ThreeDSException, InvalidStateTransactionException, ACSDataAccessException {
+        Transaction transaction = null;
+        CREQ creq;
+        ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
+        try {
+            creq = challengeRequestParserFactory.parseEncryptedRequest(strCReq, flowType);
             //  find Transaction and previous request, response
             transaction = fetchTransactionData(creq.getAcsTransID());
 
@@ -208,18 +251,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 }
             }
         }
-
-        try {
-            // Encrypting CRES
-            cres = signerService.generateEncryptedResponse(transaction, challengeFlowDto.getCres());
-        } catch (ACSException ex) {
-            updateTransactionForACSException(ex.getErrorCode(), transaction);
-            throw new ThreeDSException(
-                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
-        }
-
-        // encrypt response
-        return cres;
+        return challengeFlowDto;
     }
 
     private Transaction fetchTransactionData(String transactionId)
@@ -237,9 +269,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private void handleReSendChallenge(
-            Transaction transaction,
-            AuthConfigDto authConfigDto,
-            AppChallengeFlowDto challengeFlowDto)
+            Transaction transaction, AuthConfigDto authConfigDto, ChallengeFlowDto challengeFlowDto)
             throws InvalidStateTransactionException, ThreeDSException {
         transaction.setResendCount(transaction.getResendCount() + 1);
         if (transaction.getResendCount()
@@ -281,9 +311,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private void handleChallengeValidation(
-            Transaction transaction,
-            AuthConfigDto authConfigDto,
-            AppChallengeFlowDto challengeFlowDto)
+            Transaction transaction, AuthConfigDto authConfigDto, ChallengeFlowDto challengeFlowDto)
             throws ThreeDSException, InvalidStateTransactionException, ACSException {
         transaction.setInteractionCount(transaction.getInteractionCount() + 1);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.VALIDATION_REQ_RECEIVED);
@@ -353,9 +381,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private void handleSendChallenge(
-            Transaction transaction,
-            AuthConfigDto authConfigDto,
-            AppChallengeFlowDto challengeFlowDto)
+            Transaction transaction, AuthConfigDto authConfigDto, ChallengeFlowDto challengeFlowDto)
             throws ThreeDSException, InvalidStateTransactionException {
         AuthenticationService authenticationService =
                 authenticationServiceLocator.locateTransactionAuthenticationService(
@@ -372,7 +398,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
     }
 
     private void handleCancelChallenge(
-            Transaction transaction, AppChallengeFlowDto challengeFlowDto, CREQ creq)
+            Transaction transaction, ChallengeFlowDto challengeFlowDto, CREQ creq)
             throws InvalidStateTransactionException {
         StateMachine.Trigger(transaction, Phase.PhaseEvent.CANCEL_CHALLENGE);
 
