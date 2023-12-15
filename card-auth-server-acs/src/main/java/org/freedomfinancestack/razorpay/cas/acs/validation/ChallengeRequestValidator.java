@@ -152,10 +152,6 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
             throws ValidationException {
 
         Validation.validate(
-                ThreeDSDataElement.RESEND_CHALLENGE.getFieldName(),
-                incomingCreq.getResendChallenge(),
-                isIn(ThreeDSDataElement.RESEND_CHALLENGE.getAcceptedValues()));
-        Validation.validate(
                 ThreeDSDataElement.CHALLENGE_CANCEL.getFieldName(),
                 incomingCreq.getChallengeCancel(),
                 isIn(ThreeDSDataElement.CHALLENGE_CANCEL.getAcceptedValues()));
