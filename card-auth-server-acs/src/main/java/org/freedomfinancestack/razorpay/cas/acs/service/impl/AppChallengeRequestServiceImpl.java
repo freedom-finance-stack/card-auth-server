@@ -89,7 +89,7 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             //  log creq
             transactionMessageLogService.createAndSave(creq, creq.getAcsTransID());
 
-            // TC_ACS_10284_001 special case
+            // TC_ACS_10284 special case
             if (!Util.isNullorBlank(transaction.getTransactionSdkDetail().getAcsCounterAtoS())
                     && !transaction
                             .getTransactionSdkDetail()
@@ -110,6 +110,14 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 transaction
                         .getTransactionSdkDetail()
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
+            }
+
+            // TC_ACS_11387 special case
+            if (creq.getSdkCounterStoA().equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                    && !Util.isNullorBlank(creq.getThreeDSRequestorAppURL())) {
+                transaction
+                        .getTransactionSdkDetail()
+                        .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
             }
 
             // Generating App Ui Params

@@ -55,6 +55,7 @@ CREATE TABLE `transaction_sdk_detail`
     `device_info`          text,
     `acs_counter_a_to_s`   char(3) DEFAULT '000',
     `whitelisting_data_entry` char(1),
+    `threeds_requestor_app_url` varchar(256),
     `created_at`           timestamp NOT NULL,
     `modified_at`          timestamp,
     `deleted_at`           timestamp

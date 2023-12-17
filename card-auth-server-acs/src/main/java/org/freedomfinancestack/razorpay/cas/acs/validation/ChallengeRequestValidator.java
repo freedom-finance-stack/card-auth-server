@@ -131,15 +131,6 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 lengthValidator(DataLengthType.VARIABLE, 36),
                 isUUID(),
                 isEqual(transaction.getTransactionSdkDetail().getSdkTransId()));
-
-        Validation.validate(
-                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL.getFieldName(),
-                incomingCreq.getThreeDSRequestorAppURL(),
-                when(
-                        shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
-                        notEmpty()),
-                lengthValidator(DataLengthType.VARIABLE, 256));
     }
 
     protected void validateOptionalFields(CREQ incomingCreq, Transaction transaction)
@@ -168,6 +159,22 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         lengthValidator(DataLengthType.VARIABLE, 256)));
 
         validateAppChallengeData(transaction, incomingCreq);
+
+        Validation.validate(
+                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL.getFieldName(),
+                incomingCreq.getThreeDSRequestorAppURL(),
+                when(
+                        shouldValidateThreeDSDataElement(
+                                        ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction)
+                                && (incomingCreq
+                                                .getSdkCounterStoA()
+                                                .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                                        || !Util.isNullorBlank(
+                                                transaction
+                                                        .getTransactionSdkDetail()
+                                                        .getThreeDSRequestorAppURL())),
+                        notEmpty()),
+                lengthValidator(DataLengthType.VARIABLE, 256));
     }
 
     private void validateAppChallengeData(Transaction transaction, CREQ incomingCreq)
