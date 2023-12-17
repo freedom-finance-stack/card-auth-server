@@ -34,6 +34,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.NO;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -152,7 +154,8 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                         || (creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
                                 && !creq.getSdkCounterStoA()
                                         .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
-                                && creq.getResendChallenge() == null
+                                && (creq.getResendChallenge() == null
+                                        || NO.equals(creq.getResendChallenge()))
                                 && creq.getChallengeDataEntry() == null
                                 && creq.getChallengeHTMLDataEntry() == null
                                 && creq.getOobContinue() == null)) {
