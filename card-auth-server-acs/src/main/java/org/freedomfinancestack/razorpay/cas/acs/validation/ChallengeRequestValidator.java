@@ -242,6 +242,15 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
             } else {
+                if (incomingCreq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
+                        && incomingCreq.getResendChallenge() == null
+                        && incomingCreq.getChallengeDataEntry() == null
+                        && incomingCreq.getChallengeHTMLDataEntry() == null
+                        && incomingCreq.getOobContinue() == null
+                        && incomingCreq.getChallengeNoEntry() == null) {
+                    return;
+                }
+
                 boolean conditionForChallengeDataEntry =
                         shouldValidateThreeDSDataElement(
                                         ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
