@@ -244,6 +244,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 if (incomingCreq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
                         && (incomingCreq.getResendChallenge() == null
                                 || NO.equals(incomingCreq.getResendChallenge()))
+                        && incomingCreq.getChallengeCancel() == null
                         && incomingCreq.getChallengeDataEntry() == null
                         && incomingCreq.getChallengeHTMLDataEntry() == null
                         && incomingCreq.getOobContinue() == null
