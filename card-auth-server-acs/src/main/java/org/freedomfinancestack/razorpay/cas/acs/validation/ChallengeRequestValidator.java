@@ -231,14 +231,13 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         isIn(ThreeDSDataElement.CHALLENGE_CANCEL.getAcceptedValues()));
 
                 // Exactly one of the condition should pass
-                if (incomingCreq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)
-                        && Stream.of(
-                                                conditionForChallengeCancel,
-                                                conditionForOobContinue,
-                                                conditionForResendChallenge)
-                                        .filter(Boolean::valueOf)
-                                        .count()
-                                != 1) {
+                if (Stream.of(
+                                        conditionForChallengeCancel,
+                                        conditionForOobContinue,
+                                        conditionForResendChallenge)
+                                .filter(Boolean::valueOf)
+                                .count()
+                        != 1) {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
             } else {
@@ -325,16 +324,15 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         isIn(ThreeDSDataElement.CHALLENGE_CANCEL.getAcceptedValues()));
 
                 // Exactly one of the condition should pass
-                if (incomingCreq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)
-                        && Stream.of(
-                                                conditionForChallengeCancel,
-                                                conditionForChallengeNoEntry,
-                                                conditionForChallengeHTMLDataEntry,
-                                                conditionForChallengeDataEntry,
-                                                conditionForResendChallenge)
-                                        .filter(Boolean::valueOf)
-                                        .count()
-                                != 1) {
+                if (Stream.of(
+                                        conditionForChallengeCancel,
+                                        conditionForChallengeNoEntry,
+                                        conditionForChallengeHTMLDataEntry,
+                                        conditionForChallengeDataEntry,
+                                        conditionForResendChallenge)
+                                .filter(Boolean::valueOf)
+                                .count()
+                        != 1) {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
             }
