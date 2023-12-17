@@ -8,6 +8,7 @@ import org.freedomfinancestack.extensions.validation.exception.ValidationErrorCo
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -230,13 +231,14 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         isIn(ThreeDSDataElement.CHALLENGE_CANCEL.getAcceptedValues()));
 
                 // Exactly one of the condition should pass
-                if (Stream.of(
-                                        conditionForChallengeCancel,
-                                        conditionForOobContinue,
-                                        conditionForResendChallenge)
-                                .filter(Boolean::valueOf)
-                                .count()
-                        != 1) {
+                if (incomingCreq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)
+                        && Stream.of(
+                                                conditionForChallengeCancel,
+                                                conditionForOobContinue,
+                                                conditionForResendChallenge)
+                                        .filter(Boolean::valueOf)
+                                        .count()
+                                != 1) {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
             } else {
@@ -313,15 +315,16 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         isIn(ThreeDSDataElement.CHALLENGE_CANCEL.getAcceptedValues()));
 
                 // Exactly one of the condition should pass
-                if (Stream.of(
-                                        conditionForChallengeCancel,
-                                        conditionForChallengeNoEntry,
-                                        conditionForChallengeHTMLDataEntry,
-                                        conditionForChallengeDataEntry,
-                                        conditionForResendChallenge)
-                                .filter(Boolean::valueOf)
-                                .count()
-                        != 1) {
+                if (incomingCreq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)
+                        && Stream.of(
+                                                conditionForChallengeCancel,
+                                                conditionForChallengeNoEntry,
+                                                conditionForChallengeHTMLDataEntry,
+                                                conditionForChallengeDataEntry,
+                                                conditionForResendChallenge)
+                                        .filter(Boolean::valueOf)
+                                        .count()
+                                != 1) {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
             }

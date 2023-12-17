@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
@@ -146,8 +147,15 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             } else if (!Util.isNullorBlank(creq.getChallengeCancel())) {
                 handleCancelChallenge(transaction, challengeFlowDto, creq);
             } else {
-                if (creq.getResendChallenge() != null
-                        && InternalConstants.YES.equals(creq.getResendChallenge())) {
+                if ((creq.getResendChallenge() != null
+                                && InternalConstants.YES.equals(creq.getResendChallenge()))
+                        || (creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
+                                && !creq.getSdkCounterStoA()
+                                        .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                                && creq.getResendChallenge() == null
+                                && creq.getChallengeDataEntry() == null
+                                && creq.getChallengeHTMLDataEntry() == null
+                                && creq.getOobContinue() == null)) {
                     handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else if (transaction.getPhase().equals(Phase.ARES)) {
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
