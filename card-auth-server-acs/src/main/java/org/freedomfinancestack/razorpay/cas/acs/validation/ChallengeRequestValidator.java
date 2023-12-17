@@ -365,8 +365,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                     && authConfigDto
                                             .getChallengeAttemptConfig()
                                             .isWhitelistingAllowed(),
-                            notBlank()),
-                    isIn(ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getAcceptedValues()));
+                            isIn(ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getAcceptedValues())));
         } catch (ValidationException vex) {
             throw new ACSValidationException(vex);
         }

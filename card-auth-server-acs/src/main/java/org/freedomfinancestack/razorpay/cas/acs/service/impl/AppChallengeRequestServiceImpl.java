@@ -105,8 +105,8 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
             // Validating this outside, as authConfigDto is needed to validate this
-            if (challengeRequestValidator.isWhitelistingDataValid(
-                    transaction, creq, authConfigDto)) {
+            if (challengeRequestValidator.isWhitelistingDataValid(transaction, creq, authConfigDto)
+                    && !Util.isNullorBlank(creq.getWhitelistingDataEntry())) {
                 transaction
                         .getTransactionSdkDetail()
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
