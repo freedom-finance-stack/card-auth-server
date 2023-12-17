@@ -165,15 +165,19 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 incomingCreq.getThreeDSRequestorAppURL(),
                 when(
                         shouldValidateThreeDSDataElement(
+                                ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction),
+                        notEmpty()),
+                when(
+                        shouldValidateThreeDSDataElement(
                                         ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL, transaction)
                                 && (incomingCreq
                                                 .getSdkCounterStoA()
                                                 .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
-                                        || !Util.isNullorBlank(
+                                        && !Util.isNullorBlank(
                                                 transaction
                                                         .getTransactionSdkDetail()
                                                         .getThreeDSRequestorAppURL())),
-                        notEmpty()),
+                        notBlank()),
                 lengthValidator(DataLengthType.VARIABLE, 256));
     }
 
