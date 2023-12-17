@@ -421,7 +421,9 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             throws InvalidStateTransactionException {
         StateMachine.Trigger(transaction, Phase.PhaseEvent.CANCEL_CHALLENGE);
 
-        transaction.setInteractionCount(transaction.getInteractionCount() + 1);
+        if (creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
+            transaction.setInteractionCount(transaction.getInteractionCount() + 1);
+        }
         transaction.setTransactionStatus(TransactionStatus.FAILED);
         transaction.setTransactionStatusReason(
                 TransactionStatusReason.EXCEED_MAX_CHALLENGES.getCode());
