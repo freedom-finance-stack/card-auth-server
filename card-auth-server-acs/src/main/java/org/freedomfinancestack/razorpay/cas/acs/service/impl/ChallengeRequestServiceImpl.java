@@ -222,7 +222,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else {
-                    if (transaction
+                    if (flowType.equals(DeviceChannel.BRW) || transaction
                             .getTransactionSdkDetail()
                             .getAcsInterface()
                             .equals(DeviceInterface.HTML.getValue())) {
