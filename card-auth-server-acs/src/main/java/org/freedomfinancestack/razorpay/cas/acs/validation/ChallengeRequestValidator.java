@@ -302,8 +302,13 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     ThreeDSDataElement.WHITE_LISTING_DATA_ENTRY.getFieldName(),
                     creq.getWhitelistingDataEntry(),
                     when(
-                            !creq.getSdkCounterStoA()
+                            !Util.isNullorBlank(creq.getSdkCounterStoA())
+                                    && !creq.getSdkCounterStoA()
                                             .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                                    && !Util.isNullorBlank(
+                                            transaction
+                                                    .getTransactionReferenceDetail()
+                                                    .getThreeDSRequestorChallengeInd())
                                     && transaction
                                             .getTransactionReferenceDetail()
                                             .getThreeDSRequestorChallengeInd()

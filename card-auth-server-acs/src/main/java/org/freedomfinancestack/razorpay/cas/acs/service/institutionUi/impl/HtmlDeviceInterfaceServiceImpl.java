@@ -37,7 +37,7 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
     private final ThymeleafService thymeleafService;
 
     @Override
-    public void generateAppUIParams(
+    public void generateUIParams(
             Transaction transaction,
             ChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,

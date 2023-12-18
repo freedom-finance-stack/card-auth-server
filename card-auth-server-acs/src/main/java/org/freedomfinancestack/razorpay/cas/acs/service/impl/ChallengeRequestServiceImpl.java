@@ -128,17 +128,20 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             challengeFlowDto.setErrorResponse(ex.getErrorResponse());
         } finally {
             try {
-                challengeFlowDto.setEncryptedResponse(
-                        challengeRequestParserFactory
-                                .getService(flowType)
-                                .generateEncryptedResponse(
-                                        challengeFlowDto, challengeFlowDto.getTransaction()));
-            } catch (ACSException acsException){
+                if (Util.isChallengeCompleted(challengeFlowDto.getTransaction())) {
+                    challengeFlowDto.setEncryptedResponse(
+                            challengeRequestParserFactory
+                                    .getService(flowType)
+                                    .generateEncryptedResponse(
+                                            challengeFlowDto, challengeFlowDto.getTransaction()));
+                }
+
+            } catch (ACSException acsException) {
                 // this case will never occur
                 challengeFlowDto.setSendEmptyResponse(true);
             }
         }
-        return  challengeFlowDto;
+        return challengeFlowDto;
     }
 
     private void processChallengeRequestHandler(
@@ -283,13 +286,19 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
                 if (challengeFlowDto.isSendRreq()) {
                     log.info("Sending Result request for transaction {}", transaction.getId());
-                    // sendRreq and if it fails update response
                     try {
                         resultRequestService.handleRreq(transaction);
                     } catch (ThreeDSException ex) {
-                        // Todo
-                        throw new ThreeDSException(
-                                ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
+                        if (DeviceChannel.BRW.equals(flowType)) {
+                            CRES cres = cResMapper.toCres(transaction);
+                            challengeFlowDto.setCres(cres);
+                        } else {
+                            throw new ThreeDSException(
+                                    ex.getThreeDSecureErrorCode(),
+                                    ex.getMessage(),
+                                    transaction,
+                                    ex);
+                        }
                     }
                 }
                 // TODO handle these in case above exception is thrown

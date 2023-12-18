@@ -52,7 +52,7 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     private String whitelistingDataEntry;
 
     public String getAcsUiType() {
-        if (acsInterface.equals(DeviceInterface.HTML.getValue())) {
+        if (acsInterface != null && acsInterface.equals(DeviceInterface.HTML.getValue())) {
             return UIType.HTML_OTHER.getType();
         }
         return acsUiTemplate;

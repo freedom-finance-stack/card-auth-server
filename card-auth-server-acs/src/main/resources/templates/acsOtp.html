@@ -81,24 +81,22 @@
 <body>
 <div class="container">
     <div class="heading">
-        <h2><span th:text="${cdRes.institutionName}"></span></h2>
-        <h2><span th:text="${cdRes.schemaName}"></span></h2>
+        <h2><span th:text="${institutionUIParams.issuerImage.medium}"></span></h2>
+        <h2><span th:text="${institutionUIParams.psImage.medium}"></span></h2>
     </div>
     <div class="separator"></div>
-    <h2>Enter Verification Code</h2>
-    <p><span th:text="${cdRes.challengeText}"></span></p>
-    <p>You have <strong th:text="${cdRes.attemptLeft}"></strong> attempts left.</p>
-    <form action="#" th:action="${cdRes.validationUrl}" method="post" th:object="${cReq}">
-        <label for="challengeHTMLDataEntry">Verification Code</label>
+    <h2><span th:text="${institutionUIParams.challengeInfoHeader}"></span></h2>
+    <p><span th:text="${institutionUIParams.challengeInfoText}"></span></p>
+    <form action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
+        <label for="challengeHTMLDataEntry"><span th:text="${institutionUIParams.challengeInfoLabel}"></span></label>
         <input type="text" id="challengeHTMLDataEntry" name="challengeHTMLDataEntry" th:field="*{challengeHTMLDataEntry}" required>
-        <input type="hidden" name="acsTransID" th:value="${cdRes.acsTransID}" >
+        <input type="hidden" name="acsTransID" th:value="${institutionUIParams.acsTransID}" >
         <input type="hidden" name="messageType" th:value="CReq">
-        <input type="hidden" name="messageVersion" th:value="${cdRes.messageVersion}">
-        <input type="hidden" name="threeDSServerTransID" th:value="${cdRes.threeDSServerTransID}">
+        <input type="hidden" name="messageVersion" th:value="${institutionUIParams.messageVersion}">
+        <input type="hidden" name="threeDSServerTransID" th:value="${institutionUIParams.threeDSServerTransID}">
         <button type="submit">Submit</button>
     </form>
-    <p class="alert"> <span th:text="${cdRes.challengeInfoText}"> incorrect otp </span> </p>
-    <div class="resend" th:if="${cdRes.resendBlocked} != 'true'">
+    <div class="resend" th:if="${institutionUIParams.resendBlocked} != 'true'">
         <p>Didn't receive the code?
             <button type="button">Resend</button>
         </p>

@@ -43,9 +43,11 @@ public class CdResMapperImpl {
     public void generateCDres(@NonNull final CdRes cdRes, final Transaction transaction)
             throws DataNotFoundException {
         cdRes.setAcsTransID(transaction.getId());
+
         cdRes.setValidationUrl(
                 RouteConstants.getAcsChallengeValidationUrl(
                         appConfiguration.getHostname(), transaction.getDeviceChannel()));
+
         cdRes.setMessageVersion(transaction.getMessageVersion());
         cdRes.setThreeDSServerTransID(
                 transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());

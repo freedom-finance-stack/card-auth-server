@@ -77,7 +77,7 @@ public class ChallengeRequestController {
         if (challengeFlowDto.isSendEmptyResponse()) {
             return "threeDSecureEmptyResponse";
         }
-        if (Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
+        if (!Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
             return createCresAndErrorMessageResponse(model, challengeFlowDto);
         }
         return createCdRes(model, challengeFlowDto);
@@ -169,7 +169,7 @@ public class ChallengeRequestController {
         if (challengeFlowDto.isSendEmptyResponse()) {
             return "threeDSecureEmptyResponse";
         }
-        if (Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
+        if (!Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
             return createCresAndErrorMessageResponse(model, challengeFlowDto);
         }
         return createCdRes(model, challengeFlowDto);

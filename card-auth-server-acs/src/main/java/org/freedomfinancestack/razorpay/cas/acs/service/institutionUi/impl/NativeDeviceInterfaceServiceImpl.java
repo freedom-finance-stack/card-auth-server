@@ -1,28 +1,28 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.impl;
 
 import java.text.SimpleDateFormat;
-import java.util.Optional;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInterfaceService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.ChallengeSelectInfo;
 import org.freedomfinancestack.razorpay.cas.contract.Image;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
 import org.freedomfinancestack.razorpay.cas.contract.enums.UIType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
-import org.freedomfinancestack.razorpay.cas.dao.model.Institution;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
-import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +34,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService {
 
-    private final InstitutionRepository institutionRepository;
+    private final AppConfiguration appConfiguration;
 
     private final InstitutionUiConfiguration institutionUiConfiguration;
     private final TestConfigProperties testConfigProperties;
 
     @Override
-    public void generateAppUIParams(
+    public void generateUIParams(
             Transaction transaction,
             ChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
@@ -52,10 +52,14 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
         InstitutionUIParams validInstitutionUIParams = new InstitutionUIParams();
 
         String challengeText;
-
-        UIType uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiTemplate());
-        if (uiType == null) {
-            throw new ACSDataAccessException(InternalErrorCode.UNSUPPORTED_UI_TYPE);
+        UIType uiType;
+        if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())) {
+            uiType = UIType.TEXT;
+        } else {
+            uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiTemplate());
+            if (uiType == null) {
+                throw new ACSDataAccessException(InternalErrorCode.UNSUPPORTED_UI_TYPE);
+            }
         }
 
         String transactionDate =
@@ -77,12 +81,6 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 Util.getLastFourDigit(
                         transaction.getTransactionCardHolderDetail().getMobileNumber());
         String merchantName = transaction.getTransactionMerchant().getMerchantName();
-
-        Optional<Institution> institution =
-                institutionRepository.findById(transaction.getInstitutionId());
-        if (institution.isEmpty()) {
-            return;
-        }
 
         String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
         Image issuerLogo = new Image();
@@ -158,8 +156,6 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                 validInstitutionUIParams.setResendInformationLabel(
                         institutionUiConfig.getResendInformationLabel());
 
-                validInstitutionUIParams.setSubmitAuthenticationLabel(
-                        institutionUiConfig.getSubmitAuthenticationLabel());
                 break;
             case SINGLE_SELECT:
             case MULTI_SELECT:
@@ -189,7 +185,14 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,
                         "UI Type Implementation not available with the given option " + uiType);
         }
+        validInstitutionUIParams.setValidationUrl(
+                RouteConstants.getAcsChallengeValidationUrl(
+                        appConfiguration.getHostname(), transaction.getDeviceChannel()));
         validInstitutionUIParams.setChallengeInfoText(challengeText);
+        validInstitutionUIParams.setMessageVersion(transaction.getMessageVersion());
+        validInstitutionUIParams.setAcsTransID(transaction.getId());
+        validInstitutionUIParams.setThreeDSServerTransID(
+                transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
         challengeFlowDto.setInstitutionUIParams(validInstitutionUIParams);
     }
 }
