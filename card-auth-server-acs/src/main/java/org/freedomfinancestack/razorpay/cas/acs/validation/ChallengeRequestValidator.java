@@ -248,7 +248,8 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         && incomingCreq.getChallengeDataEntry() == null
                         && incomingCreq.getChallengeHTMLDataEntry() == null
                         && incomingCreq.getOobContinue() == null
-                        && incomingCreq.getChallengeNoEntry() == null) {
+                        && incomingCreq.getChallengeNoEntry() == null
+                        && !acsInterface.equals(DeviceInterface.HTML.getValue())) {
                     return;
                 }
 
