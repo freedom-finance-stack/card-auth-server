@@ -134,11 +134,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
             // validate threeDSSessionData
             if (!Util.isNullorBlank(threeDSSessionData)) {
-                //                if (!Util.isValidBase64Url(threeDSSessionData)) {
-                //                    throw new ACSValidationException(
-                //                            ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
-                //                            " ThreeDsSessionData incorrect");
-                //                }
+                if (!Util.isValidBase64Url(threeDSSessionData)) {
+                    throw new ACSValidationException(
+                            ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
+                            " ThreeDsSessionData incorrect");
+                }
                 transaction.setThreedsSessionData(
                         Util.removeBase64Padding(
                                 threeDSSessionData)); // removing base64 padding because Padding not
