@@ -222,10 +222,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else {
-                    if (flowType.equals(DeviceChannel.BRW) || transaction
-                            .getTransactionSdkDetail()
-                            .getAcsInterface()
-                            .equals(DeviceInterface.HTML.getValue())) {
+                    if (flowType.equals(DeviceChannel.BRW)
+                            || transaction
+                                    .getTransactionSdkDetail()
+                                    .getAcsInterface()
+                                    .equals(DeviceInterface.HTML.getValue())) {
                         challengeFlowDto.setAuthValue(creq.getChallengeHTMLDataEntry());
                     } else {
                         challengeFlowDto.setAuthValue(creq.getChallengeDataEntry());
