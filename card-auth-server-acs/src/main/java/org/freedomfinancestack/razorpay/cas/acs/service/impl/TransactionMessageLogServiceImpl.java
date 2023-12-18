@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.freedomfinancestack.razorpay.cas.acs.dto.CdRes;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogService;
@@ -90,12 +89,6 @@ public class TransactionMessageLogServiceImpl implements TransactionMessageLogSe
                     break;
                 case RReq:
                     messageMap.put(messageType, Util.fromJson(message, RREQ.class));
-                    break;
-                case CDRes:
-                    messageMap.put(messageType, Util.fromJson(message, CdRes.class));
-                    break;
-                case CVReq:
-                    messageMap.put(messageType, Util.fromJson(message, CVReq.class));
                     break;
                 default:
                     throw new ThreeDSException(

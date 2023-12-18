@@ -8,7 +8,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSExcepti
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
-import org.freedomfinancestack.razorpay.cas.contract.CVReq;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -136,7 +135,7 @@ public class ChallengeRequestController {
      * Handles Challenge Validation Request (ValidateCReq) received from the client browser for OTP
      * verification and generates CRes for the Browser.
      *
-     * @param cReq The {@link CVReq} object representing the * Challenge Validation Request message
+     * @param cReq The {@link CREQ} object representing the * Challenge Validation Request message
      *     received from the browser.
      * @param model The {@link Model} object representing the UI Model for HTML template data
      *     binding.
