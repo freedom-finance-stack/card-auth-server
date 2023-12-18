@@ -284,7 +284,7 @@ public class Util {
 
     public static String removeBase64Padding(String base64String) {
         if (base64String != null) {
-            return base64String.replaceAll("=*$", "");
+            return base64String.replaceAll("=+$", "");
         }
         return null;
     }
