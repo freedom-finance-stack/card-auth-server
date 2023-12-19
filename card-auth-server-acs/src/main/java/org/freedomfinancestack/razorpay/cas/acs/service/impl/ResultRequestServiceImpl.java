@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import java.net.SocketTimeoutException;
+
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.RReqMapper;
@@ -21,7 +23,9 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,7 +82,8 @@ public class ResultRequestServiceImpl implements ResultRequestService {
             throw e;
         } catch (GatewayHttpStatusCodeException e) {
             transaction.setTransactionStatus(TransactionStatus.UNABLE_TO_AUTHENTICATE);
-            if (e.getHttpStatus().is4xxClientError()) {
+            if (e.getHttpStatus().is4xxClientError()
+                    || e.getHttpStatus().isSameCodeAs(HttpStatus.GATEWAY_TIMEOUT)) {
                 transaction.setErrorCode(InternalErrorCode.CONNECTION_TO_DS_FAILED.getCode());
                 sendDsErrorResponse(
                         transaction,
@@ -89,6 +94,16 @@ public class ResultRequestServiceImpl implements ResultRequestService {
                 transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
             }
             throw e;
+        } catch (ResourceAccessException e) {
+            transaction.setTransactionStatus(TransactionStatus.UNABLE_TO_AUTHENTICATE);
+            Throwable cause = e.getCause();
+            if (cause instanceof SocketTimeoutException) {
+                sendDsErrorResponse(
+                        transaction,
+                        ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT,
+                        cause.getMessage(),
+                        MessageType.RReq);
+            }
         } finally {
             if (!success) {
                 try {
