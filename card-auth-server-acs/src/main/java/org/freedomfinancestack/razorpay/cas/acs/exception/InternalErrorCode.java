@@ -85,7 +85,7 @@ public enum
             "3014",
             "RENDERING TYPE NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
     UNSUPPPORTED_DEVICE_CATEGORY(
             "3015",
             "UNSUPPORTED DEVICE CATEGORY",
