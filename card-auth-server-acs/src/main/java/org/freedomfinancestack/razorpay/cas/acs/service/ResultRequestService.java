@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service;
 
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DSConnectionException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpStatusCodeException;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
@@ -25,5 +26,6 @@ public interface ResultRequestService {
     void handleRreq(Transaction transaction)
             throws GatewayHttpStatusCodeException,
                     InvalidStateTransactionException,
-                    ACSValidationException;
+                    ACSValidationException,
+                    DSConnectionException;
 }

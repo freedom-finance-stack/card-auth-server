@@ -293,6 +293,12 @@ public enum
             TransactionStatus.FAILED,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
+    TRANSACTION_TIMED_OUT_DS_RESPONSE(
+            "8018",
+            "Transaction Timed out waiting for DS Response",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+
     TEST_TRANSACTION_UA(
             "9001",
             "CARD NOT FOUND",
