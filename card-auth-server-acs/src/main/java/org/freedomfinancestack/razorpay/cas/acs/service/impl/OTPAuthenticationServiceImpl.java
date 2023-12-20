@@ -118,6 +118,7 @@ public class OTPAuthenticationServiceImpl implements AuthenticationService {
                     transaction.getId(),
                     otp,
                     transaction.getMessageVersion(),
+                    transaction.getTransactionReferenceDetail().getThreedsServerTransactionId(),
                     transaction.getDeviceChannel());
         } catch (NotificationException e) {
             throw new NotificationSentException(

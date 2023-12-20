@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CdRes extends ThreeDSObject implements Serializable {
-    String transactionId;
+    String acsTransID;
     String institutionName;
     String validationUrl;
     String schemaName;
@@ -29,6 +29,8 @@ public class CdRes extends ThreeDSObject implements Serializable {
     String challengeInfoText;
     String resendBlocked;
     String attemptLeft;
+    String messageVersion;
+    String threeDSServerTransID;
     boolean challengeCompleted;
 
     // optional fields only used in case of error

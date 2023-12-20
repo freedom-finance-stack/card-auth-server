@@ -109,10 +109,12 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 incomingCreq.getChallengeWindowSize(),
                 when(
                         shouldValidateThreeDSDataElement(
-                                ThreeDSDataElement.CHALLENGE_WINDOW_SIZE, transaction),
+                                        ThreeDSDataElement.CHALLENGE_WINDOW_SIZE, transaction)
+                                && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
+                                && Util.isNullorBlank(incomingCreq.getChallengeCancel())
+                                && Util.isNullorBlank(incomingCreq.getResendChallenge()),
                         notBlank()),
                 isIn(ThreeDSDataElement.CHALLENGE_WINDOW_SIZE.getAcceptedValues()));
-
         Validation.validate(
                 ThreeDSDataElement.SDK_COUNTER_STOA.getFieldName(),
                 incomingCreq.getSdkCounterStoA(),
