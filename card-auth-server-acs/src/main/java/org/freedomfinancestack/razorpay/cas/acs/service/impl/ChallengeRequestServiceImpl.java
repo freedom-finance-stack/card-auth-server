@@ -219,6 +219,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         && InternalConstants.YES.equals(creq.getResendChallenge())) {
                     handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else if (transaction.getPhase().equals(Phase.ARES)) {
+                    transactionTimeoutServiceLocator
+                            .locateService(MessageType.CReq)
+                            .scheduleTask(
+                                    transaction.getId(), transaction.getTransactionStatus(), null);
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else {
