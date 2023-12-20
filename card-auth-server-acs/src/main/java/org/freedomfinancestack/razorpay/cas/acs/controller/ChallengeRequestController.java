@@ -77,9 +77,9 @@ public class ChallengeRequestController {
             return "threeDSecureEmptyResponse";
         }
         if (!Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
-            return createCresAndErrorMessageResponse(model, challengeFlowDto);
+            return addEncryptedResponseInModel(model, challengeFlowDto);
         }
-        return createCdRes(model, challengeFlowDto);
+        return addCResInDisplayModel(model, challengeFlowDto);
     }
 
     // APP based flow CREQ
@@ -109,7 +109,7 @@ public class ChallengeRequestController {
                 .getEncryptedResponse();
     }
 
-    private static String createCresAndErrorMessageResponse(
+    private static String addEncryptedResponseInModel(
             Model model, ChallengeFlowDto challengeFlowDto) {
         model.addAttribute(
                 InternalConstants.MODEL_ATTRIBUTE_CRES, challengeFlowDto.getEncryptedResponse());
@@ -122,7 +122,7 @@ public class ChallengeRequestController {
         return "threeDSecureResponseSubmit";
     }
 
-    private static String createCdRes(Model model, ChallengeFlowDto challengeFlowDto) {
+    private static String addCResInDisplayModel(Model model, ChallengeFlowDto challengeFlowDto) {
         CREQ creq = new CREQ();
         model.addAttribute(InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_VALIDATION_REQUEST, creq);
         model.addAttribute(
@@ -169,8 +169,8 @@ public class ChallengeRequestController {
             return "threeDSecureEmptyResponse";
         }
         if (!Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
-            return createCresAndErrorMessageResponse(model, challengeFlowDto);
+            return addEncryptedResponseInModel(model, challengeFlowDto);
         }
-        return createCdRes(model, challengeFlowDto);
+        return addCResInDisplayModel(model, challengeFlowDto);
     }
 }

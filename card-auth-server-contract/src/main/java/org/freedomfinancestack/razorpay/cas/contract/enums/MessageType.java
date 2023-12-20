@@ -7,8 +7,6 @@ public enum MessageType {
     CRes("CRes"),
     Erro("Erro"),
     RReq("RReq"),
-    CDRes("CDRes"),
-    CVReq("CVReq"),
     RRes("RRes");
 
     private final String stringValue;

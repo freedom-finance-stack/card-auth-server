@@ -78,7 +78,7 @@ CREATE TABLE `transaction_message_log`
     `id`             varchar(36) PRIMARY KEY,
     `transaction_id` varchar(36) NOT NULL,
     `message`        json,
-    `message_type`   ENUM ('AReq', 'ARes', 'CReq', 'CRes', 'RReq', 'RRes', 'CDRes', 'CVReq'),
+    `message_type`   ENUM ('AReq', 'ARes', 'CReq', 'CRes', 'RReq', 'RRes'),
     `created_at`     timestamp   NOT NULL,
     `modified_at`    timestamp,
     `deleted_at`     timestamp
