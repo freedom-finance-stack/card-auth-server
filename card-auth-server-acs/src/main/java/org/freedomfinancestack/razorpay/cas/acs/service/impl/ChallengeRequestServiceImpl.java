@@ -207,8 +207,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION,
                             "Timeout expiry reached for the transaction");
                 } else {
-                    throw new ThreeDSException(
-                            ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
+                    throw new TransactionDataNotValidException(
                             InternalErrorCode.INVALID_REQUEST,
                             "Transaction already in completed state");
                 }
@@ -253,7 +252,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transactionErr, ex);
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
-            challengeFlowDto.setSendRreq(true);
+            if (!ex.getThreeDSecureErrorCode()
+                    .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT)) {
+                challengeFlowDto.setSendRreq(true);
+            }
             updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
