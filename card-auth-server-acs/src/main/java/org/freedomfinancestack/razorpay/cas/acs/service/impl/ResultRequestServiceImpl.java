@@ -63,8 +63,10 @@ public class ResultRequestServiceImpl implements ResultRequestService {
         RREQ rreq = rReqMapper.toRreq(transaction);
         transactionMessageLogService.createAndSave(rreq, transaction.getId());
         boolean success = false;
+        // TODO extend ThreeDSErrorResponse from ThreeDSObject to hande validations properly
+        RRES rres = null;
         try {
-            RRES rres =
+            rres =
                     dsGatewayService.sendRReq(
                             Network.getNetwork(
                                     transaction.getTransactionCardDetail().getNetworkCode()),
@@ -76,6 +78,9 @@ public class ResultRequestServiceImpl implements ResultRequestService {
         } catch (ACSValidationException e) {
             transaction.setTransactionStatus(e.getInternalErrorCode().getTransactionStatus());
             transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
+            if (rres != null && rres.getMessageType().equals(MessageType.Erro.toString())) {
+                throw new ACSValidationException(ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE);
+            }
             sendDsErrorResponse(
                     transaction, e.getThreeDSecureErrorCode(), e.getMessage(), MessageType.RRes);
             throw e;
