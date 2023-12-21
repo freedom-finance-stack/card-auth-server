@@ -413,10 +413,12 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 CRES cres =
                         cResMapper.toAppCres(
                                 transaction, challengeFlowDto.getInstitutionUIParams());
-                if (transaction
-                        .getTransactionSdkDetail()
-                        .getAcsInterface()
-                        .equals(DeviceInterface.NATIVE.getValue())) {
+                // todo handle this inside UI generation, what happens in case of HTML ?
+                if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
+                        || transaction
+                                .getTransactionSdkDetail()
+                                .getAcsInterface()
+                                .equals(DeviceInterface.NATIVE.getValue())) {
                     cres.setChallengeInfoText(authResponse.getDisplayMessage());
                 }
                 challengeFlowDto.setCres(cres);
