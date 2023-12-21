@@ -28,4 +28,9 @@ public class InstitutionUIParams {
     private String displayPage;
     private String whitelistingInfoText;
     private String oobContinueLabel;
+    private String validationUrl;
+    private String resendBlocked;
+    private String acsTransID;
+    private String messageVersion;
+    private String threeDSServerTransID;
 }

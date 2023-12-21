@@ -318,7 +318,8 @@ public class Util {
     }
 
     public static boolean isChallengeCompleted(Transaction transaction) {
-        return !transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED)
+        return transaction != null
+                && !transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED)
                 && !transaction.getTransactionStatus().equals(TransactionStatus.CREATED)
                 && !transaction
                         .getTransactionStatus()

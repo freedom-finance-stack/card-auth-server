@@ -6,10 +6,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AppChallengeFlowDto;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AppOtpHtmlParams;
-import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
-import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
+import org.freedomfinancestack.razorpay.cas.acs.dto.*;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
@@ -40,9 +37,9 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
     private final ThymeleafService thymeleafService;
 
     @Override
-    public void generateAppUIParams(
+    public void generateUIParams(
             Transaction transaction,
-            AppChallengeFlowDto challengeFlowDto,
+            ChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto)
             throws ACSDataAccessException {
