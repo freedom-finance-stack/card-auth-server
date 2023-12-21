@@ -196,8 +196,8 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
             if (!ex.getThreeDSecureErrorCode()
                     .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT)) {
                 challengeFlowDto.setSendRreq(true);
+                updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             }
-            updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (InvalidStateTransactionException ex) {
