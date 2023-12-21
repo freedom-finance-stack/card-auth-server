@@ -201,7 +201,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             }
 
             // TC_ACS_11387 special case
-            if (creq.getSdkCounterStoA().equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+            if (flowType.equals(DeviceChannel.APP)
+                    && creq.getSdkCounterStoA().equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
                     && !Util.isNullorBlank(creq.getThreeDSRequestorAppURL())) {
                 transaction
                         .getTransactionSdkDetail()
