@@ -851,4 +851,18 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
         return Arrays.stream(element.getSupportedMessageVersion())
                 .anyMatch(version -> version.equals(areq.getMessageVersion()));
     }
+
+    public static boolean isMessageVersionValid(String messageVersion) {
+        try {
+            Validation.validate(
+                    ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
+                    messageVersion,
+                    notBlank(),
+                    lengthValidator(DataLengthType.VARIABLE, 8),
+                    isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
+        } catch (ValidationException e) {
+            return false;
+        }
+        return true;
+    }
 }

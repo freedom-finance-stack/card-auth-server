@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
@@ -102,7 +103,7 @@ public interface CResMapper {
     CRES toAppCres(Transaction transaction, InstitutionUIParams institutionUIParams);
 
     default String getChallengeCompletionInd(Transaction transaction) {
-        return Util.isChallengeCompleted(transaction)
+        return ChallengeRequestService.isChallengeCompleted(transaction)
                 ? InternalConstants.YES
                 : InternalConstants.NO;
     }

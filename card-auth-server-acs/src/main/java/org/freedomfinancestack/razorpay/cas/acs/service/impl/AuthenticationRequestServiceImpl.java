@@ -8,7 +8,6 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AResMapperParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
-import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.AResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
@@ -22,6 +21,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailSer
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.impl.DecoupledAuthenticationAsyncService;
 import org.freedomfinancestack.razorpay.cas.acs.service.timer.locator.TransactionTimeoutServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
+import org.freedomfinancestack.razorpay.cas.acs.validation.AuthenticationRequestValidator;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSValidator;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
@@ -63,12 +63,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final CardRangeService cardRangeService;
     private final CardDetailService cardDetailService;
     private final AuthValueGeneratorService authValueGeneratorService;
-    private final ECommIndicatorService eCommIndicatorService;
     private final AResMapper aResMapper;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final DecoupledAuthenticationAsyncService decoupledAuthenticationAsyncService;
     private final FeatureService featureService;
-    private final AuthenticationServiceLocator authenticationServiceLocator;
     private final SignerService signerService;
     private final ChallengeDetermineService challengeDetermineService;
     private final Environment environment;
@@ -101,7 +99,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             transaction.setId(areq.getTransactionId());
 
             // Set message version before validation as it is required in Erro
-            if (Util.isMessageVersionValid(areq.getMessageVersion())) {
+            if (AuthenticationRequestValidator.isMessageVersionValid(areq.getMessageVersion())) {
                 transaction.setMessageVersion(areq.getMessageVersion());
             }
 
@@ -187,14 +185,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             }
 
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
-                String eci =
-                        eCommIndicatorService.generateECI(
-                                new GenerateECIRequest(
-                                                transaction.getTransactionStatus(),
-                                                cardRange.getNetworkCode(),
-                                                transaction.getMessageCategory())
-                                        .setThreeRIInd(areq.getThreeRIInd()));
-                transaction.setEci(eci);
+                transactionService.updateEci(transaction);
                 transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
             } else if (TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED.equals(
                     transaction.getTransactionStatus())) {
@@ -219,16 +210,14 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     " Message {}, Internal Error code {}",
                     ex.getMessage(),
                     ex.getInternalErrorCode());
-            transaction =
-                    updateTransactionPhaseWithError(
-                            ex.getThreeDSecureErrorCode(), ex.getInternalErrorCode(), transaction);
+            transaction = updateTransactionPhaseWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (ACSException ex) {
             // Handle any ACSException by sending Ares message type as a response.
             // updating transaction with error and updating DB
             log.error(" Message {}, Internal Error code {}", ex.getMessage(), ex.getErrorCode());
-            transaction = updateTransactionForACSException(ex.getErrorCode(), transaction);
+            transaction = updateTransactionWithError(ex.getErrorCode(), transaction);
         } catch (Exception ex) {
             // Handle any Exception by sending "Erro" message type as a response.
             // updating transaction with error and updating DB and add transaction details in error
@@ -238,9 +227,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             log.error(" Message {}, Error string {}", ex.getMessage(), ex.toString());
             transaction =
                     updateTransactionPhaseWithError(
-                            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                            InternalErrorCode.INTERNAL_SERVER_ERROR,
-                            transaction);
+                            InternalErrorCode.INTERNAL_SERVER_ERROR, transaction);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
         }
@@ -258,14 +245,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 // possible
             }
             if (!Util.isNullorBlank(transaction.getId()) && cardRange != null) {
-                String eci =
-                        eCommIndicatorService.generateECI(
-                                new GenerateECIRequest(
-                                                transaction.getTransactionStatus(),
-                                                cardRange.getNetworkCode(),
-                                                transaction.getMessageCategory())
-                                        .setThreeRIInd(areq.getThreeRIInd()));
-                transaction.setEci(eci);
+                transactionService.updateEci(transaction);
             }
             ares = aResMapper.toAres(areq, transaction, aResMapperParams);
             transactionMessageLogService.createAndSave(ares, areq.getTransactionId());
@@ -285,9 +265,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
             // handled in ResponseEntityExceptionHandler
             transaction =
                     updateTransactionPhaseWithError(
-                            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                            InternalErrorCode.INTERNAL_SERVER_ERROR,
-                            transaction);
+                            InternalErrorCode.INTERNAL_SERVER_ERROR, transaction);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
         } finally {
@@ -305,19 +283,13 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     }
 
     private Transaction updateTransactionPhaseWithError(
-            ThreeDSecureErrorCode threeDSecureErrorCode,
-            InternalErrorCode internalErrorCode,
-            Transaction transaction)
+            InternalErrorCode internalErrorCode, Transaction transaction)
             throws ACSDataAccessException {
-        transaction.setErrorCode(internalErrorCode.getCode());
-        transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
         transaction.setPhase(Phase.AERROR);
-        transaction.setTransactionStatusReason(
-                internalErrorCode.getTransactionStatusReason().getCode());
-        return transactionService.saveOrUpdate(transaction);
+        return updateTransactionWithError(internalErrorCode, transaction);
     }
 
-    private Transaction updateTransactionForACSException(
+    private Transaction updateTransactionWithError(
             InternalErrorCode internalErrorCode, Transaction transaction)
             throws ACSDataAccessException {
         transaction.setErrorCode(internalErrorCode.getCode());

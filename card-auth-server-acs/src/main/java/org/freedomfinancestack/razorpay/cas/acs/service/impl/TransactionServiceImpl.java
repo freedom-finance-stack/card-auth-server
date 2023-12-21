@@ -7,17 +7,23 @@ import java.util.Base64;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
+import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
+import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
+import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
@@ -31,6 +37,7 @@ import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode.*;
 import static org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant.appDeviceInfoAndroid;
 import static org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant.appDeviceInfoIOS;
 import static org.freedomfinancestack.razorpay.cas.contract.utils.Util.DATE_FORMAT_YYYYMMDDHHMMSS;
@@ -49,20 +56,24 @@ import static org.freedomfinancestack.razorpay.cas.contract.utils.Util.DATE_FORM
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final ECommIndicatorService eCommIndicatorService;
 
     public Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException {
         try {
             transactionRepository.save(transaction);
             return findById(transaction.getId());
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException | TransactionDataNotValidException ex) {
             log.error("Error while saving transaction", ex);
             throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_SAVE_EXCEPTION, ex);
         }
     }
 
-    public Transaction findById(String id) throws ACSDataAccessException {
+    public Transaction findById(String id)
+            throws ACSDataAccessException, TransactionDataNotValidException {
         if (Util.isNullorBlank(id)) {
-            return null;
+            throw new TransactionDataNotValidException(
+                    ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING,
+                    InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         }
         try {
             Optional<Transaction> transaction = transactionRepository.findById(id);
@@ -72,8 +83,8 @@ public class TransactionServiceImpl implements TransactionService {
         } catch (DataAccessException ex) {
             throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_FIND_EXCEPTION, ex);
         }
-
-        return null;
+        // throw error if no transaction found
+        throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
     }
 
     public void remove(String id) {
@@ -215,5 +226,40 @@ public class TransactionServiceImpl implements TransactionService {
                 areq.getDsURL(),
                 areq.getNotificationURL(),
                 areq.getThreeDSRequestorChallengeInd());
+    }
+
+    public void updateTransactionWithError(
+            InternalErrorCode internalErrorCode, Transaction transaction)
+            throws InvalidStateTransactionException {
+        if (transaction != null) {
+            if (Util.isNullorBlank(transaction.getChallengeCancelInd())) {
+                transaction.setChallengeCancelInd(
+                        ChallengeCancelIndicator.TRANSACTION_ERROR.getIndicator());
+            }
+            transaction.setErrorCode(internalErrorCode.getCode());
+            transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
+            transaction.setTransactionStatusReason(
+                    internalErrorCode.getTransactionStatusReason().getCode());
+            if (internalErrorCode.equals(TRANSACTION_TIMED_OUT_DECOUPLED_AUTH)
+                    || internalErrorCode.equals(TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ)
+                    || internalErrorCode.equals(TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION)) {
+                StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
+            } else {
+                StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
+            }
+        }
+    }
+
+    public void updateEci(Transaction transaction) {
+        if (!Util.isNullorBlank(transaction.getId())) {
+            GenerateECIRequest generateECIRequest =
+                    new GenerateECIRequest(
+                            transaction.getTransactionStatus(),
+                            transaction.getTransactionCardDetail().getNetworkCode(),
+                            transaction.getMessageCategory());
+            generateECIRequest.setThreeRIInd(transaction.getThreeRIInd());
+            String eci = eCommIndicatorService.generateECI(generateECIRequest);
+            transaction.setEci(eci);
+        }
     }
 }

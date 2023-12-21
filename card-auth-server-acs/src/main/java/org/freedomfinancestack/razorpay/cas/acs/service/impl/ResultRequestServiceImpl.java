@@ -5,11 +5,11 @@ import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.RReqMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpStatusCodeException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogService;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ResultResponseValidator;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.RRES;
@@ -112,7 +112,7 @@ public class ResultRequestServiceImpl implements ResultRequestService {
         // send error message to DS.  Ignore all the exception as its 2nd communication to DS, we
         // want to send Cres back
         ThreeDSErrorResponse errorMessage =
-                Util.generateErrorResponse(error, transaction, errorDetails, messageType);
+                new ThreeDSException(error, errorDetails, transaction).getErrorResponse();
         try {
             dsGatewayService.sendError(
                     Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),
