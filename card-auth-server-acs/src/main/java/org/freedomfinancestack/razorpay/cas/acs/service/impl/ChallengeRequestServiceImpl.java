@@ -518,6 +518,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             InternalErrorCode internalErrorCode, Transaction transaction)
             throws InvalidStateTransactionException {
         transactionService.updateTransactionWithError(internalErrorCode, transaction);
-        StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
+        if (Phase.AREQ.equals(transaction.getPhase())) {
+            transaction.setPhase(Phase.ERROR);
+        } else {
+            StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
+        }
     }
 }
