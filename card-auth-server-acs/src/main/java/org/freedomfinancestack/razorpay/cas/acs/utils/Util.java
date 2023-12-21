@@ -245,7 +245,12 @@ public class Util {
             byte[] decodedBytes = Base64.getUrlDecoder().decode(input);
 
             // Encode the decoded bytes again and compare with the original input
-            String reencoded = Base64.getUrlEncoder().encodeToString(decodedBytes);
+            String reencoded;
+            if (input.contains("=")) {
+                reencoded = Base64.getUrlEncoder().encodeToString(decodedBytes);
+            } else {
+                reencoded = Base64.getUrlEncoder().withoutPadding().encodeToString(decodedBytes);
+            }
 
             // If the re-encoded string matches the original input, it's a valid Base64 URL encoding
             return input.equals(reencoded);

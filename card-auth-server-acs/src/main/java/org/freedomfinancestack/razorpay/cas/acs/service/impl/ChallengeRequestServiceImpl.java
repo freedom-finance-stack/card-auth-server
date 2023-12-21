@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
@@ -22,10 +23,7 @@ import org.freedomfinancestack.razorpay.cas.acs.validation.ChallengeRequestValid
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
-import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
-import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
+import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
@@ -53,6 +51,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
     private final AppUIGenerator appUIGenerator;
     private final ChallengeRequestParserFactory challengeRequestParserFactory;
+    private final DecoupledAuthenticationService decoupledAuthenticationService;
 
     @Override
     public ChallengeFlowDto processChallengeRequest(
@@ -168,6 +167,16 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             //  log creq
             transactionMessageLogService.createAndSave(creq, creq.getAcsTransID());
 
+            // TC_ACS_10284 special case
+            if (!Util.isNullorBlank(transaction.getTransactionSdkDetail().getAcsCounterAtoS())
+                    && !transaction
+                            .getTransactionSdkDetail()
+                            .getAcsCounterAtoS()
+                            .equals(creq.getSdkCounterStoA())) {
+                throw new ACSValidationException(
+                        ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE, "sdkCounterStoA Mismatch");
+            }
+
             // Validating CREQ
             challengeRequestValidator.validateRequest(creq, transaction);
             if (!Util.isNullorBlank(threeDSSessionData)) {
@@ -184,11 +193,19 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
             // Validating this outside, as authConfigDto is needed to validate this
-            if (challengeRequestValidator.isWhitelistingDataValid(
-                    transaction, creq, authConfigDto)) {
+            if (challengeRequestValidator.isWhitelistingDataValid(transaction, creq, authConfigDto)
+                    && !Util.isNullorBlank(creq.getWhitelistingDataEntry())) {
                 transaction
                         .getTransactionSdkDetail()
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
+            }
+
+            // TC_ACS_11387 special case
+            if (creq.getSdkCounterStoA().equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                    && !Util.isNullorBlank(creq.getThreeDSRequestorAppURL())) {
+                transaction
+                        .getTransactionSdkDetail()
+                        .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
             }
 
             // Generating App Ui Params
@@ -217,7 +234,17 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 handleCancelChallenge(transaction, challengeFlowDto, creq);
             } else {
                 if (creq.getResendChallenge() != null
-                        && InternalConstants.YES.equals(creq.getResendChallenge())) {
+                                && InternalConstants.YES.equals(creq.getResendChallenge())
+                        || (flowType.equals(DeviceChannel.APP)
+                                && creq.getMessageVersion()
+                                        .equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
+                                && !creq.getSdkCounterStoA()
+                                        .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                                && (creq.getResendChallenge() == null
+                                        || InternalConstants.NO.equals(creq.getResendChallenge()))
+                                && creq.getChallengeDataEntry() == null
+                                && creq.getChallengeHTMLDataEntry() == null
+                                && creq.getOobContinue() == null)) {
                     handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else if (transaction.getPhase().equals(Phase.ARES)) {
                     transactionTimeoutServiceLocator
@@ -358,27 +385,39 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         transaction.setInteractionCount(transaction.getInteractionCount() + 1);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.VALIDATION_REQ_RECEIVED);
 
-        AuthenticationService authenticationService =
-                authenticationServiceLocator.locateTransactionAuthenticationService(
-                        transaction, authConfigDto.getChallengeAuthTypeConfig());
-        AuthResponse authResponse =
-                authenticationService.authenticate(
-                        AuthenticationDto.builder()
-                                .authConfigDto(authConfigDto)
-                                .transaction(transaction)
-                                .authValue(challengeFlowDto.getAuthValue())
-                                .build());
+        DecoupledAuthenticationResponse response = null;
+        AuthResponse authResponse = null;
 
-        if (authResponse.isAuthenticated()) {
+        if (transaction.getDeviceChannel().equals(DeviceChannel.APP.getChannel())
+                && transaction
+                        .getTransactionSdkDetail()
+                        .getAcsUiType()
+                        .equals(UIType.OOB.getType())) {
+            response =
+                    decoupledAuthenticationService.processAuthenticationRequest(
+                            transaction, new DecoupledAuthenticationRequest());
+        } else {
+            AuthenticationService authenticationService =
+                    authenticationServiceLocator.locateTransactionAuthenticationService(
+                            transaction, authConfigDto.getChallengeAuthTypeConfig());
+            authResponse =
+                    authenticationService.authenticate(
+                            AuthenticationDto.builder()
+                                    .authConfigDto(authConfigDto)
+                                    .transaction(transaction)
+                                    .authValue(challengeFlowDto.getAuthValue())
+                                    .build());
+        }
+
+        if ((authResponse != null && authResponse.isAuthenticated())
+                || (response != null && response.isSuccessful())) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
             transactionService.updateEci(transaction);
             transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
             CRES cres = cResMapper.toCres(transaction);
             challengeFlowDto.setCres(cres);
-
             transactionMessageLogService.createAndSave(cres, transaction.getId());
-
             challengeFlowDto.setSendRreq(true);
         } else { // If the authentication has failed, is not completed or the Cardholder has
             // selected to cancel the authentication
@@ -389,10 +428,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         cResMapper.toAppCres(
                                 transaction, challengeFlowDto.getInstitutionUIParams());
                 if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
-                        || transaction
-                                .getTransactionSdkDetail()
-                                .getAcsInterface()
-                                .equals(DeviceInterface.NATIVE.getValue())) {
+                        || (transaction
+                                        .getTransactionSdkDetail()
+                                        .getAcsInterface()
+                                        .equals(DeviceInterface.NATIVE.getValue()))
+                                && authResponse != null) {
                     cres.setChallengeInfoText(authResponse.getDisplayMessage());
                 }
                 challengeFlowDto.setCres(cres);
@@ -426,15 +466,21 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private void handleSendChallenge(
             Transaction transaction, AuthConfigDto authConfigDto, ChallengeFlowDto challengeFlowDto)
             throws ThreeDSException, InvalidStateTransactionException {
-        AuthenticationService authenticationService =
-                authenticationServiceLocator.locateTransactionAuthenticationService(
-                        transaction, authConfigDto.getChallengeAuthTypeConfig());
-        authenticationService.preAuthenticate(
-                AuthenticationDto.builder()
-                        .authConfigDto(authConfigDto)
-                        .transaction(transaction)
-                        .build());
-        log.info("Sent challenge for transaction {}", transaction.getId());
+        if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
+                || !transaction
+                        .getTransactionSdkDetail()
+                        .getAcsUiType()
+                        .equals(UIType.OOB.getType())) {
+            AuthenticationService authenticationService =
+                    authenticationServiceLocator.locateTransactionAuthenticationService(
+                            transaction, authConfigDto.getChallengeAuthTypeConfig());
+            authenticationService.preAuthenticate(
+                    AuthenticationDto.builder()
+                            .authConfigDto(authConfigDto)
+                            .transaction(transaction)
+                            .build());
+            log.info("Sent challenge for transaction {}", transaction.getId());
+        }
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
         CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto.getInstitutionUIParams());
         challengeFlowDto.setCres(cres);
@@ -445,7 +491,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             throws InvalidStateTransactionException {
         StateMachine.Trigger(transaction, Phase.PhaseEvent.CANCEL_CHALLENGE);
 
-        transaction.setInteractionCount(transaction.getInteractionCount() + 1);
+        if (creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
+            transaction.setInteractionCount(transaction.getInteractionCount() + 1);
+        }
         transaction.setTransactionStatus(TransactionStatus.FAILED);
         transaction.setTransactionStatusReason(
                 TransactionStatusReason.EXCEED_MAX_CHALLENGES.getCode());

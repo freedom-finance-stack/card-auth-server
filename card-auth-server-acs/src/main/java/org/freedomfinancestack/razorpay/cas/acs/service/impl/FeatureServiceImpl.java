@@ -7,11 +7,9 @@ import java.util.Map;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.DeviceRenderOptions;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.repository.FeatureRepository;
@@ -39,7 +37,7 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     public void getACSRenderingType(
             Transaction transaction, DeviceRenderOptions deviceRenderOptions)
-            throws ThreeDSException {
+            throws ACSDataAccessException {
         RenderingTypeConfigList renderingTypeConfigList =
                 (RenderingTypeConfigList)
                         featureRepository.findFeatureByIds(
@@ -86,10 +84,8 @@ public class FeatureServiceImpl implements FeatureService {
                         + transaction.getInstitutionId()
                         + " and Card Range ID : "
                         + transaction.getCardRangeId());
-        throw new ThreeDSException(
-                ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                InternalErrorCode.RENDERING_TYPE_NOT_FOUND,
-                "Rendering Type Config not found");
+        throw new ACSDataAccessException(
+                InternalErrorCode.RENDERING_TYPE_NOT_FOUND, "Rendering Type Config not found");
     }
 
     @Override

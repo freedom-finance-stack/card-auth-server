@@ -30,7 +30,8 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
                     || ThreeDSRequestorChallengeInd.CHALLENGE_REQUESTED_REQUESTER_PREFERENCE.equals(
                             challengeInd)
                     || ThreeDSRequestorChallengeInd.WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
-                            .equals(challengeInd)) {
+                                    .equals(challengeInd)
+                            && !riskFlagByAcs.equals(RiskFlag.CHALLENGE)) {
                 riskFlag = RiskFlag.CHALLENGE;
             } else if (ThreeDSRequestorChallengeInd.TRANSACTIONAL_RISK_ANALYSIS_IS_ALREADY_PERFORMED
                     .equals(challengeInd)) {

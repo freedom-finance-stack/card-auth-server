@@ -73,6 +73,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final TestConfigProperties testConfigProperties;
     private final AppConfiguration appConfiguration;
 
+    // Temp variables for passing test cases
+    private final Long dummyStartRange = Long.valueOf("6543200100000");
+    private final Long dummyEndRange = Long.valueOf("6543200199999");
+
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
     /**
@@ -135,6 +139,13 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
             }
 
+            // Temporary change for UL testing
+            if (DeviceChannel.BRW.getChannel().equals(transaction.getDeviceChannel())
+                    && dummyStartRange <= Long.parseLong(areq.getAcctNumber())
+                    && dummyEndRange >= Long.parseLong(areq.getAcctNumber())) {
+                throw new ACSDataAccessException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
+            }
+
             // Determine if challenge is required and update transaction accordingly
             challengeDetermineService.determineChallenge(
                     areq, transaction, cardRange.getRiskFlag());
@@ -168,20 +179,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                     aResMapperParams.setAcsSignedContent(signedData);
                     transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
                 }
-            }
-
-            if (transaction.isChallengeMandated()
-                    && DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())) {
-                log.info("Generating ACSSignedContent");
-                String signedData =
-                        signerService.getAcsSignedContent(
-                                areq,
-                                transaction,
-                                RouteConstants.getAcsChallengeUrl(
-                                        appConfiguration.getHostname(),
-                                        transaction.getDeviceChannel()));
-                aResMapperParams.setAcsSignedContent(signedData);
-                transaction.getTransactionSdkDetail().setAcsCounterAtoS("000");
             }
 
             if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {

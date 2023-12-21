@@ -371,6 +371,18 @@ VALUES ('18', 'CARD_RANGE', 'R22', 1, 'CHALLENGE_ATTEMPT',
         }',
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null);
+INSERT INTO `feature`
+VALUES
+    (
+        '19', 'CARD_RANGE', 'R20', 1, 'RENDERING_TYPE',
+        '{"rendering_type_configs":[{
+        "acs_interface" : "01",
+        "acs_ui_template": [],
+        "preference": 1
+        }]}',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
 UNLOCK TABLES;
 
 
