@@ -97,6 +97,7 @@ public class TransactionTimeOutService {
         // todo release mutex before RReq.
         try {
             resultRequestService.handleRreq(transaction);
+            transactionService.saveOrUpdate(transaction);
         } catch (Exception ex) {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
         }
