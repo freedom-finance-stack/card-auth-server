@@ -7,8 +7,6 @@ import java.util.Base64;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
-import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -229,8 +227,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public void updateTransactionWithError(
-            InternalErrorCode internalErrorCode, Transaction transaction)
-            throws InvalidStateTransactionException {
+            InternalErrorCode internalErrorCode, Transaction transaction) {
         if (transaction != null) {
             if (Util.isNullorBlank(transaction.getChallengeCancelInd())) {
                 transaction.setChallengeCancelInd(
@@ -240,13 +237,6 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setTransactionStatus(internalErrorCode.getTransactionStatus());
             transaction.setTransactionStatusReason(
                     internalErrorCode.getTransactionStatusReason().getCode());
-            if (internalErrorCode.equals(TRANSACTION_TIMED_OUT_DECOUPLED_AUTH)
-                    || internalErrorCode.equals(TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ)
-                    || internalErrorCode.equals(TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION)) {
-                StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
-            } else {
-                StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
-            }
         }
     }
 

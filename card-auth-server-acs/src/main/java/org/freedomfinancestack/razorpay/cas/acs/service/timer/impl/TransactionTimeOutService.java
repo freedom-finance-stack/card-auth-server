@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
+import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
@@ -95,6 +96,7 @@ public class TransactionTimeOutService {
             throws ACSDataAccessException, InvalidStateTransactionException {
         transaction.setChallengeCancelInd(challengeCancelIndicator.getIndicator());
         transactionService.updateTransactionWithError(errorCode, transaction);
+        StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
         transactionService.updateEci(transaction);
         transaction = transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.

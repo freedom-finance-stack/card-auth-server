@@ -1,6 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
-import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
@@ -49,6 +48,5 @@ public interface TransactionService {
 
     void updateEci(Transaction transaction);
 
-    void updateTransactionWithError(InternalErrorCode internalErrorCode, Transaction transaction)
-            throws InvalidStateTransactionException;
+    void updateTransactionWithError(InternalErrorCode internalErrorCode, Transaction transaction);
 }

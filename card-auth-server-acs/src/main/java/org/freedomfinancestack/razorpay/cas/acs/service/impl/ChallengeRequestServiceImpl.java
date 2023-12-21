@@ -249,8 +249,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 challengeFlowDto.setSendEmptyResponse(true);
             }
             Transaction transactionErr = new Transaction();
-            transactionService.updateTransactionWithError(
-                    ex.getInternalErrorCode(), transactionErr);
+            updateTransactionWithError(ex.getInternalErrorCode(), transactionErr);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transactionErr, ex);
         } catch (ThreeDSException ex) {
@@ -259,14 +258,13 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT)) {
                 challengeFlowDto.setSendRreq(true);
             }
-            transactionService.updateTransactionWithError(ex.getInternalErrorCode(), transaction);
+            updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
         } catch (InvalidStateTransactionException ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
-            transactionService.updateTransactionWithError(
-                    InternalErrorCode.INVALID_STATE_TRANSITION, transaction);
+            updateTransactionWithError(InternalErrorCode.INVALID_STATE_TRANSITION, transaction);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
                     ex.getMessage(),
@@ -275,13 +273,12 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         } catch (ACSException ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
-            transactionService.updateTransactionWithError(ex.getErrorCode(), transaction);
+            updateTransactionWithError(ex.getErrorCode(), transaction);
             challengeFlowDto.setCres(cResMapper.toCres(transaction));
         } catch (Exception ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
-            transactionService.updateTransactionWithError(
-                    InternalErrorCode.INTERNAL_SERVER_ERROR, transaction);
+            updateTransactionWithError(InternalErrorCode.INTERNAL_SERVER_ERROR, transaction);
             throw new ThreeDSException(
                     ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, ex.getMessage(), transaction, ex);
         } finally {
@@ -466,5 +463,12 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             throws ACSDataAccessException, InvalidStateTransactionException {
         transactionService.updateTransactionWithError(internalErrorCode, transaction);
         transactionService.saveOrUpdate(transaction);
+    }
+
+    private void updateTransactionWithError(
+            InternalErrorCode internalErrorCode, Transaction transaction)
+            throws InvalidStateTransactionException {
+        transactionService.updateTransactionWithError(internalErrorCode, transaction);
+        StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
     }
 }
