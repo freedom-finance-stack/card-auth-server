@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.validation;
 
+import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
@@ -13,6 +14,8 @@ import static org.freedomfinancestack.extensions.validation.validator.basic.IsVa
 import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsEqual.isEqual;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.isJsonObjectLengthValid.isJsonObjectLengthValid;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.isListLengthValid.isListLengthValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 
 /**
@@ -92,9 +95,27 @@ public class ResultResponseValidator {
     }
 
     protected void validateOptionalFields(RRES incomingRres, RREQ rreq) throws ValidationException {
+
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 incomingRres.getMessageExtension(),
-                isListValid(isValidObject()));
+                isListValid(isValidObject()),
+                isListLengthValid(DataLengthType.VARIABLE, 10));
+
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
+                incomingRres.getMessageExtension(),
+                isJsonObjectLengthValid(81920));
+
+        if (incomingRres.getMessageExtension() != null) {
+            for (MessageExtension messageExtension : incomingRres.getMessageExtension()) {
+                Validation.validate(
+                        ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR.getFieldName(),
+                        Boolean.toString(messageExtension.isCriticalityIndicator()),
+                        isIn(
+                                ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR
+                                        .getAcceptedValues()));
+            }
+        }
     }
 }

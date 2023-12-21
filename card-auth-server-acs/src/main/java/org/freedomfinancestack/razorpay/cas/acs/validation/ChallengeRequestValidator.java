@@ -13,6 +13,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
+import org.freedomfinancestack.razorpay.cas.contract.MessageExtension;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -28,6 +29,8 @@ import static org.freedomfinancestack.extensions.validation.validator.basic.NotE
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsEqual.isEqual;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
 import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.isJsonObjectLengthValid.isJsonObjectLengthValid;
+import static org.freedomfinancestack.extensions.validation.validator.enriched.isListLengthValid.isListLengthValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.NO;
@@ -145,10 +148,28 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 ThreeDSDataElement.CHALLENGE_CANCEL.getFieldName(),
                 incomingCreq.getChallengeCancel(),
                 isIn(ThreeDSDataElement.CHALLENGE_CANCEL.getAcceptedValues()));
+
         Validation.validate(
                 ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
                 incomingCreq.getMessageExtension(),
-                isListValid(isValidObject()));
+                isListValid(isValidObject()),
+                isListLengthValid(DataLengthType.VARIABLE, 10));
+
+        Validation.validate(
+                ThreeDSDataElement.MESSAGE_EXTENSION.getFieldName(),
+                incomingCreq.getMessageExtension(),
+                isJsonObjectLengthValid(81920));
+
+        if (incomingCreq.getMessageExtension() != null) {
+            for (MessageExtension messageExtension : incomingCreq.getMessageExtension()) {
+                Validation.validate(
+                        ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR.getFieldName(),
+                        Boolean.toString(messageExtension.isCriticalityIndicator()),
+                        isIn(
+                                ThreeDSDataElement.MESSAGE_EXTENSION_CRITICAL_INDICATOR
+                                        .getAcceptedValues()));
+            }
+        }
 
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL.getFieldName(),
