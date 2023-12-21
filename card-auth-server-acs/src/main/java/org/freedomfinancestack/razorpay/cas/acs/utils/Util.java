@@ -335,17 +335,4 @@ public class Util {
 
         return base64urlMatcher.matches();
     }
-
-    // timer service
-    public static String getIdFromTaskIdentifier(String key, String input) {
-        String pattern = key + "\\[(.*?)\\]";
-        Pattern regexPattern = Pattern.compile(pattern);
-        Matcher matcher = regexPattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group(1);
-        } else {
-            // If no match is found, return null or an empty string, depending on your preference
-            return null;
-        }
-    }
 }

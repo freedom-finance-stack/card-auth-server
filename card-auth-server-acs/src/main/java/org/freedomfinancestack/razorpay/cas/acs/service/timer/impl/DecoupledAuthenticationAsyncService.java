@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskIdentifier;
-import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.getIdFromTaskIdentifier;
 
 @Service("decoupledAuthenticationAsyncService")
 @RequiredArgsConstructor
