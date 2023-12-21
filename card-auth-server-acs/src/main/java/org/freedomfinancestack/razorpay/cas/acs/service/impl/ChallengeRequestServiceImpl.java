@@ -177,11 +177,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 } else {
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(challengeFlowDto, transaction, authConfigDto);
+                    transactionTimeoutServiceLocator
+                            .locateService(MessageType.CReq)
+                            .scheduleTask(
+                                    transaction.getId(), transaction.getTransactionStatus(), null);
                 }
-                transactionTimeoutServiceLocator
-                        .locateService(MessageType.CReq)
-                        .scheduleTask(
-                                transaction.getId(), transaction.getTransactionStatus(), null);
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
@@ -200,7 +200,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     ex.getMessage());
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
-            challengeFlowDto.setSendRreq(true);
+            if (!ex.getThreeDSecureErrorCode()
+                    .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT)) {
+                challengeFlowDto.setSendRreq(true);
+            }
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
                     ex.getThreeDSecureErrorCode(),
@@ -339,10 +342,12 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             } else {
                 AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
                 if (cvReq.isResendChallenge()) {
-                    transactionTimeoutServiceLocator
-                            .locateService(MessageType.CReq)
-                            .scheduleTask(
-                                    transaction.getId(), transaction.getTransactionStatus(), null);
+                    // TODO test changes
+                    //                    transactionTimeoutServiceLocator
+                    //                            .locateService(MessageType.CReq)
+                    //                            .scheduleTask(
+                    //                                    transaction.getId(),
+                    // transaction.getTransactionStatus(), null);
                     handleReSendChallenge(challengeFlowDto, transaction, authConfigDto);
                 } else {
                     handleChallengeValidation(cvReq, transaction, authConfigDto, challengeFlowDto);
@@ -359,8 +364,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     transaction,
                     ex.getMessage());
         } catch (ThreeDSException ex) {
-            challengeFlowDto.setSendRreq(true);
             log.error("Exception occurred", ex);
+            if (!ex.getThreeDSecureErrorCode()
+                    .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT)) {
+                challengeFlowDto.setSendRreq(true);
+            }
             generateErrorResponseAndUpdateTransaction(
                     challengeFlowDto.getCdRes(),
                     ex.getThreeDSecureErrorCode(),

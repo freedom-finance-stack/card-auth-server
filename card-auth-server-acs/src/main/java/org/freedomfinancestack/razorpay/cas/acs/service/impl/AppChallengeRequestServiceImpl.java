@@ -163,6 +163,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                 } else if (transaction.getPhase().equals(Phase.ARES)) {
                     StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
                     handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
+                    transactionTimeoutServiceLocator
+                            .locateService(MessageType.CReq)
+                            .scheduleTask(
+                                    transaction.getId(), transaction.getTransactionStatus(), null);
                 } else {
                     if (!transaction
                             .getTransactionSdkDetail()
@@ -189,7 +193,10 @@ public class AppChallengeRequestServiceImpl implements AppChallengeRequestServic
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transactionErr, ex);
         } catch (ThreeDSException ex) {
             log.error("Exception occurred", ex);
-            challengeFlowDto.setSendRreq(true);
+            if (!ex.getThreeDSecureErrorCode()
+                    .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT)) {
+                challengeFlowDto.setSendRreq(true);
+            }
             updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transaction, ex);
