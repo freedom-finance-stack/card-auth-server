@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import static org.freedomfinancestack.razorpay.cas.acs.service.timer.impl.AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY;
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskIdentifier;
-import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.getIdFromTaskIdentifier;
 
 @Service("cReqTransactionTimerService")
 @RequiredArgsConstructor

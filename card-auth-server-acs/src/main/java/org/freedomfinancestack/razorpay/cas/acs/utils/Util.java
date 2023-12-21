@@ -9,26 +9,12 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.freedomfinancestack.extensions.validation.enums.DataLengthType;
-import org.freedomfinancestack.extensions.validation.exception.ValidationException;
-import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.validation.ThreeDSDataElement;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
-import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
-import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import lombok.extern.slf4j.Slf4j;
-
-import static org.freedomfinancestack.extensions.validation.validator.basic.NotBlank.notBlank;
-import static org.freedomfinancestack.extensions.validation.validator.enriched.IsIn.isIn;
-import static org.freedomfinancestack.extensions.validation.validator.enriched.LengthValidator.lengthValidator;
 
 /**
  * The {@code Util} class provides various utility methods used across the ACS (Access Control
@@ -287,75 +273,6 @@ public class Util {
             return base64String.replaceAll("=+$", "");
         }
         return null;
-    }
-
-    public static ThreeDSErrorResponse generateErrorResponse(
-            ThreeDSecureErrorCode error,
-            Transaction transaction,
-            String errorDetail,
-            MessageType messageType) {
-        ThreeDSErrorResponse errorObj = new ThreeDSErrorResponse();
-        if (error != null) {
-            errorObj.setErrorCode(error.getErrorCode());
-            errorObj.setErrorComponent(error.getErrorComponent());
-            errorObj.setErrorDescription(error.getErrorDescription());
-            errorObj.setErrorDetail(errorDetail);
-            errorObj.setErrorMessageType(messageType.toString());
-        }
-        if (null != transaction) {
-            errorObj.setMessageVersion(transaction.getMessageVersion());
-            errorObj.setAcsTransID(transaction.getId());
-            if (transaction.getTransactionReferenceDetail() != null) {
-                errorObj.setDsTransID(
-                        transaction.getTransactionReferenceDetail().getDsTransactionId());
-                errorObj.setThreeDSServerTransID(
-                        transaction
-                                .getTransactionReferenceDetail()
-                                .getThreedsServerTransactionId());
-            }
-        }
-        return errorObj;
-    }
-
-    public static boolean isChallengeCompleted(Transaction transaction) {
-        return transaction != null
-                && !transaction.getTransactionStatus().equals(TransactionStatus.CHALLENGE_REQUIRED)
-                && !transaction.getTransactionStatus().equals(TransactionStatus.CREATED)
-                && !transaction
-                        .getTransactionStatus()
-                        .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
-    }
-
-    public static boolean isMessageVersionValid(String messageVersion) {
-        try {
-            Validation.validate(
-                    ThreeDSDataElement.MESSAGE_VERSION.getFieldName(),
-                    messageVersion,
-                    notBlank(),
-                    lengthValidator(DataLengthType.VARIABLE, 8),
-                    isIn(ThreeDSDataElement.MESSAGE_VERSION.getAcceptedValues()));
-        } catch (ValidationException e) {
-            return false;
-        }
-        return true;
-    }
-
-    public static void updateTransaction(Transaction transaction, InternalErrorCode errorCode) {
-        transaction.setTransactionStatus(errorCode.getTransactionStatus());
-        transaction.setTransactionStatusReason(errorCode.getTransactionStatusReason().getCode());
-        transaction.setErrorCode(errorCode.getCode());
-    }
-
-    public static String getIdFromTaskIdentifier(String key, String input) {
-        String pattern = key + "\\[(.*?)\\]";
-        Pattern regexPattern = Pattern.compile(pattern);
-        Matcher matcher = regexPattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group(1);
-        } else {
-            // If no match is found, return null or an empty string, depending on your preference
-            return null;
-        }
     }
 
     public static String generateTaskIdentifier(String key, String id) {

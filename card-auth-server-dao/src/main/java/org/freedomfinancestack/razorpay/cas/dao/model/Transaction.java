@@ -55,7 +55,7 @@ public class Transaction extends BaseEntity<String>
     private String threeRIInd;
 
     @Enumerated(EnumType.STRING)
-    private Phase phase;
+    private Phase phase = Phase.AREQ;
 
     @Column(name = "threeds_session_data")
     private String threedsSessionData;

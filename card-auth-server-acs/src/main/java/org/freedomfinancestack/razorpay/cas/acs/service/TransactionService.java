@@ -1,7 +1,9 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 
@@ -42,5 +44,9 @@ public interface TransactionService {
      *     ID.
      * @throws ACSDataAccessException If there is an error while accessing the data store.
      */
-    Transaction findById(String id) throws ACSDataAccessException;
+    Transaction findById(String id) throws ACSDataAccessException, TransactionDataNotValidException;
+
+    void updateEci(Transaction transaction);
+
+    void updateTransactionWithError(InternalErrorCode internalErrorCode, Transaction transaction);
 }

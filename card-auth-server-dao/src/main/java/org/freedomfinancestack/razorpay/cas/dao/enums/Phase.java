@@ -101,7 +101,8 @@ public enum Phase implements State<Phase.PhaseEvent> {
         public Phase nextState(PhaseEvent event) throws InvalidStateTransactionException {
             switch (event) {
                 case RREQ_FAILED:
-                    return Phase.RREQ;
+                    return Phase.RREQ; // todo handle this case, it might not get caught in
+                    // isChallengeCompleted method
                 case RRES_RECEIVED:
                     return Phase.CRES;
                 case ERROR_OCCURRED:

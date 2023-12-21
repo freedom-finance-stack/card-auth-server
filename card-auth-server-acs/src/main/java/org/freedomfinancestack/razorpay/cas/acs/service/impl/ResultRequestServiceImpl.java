@@ -5,17 +5,16 @@ import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.RReqMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.exception.GatewayHttpStatusCodeException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogService;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.acs.validation.ResultResponseValidator;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.RRES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -73,18 +72,14 @@ public class ResultRequestServiceImpl implements ResultRequestService {
         } catch (ACSValidationException e) {
             transaction.setTransactionStatus(e.getInternalErrorCode().getTransactionStatus());
             transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
-            sendDsErrorResponse(
-                    transaction, e.getThreeDSecureErrorCode(), e.getMessage(), MessageType.RRes);
+            sendDsErrorResponse(transaction, e.getThreeDSecureErrorCode(), e.getMessage());
             throw e;
         } catch (GatewayHttpStatusCodeException e) {
             transaction.setTransactionStatus(TransactionStatus.UNABLE_TO_AUTHENTICATE);
             if (e.getHttpStatus().is4xxClientError()) {
                 transaction.setErrorCode(InternalErrorCode.CONNECTION_TO_DS_FAILED.getCode());
                 sendDsErrorResponse(
-                        transaction,
-                        ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT,
-                        e.getMessage(),
-                        MessageType.RReq);
+                        transaction, ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT, e.getMessage());
             } else {
                 transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
             }
@@ -105,14 +100,11 @@ public class ResultRequestServiceImpl implements ResultRequestService {
     }
 
     private void sendDsErrorResponse(
-            Transaction transaction,
-            ThreeDSecureErrorCode error,
-            String errorDetails,
-            MessageType messageType) {
+            Transaction transaction, ThreeDSecureErrorCode error, String errorDetails) {
         // send error message to DS.  Ignore all the exception as its 2nd communication to DS, we
         // want to send Cres back
         ThreeDSErrorResponse errorMessage =
-                Util.generateErrorResponse(error, transaction, errorDetails, messageType);
+                new ThreeDSException(error, errorDetails, transaction).getErrorResponse();
         try {
             dsGatewayService.sendError(
                     Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),

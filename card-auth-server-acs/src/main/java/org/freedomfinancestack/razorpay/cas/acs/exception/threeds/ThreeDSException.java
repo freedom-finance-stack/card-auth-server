@@ -64,6 +64,15 @@ public class ThreeDSException extends Exception {
         this.transaction = transaction;
     }
 
+    public ThreeDSException(
+            final ThreeDSecureErrorCode threeDSecureErrorCode,
+            final String message,
+            final Transaction transaction) {
+        super(message);
+        this.threeDSecureErrorCode = threeDSecureErrorCode;
+        this.transaction = transaction;
+    }
+
     public ThreeDSErrorResponse getErrorResponse() {
         addMetaInThreeDSecureErrorCode(threeDSecureErrorCode);
         addMetaInThreeDSecureErrorCode(transaction);

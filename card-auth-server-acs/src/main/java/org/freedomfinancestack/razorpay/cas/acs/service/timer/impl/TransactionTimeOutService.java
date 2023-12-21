@@ -2,13 +2,13 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
-import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -54,7 +54,10 @@ public class TransactionTimeOutService {
                 }
             }
 
-        } catch (ACSDataAccessException | InvalidStateTransactionException ex) {
+        } catch (ACSDataAccessException
+                | InvalidStateTransactionException
+                | TransactionDataNotValidException ex) {
+
             log.error(
                     " Error while performing timer task before creq transactionId: {} ",
                     transactionId,
@@ -66,7 +69,7 @@ public class TransactionTimeOutService {
         // todo get mutex
         try {
             Transaction transaction = transactionService.findById(transactionId);
-            if (!Util.isChallengeCompleted(transaction)) {
+            if (!ChallengeRequestService.isChallengeCompleted(transaction)) {
                 log.info("Timeout : Challenge not completed for transactionId: {}", transactionId);
                 timeOutTransaction(
                         transaction,
@@ -75,7 +78,9 @@ public class TransactionTimeOutService {
             } else {
                 // todo release mutex
             }
-        } catch (ACSDataAccessException | InvalidStateTransactionException e) {
+        } catch (ACSDataAccessException
+                | InvalidStateTransactionException
+                | TransactionDataNotValidException e) {
             log.error(
                     " Error while performing timer task waiting for challenge completion"
                             + " transactionId: {} ",
@@ -90,9 +95,9 @@ public class TransactionTimeOutService {
             InternalErrorCode errorCode)
             throws ACSDataAccessException, InvalidStateTransactionException {
         transaction.setChallengeCancelInd(challengeCancelIndicator.getIndicator());
-        Util.updateTransaction(transaction, errorCode);
-        updateEci(transaction);
+        transactionService.updateTransactionWithError(errorCode, transaction);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
+        transactionService.updateEci(transaction);
         transaction = transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
@@ -100,16 +105,5 @@ public class TransactionTimeOutService {
         } catch (Exception ex) {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
         }
-    }
-
-    private void updateEci(Transaction transaction) {
-        GenerateECIRequest generateECIRequest =
-                new GenerateECIRequest(
-                        transaction.getTransactionStatus(),
-                        transaction.getTransactionCardDetail().getNetworkCode(),
-                        transaction.getMessageCategory());
-        generateECIRequest.setThreeRIInd(transaction.getThreeRIInd());
-        String eci = eCommIndicatorService.generateECI(generateECIRequest);
-        transaction.setEci(eci);
     }
 }
