@@ -11,6 +11,10 @@ public class ACSValidationException extends ThreeDSException {
         super(errorCode, InternalErrorCode.INVALID_REQUEST, message);
     }
 
+    public ACSValidationException(ThreeDSecureErrorCode errorCode) {
+        super(errorCode, InternalErrorCode.INVALID_REQUEST);
+    }
+
     protected ACSValidationException(
             ThreeDSecureErrorCode errorCode, String message, Throwable cause) {
         super(errorCode, InternalErrorCode.INVALID_REQUEST, message, cause);

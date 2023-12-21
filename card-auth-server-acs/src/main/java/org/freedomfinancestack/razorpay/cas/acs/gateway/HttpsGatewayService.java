@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway;
 
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,6 +68,9 @@ public abstract class HttpsGatewayService {
             Throwable cause = e.getCause();
             if (cause instanceof GatewayHttpStatusCodeException) {
                 throw (GatewayHttpStatusCodeException) cause;
+            } else if (cause instanceof SocketTimeoutException) {
+                throw new GatewayHttpStatusCodeException(
+                        HttpStatus.GATEWAY_TIMEOUT, cause.getMessage());
             }
             throw e;
         }
