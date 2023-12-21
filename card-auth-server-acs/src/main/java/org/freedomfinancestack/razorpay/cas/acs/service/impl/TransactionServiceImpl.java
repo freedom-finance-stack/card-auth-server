@@ -70,8 +70,7 @@ public class TransactionServiceImpl implements TransactionService {
             throws ACSDataAccessException, TransactionDataNotValidException {
         if (Util.isNullorBlank(id)) {
             throw new TransactionDataNotValidException(
-                    ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING,
-                    InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
+                    ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING, TRANSACTION_ID_EMPTY);
         }
         try {
             Optional<Transaction> transaction = transactionRepository.findById(id);
