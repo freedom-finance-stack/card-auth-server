@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
@@ -9,12 +10,18 @@ import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
+import org.freedomfinancestack.razorpay.cas.contract.CRES;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -101,11 +108,43 @@ public class TransactionTimeOutService {
         transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
+            String cresStr =
+                    CRES.builder()
+                            .threeDSServerTransID(
+                                    transaction
+                                            .getTransactionReferenceDetail()
+                                            .getThreedsServerTransactionId())
+                            .acsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                            .acsTransID(transaction.getId())
+                            .challengeCompletionInd(InternalConstants.NO)
+                            .messageType(MessageType.CRes.toString())
+                            .messageVersion(transaction.getMessageVersion())
+                            .transStatus(transaction.getTransactionStatus().getStatus())
+                            .build()
+                            .toString();
+            sendNotificationUrl(
+                    transaction.getTransactionReferenceDetail().getNotificationUrl(), cresStr);
             resultRequestService.handleRreq(transaction);
         } catch (Exception ex) {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
         } finally {
             transactionService.saveOrUpdate(transaction);
         }
+    }
+
+    private void sendNotificationUrl(String notificationUrl, String cresStr) {
+        WebClient webClient = WebClient.builder().build();
+
+        String response =
+                webClient
+                        .post()
+                        .uri(notificationUrl)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(cresStr))
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+
+        log.info("response from Server: {}", response);
     }
 }

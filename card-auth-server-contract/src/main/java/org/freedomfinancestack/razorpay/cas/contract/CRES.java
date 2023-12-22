@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
 public class CRES extends ThreeDSObject {
 
     // All Required Fields
