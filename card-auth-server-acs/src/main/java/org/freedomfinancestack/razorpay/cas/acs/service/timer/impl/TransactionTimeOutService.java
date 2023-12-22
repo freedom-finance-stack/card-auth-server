@@ -16,8 +16,10 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import jakarta.ws.rs.core.HttpHeaders;
@@ -133,18 +135,26 @@ public class TransactionTimeOutService {
     }
 
     private void sendNotificationUrl(String notificationUrl, String cresStr) {
+        log.info("------------ CRESSTRING ------------------: ", cresStr);
+        log.info("------------ NOTIFICATIONURL ------------------: ", notificationUrl);
         WebClient webClient = WebClient.builder().build();
 
-        String response =
+        ClientResponse response =
                 webClient
                         .post()
                         .uri(notificationUrl)
                         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(cresStr))
-                        .retrieve()
-                        .bodyToMono(String.class)
+                        .exchange()
                         .block();
 
-        log.info("response from Server: {}", response);
+        if (response != null && !response.statusCode().equals(HttpStatusCode.valueOf(200))) {
+            log.info(
+                    "Error from Server: {}, with HTTP Status code: {}",
+                    response.bodyToMono(String.class).block(),
+                    HttpStatusCode.valueOf(200));
+        } else {
+            log.info("response from Server: {}", response.bodyToMono(String.class).block());
+        }
     }
 }
