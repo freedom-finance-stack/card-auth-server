@@ -134,9 +134,9 @@ public class TransactionTimeOutService {
         }
     }
 
-    private void sendNotificationUrl(String notificationUrl, String cresStr) {
-        log.info("------------ CRESSTRING ------------------: ", cresStr);
-        log.info("------------ NOTIFICATIONURL ------------------: ", notificationUrl);
+    private static void sendNotificationUrl(String notificationUrl, String cresStr) {
+        //        log.info("------------ CRESSTRING ------------------: ", cresStr);
+        //        log.info("------------ NOTIFICATIONURL ------------------: ", notificationUrl);
         WebClient webClient = WebClient.builder().build();
 
         ClientResponse response =
@@ -154,7 +154,24 @@ public class TransactionTimeOutService {
                     response.bodyToMono(String.class).block(),
                     HttpStatusCode.valueOf(200));
         } else {
-            log.info("response from Server: {}", response.bodyToMono(String.class).block());
+            log.info(
+                    "response from Server: {}, with HTTP Status code: {}",
+                    response.bodyToMono(String.class).block(),
+                    response.statusCode().value());
         }
     }
+
+    //    public static void main(String[] args) {
+    //        CRES cres = CRES.builder()
+    //                .acsTransID("acsTransID")
+    //                .transStatus("transStatus")
+    //                .messageVersion("2.0.0")
+    //                .messageType("CRes")
+    //                .threeDSServerTransID("threeDSServerTransID")
+    //                .acsCounterAtoS("000")
+    //                .build();
+    //
+    //
+    // sendNotificationUrl("https://simulator-3ds.selftestplatform.com/notification/v2.2.0/3dsServer/4501/", Util.toJson(cres));
+    //    }
 }
