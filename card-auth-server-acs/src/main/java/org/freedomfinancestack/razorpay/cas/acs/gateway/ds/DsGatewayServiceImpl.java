@@ -92,7 +92,7 @@ public class DsGatewayServiceImpl implements DsGatewayService {
         headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
         HttpHeaders headers = new HttpHeaders();
         headers.setAll(headerMap);
-        HttpEntity<String> entity = new HttpEntity<>(Util.toJson(cres), headers);
+        HttpEntity<String> entity = new HttpEntity<>(Util.encodeBase64Url(cres), headers);
         log.info("CRESTEST_3: {}", entity);
         ResponseEntity<String> responseEntity =
                 httpsGatewayService
