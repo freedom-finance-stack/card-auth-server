@@ -11,6 +11,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
+import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
@@ -126,6 +127,7 @@ public class TransactionTimeOutService {
                             .messageVersion(transaction.getMessageVersion())
                             .transStatus(transaction.getTransactionStatus().getStatus())
                             .build();
+            log.info("CRESTEST_1: {}", cres);
             dsGatewayService.sendCRes(
                     Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),
                     cres,
@@ -165,17 +167,19 @@ public class TransactionTimeOutService {
         }
     }
 
-    //    public static void main(String[] args) {
-    //        CRES cres = CRES.builder()
-    //                .acsTransID("acsTransID")
-    //                .transStatus("transStatus")
-    //                .messageVersion("2.0.0")
-    //                .messageType("CRes")
-    //                .threeDSServerTransID("threeDSServerTransID")
-    //                .acsCounterAtoS("000")
-    //                .build();
-    //
-    //
-    // sendNotificationUrl("https://simulator-3ds.selftestplatform.com/notification/v2.2.0/3dsServer/4501/", Util.toJson(cres));
-    //    }
+    public static void main(String[] args) {
+        CRES cres =
+                CRES.builder()
+                        .acsTransID("acsTransID")
+                        .transStatus("transStatus")
+                        .messageVersion("2.0.0")
+                        .messageType("CRes")
+                        .threeDSServerTransID("threeDSServerTransID")
+                        .acsCounterAtoS("000")
+                        .build();
+
+        sendNotificationUrl(
+                "https://simulator-3ds.selftestplatform.com/notification/v2.2.0/3dsServer/4501/",
+                Util.toJson(cres));
+    }
 }

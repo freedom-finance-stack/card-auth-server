@@ -86,21 +86,26 @@ public class DsGatewayServiceImpl implements DsGatewayService {
             dsGatewayServiceMock.sendCRes(network, cres, url);
             return;
         }
+        log.info("CRESTEST_2: {}", cres);
         Map<String, String> headerMap = new HashMap<>();
         Map<String, Object> queryParamMap = new HashMap<>();
         headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
         HttpHeaders headers = new HttpHeaders();
         headers.setAll(headerMap);
-        HttpEntity<String> entity = new HttpEntity<>(cres.toString(), headers);
+        HttpEntity<String> entity = new HttpEntity<>(Util.toJson(cres), headers);
+        log.info("CRESTEST_3: {}", entity);
         ResponseEntity<String> responseEntity =
                 httpsGatewayService
                         .getRestTemplate()
                         .exchange(url, HttpMethod.POST, entity, String.class, queryParamMap);
+        log.info("CRESTEST_4: {}", responseEntity);
         if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
-            log.info("Gateway response received {}", responseEntity.getBody());
+            log.info(
+                    "Server response received {}, with http status code: {}",
+                    responseEntity.getBody(),
+                    responseEntity.getStatusCode());
         } else {
-            log.error(
-                    "Gateway Error received with status code: {}", responseEntity.getStatusCode());
+            log.error("Server Error received with status code: {}", responseEntity.getStatusCode());
         }
     }
 
