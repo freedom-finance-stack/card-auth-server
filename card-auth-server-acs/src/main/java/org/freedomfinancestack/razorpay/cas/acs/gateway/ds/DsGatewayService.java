@@ -1,6 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.ds;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
+import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.RRES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
@@ -11,4 +12,6 @@ public interface DsGatewayService {
 
     void sendError(final Network network, final ThreeDSErrorResponse errorResponse)
             throws ACSValidationException;
+
+    void sendCRes(Network network, CRES cres, String url);
 }

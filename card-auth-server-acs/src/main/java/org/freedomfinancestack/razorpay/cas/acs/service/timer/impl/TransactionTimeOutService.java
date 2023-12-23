@@ -6,6 +6,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
@@ -13,6 +14,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
+import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -35,6 +37,7 @@ public class TransactionTimeOutService {
     private final TransactionService transactionService;
     private final ECommIndicatorService eCommIndicatorService;
     private final ResultRequestService resultRequestService;
+    private final DsGatewayService dsGatewayService;
 
     void performTimeOutWaitingForCreq(String transactionId) {
         try {
@@ -110,7 +113,7 @@ public class TransactionTimeOutService {
         transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
-            String cresStr =
+            CRES cres =
                     CRES.builder()
                             .threeDSServerTransID(
                                     transaction
@@ -122,10 +125,11 @@ public class TransactionTimeOutService {
                             .messageType(MessageType.CRes.toString())
                             .messageVersion(transaction.getMessageVersion())
                             .transStatus(transaction.getTransactionStatus().getStatus())
-                            .build()
-                            .toString();
-            sendNotificationUrl(
-                    transaction.getTransactionReferenceDetail().getNotificationUrl(), cresStr);
+                            .build();
+            dsGatewayService.sendCRes(
+                    Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),
+                    cres,
+                    transaction.getTransactionReferenceDetail().getNotificationUrl());
             resultRequestService.handleRreq(transaction);
         } catch (Exception ex) {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);

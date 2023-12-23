@@ -8,13 +8,10 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationE
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.mock.DsGatewayServiceMock;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.contract.RREQ;
-import org.freedomfinancestack.razorpay.cas.contract.RRES;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonSyntaxException;
@@ -25,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service("gatewayService")
 @RequiredArgsConstructor
 @Slf4j
+@Primary
 public class DsGatewayServiceImpl implements DsGatewayService {
 
     private final VisaDsHttpsGatewayService visaDsHttpsGatewayService;
@@ -77,6 +75,32 @@ public class DsGatewayServiceImpl implements DsGatewayService {
             throw new ACSValidationException(
                     ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
                     "invalid RRES received from DS");
+        }
+    }
+
+    public void sendCRes(final Network network, final CRES cres, final String url) {
+        HttpsGatewayService httpsGatewayService = getHttpsGatewayService(network);
+        if (httpsGatewayService
+                .getServiceConfig()
+                .isMock()) { // todo dynemic injections on mock bean
+            dsGatewayServiceMock.sendCRes(network, cres, url);
+            return;
+        }
+        Map<String, String> headerMap = new HashMap<>();
+        Map<String, Object> queryParamMap = new HashMap<>();
+        headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAll(headerMap);
+        HttpEntity<String> entity = new HttpEntity<>(cres.toString(), headers);
+        ResponseEntity<String> responseEntity =
+                httpsGatewayService
+                        .getRestTemplate()
+                        .exchange(url, HttpMethod.POST, entity, String.class, queryParamMap);
+        if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
+            log.info("Gateway response received {}", responseEntity.getBody());
+        } else {
+            log.error(
+                    "Gateway Error received with status code: {}", responseEntity.getStatusCode());
         }
     }
 
