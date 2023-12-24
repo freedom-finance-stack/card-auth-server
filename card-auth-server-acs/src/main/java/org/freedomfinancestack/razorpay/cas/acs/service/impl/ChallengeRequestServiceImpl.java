@@ -285,6 +285,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (!ex.getThreeDSecureErrorCode()
                     .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT)) {
                 challengeFlowDto.setSendRreq(true);
+            } else {
+                challengeFlowDto.setCres(cResMapper.toCres(transaction));
             }
             updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
