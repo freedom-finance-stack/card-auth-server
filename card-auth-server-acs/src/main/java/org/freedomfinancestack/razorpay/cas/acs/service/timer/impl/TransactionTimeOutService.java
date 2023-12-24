@@ -15,7 +15,6 @@ import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
-import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -129,10 +128,14 @@ public class TransactionTimeOutService {
                             .build();
             log.info("CRESTEST_1: {}", cres);
             resultRequestService.handleRreq(transaction);
-            dsGatewayService.sendCRes(
-                    Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),
-                    cres,
-                    transaction.getTransactionReferenceDetail().getNotificationUrl());
+            sendNotificationUrl(
+                    transaction.getTransactionReferenceDetail().getNotificationUrl(),
+                    Util.encodeBase64Url(cres));
+            //            dsGatewayService.sendCRes(
+            //
+            // Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),
+            //                    cres,
+            //                    transaction.getTransactionReferenceDetail().getNotificationUrl());
         } catch (Exception ex) {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
         } finally {
