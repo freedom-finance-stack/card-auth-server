@@ -8,7 +8,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSExcepti
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -77,14 +76,7 @@ public class ChallengeRequestController {
         if (challengeFlowDto.isSendEmptyResponse()) {
             return "threeDSecureEmptyResponse";
         }
-        if (!Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())
-                || (challengeFlowDto.getErrorResponse() != null
-                        && challengeFlowDto
-                                .getErrorResponse()
-                                .getErrorCode()
-                                .equals(
-                                        ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT
-                                                .getErrorCode()))) {
+        if (!Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
             return addEncryptedResponseInModel(model, challengeFlowDto);
         }
         return addCResInDisplayModel(model, challengeFlowDto);
@@ -176,14 +168,7 @@ public class ChallengeRequestController {
         if (challengeFlowDto.isSendEmptyResponse()) {
             return "threeDSecureEmptyResponse";
         }
-        if (!Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())
-                || (challengeFlowDto.getErrorResponse() != null
-                        && challengeFlowDto
-                                .getErrorResponse()
-                                .getErrorCode()
-                                .equals(
-                                        ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT
-                                                .getErrorCode()))) {
+        if (!Util.isNullorBlank(challengeFlowDto.getEncryptedResponse())) {
             return addEncryptedResponseInModel(model, challengeFlowDto);
         }
         return addCResInDisplayModel(model, challengeFlowDto);

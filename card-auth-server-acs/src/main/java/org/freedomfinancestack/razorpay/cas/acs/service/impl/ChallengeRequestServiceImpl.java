@@ -168,7 +168,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             transactionMessageLogService.createAndSave(creq, creq.getAcsTransID());
 
             // TC_ACS_10284 special case
-            if (!Util.isNullorBlank(transaction.getTransactionSdkDetail().getAcsCounterAtoS())
+            if (flowType.equals(DeviceChannel.APP)
+                    && !Util.isNullorBlank(
+                            transaction.getTransactionSdkDetail().getAcsCounterAtoS())
                     && !transaction
                             .getTransactionSdkDetail()
                             .getAcsCounterAtoS()
