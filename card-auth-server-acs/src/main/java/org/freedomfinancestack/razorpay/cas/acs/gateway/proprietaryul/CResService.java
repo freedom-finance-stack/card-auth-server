@@ -3,7 +3,6 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.hc.core5.http.ContentType;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
@@ -65,11 +64,13 @@ public class CResService extends HttpsGatewayService {
                         .build();
         try {
             log.info("Sending CRes: " + Util.toJson(cres));
+            log.info("Base64Url Encoded CRes: " + Util.encodeBase64Url(cres));
             Map<String, String> headerMap = new HashMap<>();
             Map<String, Object> queryParamMap = new HashMap<>();
-            headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
-            String response =
-                    sendRequest(Util.toJson(cres), HttpMethod.POST, headerMap, queryParamMap);
+            headerMap.put(
+                    HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
+            queryParamMap.put("cres", Util.encodeBase64Url(cres));
+            String response = sendRequest(null, HttpMethod.POST, headerMap, queryParamMap);
             log.info("CRes Received Successfully: " + Util.toJson(response));
 
         } catch (Exception exception) {
