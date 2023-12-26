@@ -123,7 +123,8 @@ public class TransactionTimeOutService {
                             .equals(
                                     ChallengeCancelIndicator.TRANSACTION_TIMED_OUT
                                             .getIndicator())) {
-                sendNotificationUrl(transaction);
+                //                sendNotificationUrl(transaction);
+                cResService.sendCRes(transaction);
             }
             resultRequestService.handleRreq(transaction);
 

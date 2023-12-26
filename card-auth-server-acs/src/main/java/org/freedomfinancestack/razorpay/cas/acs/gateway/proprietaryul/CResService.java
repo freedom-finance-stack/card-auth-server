@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,8 +71,12 @@ public class CResService extends HttpsGatewayService {
             Map<String, Object> queryParamMap = new HashMap<>();
             headerMap.put(
                     HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
-            queryParamMap.put("cres", Util.encodeBase64Url(cres));
-            String response = sendRequest(null, HttpMethod.POST, headerMap, queryParamMap);
+            //            queryParamMap.put("cres", Util.encodeBase64Url(cres));
+            String requestBody =
+                    URLEncoder.encode("cres", StandardCharsets.UTF_8)
+                            + "="
+                            + URLEncoder.encode(Util.encodeBase64Url(cres), StandardCharsets.UTF_8);
+            String response = sendRequest(requestBody, HttpMethod.POST, headerMap, queryParamMap);
             log.info("CRes Received Successfully: " + Util.toJson(response));
 
         } catch (Exception exception) {
