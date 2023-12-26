@@ -55,7 +55,11 @@ public class BrowserChallengeRequestParser implements ChallengeRequestParser {
             ChallengeFlowDto challengeFlowDto, Transaction transaction) {
         if (challengeFlowDto.isSendEmptyResponse()) {
             return null;
-        } else if (challengeFlowDto.getErrorResponse() != null) {
+        } else if (challengeFlowDto.getErrorResponse() != null
+                && !challengeFlowDto
+                        .getErrorResponse()
+                        .getErrorCode()
+                        .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT.getErrorCode())) {
             return Util.encodeBase64Url(challengeFlowDto.getErrorResponse());
         }
         return Util.encodeBase64Url(challengeFlowDto.getCres());

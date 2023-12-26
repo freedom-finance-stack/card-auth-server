@@ -183,6 +183,6 @@ public class TransactionTimeOutService {
 
         sendNotificationUrl(
                 "https://simulator-3ds.selftestplatform.com/notification/v2.2.0/3dsServer/4501/",
-                Util.toJson(cres));
+                Util.encodeBase64Url(cres));
     }
 }
