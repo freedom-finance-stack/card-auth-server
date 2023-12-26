@@ -7,6 +7,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.parser.ChallengeRequestP
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
+import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
@@ -56,10 +57,16 @@ public class BrowserChallengeRequestParser implements ChallengeRequestParser {
         if (challengeFlowDto.isSendEmptyResponse()) {
             return null;
         } else if (challengeFlowDto.getErrorResponse() != null
-                && !challengeFlowDto
-                        .getErrorResponse()
-                        .getErrorCode()
-                        .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT.getErrorCode())) {
+                && (!challengeFlowDto
+                                .getErrorResponse()
+                                .getErrorCode()
+                                .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT.getErrorCode())
+                        || transaction
+                                .getChallengeCancelInd()
+                                .equals(
+                                        ChallengeCancelIndicator
+                                                .TRANSACTION_TIMED_OUT_AT_ACS_FIRST_CREQ_NOT_RECEIVED_BY_ACS
+                                                .getIndicator()))) {
             return Util.encodeBase64Url(challengeFlowDto.getErrorResponse());
         }
         return Util.encodeBase64Url(challengeFlowDto.getCres());
