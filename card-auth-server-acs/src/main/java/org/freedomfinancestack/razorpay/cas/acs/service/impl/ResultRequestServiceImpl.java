@@ -78,7 +78,9 @@ public class ResultRequestServiceImpl implements ResultRequestService {
         } catch (ACSValidationException e) {
             transaction.setTransactionStatus(e.getInternalErrorCode().getTransactionStatus());
             transaction.setErrorCode(InternalErrorCode.INVALID_RRES.getCode());
-            if (rres != null && rres.getMessageType().equals(MessageType.Erro.toString())) {
+            if (rres != null
+                    && rres.getMessageType() != null
+                    && rres.getMessageType().equals(MessageType.Erro.toString())) {
                 throw new ACSValidationException(ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE);
             }
             sendDsErrorResponse(transaction, e.getThreeDSecureErrorCode(), e.getMessage());
