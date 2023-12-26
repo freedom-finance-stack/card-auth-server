@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
@@ -13,18 +14,17 @@ import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -113,7 +113,7 @@ public class TransactionTimeOutService {
         transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
-            cResService.sendCRes(transaction);
+            sendNotificationUrl(transaction);
             resultRequestService.handleRreq(transaction);
 
         } catch (Exception ex) {
@@ -123,17 +123,41 @@ public class TransactionTimeOutService {
         }
     }
 
-    private static void sendNotificationUrl(String notificationUrl, String cresStr) {
-        log.info("------------ CRESSTRING ------------------: {}", cresStr);
+    private static void sendNotificationUrl(Transaction transaction) {
+        String notificationUrl = transaction.getTransactionReferenceDetail().getNotificationUrl();
+        CRES cres =
+                CRES.builder()
+                        .threeDSServerTransID(
+                                transaction
+                                        .getTransactionReferenceDetail()
+                                        .getThreedsServerTransactionId())
+                        .acsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                        .acsTransID(transaction.getId())
+                        .challengeCompletionInd(InternalConstants.NO)
+                        .messageType(MessageType.CRes.toString())
+                        .messageVersion(transaction.getMessageVersion())
+                        .transStatus(transaction.getTransactionStatus().getStatus())
+                        .build();
+
+        log.info("------------ CRESSTRING ------------------: {}", Util.toJson(cres));
+        log.info(
+                "------------ ENCODEDCRESSTRING ------------------: {}",
+                Util.encodeBase64Url(cres));
         log.info("------------ NOTIFICATIONURL ------------------: {}", notificationUrl);
         WebClient webClient = WebClient.builder().build();
 
         ClientResponse response =
                 webClient
                         .post()
-                        .uri(notificationUrl)
-                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(cresStr))
+                        .uri(
+                                uriBuilder ->
+                                        uriBuilder
+                                                .path(notificationUrl)
+                                                .queryParam("cres", Util.encodeBase64Url(cres))
+                                                .build())
+                        .header(
+                                HttpHeaders.CONTENT_TYPE,
+                                "application/x-www-form-urlencoded; charset=UTF-8")
                         .exchange()
                         .block();
 
@@ -148,21 +172,5 @@ public class TransactionTimeOutService {
                     response.bodyToMono(String.class).block(),
                     response.statusCode().value());
         }
-    }
-
-    public static void main(String[] args) {
-        CRES cres =
-                CRES.builder()
-                        .acsTransID("acsTransID")
-                        .transStatus("transStatus")
-                        .messageVersion("2.0.0")
-                        .messageType("CRes")
-                        .threeDSServerTransID("threeDSServerTransID")
-                        .acsCounterAtoS("000")
-                        .build();
-
-        sendNotificationUrl(
-                "https://simulator-3ds.selftestplatform.com/notification/v2.2.0/3dsServer/4501/",
-                Util.toJson(cres));
     }
 }
