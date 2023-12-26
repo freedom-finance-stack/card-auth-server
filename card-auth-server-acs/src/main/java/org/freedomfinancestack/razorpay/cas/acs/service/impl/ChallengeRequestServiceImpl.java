@@ -289,6 +289,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 challengeFlowDto.setSendRreq(true);
             } else {
                 challengeFlowDto.setCres(cResMapper.toCres(transaction));
+                challengeFlowDto.getCres().setChallengeCompletionInd(InternalConstants.NO);
+                challengeFlowDto
+                        .getCres()
+                        .setAcsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER);
             }
             updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
