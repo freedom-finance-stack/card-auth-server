@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
@@ -13,6 +14,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
+import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -113,17 +115,31 @@ public class TransactionTimeOutService {
         transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
+
+            CRES cres =
+                    CRES.builder()
+                            .threeDSServerTransID(
+                                    transaction
+                                            .getTransactionReferenceDetail()
+                                            .getThreedsServerTransactionId())
+                            .acsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                            .acsTransID(transaction.getId())
+                            .challengeCompletionInd(InternalConstants.NO)
+                            .messageType(MessageType.CRes.toString())
+                            .messageVersion(transaction.getMessageVersion())
+                            .transStatus(transaction.getTransactionStatus().getStatus())
+                            .build();
+            sendNotificationUrl(
+                    transaction.getTransactionReferenceDetail().getNotificationUrl(),
+                    Util.toJson(cres));
             resultRequestService.handleRreq(transaction);
-            //            sendNotificationUrl(
-            //                    transaction.getTransactionReferenceDetail().getNotificationUrl(),
-            //                    Util.encodeBase64Url(cres));
-            //            dsGatewayService.sendCRes(
-            //
+            //            cResService.sendCRes(transaction);
+            //                        dsGatewayService.sendCRes(
+
             // Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),
             //                    cres,
             //                    transaction.getTransactionReferenceDetail().getNotificationUrl());
 
-            cResService.sendCRes(transaction);
         } catch (Exception ex) {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
         } finally {
@@ -132,8 +148,8 @@ public class TransactionTimeOutService {
     }
 
     private static void sendNotificationUrl(String notificationUrl, String cresStr) {
-        //        log.info("------------ CRESSTRING ------------------: ", cresStr);
-        //        log.info("------------ NOTIFICATIONURL ------------------: ", notificationUrl);
+        log.info("------------ CRESSTRING ------------------: ", cresStr);
+        log.info("------------ NOTIFICATIONURL ------------------: ", notificationUrl);
         WebClient webClient = WebClient.builder().build();
 
         ClientResponse response =
@@ -171,6 +187,6 @@ public class TransactionTimeOutService {
 
         sendNotificationUrl(
                 "https://simulator-3ds.selftestplatform.com/notification/v2.2.0/3dsServer/4501/",
-                Util.encodeBase64Url(cres));
+                Util.toJson(cres));
     }
 }
