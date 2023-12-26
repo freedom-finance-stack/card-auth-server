@@ -2,18 +2,17 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
-import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.CResService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -38,6 +37,7 @@ public class TransactionTimeOutService {
     private final ECommIndicatorService eCommIndicatorService;
     private final ResultRequestService resultRequestService;
     private final DsGatewayService dsGatewayService;
+    private final CResService cResService;
 
     void performTimeOutWaitingForCreq(String transactionId) {
         try {
@@ -113,29 +113,17 @@ public class TransactionTimeOutService {
         transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
-            CRES cres =
-                    CRES.builder()
-                            .threeDSServerTransID(
-                                    transaction
-                                            .getTransactionReferenceDetail()
-                                            .getThreedsServerTransactionId())
-                            .acsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER)
-                            .acsTransID(transaction.getId())
-                            .challengeCompletionInd(InternalConstants.NO)
-                            .messageType(MessageType.CRes.toString())
-                            .messageVersion(transaction.getMessageVersion())
-                            .transStatus(transaction.getTransactionStatus().getStatus())
-                            .build();
-            log.info("CRESTEST_1: {}", cres);
             resultRequestService.handleRreq(transaction);
-            sendNotificationUrl(
-                    transaction.getTransactionReferenceDetail().getNotificationUrl(),
-                    Util.encodeBase64Url(cres));
+            //            sendNotificationUrl(
+            //                    transaction.getTransactionReferenceDetail().getNotificationUrl(),
+            //                    Util.encodeBase64Url(cres));
             //            dsGatewayService.sendCRes(
             //
             // Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode()),
             //                    cres,
             //                    transaction.getTransactionReferenceDetail().getNotificationUrl());
+
+            cResService.sendCRes(transaction);
         } catch (Exception ex) {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
         } finally {
