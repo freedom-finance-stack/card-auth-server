@@ -1,5 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
@@ -146,18 +149,19 @@ public class TransactionTimeOutService {
         log.info("------------ NOTIFICATIONURL ------------------: {}", notificationUrl);
         WebClient webClient = WebClient.builder().build();
 
+        String requestBody =
+                URLEncoder.encode("cres", StandardCharsets.UTF_8)
+                        + "="
+                        + URLEncoder.encode(Util.encodeBase64Url(cres), StandardCharsets.UTF_8);
+        log.info("------------ REQUESTBODY ------------------: {}", requestBody);
         ClientResponse response =
                 webClient
                         .post()
-                        .uri(
-                                uriBuilder ->
-                                        uriBuilder
-                                                .path(notificationUrl)
-                                                .queryParam("cres", Util.encodeBase64Url(cres))
-                                                .build())
+                        .uri(notificationUrl)
                         .header(
                                 HttpHeaders.CONTENT_TYPE,
                                 "application/x-www-form-urlencoded; charset=UTF-8")
+                        .bodyValue(requestBody)
                         .exchange()
                         .block();
 
