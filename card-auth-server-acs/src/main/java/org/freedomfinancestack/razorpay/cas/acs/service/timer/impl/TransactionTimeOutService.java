@@ -117,7 +117,7 @@ public class TransactionTimeOutService {
         transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
-            if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.toString())
+            if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
                     && challengeCancelIndicator
                             .getIndicator()
                             .equals(
