@@ -17,6 +17,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
@@ -116,7 +117,9 @@ public class TransactionTimeOutService {
         transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
-            sendNotificationUrl(transaction);
+            if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.toString())) {
+                sendNotificationUrl(transaction);
+            }
             resultRequestService.handleRreq(transaction);
 
         } catch (Exception ex) {
