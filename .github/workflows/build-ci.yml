@@ -44,6 +44,13 @@ jobs:
       - name: Clean, Compile, Test and  Package
         run: mvn -B clean install
 
+      - name: analyze
+        env:
+          GITHUB_TOKEN:  ${{ github.token }}
+          SONAR_TOKEN: ${{ secrets.CAS_SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.CAS_SONAR_HOST_URL }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=card-auth-server
+
       - name: Update Build Status Succeeded
         if: success()
         run: |

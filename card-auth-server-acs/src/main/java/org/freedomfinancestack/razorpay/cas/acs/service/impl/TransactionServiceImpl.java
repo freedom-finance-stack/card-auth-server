@@ -57,6 +57,10 @@ public class TransactionServiceImpl implements TransactionService {
     private final ECommIndicatorService eCommIndicatorService;
 
     public Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException {
+        if (Util.isNullorBlank(transaction)) {
+            throw new ACSDataAccessException(
+                    TRANSACTION_SAVE_EXCEPTION, "transaction can't be null");
+        }
         try {
             transactionRepository.save(transaction);
             return findById(transaction.getId());

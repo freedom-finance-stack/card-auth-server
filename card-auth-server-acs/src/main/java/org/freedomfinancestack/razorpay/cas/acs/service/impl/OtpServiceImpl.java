@@ -10,6 +10,7 @@ import org.freedomfinancestack.razorpay.cas.dao.model.OtpTransactionDetail;
 import org.freedomfinancestack.razorpay.cas.dao.repository.OtpTransactionDetailRepository;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,8 @@ public class OtpServiceImpl implements OtpService {
     private static final Integer EXPIRE_MIN = 10; // todo fetch from config
 
     @Override
-    public OtpTransactionDetail generateOTP(String transactionId, OtpConfig otpConfig) {
+    public OtpTransactionDetail generateOTP(
+            @NotNull final String transactionId, @NotNull final OtpConfig otpConfig) {
         OtpTransactionDetail otpTransactionDetail =
                 otpTransactionDetailRepository
                         .findTopByTransactionIdAndVerificationStatusOrderByCreatedAtDesc(
@@ -75,7 +77,7 @@ public class OtpServiceImpl implements OtpService {
         return false;
     }
 
-    public boolean isExpired(LocalDateTime createdAt) {
+    public boolean isExpired(@NotNull final LocalDateTime createdAt) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         long minutes = createdAt.until(currentDateTime, java.time.temporal.ChronoUnit.MINUTES);
         return minutes > EXPIRE_MIN;

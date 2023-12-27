@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.acs.service;
+package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.util.stream.Stream;
 
@@ -7,7 +7,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessExcep
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
-import org.freedomfinancestack.razorpay.cas.acs.service.impl.CardRangeServiceImpl;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardRangeStatus;
 import org.freedomfinancestack.razorpay.cas.dao.enums.InstitutionStatus;
@@ -30,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CardRangeServiceTest {
+public class CardRangeServiceImplTest {
     @Mock CardRangeRepository cardRangeRepository;
     @InjectMocks CardRangeServiceImpl rangeService;
     static String PanNumber = "4001400112341234";
@@ -99,6 +98,19 @@ public class CardRangeServiceTest {
         assertEquals(internalErrorCode, exception.getErrorCode());
     }
 
+    @Test
+    public void validateCardRangeTestNegative() {
+        TransactionDataNotValidException exception =
+                assertThrows(
+                        TransactionDataNotValidException.class,
+                        () ->
+                                rangeService.validateRange(
+                                        getCardRange(
+                                                CardRangeStatus.ACTIVE,
+                                                InstitutionStatus.INACTIVE)));
+        assertEquals(InternalErrorCode.INSTITUTION_INACTIVE, exception.getInternalErrorCode());
+    }
+
     @ParameterizedTest
     @MethodSource("provideCardRangeWithEmptyFields")
     public void validateCardRangeTestWithEmptyFields(
@@ -118,11 +130,9 @@ public class CardRangeServiceTest {
 
     public static Stream<Arguments> provideCardRangeWithEmptyFields() {
         return Stream.of(
+                Arguments.of(getCardRangeWithEmpty(true, false), InternalErrorCode.INVALID_NETWORK),
                 Arguments.of(
-                        getCardRangeWithEmpty(true, true, false),
-                        InternalErrorCode.INVALID_NETWORK),
-                Arguments.of(
-                        getCardRangeWithEmpty(true, false, true),
+                        getCardRangeWithEmpty(false, true),
                         InternalErrorCode.INSTITUTION_NOT_FOUND));
     }
 
@@ -137,8 +147,7 @@ public class CardRangeServiceTest {
         return cardRange;
     }
 
-    private static CardRange getCardRangeWithEmpty(
-            Boolean hasCardRangeGroup, Boolean hasInstitution, boolean hasNetwork) {
+    private static CardRange getCardRangeWithEmpty(Boolean hasInstitution, boolean hasNetwork) {
         CardRange cardRange = new CardRange();
         Institution institution = new Institution();
         cardRange.setStatus(CardRangeStatus.ACTIVE);
