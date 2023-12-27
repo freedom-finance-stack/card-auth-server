@@ -239,15 +239,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 if (creq.getResendChallenge() != null
                                 && InternalConstants.YES.equals(creq.getResendChallenge())
                         || (flowType.equals(DeviceChannel.APP)
-                                && creq.getMessageVersion()
-                                        .equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
-                                && !creq.getSdkCounterStoA()
-                                        .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
-                                && (creq.getResendChallenge() == null
-                                        || InternalConstants.NO.equals(creq.getResendChallenge()))
-                                && creq.getChallengeDataEntry() == null
-                                && creq.getChallengeHTMLDataEntry() == null
-                                && creq.getOobContinue() == null)) {
+                                && Util.isMessageVersion210ResendCondition(creq))) {
                     handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
                 } else if (transaction.getPhase().equals(Phase.ARES)) {
                     transactionTimeoutServiceLocator

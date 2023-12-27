@@ -78,37 +78,6 @@ public class DsGatewayServiceImpl implements DsGatewayService {
         }
     }
 
-    public void sendCRes(final Network network, final CRES cres, final String url) {
-        HttpsGatewayService httpsGatewayService = getHttpsGatewayService(network);
-        if (httpsGatewayService
-                .getServiceConfig()
-                .isMock()) { // todo dynemic injections on mock bean
-            dsGatewayServiceMock.sendCRes(network, cres, url);
-            return;
-        }
-        log.info("CRESTEST_2: {}", cres);
-        Map<String, String> headerMap = new HashMap<>();
-        Map<String, Object> queryParamMap = new HashMap<>();
-        headerMap.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAll(headerMap);
-        HttpEntity<String> entity = new HttpEntity<>(Util.encodeBase64Url(cres), headers);
-        log.info("CRESTEST_3: {}", entity);
-        ResponseEntity<String> responseEntity =
-                httpsGatewayService
-                        .getRestTemplate()
-                        .exchange(url, HttpMethod.POST, entity, String.class, queryParamMap);
-        log.info("CRESTEST_4: {}", responseEntity);
-        if (responseEntity.getStatusCode().equals(HttpStatus.OK)) {
-            log.info(
-                    "Server response received {}, with http status code: {}",
-                    responseEntity.getBody(),
-                    responseEntity.getStatusCode());
-        } else {
-            log.error("Server Error received with status code: {}", responseEntity.getStatusCode());
-        }
-    }
-
     private HttpsGatewayService getHttpsGatewayService(Network network) {
         switch (network) {
             case VISA:

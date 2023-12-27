@@ -141,7 +141,7 @@ public class FeatureServiceImpl implements FeatureService {
             Map<FeatureEntityType, String> entityIdsByType)
             throws ACSDataAccessException {
         switch (authType) {
-            case OTP:
+            case OTP -> {
                 OtpConfig otpConfig =
                         (OtpConfig)
                                 featureRepository.findFeatureByIds(
@@ -151,8 +151,8 @@ public class FeatureServiceImpl implements FeatureService {
                             InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "OTP Config not found");
                 }
                 authConfigDto.setOtpConfig(otpConfig);
-                break;
-            case PASSWORD:
+            }
+            case PASSWORD -> {
                 PasswordConfig passwordConfig =
                         (PasswordConfig)
                                 featureRepository.findFeatureByIds(
@@ -162,13 +162,10 @@ public class FeatureServiceImpl implements FeatureService {
                             InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Password Config not found");
                 }
                 authConfigDto.setPasswordConfig(passwordConfig);
-                break;
-            case Decoupled:
-                log.info("CONFIG FOR DECOUPLED IS YET TO ADD");
-                break;
-            default:
-                throw new ACSDataAccessException(
-                        InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
+            }
+            case Decoupled -> log.info("CONFIG FOR DECOUPLED IS YET TO ADD");
+            default -> throw new ACSDataAccessException(
+                    InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
         }
     }
 }

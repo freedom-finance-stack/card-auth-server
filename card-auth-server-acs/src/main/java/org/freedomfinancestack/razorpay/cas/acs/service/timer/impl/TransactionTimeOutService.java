@@ -1,11 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
-import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
@@ -15,20 +11,13 @@ import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import jakarta.ws.rs.core.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -123,7 +112,6 @@ public class TransactionTimeOutService {
                             .equals(
                                     ChallengeCancelIndicator.TRANSACTION_TIMED_OUT
                                             .getIndicator())) {
-                //                sendNotificationUrl(transaction);
                 cResService.sendCRes(transaction);
             }
             resultRequestService.handleRreq(transaction);
@@ -132,58 +120,6 @@ public class TransactionTimeOutService {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
         } finally {
             transactionService.saveOrUpdate(transaction);
-        }
-    }
-
-    private static void sendNotificationUrl(Transaction transaction) {
-        String notificationUrl = transaction.getTransactionReferenceDetail().getNotificationUrl();
-        CRES cres =
-                CRES.builder()
-                        .threeDSServerTransID(
-                                transaction
-                                        .getTransactionReferenceDetail()
-                                        .getThreedsServerTransactionId())
-                        .acsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER)
-                        .acsTransID(transaction.getId())
-                        .challengeCompletionInd(InternalConstants.NO)
-                        .messageType(MessageType.CRes.toString())
-                        .messageVersion(transaction.getMessageVersion())
-                        .transStatus(transaction.getTransactionStatus().getStatus())
-                        .build();
-
-        log.info("------------ CRESSTRING ------------------: {}", Util.toJson(cres));
-        log.info(
-                "------------ ENCODEDCRESSTRING ------------------: {}",
-                Util.encodeBase64Url(cres));
-        log.info("------------ NOTIFICATIONURL ------------------: {}", notificationUrl);
-        WebClient webClient = WebClient.builder().build();
-
-        String requestBody =
-                URLEncoder.encode("cres", StandardCharsets.UTF_8)
-                        + "="
-                        + URLEncoder.encode(Util.encodeBase64Url(cres), StandardCharsets.UTF_8);
-        log.info("------------ REQUESTBODY ------------------: {}", requestBody);
-        ClientResponse response =
-                webClient
-                        .post()
-                        .uri(notificationUrl)
-                        .header(
-                                HttpHeaders.CONTENT_TYPE,
-                                "application/x-www-form-urlencoded; charset=UTF-8")
-                        .bodyValue(requestBody)
-                        .exchange()
-                        .block();
-
-        if (response != null && !response.statusCode().equals(HttpStatusCode.valueOf(200))) {
-            log.info(
-                    "Error from Server: {}, with HTTP Status code: {}",
-                    response.bodyToMono(String.class).block(),
-                    HttpStatusCode.valueOf(200));
-        } else {
-            log.info(
-                    "response from Server: {}, with HTTP Status code: {}",
-                    response.bodyToMono(String.class).block(),
-                    response.statusCode().value());
         }
     }
 }

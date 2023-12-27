@@ -10,6 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
+import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -339,5 +341,16 @@ public class Util {
         Matcher base64urlMatcher = base64urlPattern.matcher(encodedString);
 
         return base64urlMatcher.matches();
+    }
+
+    public static boolean isMessageVersion210ResendCondition(CREQ creq) {
+        return (creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
+                && !creq.getSdkCounterStoA().equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                && (creq.getResendChallenge() == null
+                        || InternalConstants.NO.equals(creq.getResendChallenge()))
+                && creq.getChallengeDataEntry() == null
+                && creq.getChallengeHTMLDataEntry() == null
+                && creq.getOobContinue() == null
+                && creq.getChallengeCancel() == null);
     }
 }

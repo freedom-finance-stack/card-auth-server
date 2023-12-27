@@ -8,7 +8,6 @@ import org.freedomfinancestack.extensions.validation.exception.ValidationErrorCo
 import org.freedomfinancestack.extensions.validation.exception.ValidationException;
 import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -260,14 +259,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
             } else {
-                if (incomingCreq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
-                        && (incomingCreq.getResendChallenge() == null
-                                || NO.equals(incomingCreq.getResendChallenge()))
-                        && incomingCreq.getChallengeCancel() == null
-                        && incomingCreq.getChallengeDataEntry() == null
-                        && incomingCreq.getChallengeHTMLDataEntry() == null
-                        && incomingCreq.getOobContinue() == null
-                        && incomingCreq.getChallengeNoEntry() == null
+                if (Util.isMessageVersion210ResendCondition(incomingCreq)
                         && !acsInterface.equals(DeviceInterface.HTML.getValue())) {
                     return;
                 }

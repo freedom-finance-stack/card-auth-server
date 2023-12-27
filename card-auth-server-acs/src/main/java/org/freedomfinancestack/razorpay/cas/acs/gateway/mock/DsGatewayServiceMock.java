@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.acs.gateway.mock;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
-import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.RREQ;
 import org.freedomfinancestack.razorpay.cas.contract.RRES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSErrorResponse;
@@ -33,10 +32,5 @@ public class DsGatewayServiceMock implements DsGatewayService {
     public void sendError(Network network, ThreeDSErrorResponse errorResponse)
             throws ACSValidationException {
         log.info("sendError of mocked DS called");
-    }
-
-    @Override
-    public void sendCRes(Network network, CRES cres, String url) {
-        log.info("sendRReq of mocked DS called");
     }
 }

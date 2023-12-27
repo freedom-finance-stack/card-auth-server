@@ -40,8 +40,6 @@ public class CResService extends HttpsGatewayService {
         this.serviceConfig =
                 new GatewayConfig.ServiceConfig(
                         gatewayConfig.getServices().get(ClientType.UL_TEST_PORTAL));
-        //        this.serviceConfig.setUrl(
-        //                this.serviceConfig.getUrl().replace(PLRQ_URL_PARAM, PORQ_URL_PARAM));
     }
 
     public void sendCRes(Transaction transaction) throws ACSValidationException {
@@ -71,7 +69,6 @@ public class CResService extends HttpsGatewayService {
             Map<String, Object> queryParamMap = new HashMap<>();
             headerMap.put(
                     HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
-            //            queryParamMap.put("cres", Util.encodeBase64Url(cres));
             String requestBody =
                     URLEncoder.encode("cres", StandardCharsets.UTF_8)
                             + "="
