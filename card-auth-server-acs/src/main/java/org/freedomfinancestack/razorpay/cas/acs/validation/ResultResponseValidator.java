@@ -31,7 +31,7 @@ public class ResultResponseValidator {
      *
      * @param incomingRres The result response (RRES) to be validated.
      * @param rreq the Result request (RREQ) used to get RRES_
-     * @throws ValidationException If the request fails validation.
+     * @throws ACSValidationException If the request fails validation.
      */
     public void validateRequest(RRES incomingRres, RREQ rreq) throws ACSValidationException {
         if (incomingRres == null || rreq == null) {
@@ -47,7 +47,6 @@ public class ResultResponseValidator {
     }
 
     private void validateResultRequest(RRES incomingRres, RREQ rreq) throws ValidationException {
-
         validateMandatoryFields(incomingRres, rreq);
         validateOptionalFields(incomingRres, rreq);
     }

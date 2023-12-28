@@ -9,7 +9,7 @@ import org.freedomfinancestack.razorpay.cas.contract.*;
 import static org.freedomfinancestack.razorpay.cas.acs.data.TestUtil.replaceData;
 
 public class RREQTestData {
-    String validRReq =
+    static String validRReq =
             "{\n"
                 + "        \"threeDSServerTransID\": \"b3c9516d-47ab-41b5-8e6e-401d3cae691a\",\n"
                 + "        \"acsTransID\": \"d8ac9cd2-e72f-4918-93d0-24a684826394\",\n"
@@ -25,7 +25,7 @@ public class RREQTestData {
                 + "        \"eci\": \"07\",\n"
                 + "        \"transStatusReason\": \"07\"\n"
                 + "      }";
-    String validRRes =
+    static String validRRes =
             "{\n"
                 + "        \"threeDSServerTransID\": \"b3c9516d-47ab-41b5-8e6e-401d3cae691a\",\n"
                 + "        \"acsTransID\": \"d8ac9cd2-e72f-4918-93d0-24a684826394\",\n"
@@ -35,24 +35,22 @@ public class RREQTestData {
                 + "        \"resultsStatus\": \"01\"\n"
                 + "      }";
 
-    static Map<String, Object> RREQ_TEST_DATA = new HashMap<>();
-    static Map<String, Object> RRES_TEST_DATA = new HashMap<>();
 
-    public RREQ getValidRReq() {
+    public static RREQ getValidRReq() {
         return Util.fromJson(validRReq, RREQ.class);
     }
 
-    public RRES getValidRRes() {
+    public static RRES getValidRRes() {
         return Util.fromJson(validRRes, RRES.class);
     }
 
     // data = {"threeDSServerTransID" : "INVALID1_THREEDSSERVERTRANSID"} represent {fieldName :
     // MockData refer}
-    public RREQ getRReq(HashMap<String, String> data) {
-        return replaceData(getValidRReq(), data, RREQ_TEST_DATA);
+    public static RREQ getRReq(Map<String, Object> rreqTestData ) {
+        return replaceData(getValidRReq(), rreqTestData);
     }
 
-    public RRES getRRes(HashMap<String, String> data) {
-        return replaceData(getValidRRes(), data, RRES_TEST_DATA);
+    public static RRES getRRes(Map<String, Object> rresTestData) {
+        return replaceData(getValidRRes(), rresTestData);
     }
 }

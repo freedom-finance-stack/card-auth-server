@@ -101,8 +101,8 @@ public class TransactionTestData {
 
     public static TransactionPurchaseDetail createSampleTransactionPurchaseDetail() {
         return TransactionPurchaseDetail.builder()
-                .purchaseAmount("100.00")
-                .purchaseCurrency("USD")
+                .purchaseAmount("10000")
+                .purchaseCurrency("840")
                 .purchaseExponent((byte) 2)
                 .purchaseTimestamp(new Timestamp(System.currentTimeMillis()))
                 .payTokenInd(true)

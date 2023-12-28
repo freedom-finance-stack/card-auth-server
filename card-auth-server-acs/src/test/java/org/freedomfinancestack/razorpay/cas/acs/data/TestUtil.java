@@ -6,9 +6,9 @@ import java.util.Map;
 
 public class TestUtil {
     public static <T> T replaceData(
-            T currObject, HashMap<String, String> fieldsToReplace, Map<String, Object> mockData) {
-        for (String key : fieldsToReplace.keySet()) {
-            updateFields(currObject, key, mockData.get(fieldsToReplace.get(key)));
+            T currObject, Map<String, Object> mockData) {
+        for (String key : mockData.keySet()) {
+            updateFields(currObject, key, mockData.get(key));
         }
         return currObject;
     }
