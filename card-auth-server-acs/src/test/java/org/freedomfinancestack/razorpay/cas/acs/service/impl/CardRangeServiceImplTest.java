@@ -3,8 +3,8 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 import java.util.stream.Stream;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.contract.enums.TransactionStatusReason;
@@ -72,10 +72,10 @@ public class CardRangeServiceImplTest {
         assertEquals("Error while fetching card range details", exception.getMessage());
         assertEquals(
                 TransactionStatusReason.ACS_TECHNICAL_ISSUE,
-                exception.getErrorCode().getTransactionStatusReason());
+                exception.getInternalErrorCode().getTransactionStatusReason());
         assertEquals(
                 TransactionStatus.UNABLE_TO_AUTHENTICATE,
-                exception.getErrorCode().getTransactionStatus());
+                exception.getInternalErrorCode().getTransactionStatus());
     }
 
     @Test

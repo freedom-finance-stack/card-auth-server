@@ -79,23 +79,4 @@ class AuthenticationRequestControllerTest {
                                 .header(HttpHeaders.CONTENT_TYPE, "application/json"))
                 .andExpect(status().isOk());
     }
-
-    // todo below is valid case which is failing need to handle gracefully for
-    // ACSDataAccessException
-    //    @Test
-    //    void handleAuthenticationRequest_ACSDataAccessException() throws Exception {
-    //        // Arrange
-    //        AREQ sampleAREQ = createSampleAREQ();
-    //
-    //        when(authenticationRequestService.processAuthenticationRequest(any(AREQ.class)))
-    //                .thenThrow(new
-    // ACSDataAccessException(InternalErrorCode.INTERNAL_SERVER_ERROR));
-    //
-    //        // Act & Assert
-    //        mockMvc.perform(post("/v2/transaction/authentication")
-    //                        .content(objectMapper.writeValueAsString(sampleAREQ))
-    //                        .header(HttpHeaders.CONTENT_TYPE, "application/json"))
-    //                .andExpect(status().isOk());
-    //    }
-
 }

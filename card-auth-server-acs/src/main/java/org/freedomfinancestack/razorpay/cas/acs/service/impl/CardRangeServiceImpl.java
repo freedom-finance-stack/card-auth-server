@@ -2,8 +2,8 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.service.CardRangeService;
@@ -43,8 +43,7 @@ public class CardRangeServiceImpl implements CardRangeService {
      * @throws DataNotFoundException
      * @throws ACSDataAccessException
      */
-    public CardRange findByPan(String pan)
-            throws DataNotFoundException, ACSDataAccessException, CardDetailsNotFoundException {
+    public CardRange findByPan(String pan) throws DataNotFoundException, ACSDataAccessException {
         if (StringUtils.isBlank(pan)) {
             log.error("PAN is null or empty");
             throw new DataNotFoundException(
@@ -55,14 +54,14 @@ public class CardRangeServiceImpl implements CardRangeService {
         try {
             cardRange = cardRangeRepository.findByPan(Long.valueOf(pan));
         } catch (DataAccessException e) {
-            log.error(
-                    "Error while fetching card range for PAN: "
-                            + pan); // todo Noncompliance : Mask PAN
-            throw new ACSDataAccessException(InternalErrorCode.CARD_RANGE_FETCH_EXCEPTION, e);
+            log.error("Error while fetching card range for PAN");
+            throw new ACSDataAccessException(
+                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
+                    InternalErrorCode.CARD_RANGE_FETCH_EXCEPTION);
         }
 
         if (cardRange == null) {
-            log.error("Card range not found for PAN: " + pan); // todo Noncompliance : Mask PAN
+            log.error("Card range not found for PAN");
             throw new DataNotFoundException(
                     ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
                     InternalErrorCode.CARD_RANGE_NOT_FOUND);

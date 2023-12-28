@@ -4,7 +4,6 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
@@ -31,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MockCardDetailFetcherServiceImpl implements CardDetailFetcherService {
     public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
-            throws ACSDataAccessException {
+            throws CardDetailsNotFoundException {
         log.info("Fetching card details from Mock Implementation");
         CardDetailDto cardDto =
                 CardDetailDto.builder()
@@ -48,7 +47,8 @@ public class MockCardDetailFetcherServiceImpl implements CardDetailFetcherServic
     }
 
     @Override
-    public void blockCard(CardDetailsRequest cardDetailsRequest) throws ACSDataAccessException {
+    public void blockCard(CardDetailsRequest cardDetailsRequest)
+            throws CardDetailsNotFoundException {
         log.info("Blocked card Mocked");
     }
 

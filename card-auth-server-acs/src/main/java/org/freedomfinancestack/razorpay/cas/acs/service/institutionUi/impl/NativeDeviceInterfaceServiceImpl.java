@@ -8,7 +8,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.UiConfigException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
@@ -45,7 +45,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
             ChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto)
-            throws ACSDataAccessException {
+            throws UiConfigException {
 
         // TODO Need to update it according to the Message Category
 
@@ -58,7 +58,9 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
         } else {
             uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiTemplate());
             if (uiType == null) {
-                throw new ACSDataAccessException(InternalErrorCode.UNSUPPORTED_UI_TYPE);
+                throw new UiConfigException(
+                        InternalErrorCode.UNSUPPORTED_UI_TYPE,
+                        InternalErrorCode.UNSUPPORTED_UI_TYPE.getDefaultErrorMessage());
             }
         }
 
@@ -181,7 +183,7 @@ public class NativeDeviceInterfaceServiceImpl implements DeviceInterfaceService 
 
                 // This handles HTML_OTHER cases too
             default:
-                throw new ACSDataAccessException(
+                throw new UiConfigException(
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,
                         "UI Type Implementation not available with the given option " + uiType);
         }

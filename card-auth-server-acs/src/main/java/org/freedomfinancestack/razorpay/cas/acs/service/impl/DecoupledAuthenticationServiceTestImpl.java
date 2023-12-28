@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.DecoupledAuthenticationRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.DecoupledAuthenticationResponse;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.POrqService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.POrs;
@@ -32,7 +31,7 @@ public class DecoupledAuthenticationServiceTestImpl implements DecoupledAuthenti
     @Override
     public DecoupledAuthenticationResponse processAuthenticationRequest(
             Transaction transaction, DecoupledAuthenticationRequest decoupledAuthenticationRequest)
-            throws ThreeDSException, ACSDataAccessException {
+            throws ThreeDSException {
         POrs pores =
                 porqService.sendPOrq(
                         transaction.getId(),

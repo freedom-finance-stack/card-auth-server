@@ -10,8 +10,8 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.AResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
@@ -30,7 +30,6 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
-import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,12 +83,9 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
      *     details of the generated response.
      * @throws ThreeDSException If any ThreeDSException occurs during the processing of the AReq,
      *     indicating that an "Erro" message type should be sent in the response.
-     * @throws ACSDataAccessException If any ACSDataAccessException occurs during the processing of
-     *     the AReq, indicating that an "Erro" message type should be sent in the response.
      */
     @Override
-    public ARES processAuthenticationRequest(@NonNull AREQ areq)
-            throws ThreeDSException, ACSDataAccessException {
+    public ARES processAuthenticationRequest(@NonNull AREQ areq) throws ThreeDSException {
         Transaction transaction = new Transaction();
         ARES ares;
         CardRange cardRange = null;

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.AuthConfigException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -94,21 +94,21 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public AuthConfigDto getAuthenticationConfig(Transaction transaction)
-            throws ACSDataAccessException {
+            throws AuthConfigException {
         return getAuthenticationConfig(getEntityIdsByType(transaction));
     }
 
     // todo add cache
     @Override
     public AuthConfigDto getAuthenticationConfig(Map<FeatureEntityType, String> entityIdsByType)
-            throws ACSDataAccessException {
+            throws AuthConfigException {
         AuthConfigDto authConfigDto = new AuthConfigDto();
         ChallengeAuthTypeConfig challengeAuthTypeConfig =
                 (ChallengeAuthTypeConfig)
                         featureRepository.findFeatureByIds(
                                 FeatureName.CHALLENGE_AUTH_TYPE, entityIdsByType);
         if (challengeAuthTypeConfig == null) {
-            throw new ACSDataAccessException(
+            throw new AuthConfigException(
                     InternalErrorCode.AUTH_CONFIG_NOT_PRESENT,
                     "Challenge Auth Type Config not found");
         }
@@ -118,7 +118,7 @@ public class FeatureServiceImpl implements FeatureService {
                         featureRepository.findFeatureByIds(
                                 FeatureName.CHALLENGE_ATTEMPT, entityIdsByType);
         if (challengeAttemptConfig == null) {
-            throw new ACSDataAccessException(
+            throw new AuthConfigException(
                     InternalErrorCode.AUTH_CONFIG_NOT_PRESENT,
                     "Challenge attempt Config not found");
         }
@@ -143,7 +143,7 @@ public class FeatureServiceImpl implements FeatureService {
             AuthType authType,
             AuthConfigDto authConfigDto,
             Map<FeatureEntityType, String> entityIdsByType)
-            throws ACSDataAccessException {
+            throws AuthConfigException {
         switch (authType) {
             case OTP:
                 OtpConfig otpConfig =
@@ -151,7 +151,7 @@ public class FeatureServiceImpl implements FeatureService {
                                 featureRepository.findFeatureByIds(
                                         FeatureName.OTP, entityIdsByType);
                 if (otpConfig == null) {
-                    throw new ACSDataAccessException(
+                    throw new AuthConfigException(
                             InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "OTP Config not found");
                 }
                 authConfigDto.setOtpConfig(otpConfig);
@@ -162,7 +162,7 @@ public class FeatureServiceImpl implements FeatureService {
                                 featureRepository.findFeatureByIds(
                                         FeatureName.PASSWORD, entityIdsByType);
                 if (passwordConfig == null) {
-                    throw new ACSDataAccessException(
+                    throw new AuthConfigException(
                             InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Password Config not found");
                 }
                 authConfigDto.setPasswordConfig(passwordConfig);
@@ -171,7 +171,7 @@ public class FeatureServiceImpl implements FeatureService {
                 log.info("CONFIG FOR DECOUPLED IS YET TO ADD");
                 break;
             default:
-                throw new ACSDataAccessException(
+                throw new AuthConfigException(
                         InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
         }
     }

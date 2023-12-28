@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -30,7 +29,7 @@ public interface ChallengeRequestService {
      */
     ChallengeFlowDto processChallengeRequest(
             DeviceChannel flowType, String strCReq, String threeDSSessionData)
-            throws ThreeDSException, ACSDataAccessException;
+            throws ThreeDSException;
 
     static boolean isChallengeCompleted(Transaction transaction) {
         return transaction != null

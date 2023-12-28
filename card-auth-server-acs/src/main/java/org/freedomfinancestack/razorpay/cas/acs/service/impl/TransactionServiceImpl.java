@@ -11,7 +11,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
@@ -59,14 +59,18 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException {
         if (Util.isNullorBlank(transaction)) {
             throw new ACSDataAccessException(
-                    TRANSACTION_SAVE_EXCEPTION, "transaction can't be null");
+                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
+                    TRANSACTION_SAVE_EXCEPTION,
+                    "transaction can't be null");
         }
         try {
             transactionRepository.save(transaction);
             return findById(transaction.getId());
         } catch (DataAccessException | TransactionDataNotValidException ex) {
             log.error("Error while saving transaction", ex);
-            throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_SAVE_EXCEPTION, ex);
+            throw new ACSDataAccessException(
+                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
+                    InternalErrorCode.TRANSACTION_SAVE_EXCEPTION);
         }
     }
 
@@ -83,7 +87,10 @@ public class TransactionServiceImpl implements TransactionService {
                 return transaction.get();
             }
         } catch (DataAccessException ex) {
-            throw new ACSDataAccessException(InternalErrorCode.TRANSACTION_FIND_EXCEPTION, ex);
+            log.error("DataAccessException:", ex);
+            throw new ACSDataAccessException(
+                    ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
+                    InternalErrorCode.TRANSACTION_FIND_EXCEPTION);
         }
         // throw error if no transaction found
         throw new TransactionDataNotValidException(InternalErrorCode.TRANSACTION_NOT_FOUND);
