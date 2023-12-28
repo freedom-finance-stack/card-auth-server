@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Where(clause = "deleted_at is null")
-public class  InstitutionUiConfig extends BaseEntity<InstitutionUiConfigPK> {
+public class InstitutionUiConfig extends BaseEntity<InstitutionUiConfigPK> {
 
     @EmbeddedId private InstitutionUiConfigPK institutionUiConfigPK;
 
