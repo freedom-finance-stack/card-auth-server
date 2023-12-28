@@ -239,7 +239,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
             } else if (!Util.isNullorBlank(creq.getChallengeHTMLDataEntry())
                     || !Util.isNullorBlank(creq.getChallengeDataEntry())
-                    || !Util.isNullorBlank(creq.getOobContinue())) {
+                    || !Util.isNullorBlank(creq.getOobContinue())
+                    || !Util.isNullorBlank(creq.getChallengeNoEntry())) {
                 if (flowType.equals(DeviceChannel.BRW)
                         || transaction
                                 .getTransactionSdkDetail()
