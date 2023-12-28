@@ -16,22 +16,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class VisaAuthValueGeneratorImplTest {
 
-    @Mock
-    private CVVGenerationService cvvGenerationService;
+    @Mock private CVVGenerationService cvvGenerationService;
 
-    @InjectMocks
-    private VisaAuthValueGeneratorImpl visaAuthValueGenerator;
+    @InjectMocks private VisaAuthValueGeneratorImpl visaAuthValueGenerator;
 
     @ParameterizedTest
-    @CsvSource({  "SUCCESS",  "UNABLE_TO_AUTHENTICATE",  "FAILED", "INFORMATIONAL", "REJECTED"})
-    void createAuthValue_SuccessfulFlow( String status) throws ACSValidationException, ACSException {
+    @CsvSource({"SUCCESS", "UNABLE_TO_AUTHENTICATE", "FAILED", "INFORMATIONAL", "REJECTED"})
+    void createAuthValue_SuccessfulFlow(String status) throws ACSValidationException, ACSException {
         // Arrange
         TransactionStatus transactionStatus = TransactionStatus.valueOf(status);
         Transaction transaction = TransactionTestData.createSampleAppTransaction();
@@ -47,7 +44,8 @@ class VisaAuthValueGeneratorImplTest {
     }
 
     @Test
-    void createAuthValue_SuccessfulFlow_ChallengeManadatedTrue( ) throws ACSValidationException, ACSException {
+    void createAuthValue_SuccessfulFlow_ChallengeManadatedTrue()
+            throws ACSValidationException, ACSException {
         // Arrange
         Transaction transaction = TransactionTestData.createSampleAppTransaction();
         transaction.setTransactionStatus(TransactionStatus.SUCCESS);
@@ -62,12 +60,13 @@ class VisaAuthValueGeneratorImplTest {
     }
 
     @Test
-    void createAuthValue_ExceptionInCVVGeneration() throws  ACSException {
+    void createAuthValue_ExceptionInCVVGeneration() throws ACSException {
         // Arrange
         Transaction transaction = TransactionTestData.createSampleAppTransaction();
         transaction.setTransactionStatus(TransactionStatus.SUCCESS);
         transaction.setEci(ECI.VISA_SUCCESS.getValue());
-        when(cvvGenerationService.generateCVV(any(), any())).thenThrow(new ACSException(InternalErrorCode.INTERNAL_SERVER_ERROR));
+        when(cvvGenerationService.generateCVV(any(), any()))
+                .thenThrow(new ACSException(InternalErrorCode.INTERNAL_SERVER_ERROR));
 
         // Act & Assert
         assertThrows(ACSException.class, () -> visaAuthValueGenerator.createAuthValue(transaction));
@@ -80,10 +79,11 @@ class VisaAuthValueGeneratorImplTest {
         transaction.setTransactionStatus(TransactionStatus.CHALLENGE_REQUIRED);
         transaction.setEci(ECI.VISA_SUCCESS.getValue());
         // Act & Assert
-        assertThrows(ACSValidationException.class, () -> visaAuthValueGenerator.createAuthValue(transaction));
+        assertThrows(
+                ACSValidationException.class,
+                () -> visaAuthValueGenerator.createAuthValue(transaction));
     }
 
     // Add more test cases to cover different scenarios
-
 
 }

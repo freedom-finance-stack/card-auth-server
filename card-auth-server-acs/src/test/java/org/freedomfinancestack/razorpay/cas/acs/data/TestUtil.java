@@ -1,12 +1,10 @@
 package org.freedomfinancestack.razorpay.cas.acs.data;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 
 public class TestUtil {
-    public static <T> T replaceData(
-            T currObject, Map<String, Object> mockData) {
+    public static <T> T replaceData(T currObject, Map<String, Object> mockData) {
         for (String key : mockData.keySet()) {
             updateFields(currObject, key, mockData.get(key));
         }

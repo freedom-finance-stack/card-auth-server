@@ -1,6 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.data;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -35,7 +34,6 @@ public class RREQTestData {
                 + "        \"resultsStatus\": \"01\"\n"
                 + "      }";
 
-
     public static RREQ getValidRReq() {
         return Util.fromJson(validRReq, RREQ.class);
     }
@@ -46,7 +44,7 @@ public class RREQTestData {
 
     // data = {"threeDSServerTransID" : "INVALID1_THREEDSSERVERTRANSID"} represent {fieldName :
     // MockData refer}
-    public static RREQ getRReq(Map<String, Object> rreqTestData ) {
+    public static RREQ getRReq(Map<String, Object> rreqTestData) {
         return replaceData(getValidRReq(), rreqTestData);
     }
 
