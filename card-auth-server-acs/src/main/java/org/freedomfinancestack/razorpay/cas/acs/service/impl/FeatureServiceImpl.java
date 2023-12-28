@@ -175,7 +175,7 @@ public class FeatureServiceImpl implements FeatureService {
                 }
                 authConfigDto.setPasswordConfig(passwordConfig);
             }
-            case Decoupled -> log.info("CONFIG FOR DECOUPLED IS YET TO ADD");
+            case Decoupled, OOB -> log.info("CONFIG FOR DECOUPLED/OOB IS YET TO ADD");
             default -> throw new ACSDataAccessException(
                     InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
         }
