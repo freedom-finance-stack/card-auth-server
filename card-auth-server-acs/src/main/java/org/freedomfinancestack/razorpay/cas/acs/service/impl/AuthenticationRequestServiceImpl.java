@@ -73,10 +73,6 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     private final TestConfigProperties testConfigProperties;
     private final AppConfiguration appConfiguration;
 
-    // Temp variables for passing test cases
-    private final Long dummyStartRange = Long.valueOf("6543200100000");
-    private final Long dummyEndRange = Long.valueOf("6543200199999");
-
     @Qualifier(value = "authenticationRequestValidator") private final ThreeDSValidator<AREQ> areqValidator;
 
     /**
@@ -139,12 +135,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
             }
 
-            // TODO: make this as method Temporary change for UL testing
-            if (DeviceChannel.BRW.getChannel().equals(transaction.getDeviceChannel())
-                    && dummyStartRange <= Long.parseLong(areq.getAcctNumber())
-                    && dummyEndRange >= Long.parseLong(areq.getAcctNumber())) {
-                throw new ACSDataAccessException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
-            }
+            ulPortalTestingValidations(transaction, areq);
 
             // Determine if challenge is required and update transaction accordingly
             challengeDetermineService.determineChallenge(
@@ -294,5 +285,17 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
         transaction.setTransactionStatusReason(
                 internalErrorCode.getTransactionStatusReason().getCode());
         return transactionService.saveOrUpdate(transaction);
+    }
+
+    private void ulPortalTestingValidations(Transaction transaction, AREQ areq)
+            throws ACSDataAccessException {
+        // Temp variables for passing test cases
+        final long ulUDStartRange = Long.parseLong("6543200100000");
+        final long ulUDEndRange = Long.parseLong("6543200199999");
+        if (DeviceChannel.BRW.getChannel().equals(transaction.getDeviceChannel())
+                && ulUDStartRange <= Long.parseLong(areq.getAcctNumber())
+                && ulUDEndRange >= Long.parseLong(areq.getAcctNumber())) {
+            throw new ACSDataAccessException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
+        }
     }
 }

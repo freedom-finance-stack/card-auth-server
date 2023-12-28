@@ -258,38 +258,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
             }
 
-            //            else {
-            //                if (creq.getResendChallenge() != null
-            //                                &&
-            // InternalConstants.YES.equals(creq.getResendChallenge())
-            //                        || (flowType.equals(DeviceChannel.APP)
-            //                                && Util.isMessageVersion210ResendCondition(creq))) {
-            //                    handleReSendChallenge(transaction, authConfigDto,
-            // challengeFlowDto);
-            //                } else if (transaction.getPhase().equals(Phase.ARES)) {
-            //                    transactionTimeoutServiceLocator
-            //                            .locateService(MessageType.CReq)
-            //                            .scheduleTask(
-            //                                    transaction.getId(),
-            // transaction.getTransactionStatus(), null);
-            //                    StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
-            //                    handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
-            //                } else {
-            //                    if (flowType.equals(DeviceChannel.BRW)
-            //                            || transaction
-            //                                    .getTransactionSdkDetail()
-            //                                    .getAcsInterface()
-            //                                    .equals(DeviceInterface.HTML.getValue())) {
-            //
-            // challengeFlowDto.setAuthValue(creq.getChallengeHTMLDataEntry());
-            //                    } else {
-            //                        challengeFlowDto.setAuthValue(creq.getChallengeDataEntry());
-            //                    }
-            //                    handleChallengeValidation(transaction, authConfigDto,
-            // challengeFlowDto);
-            //                }
-            //            }
-
         } catch (ParseException | TransactionDataNotValidException ex) {
             log.error("Exception occurred", ex);
             // don't send Rres for ParseException

@@ -1,7 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,14 +60,10 @@ public class ThreedsRequestorCResService extends HttpsGatewayService {
             log.info("Base64Url Encoded CRes: " + Util.encodeBase64Url(cres));
             Map<String, String> headerMap = new HashMap<>();
             Map<String, Object> queryParamMap = new HashMap<>();
-            //            MultiValueMap<String, String> requestMap = new LinkedMultiValueMap<>();
-            //            requestMap.add("cres",Util.encodeBase64Url(cres));
+            MultiValueMap<String, String> requestMap = new LinkedMultiValueMap<>();
+            requestMap.add("cres", Util.encodeBase64Url(cres));
             headerMap.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-            String requestBody =
-                    URLEncoder.encode("cres", StandardCharsets.UTF_8)
-                            + "="
-                            + URLEncoder.encode(Util.encodeBase64Url(cres), StandardCharsets.UTF_8);
-            String response = sendRequest(requestBody, HttpMethod.POST, headerMap, queryParamMap);
+            String response = sendRequest(requestMap, HttpMethod.POST, headerMap, queryParamMap);
             log.info("CRes Received Successfully: " + Util.toJson(response));
 
         } catch (Exception exception) {

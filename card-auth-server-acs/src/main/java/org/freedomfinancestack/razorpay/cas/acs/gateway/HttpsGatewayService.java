@@ -21,9 +21,8 @@ public abstract class HttpsGatewayService {
 
     public abstract GatewayConfig.ServiceConfig getServiceConfig();
 
-    // TODO: make request body as Object for NotificationCRESSERVICE
     public String sendRequest(
-            String requestBody,
+            Object requestBody,
             HttpMethod method,
             Map<String, String> headerMap,
             Map<String, Object> queryParam) {
@@ -35,7 +34,7 @@ public abstract class HttpsGatewayService {
         if (queryParam == null) {
             queryParam = new HashMap<>();
         }
-        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+        HttpEntity<?> entity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> responseEntity =
                 this.getRestTemplate()
                         .exchange(
