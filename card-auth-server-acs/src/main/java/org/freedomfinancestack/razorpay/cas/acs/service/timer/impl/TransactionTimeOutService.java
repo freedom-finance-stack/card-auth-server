@@ -5,8 +5,7 @@ import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
-import org.freedomfinancestack.razorpay.cas.acs.gateway.ds.DsGatewayService;
-import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.CResService;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.ThreedsRequestorCResService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
@@ -29,8 +28,7 @@ public class TransactionTimeOutService {
     private final TransactionService transactionService;
     private final ECommIndicatorService eCommIndicatorService;
     private final ResultRequestService resultRequestService;
-    private final DsGatewayService dsGatewayService;
-    private final CResService cResService;
+    private final ThreedsRequestorCResService threedsRequestorCResService;
 
     void performTimeOutWaitingForCreq(String transactionId) {
         try {
@@ -103,7 +101,8 @@ public class TransactionTimeOutService {
         transactionService.updateTransactionWithError(errorCode, transaction);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
         transactionService.updateEci(transaction);
-        transactionService.saveOrUpdate(transaction);
+        // TODO: check this condition
+        //        transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
             if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
@@ -112,7 +111,7 @@ public class TransactionTimeOutService {
                             .equals(
                                     ChallengeCancelIndicator.TRANSACTION_TIMED_OUT
                                             .getIndicator())) {
-                cResService.sendCRes(transaction);
+                threedsRequestorCResService.sendNotificationCRes(transaction);
             }
             resultRequestService.handleRreq(transaction);
 

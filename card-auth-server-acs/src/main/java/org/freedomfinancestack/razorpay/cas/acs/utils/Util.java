@@ -243,6 +243,9 @@ public class Util {
      */
     public static boolean isValidBase64Url(String input) {
         try {
+
+            // TODO: check this change and naming conventions
+            //            input = input.replaceAll("", "");
             // Decode the input to check if it's a valid Base64 encoding
             byte[] decodedBytes = Base64.getUrlDecoder().decode(input);
 

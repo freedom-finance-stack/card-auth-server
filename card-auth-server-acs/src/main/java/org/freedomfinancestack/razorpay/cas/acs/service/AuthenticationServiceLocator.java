@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.OperationNotSupportedException;
+import org.freedomfinancestack.razorpay.cas.acs.service.impl.OOBAuthenticationService;
+import org.freedomfinancestack.razorpay.cas.acs.service.impl.OTPAuthenticationService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.model.ChallengeAuthTypeConfig;
@@ -19,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthenticationServiceLocator {
-    private final @Qualifier("OTPAuthenticationService") AuthenticationService
+    private final @Qualifier("OTPAuthenticationService") OTPAuthenticationService
             otpAuthenticationService;
+    private final @Qualifier("OOBAuthenticationService") OOBAuthenticationService
+            ooBAuthenticationService;
 
     public AuthenticationService locateTransactionAuthenticationService(
             Transaction transaction, ChallengeAuthTypeConfig authConfig)
@@ -53,9 +57,9 @@ public class AuthenticationServiceLocator {
             case OTP:
                 authenticationService = otpAuthenticationService;
                 break;
-                //            case PASSWORD:
-                //                authenticationService = passwordAuthenticationServiceImpl;
-                //                break;
+            case OOB:
+                authenticationService = ooBAuthenticationService;
+                break;
             default:
                 throw new OperationNotSupportedException(
                         InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");

@@ -124,7 +124,8 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                 & !Util.isNullorBlank(
                                         transaction.getTransactionSdkDetail().getAcsCounterAtoS()),
                         notBlank()),
-                lengthValidator(DataLengthType.FIXED, 3));
+                lengthValidator(DataLengthType.FIXED, 3),
+                isEqual(transaction.getTransactionSdkDetail().getAcsCounterAtoS()));
 
         Validation.validate(
                 ThreeDSDataElement.SDK_TRANS_ID.getFieldName(),
@@ -179,6 +180,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
         validateAppChallengeData(transaction, incomingCreq);
 
+        // TODO: add desc
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL.getFieldName(),
                 incomingCreq.getThreeDSRequestorAppURL(),
@@ -200,7 +202,6 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
     private void validateAppChallengeData(Transaction transaction, CREQ incomingCreq)
             throws ValidationException {
         if (DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel())
-                && transaction.getTransactionSdkDetail().getAcsUiTemplate() != null
                 && !incomingCreq
                         .getSdkCounterStoA()
                         .equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)) {

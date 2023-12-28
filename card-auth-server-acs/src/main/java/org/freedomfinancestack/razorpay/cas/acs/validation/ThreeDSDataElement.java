@@ -199,7 +199,6 @@ public enum ThreeDSDataElement {
 
     BROWSER_USER_AGENT(
             ThreeDSConstant.ELEMENT_BROWSER_USER_AGENT,
-            new String[] {},
             new DeviceChannel[] {DeviceChannel.BRW},
             new MessageCategory[] {MessageCategory.PA, MessageCategory.NPA},
             ThreeDSConstant.ALL_VERSIONS_SUPPORTED_ELEMENT),

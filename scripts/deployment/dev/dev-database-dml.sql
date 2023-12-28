@@ -383,6 +383,19 @@ VALUES
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
+
+INSERT INTO `feature`
+VALUES
+    (
+        '20', 'CARD_RANGE', 'R12', 1, 'CHALLENGE_AUTH_TYPE',
+        '{
+            "purchase_amount_threshold" : 20000,
+            "above_threshold_auth_type" :  "OOB",
+            "default_auth_type" :  "OOB"
+        }',
+        NOW(), 'dev-user', NOW(), 'dev-user',
+        null, null
+    );
 UNLOCK TABLES;
 
 
@@ -394,7 +407,7 @@ UNLOCK TABLES;
 LOCK TABLES `institution_ui_config` WRITE;
 INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with LAST_FOUR_DIGIT_MOBILE_NUMBER. You are paying Merchant MERCHANT_NAME the amount of AMOUNT_WITH_CURRENCY', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with LAST_FOUR_DIGIT_MOBILE_NUMBER. You are paying Merchant MERCHANT_NAME the amount of AMOUNT_WITH_CURRENCY', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with LAST_FOUR_DIGIT_MOBILE_NUMBER. You are paying Merchant MERCHANT_NAME the amount of AMOUNT_WITH_CURRENCY', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OOB', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with LAST_FOUR_DIGIT_MOBILE_NUMBER. You are paying Merchant MERCHANT_NAME the amount of AMOUNT_WITH_CURRENCY', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'TEXT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'An OTP (One-Time Password) has been sent to your registered mobile number ending in LAST_FOUR_DIGIT_MOBILE_NUMBER.
 
 Please enter the OTP in the space provided below to authenticate this transaction. This information is not shared with the merchant
@@ -405,13 +418,13 @@ Amount: AMOUNT_WITH_CURRENCY
 Date: TRANSACTION_DATE' , 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 
 INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred One Time Password OTP option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred One Time Password OTP option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OOB', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred One Time Password OTP option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred One Time Password OTP option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'SINGLE_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred One Time Password OTP option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 
 INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred Auth option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred Auth option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred Auth option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OOB', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred Auth option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'MULTI_SELECT', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'Dear Customer, please select your preferred Auth option.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 
 
@@ -430,7 +443,7 @@ INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'OOB', 'display_p
  Step 1 - Open you Bank application directly from your phone and verify this payment.
 
  Step 2 - Tap continue after you have completed authentication with your Bank Application.', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'OOB', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'For added security, you will be authentication with your Bank Application.
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OOB', 'OOB', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'For added security, you will be authentication with your Bank Application.
 
  Step 1 - Open you Bank application directly from your phone and verify this payment.
 
@@ -439,6 +452,6 @@ INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'OOB', 'displ
 
 INSERT INTO `institution_ui_config` VALUES ('I1', 'OTP', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `institution_ui_config` VALUES ('I1', 'PASSWORD', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
-INSERT INTO `institution_ui_config` VALUES ('I1', 'NetBankingOOB', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
+INSERT INTO `institution_ui_config` VALUES ('I1', 'OOB', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 INSERT INTO `institution_ui_config` VALUES ('I1', 'Decoupled', 'HTML_OTHER', 'display_page', 'Purchase Authentication', 'Enter your OTP below', 'We have sent you an text message with a code to your registered mobile number ending with %s. You are paying Merchant %s the amount of %s', 'expand_info_label', 'expand_info_text', 'Submit', 'Resend', 'Need some help?', 'About OTP, OTP (One Time Passcode).', 'Would you like to add this Merchant to your whitelist?', NOW(), 'dev-user', NOW(), 'dev-user', NULL, NULL);
 UNLOCK TABLES;

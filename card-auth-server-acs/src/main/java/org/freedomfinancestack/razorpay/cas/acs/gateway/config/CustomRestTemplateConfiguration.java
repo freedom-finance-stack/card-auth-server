@@ -70,6 +70,19 @@ public class CustomRestTemplateConfiguration {
         return getRestTemplate(ClientType.UL_TEST_PORTAL, ulTestConfig);
     }
 
+    @Bean("threedsRequestorRestTemplate")
+    public RestTemplate threedsRequestorRestTemplate()
+            throws KeyManagementException,
+                    NoSuchAlgorithmException,
+                    KeyStoreException,
+                    CertificateException,
+                    IOException,
+                    UnrecoverableKeyException {
+        GatewayConfig.ServiceConfig threedsRequestorConfig =
+                gatewayConfig.getServices().get(ClientType.THREEDS_REQUESTOR_SERVER);
+        return getRestTemplate(ClientType.THREEDS_REQUESTOR_SERVER, threedsRequestorConfig);
+    }
+
     private RestTemplate getRestTemplate(ClientType clientType, GatewayConfig.ServiceConfig config)
             throws NoSuchAlgorithmException,
                     KeyStoreException,

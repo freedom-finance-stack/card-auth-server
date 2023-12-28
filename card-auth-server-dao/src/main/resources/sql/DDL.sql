@@ -44,21 +44,21 @@ CREATE TABLE `transaction_browser_detail`
 DROP TABLE IF EXISTS `transaction_sdk_detail`;
 CREATE TABLE `transaction_sdk_detail`
 (
-    `transaction_id`       varchar(36) PRIMARY KEY,
-    `sdk_trans_id`         varchar(36) DEFAULT NULL,
-    `sdk_app_id`           varchar(36) DEFAULT NULL,
-    `sdk_reference_number` varchar(32) DEFAULT NULL,
-    `acs_interface`        char(2) DEFAULT NULL,
-    `acs_ui_template`      char(2) DEFAULT NULL,
-    `acs_secret_key`       LONGTEXT NULL,
-    `encryption_method`      VARCHAR(45) DEFAULT NULL,
-    `device_info`          text,
-    `acs_counter_a_to_s`   char(3) DEFAULT '000',
-    `whitelisting_data_entry` char(1),
+    `transaction_id`            varchar(36) PRIMARY KEY,
+    `sdk_trans_id`              varchar(36) DEFAULT NULL,
+    `sdk_app_id`                varchar(36) DEFAULT NULL,
+    `sdk_reference_number`      varchar(32) DEFAULT NULL,
+    `acs_interface`             char(2) DEFAULT NULL,
+    `acs_ui_template`           char(2) DEFAULT NULL,
+    `acs_secret_key`            LONGTEXT NULL,
+    `encryption_method`         VARCHAR(45) DEFAULT NULL,
+    `device_info`               text,
+    `acs_counter_a_to_s`        char(3) DEFAULT '000',
+    `whitelisting_data_entry`   char(1),
     `threeds_requestor_app_url` varchar(256),
-    `created_at`           timestamp NOT NULL,
-    `modified_at`          timestamp,
-    `deleted_at`           timestamp
+    `created_at`                timestamp NOT NULL,
+    `modified_at`               timestamp,
+    `deleted_at`                timestamp
 );
 
 DROP TABLE IF EXISTS `transaction_merchant`;
@@ -371,7 +371,7 @@ DROP TABLE IF EXISTS `institution_ui_config`;
 CREATE TABLE `institution_ui_config`
 (
     `institution_id`              varchar(36) NOT NULL,
-    `auth_type`                   ENUM('OTP', 'PASSWORD', 'NetBankingOOB', 'Decoupled'),
+    `auth_type`                   ENUM('OTP', 'PASSWORD', 'OOB', 'Decoupled'),
     `ui_type`                     ENUM('TEXT', 'SINGLE_SELECT', 'MULTI_SELECT', 'OOB', 'HTML_OTHER'),
     `display_page`                varchar(99) DEFAULT NULL,
     `challenge_info_header`       varchar(45) DEFAULT NULL,

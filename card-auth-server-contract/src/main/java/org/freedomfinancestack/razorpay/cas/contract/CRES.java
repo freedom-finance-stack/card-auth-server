@@ -9,8 +9,7 @@ import lombok.*;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
-@ToString
-@NonNull public class CRES extends ThreeDSObject {
+public class CRES extends ThreeDSObject {
 
     // All Required Fields
     private String threeDSServerTransID;

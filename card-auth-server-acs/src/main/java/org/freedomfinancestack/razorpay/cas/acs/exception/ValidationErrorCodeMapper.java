@@ -68,6 +68,12 @@ public class ValidationErrorCodeMapper {
                 ValidationErrorCode.NOT_EQUAL, ThreeDSecureErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
         FIELD_TO_THREEDSECURE_ERROR_MAP.put(
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(), acsTransIdRules);
+
+        HashMap<ValidationErrorCode, ThreeDSecureErrorCode> sdkCounterStoARules = new HashMap<>();
+        sdkCounterStoARules.put(
+                ValidationErrorCode.NOT_EQUAL, ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE);
+        FIELD_TO_THREEDSECURE_ERROR_MAP.put(
+                ThreeDSDataElement.SDK_COUNTER_STOA.getFieldName(), sdkCounterStoARules);
     }
 
     public static ThreeDSecureErrorCode mapValidationToThreeDSecure(

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.ClientType;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.HttpsGatewayService;
@@ -13,13 +14,14 @@ import org.freedomfinancestack.razorpay.cas.acs.gateway.config.CustomRetryTempla
 import org.freedomfinancestack.razorpay.cas.acs.gateway.config.GatewayConfig;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -28,47 +30,39 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class CResService extends HttpsGatewayService {
-    private final RestTemplate ulRestTemplate;
+public class ThreedsRequestorCResService extends HttpsGatewayService {
+    private final RestTemplate threedsRequestorRestTemplate;
     private final GatewayConfig.ServiceConfig serviceConfig;
+    private final CResMapper cResMapper = Mappers.getMapper(CResMapper.class);
 
     @Autowired
-    public CResService(
-            @Qualifier("ulTestRestTemplate") RestTemplate visaDsRestTemplate,
+    public ThreedsRequestorCResService(
+            @Qualifier("threedsRequestorRestTemplate") RestTemplate threedsRequestorRestTemplate,
             GatewayConfig gatewayConfig) {
-        this.ulRestTemplate = visaDsRestTemplate;
+        this.threedsRequestorRestTemplate = threedsRequestorRestTemplate;
         this.serviceConfig =
                 new GatewayConfig.ServiceConfig(
-                        gatewayConfig.getServices().get(ClientType.UL_TEST_PORTAL));
+                        gatewayConfig.getServices().get(ClientType.THREEDS_REQUESTOR_SERVER));
     }
 
-    public void sendCRes(Transaction transaction) throws ACSValidationException {
+    public void sendNotificationCRes(Transaction transaction) throws ACSValidationException {
         if (serviceConfig.isMock()) {
             log.info("Mocking CRES");
             return;
         }
 
         this.serviceConfig.setUrl(transaction.getTransactionReferenceDetail().getNotificationUrl());
-        CRES cres =
-                CRES.builder()
-                        .threeDSServerTransID(
-                                transaction
-                                        .getTransactionReferenceDetail()
-                                        .getThreedsServerTransactionId())
-                        .acsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER)
-                        .acsTransID(transaction.getId())
-                        .challengeCompletionInd(InternalConstants.NO)
-                        .messageType(MessageType.CRes.toString())
-                        .messageVersion(transaction.getMessageVersion())
-                        .transStatus(transaction.getTransactionStatus().getStatus())
-                        .build();
+
+        CRES cres = cResMapper.toCres(transaction);
+        cres.setAcsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER);
         try {
             log.info("Sending CRes: " + Util.toJson(cres));
             log.info("Base64Url Encoded CRes: " + Util.encodeBase64Url(cres));
             Map<String, String> headerMap = new HashMap<>();
             Map<String, Object> queryParamMap = new HashMap<>();
-            headerMap.put(
-                    HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
+            //            MultiValueMap<String, String> requestMap = new LinkedMultiValueMap<>();
+            //            requestMap.add("cres",Util.encodeBase64Url(cres));
+            headerMap.put(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
             String requestBody =
                     URLEncoder.encode("cres", StandardCharsets.UTF_8)
                             + "="
@@ -83,7 +77,7 @@ public class CResService extends HttpsGatewayService {
 
     @Override
     public RestTemplate getRestTemplate() {
-        return this.ulRestTemplate;
+        return this.threedsRequestorRestTemplate;
     }
 
     @Override

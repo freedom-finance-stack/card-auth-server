@@ -139,7 +139,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
             }
 
-            // Temporary change for UL testing
+            // TODO: make this as method Temporary change for UL testing
             if (DeviceChannel.BRW.getChannel().equals(transaction.getDeviceChannel())
                     && dummyStartRange <= Long.parseLong(areq.getAcctNumber())
                     && dummyEndRange >= Long.parseLong(areq.getAcctNumber())) {

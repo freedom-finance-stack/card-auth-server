@@ -24,6 +24,7 @@ import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.*;
+import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardRange;
@@ -167,18 +168,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             //  log creq
             transactionMessageLogService.createAndSave(creq, creq.getAcsTransID());
 
-            // TC_ACS_10284 special case
-            if (flowType.equals(DeviceChannel.APP)
-                    && !Util.isNullorBlank(
-                            transaction.getTransactionSdkDetail().getAcsCounterAtoS())
-                    && !transaction
-                            .getTransactionSdkDetail()
-                            .getAcsCounterAtoS()
-                            .equals(creq.getSdkCounterStoA())) {
-                throw new ACSValidationException(
-                        ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE, "sdkCounterStoA Mismatch");
-            }
-
             // Validating CREQ
             challengeRequestValidator.validateRequest(creq, transaction);
             if (!Util.isNullorBlank(threeDSSessionData)) {
@@ -195,21 +184,17 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
             // Validating this outside, as authConfigDto is needed to validate this
-            if (challengeRequestValidator.isWhitelistingDataValid(transaction, creq, authConfigDto)
-                    && !Util.isNullorBlank(creq.getWhitelistingDataEntry())) {
+            if (!Util.isNullorBlank(creq.getWhitelistingDataEntry())
+                    && challengeRequestValidator.isWhitelistingDataValid(
+                            transaction, creq, authConfigDto)) {
                 transaction
                         .getTransactionSdkDetail()
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
             }
 
-            // TC_ACS_11387 special case
-            if (flowType.equals(DeviceChannel.APP)
-                    && creq.getSdkCounterStoA().equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
-                    && !Util.isNullorBlank(creq.getThreeDSRequestorAppURL())) {
-                transaction
-                        .getTransactionSdkDetail()
-                        .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
-            }
+            transaction
+                    .getTransactionSdkDetail()
+                    .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
 
             // Generating App Ui Params
             appUIGenerator.generateAppUIParams(challengeFlowDto, transaction, authConfigDto);
@@ -224,6 +209,16 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 if (transaction
                         .getTransactionStatusReason()
                         .equals(TransactionStatusReason.TRANSACTION_TIMEOUT.getCode())) {
+                    if (flowType.equals(DeviceChannel.BRW)
+                            && transaction
+                                    .getChallengeCancelInd()
+                                    .equals(
+                                            ChallengeCancelIndicator.TRANSACTION_TIMED_OUT
+                                                    .getIndicator())) {
+                        throw new ACSException(
+                                InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION,
+                                "Timeout expiry reached for the transaction");
+                    }
                     throw new ThreeDSException(
                             ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT,
                             InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION,
@@ -235,32 +230,63 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 }
             } else if (!Util.isNullorBlank(creq.getChallengeCancel())) {
                 handleCancelChallenge(transaction, challengeFlowDto, creq);
-            } else {
-                if (creq.getResendChallenge() != null
-                                && InternalConstants.YES.equals(creq.getResendChallenge())
-                        || (flowType.equals(DeviceChannel.APP)
-                                && Util.isMessageVersion210ResendCondition(creq))) {
-                    handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
-                } else if (transaction.getPhase().equals(Phase.ARES)) {
-                    transactionTimeoutServiceLocator
-                            .locateService(MessageType.CReq)
-                            .scheduleTask(
-                                    transaction.getId(), transaction.getTransactionStatus(), null);
-                    StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
-                    handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
+            } else if (transaction.getPhase().equals(Phase.ARES)) {
+                transactionTimeoutServiceLocator
+                        .locateService(MessageType.CReq)
+                        .scheduleTask(
+                                transaction.getId(), transaction.getTransactionStatus(), null);
+                StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
+                handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
+            } else if (!Util.isNullorBlank(creq.getChallengeHTMLDataEntry())
+                    || !Util.isNullorBlank(creq.getChallengeDataEntry())
+                    || !Util.isNullorBlank(creq.getOobContinue())) {
+                if (flowType.equals(DeviceChannel.BRW)
+                        || transaction
+                                .getTransactionSdkDetail()
+                                .getAcsInterface()
+                                .equals(DeviceInterface.HTML.getValue())) {
+                    challengeFlowDto.setAuthValue(creq.getChallengeHTMLDataEntry());
                 } else {
-                    if (flowType.equals(DeviceChannel.BRW)
-                            || transaction
-                                    .getTransactionSdkDetail()
-                                    .getAcsInterface()
-                                    .equals(DeviceInterface.HTML.getValue())) {
-                        challengeFlowDto.setAuthValue(creq.getChallengeHTMLDataEntry());
-                    } else {
-                        challengeFlowDto.setAuthValue(creq.getChallengeDataEntry());
-                    }
-                    handleChallengeValidation(transaction, authConfigDto, challengeFlowDto);
+                    challengeFlowDto.setAuthValue(creq.getChallengeDataEntry());
                 }
+                handleChallengeValidation(transaction, authConfigDto, challengeFlowDto);
+            } else if (!Util.isNullorBlank(creq.getResendChallenge())
+                            && InternalConstants.YES.equals(creq.getResendChallenge())
+                    || creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)) {
+                handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
             }
+
+            //            else {
+            //                if (creq.getResendChallenge() != null
+            //                                &&
+            // InternalConstants.YES.equals(creq.getResendChallenge())
+            //                        || (flowType.equals(DeviceChannel.APP)
+            //                                && Util.isMessageVersion210ResendCondition(creq))) {
+            //                    handleReSendChallenge(transaction, authConfigDto,
+            // challengeFlowDto);
+            //                } else if (transaction.getPhase().equals(Phase.ARES)) {
+            //                    transactionTimeoutServiceLocator
+            //                            .locateService(MessageType.CReq)
+            //                            .scheduleTask(
+            //                                    transaction.getId(),
+            // transaction.getTransactionStatus(), null);
+            //                    StateMachine.Trigger(transaction, Phase.PhaseEvent.CREQ_RECEIVED);
+            //                    handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
+            //                } else {
+            //                    if (flowType.equals(DeviceChannel.BRW)
+            //                            || transaction
+            //                                    .getTransactionSdkDetail()
+            //                                    .getAcsInterface()
+            //                                    .equals(DeviceInterface.HTML.getValue())) {
+            //
+            // challengeFlowDto.setAuthValue(creq.getChallengeHTMLDataEntry());
+            //                    } else {
+            //                        challengeFlowDto.setAuthValue(creq.getChallengeDataEntry());
+            //                    }
+            //                    handleChallengeValidation(transaction, authConfigDto,
+            // challengeFlowDto);
+            //                }
+            //            }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
             log.error("Exception occurred", ex);
@@ -279,12 +305,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (!ex.getThreeDSecureErrorCode()
                     .equals(ThreeDSecureErrorCode.TRANSACTION_TIMED_OUT)) {
                 challengeFlowDto.setSendRreq(true);
-            } else {
-                challengeFlowDto.setCres(cResMapper.toCres(transaction));
-                challengeFlowDto.getCres().setChallengeCompletionInd(InternalConstants.NO);
-                challengeFlowDto
-                        .getCres()
-                        .setAcsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER);
             }
             updateTransactionWithError(ex.getInternalErrorCode(), transaction);
             throw new ThreeDSException(
@@ -300,9 +320,17 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     ex);
         } catch (ACSException ex) {
             log.error("Exception occurred", ex);
-            challengeFlowDto.setSendRreq(true);
             updateTransactionWithError(ex.getErrorCode(), transaction);
             challengeFlowDto.setCres(cResMapper.toCres(transaction));
+            if (!ex.getErrorCode()
+                    .equals(InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION)) {
+                challengeFlowDto.setSendRreq(true);
+            } else {
+                challengeFlowDto.getCres().setChallengeCompletionInd(InternalConstants.NO);
+                challengeFlowDto
+                        .getCres()
+                        .setAcsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER);
+            }
         } catch (Exception ex) {
             log.error("Exception occurred", ex);
             challengeFlowDto.setSendRreq(true);
@@ -386,32 +414,21 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         transaction.setInteractionCount(transaction.getInteractionCount() + 1);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.VALIDATION_REQ_RECEIVED);
 
-        DecoupledAuthenticationResponse response = null;
         AuthResponse authResponse = null;
 
-        if (transaction.getDeviceChannel().equals(DeviceChannel.APP.getChannel())
-                && transaction
-                        .getTransactionSdkDetail()
-                        .getAcsUiType()
-                        .equals(UIType.OOB.getType())) {
-            response =
-                    decoupledAuthenticationService.processAuthenticationRequest(
-                            transaction, new DecoupledAuthenticationRequest());
-        } else {
-            AuthenticationService authenticationService =
-                    authenticationServiceLocator.locateTransactionAuthenticationService(
-                            transaction, authConfigDto.getChallengeAuthTypeConfig());
-            authResponse =
-                    authenticationService.authenticate(
-                            AuthenticationDto.builder()
-                                    .authConfigDto(authConfigDto)
-                                    .transaction(transaction)
-                                    .authValue(challengeFlowDto.getAuthValue())
-                                    .build());
-        }
+        AuthenticationService authenticationService =
+                authenticationServiceLocator.locateTransactionAuthenticationService(
+                        transaction, authConfigDto.getChallengeAuthTypeConfig());
 
-        if ((authResponse != null && authResponse.isAuthenticated())
-                || (response != null && response.isSuccessful())) {
+        authResponse =
+                authenticationService.authenticate(
+                        AuthenticationDto.builder()
+                                .authConfigDto(authConfigDto)
+                                .transaction(transaction)
+                                .authValue(challengeFlowDto.getAuthValue())
+                                .build());
+
+        if (authResponse != null && authResponse.isAuthenticated()) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
             transactionService.updateEci(transaction);
@@ -467,21 +484,17 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private void handleSendChallenge(
             Transaction transaction, AuthConfigDto authConfigDto, ChallengeFlowDto challengeFlowDto)
             throws ThreeDSException, InvalidStateTransactionException {
-        if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
-                || !transaction
-                        .getTransactionSdkDetail()
-                        .getAcsUiType()
-                        .equals(UIType.OOB.getType())) {
-            AuthenticationService authenticationService =
-                    authenticationServiceLocator.locateTransactionAuthenticationService(
-                            transaction, authConfigDto.getChallengeAuthTypeConfig());
-            authenticationService.preAuthenticate(
-                    AuthenticationDto.builder()
-                            .authConfigDto(authConfigDto)
-                            .transaction(transaction)
-                            .build());
-            log.info("Sent challenge for transaction {}", transaction.getId());
-        }
+
+        AuthenticationService authenticationService =
+                authenticationServiceLocator.locateTransactionAuthenticationService(
+                        transaction, authConfigDto.getChallengeAuthTypeConfig());
+        authenticationService.preAuthenticate(
+                AuthenticationDto.builder()
+                        .authConfigDto(authConfigDto)
+                        .transaction(transaction)
+                        .build());
+        log.info("Sent challenge for transaction {}", transaction.getId());
+
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
         CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto.getInstitutionUIParams());
         challengeFlowDto.setCres(cres);
@@ -492,7 +505,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             throws InvalidStateTransactionException {
         StateMachine.Trigger(transaction, Phase.PhaseEvent.CANCEL_CHALLENGE);
 
-        if (creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
+        if (!creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)) {
             transaction.setInteractionCount(transaction.getInteractionCount() + 1);
         }
         transaction.setTransactionStatus(TransactionStatus.FAILED);

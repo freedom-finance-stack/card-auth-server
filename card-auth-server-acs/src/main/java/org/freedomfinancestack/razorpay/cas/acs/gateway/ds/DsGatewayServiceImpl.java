@@ -10,7 +10,6 @@ import org.freedomfinancestack.razorpay.cas.acs.gateway.mock.DsGatewayServiceMoc
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service("gatewayService")
 @RequiredArgsConstructor
 @Slf4j
-@Primary
 public class DsGatewayServiceImpl implements DsGatewayService {
 
     private final VisaDsHttpsGatewayService visaDsHttpsGatewayService;

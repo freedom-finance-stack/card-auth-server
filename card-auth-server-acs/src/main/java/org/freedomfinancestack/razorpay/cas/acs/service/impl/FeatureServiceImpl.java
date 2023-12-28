@@ -79,6 +79,18 @@ public class FeatureServiceImpl implements FeatureService {
             return;
         }
 
+        if (renderingTypeConfigList.getRenderingTypeConfigs() != null
+                && renderingTypeConfigList.getRenderingTypeConfigs().size() > 0) {
+            log.error(
+                    "Rendering Type mismatch for Institution ID : "
+                            + transaction.getInstitutionId()
+                            + " and Card Range ID : "
+                            + transaction.getCardRangeId());
+            throw new ACSDataAccessException(
+                    InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY,
+                    "Matching Rendering Type Config not found");
+        }
+
         log.error(
                 "Rendering Type not found for Institution ID : "
                         + transaction.getInstitutionId()

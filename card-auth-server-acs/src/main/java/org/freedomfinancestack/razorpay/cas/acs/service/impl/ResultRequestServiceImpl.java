@@ -81,7 +81,8 @@ public class ResultRequestServiceImpl implements ResultRequestService {
             if (rres != null
                     && rres.getMessageType() != null
                     && rres.getMessageType().equals(MessageType.Erro.toString())) {
-                throw new ACSValidationException(ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE);
+                throw new ACSValidationException(
+                        ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE, e.getMessage());
             }
             sendDsErrorResponse(transaction, e.getThreeDSecureErrorCode(), e.getMessage());
             throw e;

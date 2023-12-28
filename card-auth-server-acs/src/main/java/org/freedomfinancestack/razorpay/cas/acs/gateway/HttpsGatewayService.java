@@ -21,6 +21,7 @@ public abstract class HttpsGatewayService {
 
     public abstract GatewayConfig.ServiceConfig getServiceConfig();
 
+    // TODO: make request body as Object for NotificationCRESSERVICE
     public String sendRequest(
             String requestBody,
             HttpMethod method,

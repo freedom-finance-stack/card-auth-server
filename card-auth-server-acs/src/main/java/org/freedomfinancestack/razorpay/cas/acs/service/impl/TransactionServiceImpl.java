@@ -56,6 +56,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final ECommIndicatorService eCommIndicatorService;
 
+    // TODO: remove findById from here and only save
     public Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException {
         try {
             transactionRepository.save(transaction);
