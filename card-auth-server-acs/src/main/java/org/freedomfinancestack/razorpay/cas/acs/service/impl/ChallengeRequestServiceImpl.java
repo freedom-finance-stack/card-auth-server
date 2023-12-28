@@ -184,9 +184,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             AuthConfigDto authConfigDto = featureService.getAuthenticationConfig(transaction);
 
             // Validating this outside, as authConfigDto is needed to validate this
-            if (!Util.isNullorBlank(creq.getWhitelistingDataEntry())
-                    && challengeRequestValidator.isWhitelistingDataValid(
-                            transaction, creq, authConfigDto)) {
+            // isWhitelistingDataValid should be called first before whitelistingDataEntry null
+            // check, as it is also performing a validation
+            if (challengeRequestValidator.isWhitelistingDataValid(transaction, creq, authConfigDto)
+                    && !Util.isNullorBlank(creq.getWhitelistingDataEntry())) {
                 transaction
                         .getTransactionSdkDetail()
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
