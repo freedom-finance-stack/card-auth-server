@@ -8,7 +8,6 @@ import lombok.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
 public class CRES extends ThreeDSObject {
 
     // All Required Fields

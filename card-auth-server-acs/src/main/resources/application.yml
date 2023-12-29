@@ -91,7 +91,6 @@ gateway:
         backOffPeriod: 1000
     THREEDS_REQUESTOR_SERVER:
       mock: false
-      useSSL: false
       connectTimeout: 5000
       responseTimeout: 5000
       retryable:

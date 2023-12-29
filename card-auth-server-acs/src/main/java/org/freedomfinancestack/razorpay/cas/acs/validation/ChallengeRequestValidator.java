@@ -10,6 +10,7 @@ import org.freedomfinancestack.extensions.validation.validator.Validation;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
+import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.MessageExtension;
@@ -180,7 +181,8 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
 
         validateAppChallengeData(transaction, incomingCreq);
 
-        // TODO: add desc
+        // Validates if threedsRequestorAppUrl was present in previous CREQ, then it must be present
+        // in the subsequent CREQs too
         Validation.validate(
                 ThreeDSDataElement.THREEDS_REQUESTOR_APP_URL.getFieldName(),
                 incomingCreq.getThreeDSRequestorAppURL(),
@@ -260,7 +262,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                     throw new ValidationException(ValidationErrorCode.INVALID_FORMAT_VALUE);
                 }
             } else {
-                if (Util.isMessageVersion210ResendCondition(incomingCreq)
+                if (ChallengeRequestService.isMessageVersion210ResendCondition(incomingCreq)
                         && !acsInterface.equals(DeviceInterface.HTML.getValue())) {
                     return;
                 }

@@ -24,19 +24,6 @@ public class OOBAuthenticationService implements AuthenticationService {
         log.info(
                 "Pre Authenticating OOB flow for transaction id: {}",
                 authentication.getTransaction().getId());
-
-        if (authentication.getAuthConfigDto() == null
-                || authentication.getAuthConfigDto().getOobConfig() == null
-                || authentication.getAuthConfigDto().getOobConfig().getOobType() == null) {
-            throw new OperationNotSupportedException(
-                    InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Missing OOB Type");
-        }
-
-        OOBService oobService =
-                oobServiceLocator.locateOOBService(
-                        authentication.getAuthConfigDto().getOobConfig().getOobType());
-
-        oobService.preAuthenticate(authentication);
     }
 
     @Override

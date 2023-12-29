@@ -1,4 +1,4 @@
-package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
+package org.freedomfinancestack.razorpay.cas.acs.gateway.threedsrequestor;
 
 import java.util.HashMap;
 import java.util.Map;

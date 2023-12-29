@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum OOBType {
-    UL(1);
+    UL_TEST(1),
+    MOCK(2);
 
     private final int value;
 

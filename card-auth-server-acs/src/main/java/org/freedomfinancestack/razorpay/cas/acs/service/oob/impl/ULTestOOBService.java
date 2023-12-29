@@ -12,23 +12,16 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Service("ULOOBService")
+@Service("ULTestOOBService")
 @Slf4j
 @RequiredArgsConstructor
-public class ULOOBService implements OOBService {
+public class ULTestOOBService implements OOBService {
     private final POrqService porqService;
-
-    @Override
-    public void preAuthenticate(AuthenticationDto authentication) throws ThreeDSException {
-        log.info(
-                "Pre Authenticating UL OOB flow for transaction id: {}",
-                authentication.getTransaction().getId());
-    }
 
     @Override
     public AuthResponse authenticate(AuthenticationDto authentication) throws ThreeDSException {
         log.info(
-                "Authenticating UL OOB flow for transaction id: {}",
+                "Authenticating UL_TEST OOB flow for transaction id: {}",
                 authentication.getTransaction().getId());
         POrs pors =
                 porqService.sendPOrq(

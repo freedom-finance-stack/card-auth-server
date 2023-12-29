@@ -10,8 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
-import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -243,18 +241,11 @@ public class Util {
      */
     public static boolean isValidBase64Url(String input) {
         try {
-
+            input = input.replace("=", "");
             // Decode the input to check if it's a valid Base64 encoding
             byte[] decodedBytes = Base64.getUrlDecoder().decode(input);
-
             // Encode the decoded bytes again and compare with the original input
-            String reencoded;
-            if (input.contains("=")) {
-                reencoded = Base64.getUrlEncoder().encodeToString(decodedBytes);
-            } else {
-                reencoded = Base64.getUrlEncoder().withoutPadding().encodeToString(decodedBytes);
-            }
-
+            String reencoded = Base64.getUrlEncoder().withoutPadding().encodeToString(decodedBytes);
             // If the re-encoded string matches the original input, it's a valid Base64 URL encoding
             return input.equals(reencoded);
         } catch (Exception e) {
@@ -335,24 +326,12 @@ public class Util {
         }
     }
 
-    // works only with non-padded base64Url encoded string
-    public static boolean validateBase64UrlEncodedStringPattern(String encodedString) {
+    public static boolean validateIEFTRFC7571Base64UrlEncodedStringPattern(String encodedString) {
         String base64urlRegex = "^[A-Za-z0-9_.-]*$";
         Pattern base64urlPattern = Pattern.compile(base64urlRegex);
 
         Matcher base64urlMatcher = base64urlPattern.matcher(encodedString);
 
         return base64urlMatcher.matches();
-    }
-
-    public static boolean isMessageVersion210ResendCondition(CREQ creq) {
-        return (creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
-                && !creq.getSdkCounterStoA().equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
-                && (creq.getResendChallenge() == null
-                        || InternalConstants.NO.equals(creq.getResendChallenge()))
-                && creq.getChallengeDataEntry() == null
-                && creq.getChallengeHTMLDataEntry() == null
-                && creq.getOobContinue() == null
-                && creq.getChallengeCancel() == null);
     }
 }

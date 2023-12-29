@@ -401,7 +401,14 @@ INSERT INTO `feature`
 VALUES
     (
         '21', 'CARD_RANGE', 'R12', 1, 'OOB',
-        '{ "oob_type" : "UL"}', NOW(), 'dev-user',
+        '{ "oob_type" : "UL_TEST"}', NOW(), 'dev-user',
+        NOW(), 'dev-user', null, null
+    );
+INSERT INTO `feature`
+VALUES
+    (
+        '22', 'INSTITUTION', 'I1', 1, 'OOB',
+        '{ "oob_type" : "MOCK"}', NOW(), 'dev-user',
         NOW(), 'dev-user', null, null
     );
 UNLOCK TABLES;
