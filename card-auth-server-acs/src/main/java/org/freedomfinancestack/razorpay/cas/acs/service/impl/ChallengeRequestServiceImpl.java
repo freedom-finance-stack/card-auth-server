@@ -295,11 +295,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (!ex.getErrorCode()
                     .equals(InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION)) {
                 challengeFlowDto.setSendRreq(true);
-            } else {
-                challengeFlowDto.getCres().setChallengeCompletionInd(InternalConstants.NO);
-                challengeFlowDto
-                        .getCres()
-                        .setAcsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER);
             }
         } catch (Exception ex) {
             log.error("Exception occurred", ex);
@@ -501,10 +496,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             InternalErrorCode internalErrorCode, Transaction transaction)
             throws InvalidStateTransactionException {
         transactionService.updateTransactionWithError(internalErrorCode, transaction);
-        if (Phase.AREQ.equals(transaction.getPhase())) {
-            transaction.setPhase(Phase.ERROR);
-        } else {
-            StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
-        }
+        StateMachine.Trigger(transaction, Phase.PhaseEvent.ERROR_OCCURRED);
     }
 }
