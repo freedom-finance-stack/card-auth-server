@@ -4,8 +4,7 @@ import java.util.List;
 
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

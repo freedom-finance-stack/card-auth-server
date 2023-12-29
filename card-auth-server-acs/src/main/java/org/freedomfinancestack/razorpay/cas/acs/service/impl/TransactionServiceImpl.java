@@ -56,6 +56,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final ECommIndicatorService eCommIndicatorService;
 
+    // TODO: remove findById from here and only save
     public Transaction saveOrUpdate(Transaction transaction) throws ACSDataAccessException {
         try {
             transactionRepository.save(transaction);
@@ -70,8 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
             throws ACSDataAccessException, TransactionDataNotValidException {
         if (Util.isNullorBlank(id)) {
             throw new TransactionDataNotValidException(
-                    ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING,
-                    InternalErrorCode.TRANSACTION_ID_NOT_RECOGNISED);
+                    ThreeDSecureErrorCode.REQUIRED_DATA_ELEMENT_MISSING, TRANSACTION_ID_EMPTY);
         }
         try {
             Optional<Transaction> transaction = transactionRepository.findById(id);

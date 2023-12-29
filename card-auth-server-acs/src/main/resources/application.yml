@@ -79,13 +79,20 @@ gateway:
       url: https://simulator-mutual-3ds.selftestplatform.com/v2.2.0/info/project_id
       useSSL: false
       connectTimeout: 5000
-      responseTimeout: 30000
+      responseTimeout: 5000
       keyStore:
         path: ${UL_TEST_PORTAL_KEYSTORE_PATH:}
         password: ${UL_TEST_PORTAL_KEYSTORE_PASSWORD:}
       trustStore:
         path: ${UL_TEST_PORTAL_TRUSTSTORE_PATH:}
         password: ${UL_TEST_PORTAL_TRUSTSTORE_PASSWORD:changeit}
+      retryable:
+        maxAttempts: 1
+        backOffPeriod: 1000
+    THREEDS_REQUESTOR_SERVER:
+      mock: false
+      connectTimeout: 5000
+      responseTimeout: 5000
       retryable:
         maxAttempts: 1
         backOffPeriod: 1000

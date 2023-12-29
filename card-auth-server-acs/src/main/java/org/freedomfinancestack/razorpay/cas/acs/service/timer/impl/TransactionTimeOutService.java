@@ -5,10 +5,12 @@ import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
+import org.freedomfinancestack.razorpay.cas.acs.gateway.threedsrequestor.ThreedsRequestorCResService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
+import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -26,6 +28,7 @@ public class TransactionTimeOutService {
     private final TransactionService transactionService;
     private final ECommIndicatorService eCommIndicatorService;
     private final ResultRequestService resultRequestService;
+    private final ThreedsRequestorCResService threedsRequestorCResService;
 
     void performTimeOutWaitingForCreq(String transactionId) {
         try {
@@ -98,12 +101,22 @@ public class TransactionTimeOutService {
         transactionService.updateTransactionWithError(errorCode, transaction);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
         transactionService.updateEci(transaction);
-        transaction = transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
+            if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
+                    && challengeCancelIndicator
+                            .getIndicator()
+                            .equals(
+                                    ChallengeCancelIndicator.TRANSACTION_TIMED_OUT
+                                            .getIndicator())) {
+                threedsRequestorCResService.sendNotificationCRes(transaction);
+            }
             resultRequestService.handleRreq(transaction);
+
         } catch (Exception ex) {
             log.error("An exception occurred: {} while sending RReq", ex.getMessage(), ex);
+        } finally {
+            transactionService.saveOrUpdate(transaction);
         }
     }
 }

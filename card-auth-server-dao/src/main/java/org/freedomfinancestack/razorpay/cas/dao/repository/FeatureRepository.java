@@ -37,6 +37,8 @@ public interface FeatureRepository extends BaseRepository<Feature, String> {
                         case RENDERING_TYPE:
                             return Util.gson.fromJson(
                                     feature.getProperties(), RenderingTypeConfigList.class);
+                        case OOB:
+                            return Util.gson.fromJson(feature.getProperties(), OOBConfig.class);
                         default:
                             return null;
                     }

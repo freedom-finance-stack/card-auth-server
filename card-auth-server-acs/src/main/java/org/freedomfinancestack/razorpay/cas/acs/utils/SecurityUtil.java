@@ -102,7 +102,7 @@ public class SecurityUtil {
                 x5c.add(encodedValue);
             }
 
-            // Inter - no intermediate cert in case of UL testing
+            // Inter - no intermediate cert in case of UL_TEST testing
             if (interCert instanceof java.security.cert.X509Certificate) {
                 java.security.cert.X509Certificate x509cert =
                         (java.security.cert.X509Certificate) interCert;

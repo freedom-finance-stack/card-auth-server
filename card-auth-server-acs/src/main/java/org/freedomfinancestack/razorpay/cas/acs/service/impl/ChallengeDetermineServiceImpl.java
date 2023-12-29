@@ -33,7 +33,8 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
                             .equals(challengeInd)) {
                 riskFlag = RiskFlag.CHALLENGE;
             } else if (ThreeDSRequestorChallengeInd.TRANSACTIONAL_RISK_ANALYSIS_IS_ALREADY_PERFORMED
-                    .equals(challengeInd)) {
+                            .equals(challengeInd)
+                    && !riskFlagByAcs.equals(RiskFlag.CHALLENGE)) {
                 riskFlag = RiskFlag.NO_CHALLENGE;
             } else if (ThreeDSRequestorChallengeInd.DATA_SHARE_ONLY.equals(challengeInd)) {
                 if (riskFlagByAcs.equals(RiskFlag.INFORMATIONAL)) {
