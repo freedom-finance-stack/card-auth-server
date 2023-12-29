@@ -236,7 +236,7 @@ public class Util {
     }
 
     /**
-     * to check string is base64 Url encoding or not
+     * to check string is base64 Url encoded or not, works with both padded and non-padded strings
      *
      * @param input input string. which need to check for validity
      * @return boolean set to true for valid base64url encoding
@@ -244,8 +244,6 @@ public class Util {
     public static boolean isValidBase64Url(String input) {
         try {
 
-            // TODO: check this change and naming conventions
-            //            input = input.replaceAll("", "");
             // Decode the input to check if it's a valid Base64 encoding
             byte[] decodedBytes = Base64.getUrlDecoder().decode(input);
 
@@ -337,7 +335,8 @@ public class Util {
         }
     }
 
-    public static boolean validateBase64UrlEncodedString(String encodedString) {
+    // works only with non-padded base64Url encoded string
+    public static boolean validateBase64UrlEncodedStringPattern(String encodedString) {
         String base64urlRegex = "^[A-Za-z0-9_.-]*$";
         Pattern base64urlPattern = Pattern.compile(base64urlRegex);
 

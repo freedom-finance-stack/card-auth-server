@@ -101,8 +101,6 @@ public class TransactionTimeOutService {
         transactionService.updateTransactionWithError(errorCode, transaction);
         StateMachine.Trigger(transaction, Phase.PhaseEvent.TIMEOUT);
         transactionService.updateEci(transaction);
-        // TODO: check this condition
-        //        transactionService.saveOrUpdate(transaction);
         // todo release mutex before RReq.
         try {
             if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
