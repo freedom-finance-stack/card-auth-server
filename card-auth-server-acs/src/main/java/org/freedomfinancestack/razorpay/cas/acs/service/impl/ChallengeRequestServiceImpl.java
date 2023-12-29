@@ -267,6 +267,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 challengeFlowDto.setSendEmptyResponse(true);
             }
             Transaction transactionErr = new Transaction();
+            transactionErr.setPhase(Phase.ARES);
             updateTransactionWithError(ex.getInternalErrorCode(), transactionErr);
             throw new ThreeDSException(
                     ex.getThreeDSecureErrorCode(), ex.getMessage(), transactionErr, ex);
