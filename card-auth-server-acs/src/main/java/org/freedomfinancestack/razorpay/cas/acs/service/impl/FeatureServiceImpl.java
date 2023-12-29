@@ -175,7 +175,19 @@ public class FeatureServiceImpl implements FeatureService {
                 }
                 authConfigDto.setPasswordConfig(passwordConfig);
             }
-            case Decoupled, OOB -> log.info("CONFIG FOR DECOUPLED/OOB IS YET TO ADD");
+            case Decoupled -> log.info("CONFIG FOR DECOUPLED IS YET TO ADD");
+            case OOB -> {
+                OOBConfig oobConfig =
+                        (OOBConfig)
+                                featureRepository.findFeatureByIds(
+                                        FeatureName.OOB, entityIdsByType);
+
+                if (oobConfig == null) {
+                    throw new ACSDataAccessException(
+                            InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "OOB Config not found");
+                }
+                authConfigDto.setOobConfig(oobConfig);
+            }
             default -> throw new ACSDataAccessException(
                     InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
         }

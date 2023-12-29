@@ -396,6 +396,14 @@ VALUES
         NOW(), 'dev-user', NOW(), 'dev-user',
         null, null
     );
+
+INSERT INTO `feature`
+VALUES
+    (
+        '21', 'CARD_RANGE', 'R12', 1, 'OOB',
+        '{ "oob_type" : "UL"}', NOW(), 'dev-user',
+        NOW(), 'dev-user', null, null
+    );
 UNLOCK TABLES;
 
 

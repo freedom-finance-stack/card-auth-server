@@ -1,9 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto;
 
-import org.freedomfinancestack.razorpay.cas.dao.model.ChallengeAttemptConfig;
-import org.freedomfinancestack.razorpay.cas.dao.model.ChallengeAuthTypeConfig;
-import org.freedomfinancestack.razorpay.cas.dao.model.OtpConfig;
-import org.freedomfinancestack.razorpay.cas.dao.model.PasswordConfig;
+import org.freedomfinancestack.razorpay.cas.dao.model.*;
 
 import lombok.Data;
 
@@ -21,4 +18,5 @@ public class AuthConfigDto {
     private ChallengeAuthTypeConfig challengeAuthTypeConfig;
     private OtpConfig otpConfig;
     private PasswordConfig passwordConfig;
+    private OOBConfig oobConfig;
 }
