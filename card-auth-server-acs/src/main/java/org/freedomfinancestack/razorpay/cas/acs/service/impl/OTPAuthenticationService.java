@@ -32,7 +32,7 @@ import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstant
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.CHALLENGE_INCORRECT_OTP_TEXT;
 
 /**
- * The {@code OTPAuthenticationServiceImpl} class is an implementation of the {@link
+ * The {@code OTPAuthenticationService} class is an implementation of the {@link
  * AuthenticationService} interface. This service is responsible for authenticating the user using
  * the One Time Password (OTP) and generating the Authentication Response.
  *
@@ -43,7 +43,7 @@ import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstant
 @Service("OTPAuthenticationService")
 @Slf4j
 @RequiredArgsConstructor
-public class OTPAuthenticationServiceImpl implements AuthenticationService {
+public class OTPAuthenticationService implements AuthenticationService {
     private final OtpService otpService;
     private final OtpCommunicationConfiguration otpCommunicationConfiguration;
     private final PlrqService plrqService;

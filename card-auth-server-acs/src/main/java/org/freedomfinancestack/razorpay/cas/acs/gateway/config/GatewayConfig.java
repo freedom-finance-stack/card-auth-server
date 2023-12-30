@@ -49,8 +49,10 @@ public class GatewayConfig {
         private String password;
 
         public KeyStoreConfig(KeyStoreConfig keyStore) {
-            this.path = keyStore.getPath();
-            this.password = keyStore.getPassword();
+            if (keyStore != null) {
+                this.path = keyStore.getPath();
+                this.password = keyStore.getPassword();
+            }
         }
     }
 
@@ -62,8 +64,10 @@ public class GatewayConfig {
         private String password;
 
         public TrustStoreConfig(TrustStoreConfig trustStore) {
-            this.path = trustStore.getPath();
-            this.password = trustStore.getPassword();
+            if (trustStore != null) {
+                this.path = trustStore.getPath();
+                this.password = trustStore.getPassword();
+            }
         }
     }
 

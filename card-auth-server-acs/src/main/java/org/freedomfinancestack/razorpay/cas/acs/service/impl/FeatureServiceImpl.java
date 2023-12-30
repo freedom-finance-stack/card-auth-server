@@ -6,12 +6,10 @@ import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.AuthConfigException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.InvalidConfigException;
 import org.freedomfinancestack.razorpay.cas.acs.service.FeatureService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.DeviceRenderOptions;
-import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
 import org.freedomfinancestack.razorpay.cas.dao.repository.FeatureRepository;
@@ -39,7 +37,7 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     public void getACSRenderingType(
             Transaction transaction, DeviceRenderOptions deviceRenderOptions)
-            throws ThreeDSException {
+            throws InvalidConfigException {
         RenderingTypeConfigList renderingTypeConfigList =
                 (RenderingTypeConfigList)
                         featureRepository.findFeatureByIds(
@@ -81,34 +79,44 @@ public class FeatureServiceImpl implements FeatureService {
             return;
         }
 
+        if (renderingTypeConfigList.getRenderingTypeConfigs() != null
+                && renderingTypeConfigList.getRenderingTypeConfigs().size() > 0) {
+            log.error(
+                    "Rendering Type mismatch for Institution ID : "
+                            + transaction.getInstitutionId()
+                            + " and Card Range ID : "
+                            + transaction.getCardRangeId());
+            throw new InvalidConfigException(
+                    InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY,
+                    "Matching Rendering Type Config not found");
+        }
+
         log.error(
                 "Rendering Type not found for Institution ID : "
                         + transaction.getInstitutionId()
                         + " and Card Range ID : "
                         + transaction.getCardRangeId());
-        throw new ThreeDSException(
-                ThreeDSecureErrorCode.TRANSACTION_DATA_NOT_VALID,
-                InternalErrorCode.RENDERING_TYPE_NOT_FOUND,
-                "Rendering Type Config not found");
+        throw new InvalidConfigException(
+                InternalErrorCode.RENDERING_TYPE_NOT_FOUND, "Rendering Type Config not found");
     }
 
     @Override
     public AuthConfigDto getAuthenticationConfig(Transaction transaction)
-            throws AuthConfigException {
+            throws InvalidConfigException {
         return getAuthenticationConfig(getEntityIdsByType(transaction));
     }
 
     // todo add cache
     @Override
     public AuthConfigDto getAuthenticationConfig(Map<FeatureEntityType, String> entityIdsByType)
-            throws AuthConfigException {
+            throws InvalidConfigException {
         AuthConfigDto authConfigDto = new AuthConfigDto();
         ChallengeAuthTypeConfig challengeAuthTypeConfig =
                 (ChallengeAuthTypeConfig)
                         featureRepository.findFeatureByIds(
                                 FeatureName.CHALLENGE_AUTH_TYPE, entityIdsByType);
         if (challengeAuthTypeConfig == null) {
-            throw new AuthConfigException(
+            throw new InvalidConfigException(
                     InternalErrorCode.AUTH_CONFIG_NOT_PRESENT,
                     "Challenge Auth Type Config not found");
         }
@@ -118,7 +126,7 @@ public class FeatureServiceImpl implements FeatureService {
                         featureRepository.findFeatureByIds(
                                 FeatureName.CHALLENGE_ATTEMPT, entityIdsByType);
         if (challengeAttemptConfig == null) {
-            throw new AuthConfigException(
+            throw new InvalidConfigException(
                     InternalErrorCode.AUTH_CONFIG_NOT_PRESENT,
                     "Challenge attempt Config not found");
         }
@@ -143,36 +151,45 @@ public class FeatureServiceImpl implements FeatureService {
             AuthType authType,
             AuthConfigDto authConfigDto,
             Map<FeatureEntityType, String> entityIdsByType)
-            throws AuthConfigException {
+            throws InvalidConfigException {
         switch (authType) {
-            case OTP:
+            case OTP -> {
                 OtpConfig otpConfig =
                         (OtpConfig)
                                 featureRepository.findFeatureByIds(
                                         FeatureName.OTP, entityIdsByType);
                 if (otpConfig == null) {
-                    throw new AuthConfigException(
+                    throw new InvalidConfigException(
                             InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "OTP Config not found");
                 }
                 authConfigDto.setOtpConfig(otpConfig);
-                break;
-            case PASSWORD:
+            }
+            case PASSWORD -> {
                 PasswordConfig passwordConfig =
                         (PasswordConfig)
                                 featureRepository.findFeatureByIds(
                                         FeatureName.PASSWORD, entityIdsByType);
                 if (passwordConfig == null) {
-                    throw new AuthConfigException(
+                    throw new InvalidConfigException(
                             InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Password Config not found");
                 }
                 authConfigDto.setPasswordConfig(passwordConfig);
-                break;
-            case Decoupled:
-                log.info("CONFIG FOR DECOUPLED IS YET TO ADD");
-                break;
-            default:
-                throw new AuthConfigException(
-                        InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
+            }
+            case Decoupled -> log.info("CONFIG FOR DECOUPLED IS YET TO ADD");
+            case OOB -> {
+                OOBConfig oobConfig =
+                        (OOBConfig)
+                                featureRepository.findFeatureByIds(
+                                        FeatureName.OOB, entityIdsByType);
+
+                if (oobConfig == null) {
+                    throw new InvalidConfigException(
+                            InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "OOB Config not found");
+                }
+                authConfigDto.setOobConfig(oobConfig);
+            }
+            default -> throw new InvalidConfigException(
+                    InternalErrorCode.AUTH_CONFIG_NOT_PRESENT, "Invalid Auth Type");
         }
     }
 }

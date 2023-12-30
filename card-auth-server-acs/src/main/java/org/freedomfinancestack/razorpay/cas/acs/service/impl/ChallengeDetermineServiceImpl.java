@@ -41,7 +41,8 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
                             || ThreeDSReqAuthMethodInd.NOT_PERFORMED.equals(methodInd))) {
                 riskFlag = RiskFlag.CHALLENGE;
             } else if (ThreeDSRequestorChallengeInd.TRANSACTIONAL_RISK_ANALYSIS_IS_ALREADY_PERFORMED
-                    .equals(challengeInd)) {
+                            .equals(challengeInd)
+                    && !riskFlagByAcs.equals(RiskFlag.CHALLENGE)) {
                 riskFlag = RiskFlag.NO_CHALLENGE;
             } else if (!Util.isNullorBlank(objAReq.getThreeDSRequestorDecReqInd())
                     && objAReq.getThreeDSRequestorDecReqInd().equalsIgnoreCase("Y")

@@ -51,6 +51,9 @@ public class TransactionSdkDetail extends BaseEntity<String> {
     @Column(name = "whitelisting_data_entry")
     private String whitelistingDataEntry;
 
+    @Column(name = "threeds_requestor_app_url")
+    private String threeDSRequestorAppURL;
+
     public String getAcsUiType() {
         if (acsInterface != null && acsInterface.equals(DeviceInterface.HTML.getValue())) {
             return UIType.HTML_OTHER.getType();

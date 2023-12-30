@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway;
 
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public abstract class HttpsGatewayService {
     public abstract GatewayConfig.ServiceConfig getServiceConfig();
 
     public String sendRequest(
-            String requestBody,
+            Object requestBody,
             HttpMethod method,
             Map<String, String> headerMap,
             Map<String, Object> queryParam) {
@@ -33,7 +34,7 @@ public abstract class HttpsGatewayService {
         if (queryParam == null) {
             queryParam = new HashMap<>();
         }
-        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+        HttpEntity<?> entity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<String> responseEntity =
                 this.getRestTemplate()
                         .exchange(
@@ -67,6 +68,9 @@ public abstract class HttpsGatewayService {
             Throwable cause = e.getCause();
             if (cause instanceof GatewayHttpStatusCodeException) {
                 throw (GatewayHttpStatusCodeException) cause;
+            } else if (cause instanceof SocketTimeoutException) {
+                throw new GatewayHttpStatusCodeException(
+                        HttpStatus.GATEWAY_TIMEOUT, cause.getMessage());
             }
             throw e;
         }

@@ -52,7 +52,7 @@ public class AppChallengeRequestParser implements ChallengeRequestParser {
         if (errorObj == null || !errorObj.getMessageType().equals(MessageType.Erro.toString())) {
             String decryptedCReq;
             if (testConfigProperties.isEnableDecryptionEncryption()) {
-                if (!Util.validateBase64UrlEncodedString(strCReq)) {
+                if (!Util.validateIEFTRFC7571Base64UrlEncodedStringPattern(strCReq)) {
                     throw new ParseException(
                             ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                             InternalErrorCode.CRES_ENCRYPTION_ERROR);

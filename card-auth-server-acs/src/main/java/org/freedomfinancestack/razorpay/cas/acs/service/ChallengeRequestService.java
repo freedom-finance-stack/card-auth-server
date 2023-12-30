@@ -1,7 +1,10 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
+import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
+import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -38,5 +41,16 @@ public interface ChallengeRequestService {
                 && !transaction
                         .getTransactionStatus()
                         .equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED);
+    }
+
+    static boolean isMessageVersion210ResendCondition(CREQ creq) {
+        return (creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)
+                && !creq.getSdkCounterStoA().equals(InternalConstants.INITIAL_ACS_SDK_COUNTER)
+                && (creq.getResendChallenge() == null
+                        || InternalConstants.NO.equals(creq.getResendChallenge()))
+                && creq.getChallengeDataEntry() == null
+                && creq.getChallengeHTMLDataEntry() == null
+                && creq.getOobContinue() == null
+                && creq.getChallengeCancel() == null);
     }
 }

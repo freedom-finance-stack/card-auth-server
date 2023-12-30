@@ -44,6 +44,8 @@ public class CREQ extends ThreeDSObject {
 
     private String whitelistingDataEntry;
 
+    private String oobContinue;
+
     @Override
     public MessageType getThreeDSMessageType() {
         return MessageType.CReq;

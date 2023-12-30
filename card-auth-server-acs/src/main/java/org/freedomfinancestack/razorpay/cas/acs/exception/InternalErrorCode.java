@@ -85,7 +85,7 @@ public enum
             "3014",
             "RENDERING TYPE NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+            TransactionStatusReason.UNSUPPORTED_DEVICE),
     UNSUPPPORTED_DEVICE_CATEGORY(
             "3015",
             "UNSUPPORTED DEVICE CATEGORY",
@@ -292,6 +292,12 @@ public enum
             "Can't encrypt CRES response",
             TransactionStatus.FAILED,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+    TRANSACTION_TIMED_OUT_DS_RESPONSE(
+            "8018",
+            "Transaction Timed out waiting for DS Response",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
 
     TEST_TRANSACTION_UA(
             "9001",
