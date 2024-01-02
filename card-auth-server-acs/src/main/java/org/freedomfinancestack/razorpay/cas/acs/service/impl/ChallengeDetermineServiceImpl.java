@@ -45,8 +45,7 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
                     && !riskFlagByAcs.equals(RiskFlag.CHALLENGE)) {
                 riskFlag = RiskFlag.NO_CHALLENGE;
             } else if (!Util.isNullorBlank(objAReq.getThreeDSRequestorDecReqInd())
-                    && objAReq.getThreeDSRequestorDecReqInd().equalsIgnoreCase("Y")
-                    && riskFlagByAcs.equals(RiskFlag.DECOUPLED_CHALLENGE)) {
+                    && objAReq.getThreeDSRequestorDecReqInd().equalsIgnoreCase("Y")) {
                 riskFlag = RiskFlag.DECOUPLED_CHALLENGE;
             } else if (ThreeDSRequestorChallengeInd.DATA_SHARE_ONLY.equals(challengeInd)) {
                 if (riskFlagByAcs.equals(RiskFlag.INFORMATIONAL)) {
