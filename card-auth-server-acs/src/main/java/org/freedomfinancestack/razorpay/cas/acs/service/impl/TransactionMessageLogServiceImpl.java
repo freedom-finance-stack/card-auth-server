@@ -34,7 +34,9 @@ public class TransactionMessageLogServiceImpl implements TransactionMessageLogSe
     private final TransactionMessageLogRepository transactionMessageLogRepository;
 
     public TransactionMessageLog create(ThreeDSObject threeDSObject, String transactionId) {
-
+        if (threeDSObject == null) {
+            return null;
+        }
         TransactionMessageLog transactionMessageLog =
                 new TransactionMessageLog(
                         Util.toJson(threeDSObject), threeDSObject.getThreeDSMessageType());
@@ -89,6 +91,9 @@ public class TransactionMessageLogServiceImpl implements TransactionMessageLogSe
                     break;
                 case RReq:
                     messageMap.put(messageType, Util.fromJson(message, RREQ.class));
+                    break;
+                case RRes:
+                    messageMap.put(messageType, Util.fromJson(message, RRES.class));
                     break;
                 default:
                     throw new ThreeDSException(
