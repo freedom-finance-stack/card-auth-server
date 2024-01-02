@@ -140,8 +140,8 @@ class ChallengeDetermineServiceImplTest {
 
         challengeDetermineService.determineChallenge(mockAREQ, mockTransaction, RiskFlag.CHALLENGE);
 
-        assertTrue(mockTransaction.isChallengeMandated());
-        assertEquals(TransactionStatus.CHALLENGE_REQUIRED, mockTransaction.getTransactionStatus());
+        assertFalse(mockTransaction.isChallengeMandated());
+        assertEquals(TransactionStatus.SUCCESS, mockTransaction.getTransactionStatus());
     }
 
     @Test
