@@ -32,9 +32,4 @@ public class TransactionBrowserDetail extends BaseEntity<String> {
     @JoinColumn(name = "transaction_id", referencedColumnName = "id")
     @MapsId
     private Transaction transaction;
-
-    @Override
-    public String getId() {
-        return this.transaction.getId();
-    }
 }

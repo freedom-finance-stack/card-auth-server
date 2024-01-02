@@ -95,6 +95,10 @@ public class Util {
      * @return the masked card number
      */
     public static String maskedCardNumber(String cardNumber) {
+        if (cardNumber == null || cardNumber.length() < 10) {
+            // Handle invalid or too short card numbers
+            return cardNumber;
+        }
         int totalLength = cardNumber.length();
         String lastFourDigit = cardNumber.substring(totalLength - 4);
         String firstSixDigit = cardNumber.substring(0, 6);
@@ -112,6 +116,9 @@ public class Util {
      * @return decoded string
      */
     public static String decodeBase64(String base64Data) {
+        if (base64Data == null) {
+            return null;
+        }
         return new String(Base64.getDecoder().decode(base64Data), StandardCharsets.UTF_8);
     }
 
@@ -122,20 +129,10 @@ public class Util {
      * @return encoded string
      */
     public static String encodeBase64(String data) {
+        if (data == null) {
+            return null;
+        }
         return Base64.getEncoder().encodeToString(data.getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * Creates base64 encoded string from object.
-     *
-     * @param data Object data
-     * @return encoded string
-     */
-    public static String encodeBase64(Object data) {
-        String input = Util.toJson(data);
-        return Base64.getEncoder()
-                .withoutPadding()
-                .encodeToString(input.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -145,6 +142,9 @@ public class Util {
      * @return encoded string
      */
     public static String encodeBase64Url(Object data) {
+        if (data == null) {
+            return null;
+        }
         String input = Util.toJson(data);
         return Base64.getUrlEncoder()
                 .withoutPadding()

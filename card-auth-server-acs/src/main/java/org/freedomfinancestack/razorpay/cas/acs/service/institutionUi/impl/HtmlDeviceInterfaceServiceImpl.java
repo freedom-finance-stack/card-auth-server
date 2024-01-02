@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.UiConfigException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.ThymeleafService;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.DeviceInterfaceService;
@@ -42,7 +42,7 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
             ChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto)
-            throws ACSDataAccessException {
+            throws UiConfigException {
         InstitutionUIParams validInstitutionUiParams = new InstitutionUIParams();
 
         AppOtpHtmlParams appOtpHtmlParams = new AppOtpHtmlParams();
@@ -50,7 +50,9 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
         Optional<Institution> institution =
                 institutionRepository.findById(transaction.getInstitutionId());
         if (institution.isEmpty()) {
-            throw new ACSDataAccessException(InternalErrorCode.INSTITUTION_NOT_FOUND);
+            throw new UiConfigException(
+                    InternalErrorCode.INSTITUTION_NOT_FOUND,
+                    InternalErrorCode.INSTITUTION_NOT_FOUND.getDefaultErrorMessage());
         }
         appOtpHtmlParams.setInstitutionName(institution.get().getName());
         appOtpHtmlParams.setTimeoutInSeconds(
@@ -97,7 +99,8 @@ public class HtmlDeviceInterfaceServiceImpl implements DeviceInterfaceService {
                         appOtpHtmlParams, institutionUiConfiguration.getHtmlOtpTemplate());
 
         if (html == null) {
-            throw new ACSDataAccessException(InternalErrorCode.DISPLAY_PAGE_NOT_FOUND);
+            throw new UiConfigException(
+                    InternalErrorCode.DISPLAY_PAGE_NOT_FOUND, "can not create html display page");
         }
 
         String encodedHtml =

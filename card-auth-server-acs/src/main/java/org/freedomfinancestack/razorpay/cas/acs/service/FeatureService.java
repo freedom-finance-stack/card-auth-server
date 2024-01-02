@@ -3,7 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service;
 import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.InvalidConfigException;
 import org.freedomfinancestack.razorpay.cas.contract.DeviceRenderOptions;
 import org.freedomfinancestack.razorpay.cas.dao.enums.FeatureEntityType;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -18,10 +18,10 @@ import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
  */
 public interface FeatureService {
     AuthConfigDto getAuthenticationConfig(Map<FeatureEntityType, String> entityIdsByType)
-            throws ACSDataAccessException;
+            throws InvalidConfigException;
 
     void getACSRenderingType(Transaction transaction, DeviceRenderOptions deviceRenderOptions)
-            throws ACSDataAccessException;
+            throws InvalidConfigException;
 
-    AuthConfigDto getAuthenticationConfig(Transaction transaction) throws ACSDataAccessException;
+    AuthConfigDto getAuthenticationConfig(Transaction transaction) throws InvalidConfigException;
 }

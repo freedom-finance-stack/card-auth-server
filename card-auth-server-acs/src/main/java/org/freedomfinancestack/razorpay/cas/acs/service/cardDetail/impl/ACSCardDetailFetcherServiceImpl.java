@@ -4,7 +4,6 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CardDetailsMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
@@ -36,7 +35,7 @@ public class ACSCardDetailFetcherServiceImpl implements CardDetailFetcherService
     private final CardDetailRepository cardDetailRepository;
 
     public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
-            throws ACSDataAccessException {
+            throws CardDetailsNotFoundException {
         log.info("Fetching card details from ACS");
         try {
             CardDetail cardDetail =
@@ -48,20 +47,24 @@ public class ACSCardDetailFetcherServiceImpl implements CardDetailFetcherService
                         .build();
             }
         } catch (DataAccessException ex) {
-            throw new ACSDataAccessException(InternalErrorCode.CARD_USER_FETCH_EXCEPTION, ex);
+            throw new CardDetailsNotFoundException(
+                    InternalErrorCode.CARD_USER_FETCH_EXCEPTION, "error during fetching user data");
         }
 
         return CardDetailResponse.builder().isSuccess(false).build();
     }
 
     @Override
-    public void blockCard(CardDetailsRequest cardDetailsRequest) throws ACSDataAccessException {
+    public void blockCard(CardDetailsRequest cardDetailsRequest)
+            throws CardDetailsNotFoundException {
         log.info("Block card in CardDetails table");
         try {
             cardDetailRepository.blockCard(
                     cardDetailsRequest.getCardNumber(), cardDetailsRequest.getInstitutionId());
         } catch (DataAccessException ex) {
-            throw new ACSDataAccessException(InternalErrorCode.CARD_USER_FETCH_EXCEPTION, ex);
+            log.error("DataAccessException: ", ex);
+            throw new CardDetailsNotFoundException(
+                    InternalErrorCode.CARD_USER_FETCH_EXCEPTION, "error during fetching user data");
         }
     }
 

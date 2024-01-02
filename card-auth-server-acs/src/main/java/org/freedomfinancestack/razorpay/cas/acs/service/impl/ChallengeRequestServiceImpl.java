@@ -7,8 +7,8 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.CResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ParseException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
@@ -57,7 +57,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     @Override
     public ChallengeFlowDto processChallengeRequest(
             final DeviceChannel flowType, final String strCReq, final String threeDSSessionData)
-            throws ThreeDSException, ACSDataAccessException {
+            throws ThreeDSException {
         if (flowType.equals(DeviceChannel.APP)) {
             return processAppChallengeRequestHandler(flowType, strCReq, threeDSSessionData);
         }
@@ -66,7 +66,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     public ChallengeFlowDto processAppChallengeRequestHandler(
             DeviceChannel flowType, String strCReq, String threeDSSessionData)
-            throws ThreeDSException, ACSDataAccessException {
+            throws ThreeDSException {
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         try {
             processChallengeRequestHandler(challengeFlowDto, flowType, strCReq, threeDSSessionData);
@@ -88,7 +88,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             }
             challengeFlowDto.setEncryptedResponse(cres);
             return challengeFlowDto;
-        } catch (InvalidStateTransactionException e) { // todo handle ACSDataAccessException
+        } catch (InvalidStateTransactionException e) {
             log.error(
                     "Invalid State Transaction occurred in processAppChallengeRequest {}",
                     e.getMessage(),
@@ -110,7 +110,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             // UI
             // Final Output
             // Exception handling
-        } catch (InvalidStateTransactionException | ACSDataAccessException e) {
+        } catch (InvalidStateTransactionException e) {
             log.error(
                     "Invalid State Transaction occurred in processAppChallengeRequest {}",
                     e.getMessage(),
@@ -148,7 +148,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             final DeviceChannel flowType,
             final String strCReq,
             final String threeDSSessionData)
-            throws ThreeDSException, InvalidStateTransactionException, ACSDataAccessException {
+            throws ThreeDSException, InvalidStateTransactionException {
         Transaction transaction = null;
         CREQ creq;
         try {

@@ -108,38 +108,52 @@ public class Transaction extends BaseEntity<String>
     public void setTransactionReferenceDetail(
             TransactionReferenceDetail transactionReferenceDetail) {
         this.transactionReferenceDetail = transactionReferenceDetail;
-        transactionReferenceDetail.setTransaction(this);
+        if (transactionReferenceDetail != null) {
+            transactionReferenceDetail.setTransaction(this);
+        }
     }
 
     public void setTransactionMerchant(TransactionMerchant transactionMerchant) {
         this.transactionMerchant = transactionMerchant;
-        transactionMerchant.setTransaction(this);
+        if (transactionMerchant != null) {
+            transactionMerchant.setTransaction(this);
+        }
     }
 
     public void setTransactionCardDetail(TransactionCardDetail transactionCardDetail) {
         this.transactionCardDetail = transactionCardDetail;
-        transactionCardDetail.setTransaction(this);
+        if (transactionCardDetail != null) {
+            transactionCardDetail.setTransaction(this);
+        }
     }
 
     public void setTransactionSdkDetail(TransactionSdkDetail transactionSdkDetail) {
         this.transactionSdkDetail = transactionSdkDetail;
-        transactionSdkDetail.setTransaction(this);
+        if (transactionSdkDetail != null) {
+            transactionSdkDetail.setTransaction(this);
+        }
     }
 
     public void setTransactionCardHolderDetail(
             TransactionCardHolderDetail transactionCardHolderDetail) {
         this.transactionCardHolderDetail = transactionCardHolderDetail;
-        transactionCardHolderDetail.setTransaction(this);
+        if (transactionCardHolderDetail != null) {
+            transactionCardHolderDetail.setTransaction(this);
+        }
     }
 
     public void setTransactionPurchaseDetail(TransactionPurchaseDetail transactionPurchaseDetail) {
         this.transactionPurchaseDetail = transactionPurchaseDetail;
-        transactionPurchaseDetail.setTransaction(this);
+        if (transactionPurchaseDetail != null) {
+            transactionPurchaseDetail.setTransaction(this);
+        }
     }
 
     public void setTransactionBrowserDetail(TransactionBrowserDetail transactionBrowserDetail) {
         this.transactionBrowserDetail = transactionBrowserDetail;
-        transactionBrowserDetail.setTransaction(this);
+        if (transactionBrowserDetail != null) {
+            transactionBrowserDetail.setTransaction(this);
+        }
     }
 
     @Override

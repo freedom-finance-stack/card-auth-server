@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.controller;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.AuthenticationRequestService;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
@@ -51,8 +50,6 @@ public class AuthenticationRequestController {
      * @return The {@link ARES} object representing the Authentication Response message.
      * @throws ThreeDSException if an error occurs during the processing of the AReq, and a
      *     challenge is required.
-     * @throws ACSDataAccessException if an error occurs during the processing of the AReq or ACS
-     *     processing, and an ARes message needs to be sent.
      */
     @Operation(summary = "Handles Authentication Request generating from 3DS Server")
     @ApiResponses(
@@ -77,7 +74,7 @@ public class AuthenticationRequestController {
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse,
             @RequestHeader HttpHeaders headers)
-            throws ThreeDSException, ACSDataAccessException {
+            throws ThreeDSException {
         return authenticationRequestService.processAuthenticationRequest(areq);
     }
 }

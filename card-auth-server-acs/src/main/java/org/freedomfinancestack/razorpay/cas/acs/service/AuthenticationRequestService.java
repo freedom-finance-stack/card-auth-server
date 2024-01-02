@@ -1,6 +1,5 @@
 package org.freedomfinancestack.razorpay.cas.acs.service;
 
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ARES;
@@ -27,9 +26,6 @@ public interface AuthenticationRequestService {
      *     AReq.
      * @throws ThreeDSException If any error occurs during the processing of the AReq, and the
      *     response needs to be sent as "Erro" message type.
-     * @throws ACSDataAccessException If there is an exception specific to the ACS (Access Control
-     *     Server) functionality that does not require sending "Erro" message type as the response.
      */
-    ARES processAuthenticationRequest(final AREQ areq)
-            throws ThreeDSException, ACSDataAccessException;
+    ARES processAuthenticationRequest(final AREQ areq) throws ThreeDSException;
 }

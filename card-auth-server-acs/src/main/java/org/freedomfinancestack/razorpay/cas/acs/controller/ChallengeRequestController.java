@@ -3,7 +3,6 @@ package org.freedomfinancestack.razorpay.cas.acs.controller;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -69,7 +68,7 @@ public class ChallengeRequestController {
             @RequestParam(name = "creq") String strCReq,
             @RequestParam(name = "threeDSSessionData", required = false) String threeDSSessionData,
             Model model)
-            throws ACSDataAccessException, ThreeDSException {
+            throws ThreeDSException {
         ChallengeFlowDto challengeFlowDto =
                 challengeRequestService.processChallengeRequest(
                         DeviceChannel.BRW, strCReq, threeDSSessionData);
@@ -102,8 +101,7 @@ public class ChallengeRequestController {
             produces = {"application/jose;charset=UTF-8"},
             consumes = {"application/jose; charset=utf-8", "application/json;charset=utf-8"})
     @ResponseBody
-    public String handleChallengeRequest(@RequestBody String strCReq)
-            throws ACSDataAccessException, ThreeDSException {
+    public String handleChallengeRequest(@RequestBody String strCReq) throws ThreeDSException {
         return challengeRequestService
                 .processChallengeRequest(DeviceChannel.APP, strCReq, null)
                 .getEncryptedResponse();
@@ -161,7 +159,7 @@ public class ChallengeRequestController {
                         description = "Bad Request or Request not according to Areq Schema")
             })
     public String handleChallengeValidationRequest(Model model, @ModelAttribute("cReq") CREQ cReq)
-            throws ThreeDSException, ACSDataAccessException {
+            throws ThreeDSException {
         ChallengeFlowDto challengeFlowDto =
                 challengeRequestService.processChallengeRequest(
                         DeviceChannel.BRW, Util.toJson(cReq), null);

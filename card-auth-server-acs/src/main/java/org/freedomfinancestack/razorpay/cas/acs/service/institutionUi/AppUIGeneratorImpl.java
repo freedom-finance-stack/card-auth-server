@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.UiConfigException;
 import org.freedomfinancestack.razorpay.cas.acs.service.AppUIGenerator;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.impl.HtmlDeviceInterfaceServiceImpl;
 import org.freedomfinancestack.razorpay.cas.acs.service.institutionUi.impl.NativeDeviceInterfaceServiceImpl;
@@ -37,7 +37,7 @@ public class AppUIGeneratorImpl implements AppUIGenerator {
     @Override
     public void generateAppUIParams(
             ChallengeFlowDto challengeFlowDto, Transaction transaction, AuthConfigDto authConfigDto)
-            throws ACSDataAccessException {
+            throws UiConfigException {
 
         DeviceInterface deviceInterface =
                 DeviceInterface.getDeviceInterface(
@@ -66,22 +66,23 @@ public class AppUIGeneratorImpl implements AppUIGenerator {
         log.error(
                 "Institution Ui Config not found for Institution ID : "
                         + transaction.getInstitutionId());
-        throw new ACSDataAccessException(
+        throw new UiConfigException(
                 InternalErrorCode.INSTITUTION_UI_CONFIG_NOT_FOUND,
                 "Institution Ui Config not found");
     }
 
     private DeviceInterfaceService getDeviceInterfaceService(
             final DeviceInterface deviceInterface, @NonNull final DeviceChannel deviceChannel)
-            throws ACSDataAccessException {
+            throws UiConfigException {
         if (deviceChannel.equals(DeviceChannel.BRW)) {
             return applicationContext.getBean(NativeDeviceInterfaceServiceImpl.class);
         }
         return switch (deviceInterface) {
             case NATIVE -> applicationContext.getBean(NativeDeviceInterfaceServiceImpl.class);
             case HTML -> applicationContext.getBean(HtmlDeviceInterfaceServiceImpl.class);
-            default -> throw new ACSDataAccessException(
-                    InternalErrorCode.UNSUPPORTED_DEVICE_INTERFACE);
+            default -> throw new UiConfigException(
+                    InternalErrorCode.UNSUPPORTED_DEVICE_INTERFACE,
+                    InternalErrorCode.UNSUPPORTED_DEVICE_INTERFACE.getDefaultErrorMessage());
         };
     }
 }

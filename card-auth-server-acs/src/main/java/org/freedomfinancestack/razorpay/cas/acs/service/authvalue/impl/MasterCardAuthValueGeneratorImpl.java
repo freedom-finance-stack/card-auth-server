@@ -1,15 +1,17 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.MasterCardConstants;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AuthValueConfig;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.AuthValueGenerator;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
@@ -25,12 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
 
-    @Autowired AuthValueConfig authValueConfig;
+    private final AuthValueConfig authValueConfig;
 
     @Override
-    public String createAuthValue(Transaction transaction)
-            throws ACSException, ACSValidationException {
-        String iav = null;
+    public String createAuthValue(Transaction transaction) throws ACSException {
 
         try {
             String acsKey = authValueConfig.getMasterCardAcsKey();
@@ -68,24 +68,15 @@ public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
                     MasterCardConstants.TLV_TAG
                             + encodedHexadecimal
                             + MasterCardConstants.ZERO_PADDING;
-            iav =
-                    Base64.encodeBase64String(
-                            org.apache.commons.codec.binary.Hex.decodeHex(iavValue.toCharArray()));
-            log.debug("base64IAV value :" + iav);
+            return Base64.encodeBase64String(
+                    org.apache.commons.codec.binary.Hex.decodeHex(iavValue.toCharArray()));
 
-        } catch (Exception e) {
-            String message =
-                    "generateIAVWithSPA2: "
-                            + e.getStackTrace()
-                            + " "
-                            + "Error while deriving the MasterCard AAV value";
-            log.error(message);
+        } catch (NoSuchAlgorithmException | InvalidKeyException | DecoderException e) {
+            log.error("Error while deriving the MasterCard AAV value: ", e);
             throw new ACSException(
                     InternalErrorCode.HSM_INTERNAL_EXCEPTION,
                     "Error while deriving the MasterCard AAV value",
                     e);
         }
-
-        return iav;
     }
 }

@@ -2,9 +2,9 @@ package org.freedomfinancestack.razorpay.cas.acs.service.cardDetail;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.DataNotFoundException;
 import org.freedomfinancestack.razorpay.cas.dao.enums.CardDetailsStore;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -37,11 +37,11 @@ public class CardDetailService {
      * @param cardDetailsRequest the card details request
      * @param type the type of card details store
      * @return the response containing the fetched card details
-     * @throws ACSDataAccessException if there is an error while fetching card details
+     * @throws CardDetailsNotFoundException if there is an error while fetching card details
      */
     public CardDetailResponse getCardDetails(
             CardDetailsRequest cardDetailsRequest, CardDetailsStore type)
-            throws ACSDataAccessException {
+            throws CardDetailsNotFoundException {
         CardDetailFetcherService cardDetailFetcherService =
                 cardDetailFetcherFactory.getCardDetailFetcher(type);
         return cardDetailFetcherService.getCardDetails(cardDetailsRequest);
@@ -52,10 +52,10 @@ public class CardDetailService {
      *
      * @param cardDetailsRequest the card details request
      * @param type the type of card details store
-     * @throws ACSDataAccessException if there is an error while fetching card details
+     * @throws CardDetailsNotFoundException if there is an error while fetching card details
      */
     public void blockCard(CardDetailsRequest cardDetailsRequest, CardDetailsStore type)
-            throws ACSDataAccessException {
+            throws CardDetailsNotFoundException {
         CardDetailFetcherService cardDetailFetcherService =
                 cardDetailFetcherFactory.getCardDetailFetcher(type);
         cardDetailFetcherService.blockCard(cardDetailsRequest);

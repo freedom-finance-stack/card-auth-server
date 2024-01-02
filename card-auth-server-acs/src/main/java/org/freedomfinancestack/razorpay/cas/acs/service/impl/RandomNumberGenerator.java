@@ -7,18 +7,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RandomNumberGenerator {
+    private static final int MIN_DIGIT = 1;
+    private static final int MAX_DIGIT = 9;
     SecureRandom secureRandom = new SecureRandom();
 
     public String getIntRandomNumberInRange(int digit) {
-        try {
-            return String.valueOf(
-                    this.secureRandom.nextInt(getStartRange(digit), getEndRange(digit)));
-
-        } catch (Exception e) {
+        if (digit < MIN_DIGIT || digit > MAX_DIGIT) {
             return String.valueOf(
                     this.secureRandom.nextInt(
                             InternalConstants.OTP_START_RANGE, InternalConstants.OTP_END_RANGE));
         }
+        int o = this.secureRandom.nextInt(getStartRange(digit), getEndRange(digit));
+        return String.valueOf(o);
     }
 
     private Integer getStartRange(int digit) {

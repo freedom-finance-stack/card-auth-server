@@ -14,6 +14,9 @@ public class ChallengeRequestParserFactory {
     private final AppChallengeRequestParser appChallengeRequestParser;
 
     public ChallengeRequestParser getService(DeviceChannel deviceChannel) {
+        if (deviceChannel == null) {
+            return null;
+        }
         switch (deviceChannel) {
             case APP -> {
                 return appChallengeRequestParser;

@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.impl;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.CardDetailFetcherService;
@@ -29,13 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 public class ExternalApiCardDetailFetcherServiceImpl implements CardDetailFetcherService {
     @Override
     public CardDetailResponse getCardDetails(CardDetailsRequest cardDetailsRequest)
-            throws ACSDataAccessException {
+            throws CardDetailsNotFoundException {
         log.info("Fetching card details from External API");
         return null;
     }
 
     @Override
-    public void blockCard(CardDetailsRequest cardDetailsRequest) throws ACSDataAccessException {
+    public void blockCard(CardDetailsRequest cardDetailsRequest)
+            throws CardDetailsNotFoundException {
         log.info("Block card details using External API");
     }
 

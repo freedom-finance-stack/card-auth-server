@@ -32,32 +32,31 @@ public class ChallengeDetermineServiceImpl implements ChallengeDetermineService 
                     || ThreeDSRequestorChallengeInd.WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
                             .equals(challengeInd)) {
                 riskFlag = RiskFlag.CHALLENGE;
-            } else if (ThreeDSRequestorChallengeInd.TRANSACTIONAL_RISK_ANALYSIS_IS_ALREADY_PERFORMED
-                            .equals(challengeInd)
-                    && !riskFlagByAcs.equals(RiskFlag.CHALLENGE)) {
-                riskFlag = RiskFlag.NO_CHALLENGE;
-            } else if (ThreeDSRequestorChallengeInd.DATA_SHARE_ONLY.equals(challengeInd)) {
-                if (riskFlagByAcs.equals(RiskFlag.INFORMATIONAL)) {
-                    riskFlag = RiskFlag.INFORMATIONAL;
-                } else {
-                    riskFlag = RiskFlag.NO_CHALLENGE;
-                }
-            } else if (!Util.isNullorBlank(objAReq.getThreeDSRequestorDecReqInd())
-                    && objAReq.getThreeDSRequestorDecReqInd().equalsIgnoreCase("Y")) {
-                riskFlag = RiskFlag.DECOUPLED_CHALLENGE;
-            } else if (Util.isNullorBlank(objAReq.getAcctInfo())
-                    && Util.isNullorBlank(objAReq.getAcctInfo().getSuspiciousAccActivity())
+            } else if (!Util.isNullorBlank(objAReq.getAcctInfo())
+                    && !Util.isNullorBlank(objAReq.getAcctInfo().getSuspiciousAccActivity())
                     && "02".equals(objAReq.getAcctInfo().getSuspiciousAccActivity())) {
                 riskFlag = RiskFlag.CHALLENGE;
             } else if (!Util.isNullorBlank(objAReq.getThreeDSReqAuthMethodInd())
                     && (ThreeDSReqAuthMethodInd.FAILED.equals(methodInd)
                             || ThreeDSReqAuthMethodInd.NOT_PERFORMED.equals(methodInd))) {
                 riskFlag = RiskFlag.CHALLENGE;
+            } else if (ThreeDSRequestorChallengeInd.TRANSACTIONAL_RISK_ANALYSIS_IS_ALREADY_PERFORMED
+                            .equals(challengeInd)
+                    && !riskFlagByAcs.equals(RiskFlag.CHALLENGE)) {
+                riskFlag = RiskFlag.NO_CHALLENGE;
+            } else if (!Util.isNullorBlank(objAReq.getThreeDSRequestorDecReqInd())
+                    && objAReq.getThreeDSRequestorDecReqInd().equalsIgnoreCase("Y")) {
+                riskFlag = RiskFlag.DECOUPLED_CHALLENGE;
+            } else if (ThreeDSRequestorChallengeInd.DATA_SHARE_ONLY.equals(challengeInd)) {
+                if (riskFlagByAcs.equals(RiskFlag.INFORMATIONAL)) {
+                    riskFlag = RiskFlag.INFORMATIONAL;
+                } else {
+                    riskFlag = RiskFlag.NO_CHALLENGE;
+                }
             }
-
-            if (riskFlag == null) {
-                riskFlag = riskFlagByAcs;
-            }
+        }
+        if (riskFlag == null) {
+            riskFlag = riskFlagByAcs;
         }
         return riskFlag;
     }

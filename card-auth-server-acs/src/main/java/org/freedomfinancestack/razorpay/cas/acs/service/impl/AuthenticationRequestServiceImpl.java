@@ -10,8 +10,9 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.AResMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.InvalidConfigException;
+import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
@@ -84,12 +85,9 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
      *     details of the generated response.
      * @throws ThreeDSException If any ThreeDSException occurs during the processing of the AReq,
      *     indicating that an "Erro" message type should be sent in the response.
-     * @throws ACSDataAccessException If any ACSDataAccessException occurs during the processing of
-     *     the AReq, indicating that an "Erro" message type should be sent in the response.
      */
     @Override
-    public ARES processAuthenticationRequest(@NonNull AREQ areq)
-            throws ThreeDSException, ACSDataAccessException {
+    public ARES processAuthenticationRequest(@NonNull AREQ areq) throws ThreeDSException {
         Transaction transaction = new Transaction();
         ARES ares;
         CardRange cardRange = null;
@@ -288,14 +286,15 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
     }
 
     private void ulPortalTestingValidations(Transaction transaction, AREQ areq)
-            throws ACSDataAccessException {
+            throws InvalidConfigException {
         // Temp variables for passing test cases
         final long ulUDStartRange = Long.parseLong("6543200100000");
         final long ulUDEndRange = Long.parseLong("6543200199999");
         if (DeviceChannel.BRW.getChannel().equals(transaction.getDeviceChannel())
                 && ulUDStartRange <= Long.parseLong(areq.getAcctNumber())
                 && ulUDEndRange >= Long.parseLong(areq.getAcctNumber())) {
-            throw new ACSDataAccessException(InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY);
+            throw new InvalidConfigException(
+                    InternalErrorCode.UNSUPPPORTED_DEVICE_CATEGORY, "failed for UL testing");
         }
     }
 }
