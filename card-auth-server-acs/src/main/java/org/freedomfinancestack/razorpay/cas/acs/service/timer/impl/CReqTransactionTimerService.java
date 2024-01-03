@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import java.util.concurrent.TimeUnit;
 
+import io.micrometer.tracing.Tracer;
 import org.freedomfinancestack.extensions.scheduledTask.exception.TaskAlreadyExistException;
 import org.freedomfinancestack.extensions.timer.TimerService;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
@@ -23,6 +24,7 @@ public class CReqTransactionTimerService implements TransactionTimerService {
     private final AReqTransactionTimerService aReqTransactionTimeoutService;
     private final AppConfiguration appConfiguration;
     private final TransactionTimeOutService transactionTimeOutService;
+    private final Tracer tracer;
     public static String CREQ_TIMER_TASK_IDENTIFIER_KEY = "CREQ_TIMER_TASK";
 
     @Override
@@ -36,7 +38,7 @@ public class CReqTransactionTimerService implements TransactionTimerService {
         TimerTask task =
                 new TimerTask(
                         generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                        this);
+                        this, tracer);
         try {
             timerService.scheduleTimeoutTask(
                     task.getTimerTaskId(),

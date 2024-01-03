@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import java.util.concurrent.TimeUnit;
 
+import io.micrometer.tracing.Tracer;
 import org.freedomfinancestack.extensions.scheduledTask.exception.TaskAlreadyExistException;
 import org.freedomfinancestack.extensions.timer.TimerService;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
@@ -20,7 +21,7 @@ import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskId
 public class AReqTransactionTimerService implements TransactionTimerService {
     private final TimerService timerService;
     private final AppConfiguration appConfiguration;
-
+    private final Tracer tracer;
     private final TransactionTimeOutService transactionTimeOutService;
     public static final String AREQ_TIMER_TASK_IDENTIFIER_KEY = "AREQ_TIMER_TASK";
 
@@ -31,7 +32,7 @@ public class AReqTransactionTimerService implements TransactionTimerService {
         TimerTask task =
                 new TimerTask(
                         generateTaskIdentifier(AREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                        this);
+                        this, tracer);
         try {
             int timeout = appConfiguration.getAcs().getTimeout().getChallengeRequest();
             if (transactionStatus.equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)) {

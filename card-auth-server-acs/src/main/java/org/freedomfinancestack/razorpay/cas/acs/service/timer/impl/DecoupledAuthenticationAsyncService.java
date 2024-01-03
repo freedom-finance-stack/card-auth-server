@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import io.micrometer.tracing.Tracer;
 import org.freedomfinancestack.extensions.scheduledTask.exception.TaskAlreadyExistException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.extensions.timer.TimerService;
@@ -39,6 +40,7 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
     private final AuthValueGeneratorService authValueGeneratorService;
     private final ResultRequestService resultRequestService;
     private final ECommIndicatorService eCommIndicatorService;
+    private final Tracer tracer;
     private static final String[] DA_TIMEOUT_TEST_RANGE = new String[] {"R_TEST_1"};
     public static String DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY = "DECOUPLED_AUTH_TIMER_TASK";
 
@@ -51,7 +53,7 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                     new TimerTask(
                             generateTaskIdentifier(
                                     DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                            this);
+                            this, tracer);
             try {
                 timerService.scheduleTimeoutTask(
                         task.getTimerTaskId(),
