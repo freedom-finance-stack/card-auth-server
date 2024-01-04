@@ -31,8 +31,7 @@ public class DecoupledAuthenticationServiceTestImplTest {
                 new DecoupledAuthenticationRequest();
 
         // Mock behavior
-        when(porqService.sendPOrq(any(), any(), any()))
-                .thenReturn(new POrs("POrs", true, "2.2.0", "1.2.2"));
+        when(porqService.sendPOrq(any(), any(), any())).thenReturn(getpOrs(true));
 
         // Act
         DecoupledAuthenticationResponse response =
@@ -54,6 +53,10 @@ public class DecoupledAuthenticationServiceTestImplTest {
                         eq(transaction.getMessageVersion()));
     }
 
+    private static POrs getpOrs(boolean p_isOobSuccessful) {
+        return new POrs("POrs", p_isOobSuccessful, "2.2.0", "1.2.2");
+    }
+
     @Test
     void testProcessAuthenticationRequest_Unsuccessful() throws ThreeDSException {
         // Arrange
@@ -62,8 +65,7 @@ public class DecoupledAuthenticationServiceTestImplTest {
                 new DecoupledAuthenticationRequest();
 
         // Mock behavior
-        when(porqService.sendPOrq(any(), any(), any()))
-                .thenReturn(new POrs("POrs", false, "2.2.0", "1.2.2"));
+        when(porqService.sendPOrq(any(), any(), any())).thenReturn(getpOrs(false));
 
         // Act
         DecoupledAuthenticationResponse response =
