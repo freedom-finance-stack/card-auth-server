@@ -93,9 +93,6 @@ public enum InternalErrorCode {
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.CARDHOLDER_NOT_ENROLLED_IN_SERVICE),
 
-
-
-
     // Error code for App based flow
     RENDERING_TYPE_NOT_FOUND(
             "2000",
@@ -204,6 +201,12 @@ public enum InternalErrorCode {
             TransactionStatus.FAILED,
             TransactionStatusReason.EXCEED_MAX_CHALLENGES),
 
+    CANCELLED_BY_CARDHOLDER(
+            "8004",
+            "CANCELED BY CARD HOLDER",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.LOW_CONFIDENCE),
+
     CHALLENGE_RESEND_THRESHOLD_EXCEEDED(
             "4003",
             "challenge resend threshold exceeded",
@@ -228,7 +231,7 @@ public enum InternalErrorCode {
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
-   // IO connection
+    // IO connection
     HSM_CONNECTOR_REQUEST_TIMEOUT(
             "5001",
             "LUNA HSM CONNECTOR REQUEST TIMEOUT",
@@ -252,7 +255,7 @@ public enum InternalErrorCode {
             TransactionStatus.FAILED,
             TransactionStatusReason.TRANSACTION_TIMEOUT),
 
-  // parsing  and validation
+    // parsing  and validation
     CREQ_JSON_PARSING_ERROR(
             "6000",
             "Can't parse Creq message",
@@ -282,8 +285,6 @@ public enum InternalErrorCode {
             "invalid RRes received from DS",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
-
-
 
     // timeout
     TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ(

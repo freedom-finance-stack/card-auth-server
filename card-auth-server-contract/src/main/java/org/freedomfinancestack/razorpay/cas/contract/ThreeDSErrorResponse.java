@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ThreeDSErrorResponse extends ThreeDSObject{
+public class ThreeDSErrorResponse extends ThreeDSObject {
 
     // All Required Fields
     private String errorCode;

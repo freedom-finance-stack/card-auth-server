@@ -21,6 +21,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonSyntaxException;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.DirectDecrypter;
 import com.nimbusds.jose.crypto.DirectEncrypter;
@@ -44,7 +45,7 @@ public class AppChallengeRequestParser implements ChallengeRequestParser {
         ThreeDSErrorResponse errorObj = null;
         try {
             errorObj = Util.fromJson(strCReq, ThreeDSErrorResponse.class);
-        } catch (Exception e) {
+        } catch (JsonSyntaxException e) {
             // Do Nothing
         }
         CREQ objCReq = new CREQ();
@@ -63,7 +64,7 @@ public class AppChallengeRequestParser implements ChallengeRequestParser {
             }
             try {
                 objCReq = Util.fromJson(decryptedCReq, CREQ.class);
-            } catch (Exception ex) {
+            } catch (JsonSyntaxException ex) {
                 throw new ParseException(
                         ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                         InternalErrorCode.CREQ_JSON_PARSING_ERROR,
