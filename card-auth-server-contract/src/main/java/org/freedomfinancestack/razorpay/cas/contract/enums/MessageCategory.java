@@ -8,8 +8,6 @@ import lombok.Getter;
 public enum MessageCategory {
     PA("01", "PAYMENT_AUTHENTICATION"),
     NPA("02", "NON_PAYMENT_AUTHENTICATION"),
-
-    // todo implement New Message Category for Mastercard
     PVPA("85", "PV_PAYMENT_AUTHENTICATION"), // PRODUCTION_VALIDATION_PAYMENT_AUTHENTICATION
     PVNPA(
             "86",
