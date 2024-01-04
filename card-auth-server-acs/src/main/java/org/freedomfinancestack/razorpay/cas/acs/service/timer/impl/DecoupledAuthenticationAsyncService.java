@@ -34,7 +34,6 @@ import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskId
 public class DecoupledAuthenticationAsyncService implements TransactionTimerService {
     private final TimerService timerService;
     private final AppConfiguration appConfiguration;
-    // todo add factory method, once more than one implementation
     private final DecoupledAuthenticationService decoupledAuthenticationService;
     private final TransactionService transactionService;
     private final AuthValueGeneratorService authValueGeneratorService;
