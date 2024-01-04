@@ -2,7 +2,6 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
 import java.util.concurrent.TimeUnit;
 
-import io.micrometer.tracing.Tracer;
 import org.freedomfinancestack.extensions.scheduledTask.exception.TaskAlreadyExistException;
 import org.freedomfinancestack.extensions.timer.TimerService;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
@@ -10,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.timer.TransactionTimerSe
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +38,8 @@ public class CReqTransactionTimerService implements TransactionTimerService {
         TimerTask task =
                 new TimerTask(
                         generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                        this, tracer);
+                        this,
+                        tracer);
         try {
             timerService.scheduleTimeoutTask(
                     task.getTimerTaskId(),

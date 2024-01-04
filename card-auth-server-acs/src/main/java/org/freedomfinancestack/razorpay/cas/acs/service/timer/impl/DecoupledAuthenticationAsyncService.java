@@ -3,7 +3,6 @@ package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import io.micrometer.tracing.Tracer;
 import org.freedomfinancestack.extensions.scheduledTask.exception.TaskAlreadyExistException;
 import org.freedomfinancestack.extensions.stateMachine.StateMachine;
 import org.freedomfinancestack.extensions.timer.TimerService;
@@ -23,6 +22,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,7 +53,8 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                     new TimerTask(
                             generateTaskIdentifier(
                                     DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                            this, tracer);
+                            this,
+                            tracer);
             try {
                 timerService.scheduleTimeoutTask(
                         task.getTimerTaskId(),
