@@ -142,7 +142,7 @@ public class TransactionServiceImpl implements TransactionService {
                     appDeviceInfo = ddJsonObject.get("C001").getAsString();
                 }
             } catch (Exception e) {
-                log.debug(e.getMessage());
+                log.error(e.getMessage());
             }
         }
 

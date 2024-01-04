@@ -48,7 +48,7 @@ public class CardRangeServiceImplTest {
     public void testFindByPanEmptyValue(String input) {
         DataNotFoundException exception =
                 assertThrows(DataNotFoundException.class, () -> rangeService.findByPan(input));
-        assertEquals("3007 : CARD RANGE NOT FOUND", exception.getMessage());
+        assertEquals("1007 : CARD RANGE NOT FOUND", exception.getMessage());
     }
 
     @Test

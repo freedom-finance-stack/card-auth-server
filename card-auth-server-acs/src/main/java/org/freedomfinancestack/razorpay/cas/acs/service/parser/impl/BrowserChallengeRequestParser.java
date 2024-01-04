@@ -10,6 +10,8 @@ import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonSyntaxException;
+
 import lombok.RequiredArgsConstructor;
 
 import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.decodeBase64;
@@ -29,14 +31,14 @@ public class BrowserChallengeRequestParser implements ChallengeRequestParser {
 
         try {
             return Util.fromJson(strCReq, CREQ.class);
-        } catch (Exception e) {
+        } catch (JsonSyntaxException e) {
             // Do Nothing
         }
 
         try {
             String decryptedCReq = decodeBase64(strCReq);
             creq = fromJson(decryptedCReq, CREQ.class);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | JsonSyntaxException e) {
             throw new ParseException(
                     ThreeDSecureErrorCode.DATA_DECRYPTION_FAILURE,
                     InternalErrorCode.CREQ_JSON_PARSING_ERROR,
