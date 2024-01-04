@@ -6,10 +6,9 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import lombok.Getter;
 
 @Getter
-public enum
-        InternalErrorCode { // todo get this file reviewed by Ashish and Piyush and revisit error
-    // codes
+public enum InternalErrorCode {
 
+    // config
     CARD_USER_NOT_FOUND(
             "1001",
             "CARD NOT FOUND",
@@ -28,277 +27,288 @@ public enum
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.NO_CARD_RECORD),
 
-    // Error code for Institution
     INSTITUTION_NOT_FOUND(
-            "3001",
+            "1003",
             "INSTITUTION NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.NO_CARD_RECORD),
 
     INSTITUTION_INACTIVE(
-            "3002",
+            "1004",
             "INSTITUTION INACTIVE",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
+
     INSTITUTION_FETCH_EXCEPTION(
-            "3003",
+            "1005",
             "Error while fetching institution details",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     CARD_RANGE_NOT_ACTIVE(
-            "3006",
+            "1006",
             "CARD RANGE NOT ACTIVE",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
 
     CARD_RANGE_NOT_FOUND(
-            "3007",
+            "1007",
             "CARD RANGE NOT FOUND",
             TransactionStatus.FAILED,
             TransactionStatusReason.NO_CARD_RECORD),
 
     RANGE_GROUP_NOT_FOUND(
-            "3008",
+            "1008",
             "RANGE GROUP NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.NO_CARD_RECORD),
+
     CARD_RANGE_FETCH_EXCEPTION(
-            "3009",
+            "1009",
             "Error while fetching card range details",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     ACS_URL_NOT_FOUND(
-            "3012",
+            "1010",
             "ACS URL NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
     INVALID_NETWORK(
-            "3013",
+            "1011",
             "INVALID NETWORK",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.TRANSACTION_NOT_PERMITTED),
 
+    AUTH_CONFIG_NOT_PRESENT(
+            "1012",
+            "AUTH CONFIG NOT PRESENT",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.NO_CARD_RECORD),
+
+    NO_CHANNEL_FOUND_FOR_OTP(
+            "1013",
+            "NO CHANNEL FOUND FOR OTP",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.CARDHOLDER_NOT_ENROLLED_IN_SERVICE),
+
+
+
+
     // Error code for App based flow
     RENDERING_TYPE_NOT_FOUND(
-            "3014",
+            "2000",
             "RENDERING TYPE NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
     UNSUPPPORTED_DEVICE_CATEGORY(
-            "3015",
+            "2001",
             "UNSUPPORTED DEVICE CATEGORY",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
     SIGNER_DETAIL_NOT_FOUND(
-            "3016",
+            "2002",
             "SIGNER DETAIL NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
-
     INSTITUTION_UI_CONFIG_NOT_FOUND(
-            "3017",
+            "2003",
             "INSTITUTION UI CONFIG NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
     UNSUPPORTED_UI_TYPE(
-            "3018",
+            "2004",
             "UNSUPPORTED UI TYPE",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
     DISPLAY_PAGE_PARSING_EXCEPTION(
-            "3019",
+            "2005",
             "DISPLAY PAGE PARSING EXCEPTION",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
     DISPLAY_PAGE_NOT_FOUND(
-            "3020",
+            "2006",
             "DISPLAY PAGE NOT FOUND",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
     UNSUPPORTED_DEVICE_INTERFACE(
-            "3021",
+            "2007",
             "UNSUPPORTED DEVICE INTERFACE",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.UNSUPPORTED_DEVICE),
     SIGNER_SERVICE_ALGORITHM_EXCEPTION(
-            "3022",
+            "2008",
             "SIGNER SERVICE ALGORITHM EXCEPTION",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
     SIGNER_SERVICE_JOSE_EXCEPTION(
-            "3023",
+            "2009",
             "SIGNER SERVICE JOSE EXCEPTION",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
     SIGNER_SERVICE_ENCRYPTION_EXCEPTION(
-            "3024",
+            "2010",
             "SIGNER SERVICE ENCRYPTION EXCEPTION",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
     SIGNER_SERVICE_CERTIFICATE_EXCEPTION(
-            "3025",
+            "2011",
             "SIGNER SERVICE CERTIFICATE EXCEPTION",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
     SIGNER_SERVICE_KEY_STORE_EXCEPTION(
-            "3026",
+            "2012",
             "SIGNER SERVICE KEY STORE EXCEPTION",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
-    // Error code for save Transaction
+    // Error code for  Transaction
     TRANSACTION_SAVE_EXCEPTION(
-            "2001",
+            "3001",
             "Error while saving transaction",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
     TRANSACTION_FIND_EXCEPTION(
-            "2002",
+            "3002",
             "Error while finding transaction",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
-
     TRANSACTION_ID_NOT_RECOGNISED(
-            "2003",
+            "3003",
             "Transaction not Recognised",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.INVALID_TRANSACTION),
-
     TRANSACTION_ID_EMPTY(
-            "2004",
+            "3004",
             "Transaction not Recognised",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.INVALID_TRANSACTION),
-
-    // Error code for invalid request
-    INVALID_REQUEST(
-            "4001",
-            "INVALID REQUEST",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.INVALID_TRANSACTION),
-
-    INTERNAL_SERVER_ERROR(
-            "501",
-            "INTERNAL SERVER ERROR",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
-
-    /** LUNA HSM Related Error Codes */
-    HSM_CONNECTOR_REQUEST_TIMEOUT(
-            "7001",
-            "LUNA HSM CONNECTOR REQUEST TIMEOUT",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
-    HSM_CONNECTOR_CONNECTION_CLOSE(
-            "7002",
-            "LUNA HSM CONNECTOR CONNECTION IS CLOSED",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
-
-    HSM_INTERNAL_EXCEPTION(
-            "7000",
-            "Internal Error occurred in HSM",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
-
-    CREQ_JSON_PARSING_ERROR(
-            "8000",
-            "Can't parse Creq message",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.INVALID_TRANSACTION),
-
-    SESSION_DATA_PARSING_ERROR(
-            "8001",
-            "threeDSSessionData is invalid",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.INVALID_TRANSACTION),
-
     TRANSACTION_NOT_FOUND(
-            "8002",
+            "3005",
             "TRANSACTION ID NOT FOUND",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
-    AUTH_CONFIG_NOT_PRESENT(
-            "8003",
-            "AUTH CONFIG NOT PRESENT",
-            TransactionStatus.FAILED,
-            TransactionStatusReason.NO_CARD_RECORD),
-    CANCELLED_BY_CARDHOLDER(
-            "8004",
-            "CANCELED BY CARD HOLDER",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.LOW_CONFIDENCE),
-    NO_CHANNEL_FOUND_FOR_OTP(
-            "8005",
-            "NO CHANNEL FOUND FOR OTP",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.CARDHOLDER_NOT_ENROLLED_IN_SERVICE),
+
+    // Flow
+
     INVALID_STATE_TRANSITION(
-            "8006",
+            "4001",
             "invalid state transition",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.INVALID_TRANSACTION),
+
     EXCEED_MAX_ALLOWED_ATTEMPTS(
-            "8007",
+            "4002",
             "attempts exceeded",
             TransactionStatus.FAILED,
             TransactionStatusReason.EXCEED_MAX_CHALLENGES),
-    INVALID_RRES(
-            "8008",
-            "invalid RRes received from DS",
-            TransactionStatus.FAILED,
-            TransactionStatusReason.INVALID_TRANSACTION),
-    CONNECTION_TO_DS_FAILED(
-            "8009",
-            "can't connect to DS to send RReq",
-            TransactionStatus.FAILED,
-            TransactionStatusReason.TRANSACTION_TIMEOUT),
+
     CHALLENGE_RESEND_THRESHOLD_EXCEEDED(
-            "8010",
+            "4003",
             "challenge resend threshold exceeded",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.EXCEED_MAX_CHALLENGES),
-    TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ(
-            "8011",
-            "transaction timed out waiting for CREQ",
-            TransactionStatus.FAILED,
-            TransactionStatusReason.TRANSACTION_TIMEOUT),
-    TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION(
-            "8013",
-            "transaction timed out for challenge completion",
-            TransactionStatus.FAILED,
-            TransactionStatusReason.TRANSACTION_TIMEOUT),
-    TRANSACTION_TIMED_OUT_DECOUPLED_AUTH(
-            "8014",
-            "transaction timed out waiting for decoupled auth to complete",
-            TransactionStatus.UNABLE_TO_AUTHENTICATE,
-            TransactionStatusReason.DECOUPLED_EXPIRY_TIME_EXCEEDED),
+
     UNABLE_TO_SEND_OTP(
-            "8015",
+            "4004",
             "UNABLE TO SEND OTP",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
     CHALLENGE_FLOW_INTERNAL_SERVER_ERROR(
-            "8016",
+            "4005",
             "UNEXPECTED ERROR OCCURRED",
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
 
+    INTERNAL_SERVER_ERROR(
+            "4006",
+            "INTERNAL SERVER ERROR",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+   // IO connection
+    HSM_CONNECTOR_REQUEST_TIMEOUT(
+            "5001",
+            "LUNA HSM CONNECTOR REQUEST TIMEOUT",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+    HSM_CONNECTOR_CONNECTION_CLOSE(
+            "5002",
+            "LUNA HSM CONNECTOR CONNECTION IS CLOSED",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+    HSM_INTERNAL_EXCEPTION(
+            "5003",
+            "Internal Error occurred in HSM",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
+    CONNECTION_TO_DS_FAILED(
+            "5004",
+            "can't connect to DS to send RReq",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+
+  // parsing  and validation
+    CREQ_JSON_PARSING_ERROR(
+            "6000",
+            "Can't parse Creq message",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
+    SESSION_DATA_PARSING_ERROR(
+            "6001",
+            "threeDSSessionData is invalid",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
+    INVALID_REQUEST(
+            "6002",
+            "INVALID REQUEST",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
     CRES_ENCRYPTION_ERROR(
-            "8017",
+            "6003",
             "Can't encrypt CRES response",
             TransactionStatus.FAILED,
             TransactionStatusReason.ACS_TECHNICAL_ISSUE),
 
+    INVALID_RRES(
+            "6004",
+            "invalid RRes received from DS",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.INVALID_TRANSACTION),
+
+
+
+    // timeout
+    TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ(
+            "7000",
+            "transaction timed out waiting for CREQ",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+    TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION(
+            "7001",
+            "transaction timed out for challenge completion",
+            TransactionStatus.FAILED,
+            TransactionStatusReason.TRANSACTION_TIMEOUT),
+    TRANSACTION_TIMED_OUT_DECOUPLED_AUTH(
+            "7002",
+            "transaction timed out waiting for decoupled auth to complete",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.DECOUPLED_EXPIRY_TIME_EXCEEDED),
+
     TRANSACTION_TIMED_OUT_DS_RESPONSE(
-            "8018",
+            "7003",
             "Transaction Timed out waiting for DS Response",
             TransactionStatus.UNABLE_TO_AUTHENTICATE,
             TransactionStatusReason.TRANSACTION_TIMEOUT),
 
+    // test
     TEST_TRANSACTION_UA(
             "9001",
             "CARD NOT FOUND",
