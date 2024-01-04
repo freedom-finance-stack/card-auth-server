@@ -7,7 +7,6 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessE
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDataNotValidException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.threedsrequestor.ThreedsRequestorCResService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ChallengeRequestService;
-import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
@@ -26,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 public class TransactionTimeOutService {
 
     private final TransactionService transactionService;
-    private final ECommIndicatorService eCommIndicatorService;
     private final ResultRequestService resultRequestService;
     private final ThreedsRequestorCResService threedsRequestorCResService;
 
