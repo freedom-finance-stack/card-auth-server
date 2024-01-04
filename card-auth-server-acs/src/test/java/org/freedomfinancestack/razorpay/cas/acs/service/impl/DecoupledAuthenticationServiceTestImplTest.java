@@ -31,8 +31,7 @@ public class DecoupledAuthenticationServiceTestImplTest {
                 new DecoupledAuthenticationRequest();
 
         // Mock behavior
-        when(porqService.sendPOrq(any(), any(), any()))
-                .thenReturn(getpOrs(true));
+        when(porqService.sendPOrq(any(), any(), any())).thenReturn(getpOrs(true));
 
         // Act
         DecoupledAuthenticationResponse response =
@@ -66,8 +65,7 @@ public class DecoupledAuthenticationServiceTestImplTest {
                 new DecoupledAuthenticationRequest();
 
         // Mock behavior
-        when(porqService.sendPOrq(any(), any(), any()))
-                .thenReturn(getpOrs(false));
+        when(porqService.sendPOrq(any(), any(), any())).thenReturn(getpOrs(false));
 
         // Act
         DecoupledAuthenticationResponse response =
