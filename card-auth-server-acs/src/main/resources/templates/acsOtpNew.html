@@ -182,8 +182,10 @@
                 <form id = "otp-form" action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
                     <div class="otp-input">
                         <span class="otp-sent-message" th:text="${institutionUIParams.challengeInfoText}">OTP has been sent to mobile 871XXXX100 and email csi***********@gmail.com successfully!</span>
-                        <label for="user-otp"><span th:text="${institutionUIParams.challengeInfoLabel}">Enter OTP</span></label>
-                        <input type="password" id="user-otp" name="challengeHTMLDataEntry" th:field="${cReq.challengeHTMLDataEntry}">
+                        <div th:if="${cReq != null and cReq.challengeHTMLDataEntry != null and cReq.challengeHTMLDataEntry ne ''}">
+                            <label for="user-otp"><span th:text="${institutionUIParams.challengeInfoLabel}">Enter OTP</span></label>
+                            <input type="password" id="user-otp" name="challengeHTMLDataEntry" th:field="*{challengeHTMLDataEntry}">
+                        </div>
                         <span class="input-focus-border"></span>
                     </div>
                     <span th:if="${institutionUIParams.otpAttemptLeft != null}" class="incorrect-otp-message">
@@ -258,7 +260,7 @@
         cancel.value = null
         let resend = document.getElementById("resendChallenge")
         resend.value = null
-        alert(document.getElementById("user-otp").value)
+        // alert(document.getElementById("user-otp").value)
         document.getElementById("otp-form").submit()
     }
     function cancel(){
