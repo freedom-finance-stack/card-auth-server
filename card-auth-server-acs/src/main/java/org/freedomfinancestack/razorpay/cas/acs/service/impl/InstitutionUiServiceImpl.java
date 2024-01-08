@@ -49,9 +49,6 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
             ChallengeFlowDto challengeFlowDto, Transaction transaction, AuthConfigDto authConfigDto)
             throws UiConfigException {
 
-        DeviceInterface deviceInterface =
-                DeviceInterface.getDeviceInterface(
-                        transaction.getTransactionSdkDetail().getAcsInterface());
         AuthType authType = AuthType.getAuthType(transaction.getAuthenticationType());
 
         UIType uiType =
@@ -128,8 +125,13 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
             String exponent =
                     transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
             amount = Util.formatAmount(purchaseAmount, exponent);
-            currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
             validInstitutionUIParams.setAmount(amount);
+            currency =
+                    Util.getCurrencyInstance(
+                                    transaction
+                                            .getTransactionPurchaseDetail()
+                                            .getPurchaseCurrency())
+                            .getCurrencyCode();
             validInstitutionUIParams.setCurrency(currency);
         }
 

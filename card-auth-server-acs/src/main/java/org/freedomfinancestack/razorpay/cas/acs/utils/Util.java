@@ -334,4 +334,15 @@ public class Util {
 
         return base64urlMatcher.matches();
     }
+
+    public static Currency getCurrencyInstance(String numericCode) {
+        Set<Currency> currencies = Currency.getAvailableCurrencies();
+        for (Currency currency : currencies) {
+            if (currency.getNumericCodeAsString().equals(numericCode)) {
+                return currency;
+            }
+        }
+        throw new IllegalArgumentException(
+                "Currency with numeric code " + numericCode + " not found");
+    }
 }
