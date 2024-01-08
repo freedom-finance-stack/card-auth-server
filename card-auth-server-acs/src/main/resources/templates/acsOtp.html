@@ -89,7 +89,7 @@
     <p><span th:text="${institutionUIParams.challengeInfoText}"></span></p>
     <form action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
         <label for="challengeHTMLDataEntry"><span th:text="${institutionUIParams.challengeInfoLabel}"></span></label>
-        <input type="text" id="challengeHTMLDataEntry" name="challengeHTMLDataEntry" th:field="*{challengeHTMLDataEntry}" required>
+        <input type="text" id="challengeHTMLDataEntry" name="challengeHTMLDataEntry" th:field="*{challengeHTMLDataEntry}">
         <input type="hidden" name="acsTransID" th:value="${institutionUIParams.acsTransID}" >
         <input type="hidden" name="messageType" th:value="CReq">
         <input type="hidden" name="messageVersion" th:value="${institutionUIParams.messageVersion}">
