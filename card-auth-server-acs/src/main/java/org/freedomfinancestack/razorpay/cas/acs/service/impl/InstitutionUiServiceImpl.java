@@ -108,7 +108,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
         if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())) {
             uiType = UIType.TEXT;
         } else {
-            uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiTemplate());
+            uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
             if (uiType == null) {
                 throw new UiConfigException(
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,
@@ -136,41 +136,6 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         transaction.getTransactionCardHolderDetail().getMobileNumber());
         String merchantName = transaction.getTransactionMerchant().getMerchantName();
 
-        String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
-        Image issuerLogo = new Image();
-        issuerLogo.setMedium(logoBaseUrl + institutionUiConfiguration.getMediumLogo());
-        issuerLogo.setHigh(logoBaseUrl + institutionUiConfiguration.getHighLogo());
-        issuerLogo.setExtraHigh(logoBaseUrl + institutionUiConfiguration.getExtraHighLogo());
-
-        Image psImage = new Image();
-        Network network =
-                Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
-        psImage.setMedium(
-                logoBaseUrl
-                        + institutionUiConfiguration
-                                .getNetworkUiConfig()
-                                .get(network)
-                                .getMediumPs());
-        psImage.setHigh(
-                logoBaseUrl
-                        + institutionUiConfiguration.getNetworkUiConfig().get(network).getHighPs());
-        psImage.setExtraHigh(
-                logoBaseUrl
-                        + institutionUiConfiguration
-                                .getNetworkUiConfig()
-                                .get(network)
-                                .getExtraHighPs());
-
-        validInstitutionUIParams.setIssuerImage(issuerLogo);
-        validInstitutionUIParams.setPsImage(psImage);
-
-        validInstitutionUIParams.setChallengeInfoHeader(
-                institutionUiConfig.getChallengeInfoHeader());
-        validInstitutionUIParams.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
-        validInstitutionUIParams.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
-        validInstitutionUIParams.setExpandInfoText(institutionUiConfig.getExpandInfoText());
-        validInstitutionUIParams.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
-        validInstitutionUIParams.setWhyInfoText(institutionUiConfig.getWhyInfoText());
         validInstitutionUIParams.setValidationUrl(
                 RouteConstants.getAcsChallengeValidationUrl(
                         appConfiguration.getHostname(), transaction.getDeviceChannel()));
@@ -249,7 +214,48 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         InternalErrorCode.UNSUPPORTED_UI_TYPE,
                         "UI Type Implementation not available with the given option " + uiType);
         }
-        validInstitutionUIParams.setChallengeInfoText(challengeText);
+
+        if (!uiType.equals(UIType.HTML_OTHER)) {
+            String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
+            Image issuerLogo = new Image();
+            issuerLogo.setMedium(logoBaseUrl + institutionUiConfiguration.getMediumLogo());
+            issuerLogo.setHigh(logoBaseUrl + institutionUiConfiguration.getHighLogo());
+            issuerLogo.setExtraHigh(logoBaseUrl + institutionUiConfiguration.getExtraHighLogo());
+
+            Image psImage = new Image();
+            Network network =
+                    Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
+            psImage.setMedium(
+                    logoBaseUrl
+                            + institutionUiConfiguration
+                                    .getNetworkUiConfig()
+                                    .get(network)
+                                    .getMediumPs());
+            psImage.setHigh(
+                    logoBaseUrl
+                            + institutionUiConfiguration
+                                    .getNetworkUiConfig()
+                                    .get(network)
+                                    .getHighPs());
+            psImage.setExtraHigh(
+                    logoBaseUrl
+                            + institutionUiConfiguration
+                                    .getNetworkUiConfig()
+                                    .get(network)
+                                    .getExtraHighPs());
+            validInstitutionUIParams.setIssuerImage(issuerLogo);
+            validInstitutionUIParams.setPsImage(psImage);
+            validInstitutionUIParams.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
+            validInstitutionUIParams.setExpandInfoText(institutionUiConfig.getExpandInfoText());
+            validInstitutionUIParams.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
+            validInstitutionUIParams.setWhyInfoText(institutionUiConfig.getWhyInfoText());
+            validInstitutionUIParams.setChallengeInfoHeader(
+                    institutionUiConfig.getChallengeInfoHeader());
+            validInstitutionUIParams.setChallengeInfoLabel(
+                    institutionUiConfig.getChallengeInfoLabel());
+            validInstitutionUIParams.setChallengeInfoText(challengeText);
+        }
+
         validInstitutionUIParams.setMessageVersion(transaction.getMessageVersion());
         validInstitutionUIParams.setAcsTransID(transaction.getId());
         validInstitutionUIParams.setThreeDSServerTransID(
