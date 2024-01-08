@@ -50,7 +50,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final CResMapper cResMapper;
     private final AuthValueGeneratorService authValueGeneratorService;
     private final TransactionTimeoutServiceLocator transactionTimeoutServiceLocator;
-    private final AppUIGenerator appUIGenerator;
     private final ChallengeRequestParserFactory challengeRequestParserFactory;
     private final DecoupledAuthenticationService decoupledAuthenticationService;
     private final InstitutionUiService institutionUiService;

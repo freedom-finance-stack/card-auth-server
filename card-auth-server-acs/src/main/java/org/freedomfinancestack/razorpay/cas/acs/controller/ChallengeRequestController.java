@@ -126,7 +126,7 @@ public class ChallengeRequestController {
         model.addAttribute(
                 InternalConstants.MODEL_ATTRIBUTE_CHALLENGE_DISPLAY_RESPONSE,
                 challengeFlowDto.getInstitutionUIParams());
-        return "acsOtp";
+        return "acsOtpNew";
     }
 
     /**

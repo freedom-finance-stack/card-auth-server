@@ -129,6 +129,8 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                     transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
             amount = Util.formatAmount(purchaseAmount, exponent);
             currency = transaction.getTransactionPurchaseDetail().getPurchaseCurrency();
+            validInstitutionUIParams.setAmount(amount);
+            validInstitutionUIParams.setCurrency(currency);
         }
 
         String mobileNumber =
@@ -136,6 +138,8 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         transaction.getTransactionCardHolderDetail().getMobileNumber());
         String merchantName = transaction.getTransactionMerchant().getMerchantName();
 
+        validInstitutionUIParams.setMerchantName(merchantName);
+        validInstitutionUIParams.setCardNumber(Util.maskedCardNumber(cardNumber));
         validInstitutionUIParams.setValidationUrl(
                 RouteConstants.getAcsChallengeValidationUrl(
                         appConfiguration.getHostname(), transaction.getDeviceChannel()));
@@ -158,11 +162,6 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                 challengeText =
                         challengeText.replaceFirst(
                                 InternalConstants.LAST_FOUR_DIGIT_MOBILE_NUMBER, mobileNumber);
-                challengeText =
-                        challengeText.replaceFirst(
-                                InternalConstants.MASKED_CARD_NUMBER, cardNumber);
-                challengeText =
-                        challengeText.replaceFirst(InternalConstants.MERCHANT_NAME, merchantName);
                 if (messageCategory.equals(MessageCategory.PA)) {
                     challengeText =
                             challengeText.replaceFirst(

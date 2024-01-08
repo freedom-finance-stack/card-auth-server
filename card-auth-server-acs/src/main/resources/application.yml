@@ -194,7 +194,7 @@ institution-ui:
   medium-logo: "medium_image.png"
   high-logo: "high_image.png"
   extra-high-logo: "extra_high_image.png"
-  html-otp-template: "acsOtp"
+  html-otp-template: "acsOtpNew"
   network-ui-config:
     VISA:
       medium-ps: "medium_visa.png"

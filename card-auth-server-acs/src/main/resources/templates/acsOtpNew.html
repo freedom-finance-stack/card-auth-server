@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>OTP Verification</title>
 
     <style>
         * {
@@ -178,22 +178,34 @@
     <div class="challenge-zone">
         <div class="main">
             <div class="authenticate-transaction">
-                <h4 style="text-align: center; margin-bottom: 20px;">Authenticate Transaction</h4>
-                <form action="#">
+                <h4 style="text-align: center; margin-bottom: 20px;"><span th:text="${institutionUIParams.challengeInfoHeader}">OTP Verification</span></h4>
+                <form id = "otp-form" action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
                     <div class="otp-input">
-                        <span class="otp-sent-message">OTP has been sent to mobile 871XXXX100 and email csi***********@gmail.com successfully!</span>
-                        <span class="otp-resent-message">OTP has been resent successfully!</span>
-                        <label for="user-otp">Enter OTP</label>
-                        <input type="password" id="user-otp">
+                        <span class="otp-sent-message" th:text="${institutionUIParams.challengeInfoText}">OTP has been sent to mobile 871XXXX100 and email csi***********@gmail.com successfully!</span>
+                        <label for="user-otp"><span th:text="${institutionUIParams.challengeInfoLabel}">Enter OTP</span></label>
+                        <input type="password" id="user-otp" name="challengeHTMLDataEntry" th:field="*{challengeHTMLDataEntry}">
                         <span class="input-focus-border"></span>
                     </div>
-                    <span class="incorrect-otp-message">Incorrect OTP, you've 6 attempts left!</span>
-                    <div class="otp-buttons">
-                        <button class="otp-cancel-button">Cancel</button>
-                        <button class="otp-submit-button">Submit</button>
+                    <span th:if="${institutionUIParams.otpAttemptLeft != null}" class="incorrect-otp-message">
+                        Incorrect OTP, you have <span th:text="${institutionUIParams.otpAttemptLeft}"></span> attempts left!
+                    </span>
+
+                    <!-- Check if cReq object is not null before rendering hidden fields -->
+                    <div th:if="${cReq != null}">
+                        <input type="hidden" id="acsTransID" name="acsTransID" th:value="${institutionUIParams.acsTransID}" >
+                        <input type="hidden" id="messageType" name="messageType" th:value="CReq">
+                        <input type="hidden" id="messageVersion" name="messageVersion" th:value="${institutionUIParams.messageVersion}">
+                        <input type="hidden" id="threeDSServerTransID" name="threeDSServerTransID" th:value="${institutionUIParams.threeDSServerTransID}">
+                        <input type="hidden" id="resendChallenge" name="resendChallenge" th:value="Y">
+                        <input type="hidden" id="challengeCancel" name="challengeCancel" th:value="01">
                     </div>
-                    <div class="resend-otp" >
-                        <a href="" style="font-size: small;">Resend OTP</a>
+
+                    <div class="otp-buttons">
+                        <button id="cancel-button" class="otp-cancel-button">Cancel</button>
+                        <button id = "submit-button" class="otp-submit-button" th:text="${institutionUIParams.submitAuthenticationLabel}">Submit</button>
+                    </div>
+                    <div class="resend-otp" th:if="${institutionUIParams.resendBlocked} != 'true'">
+                        <button type="submit" style="cursor: pointer;border:0;background-color:inherit;text-decoration: underline;" th:text="${institutionUIParams.resendInformationLabel}">Resend OTP</button>
                     </div>
                 </form>
             </div>
@@ -202,19 +214,19 @@
                 <table>
                     <tr>
                         <th>Merchant Name</th>
-                        <td>PAYU FINANCE INDIA PVT</td>
+                        <td th:text="${institutionUIParams.merchantName}">Test Merchant</td>
                     </tr>
                     <tr>
                         <th>Date</th>
-                        <td>Sept 25, 2023</td>
+                        <td th:text="${#dates.format(#dates.createNow(), 'MMM dd, yyyy')}">Sept 25, 2023</td>
                     </tr>
                     <tr>
                         <th>Card Number</th>
-                        <td>4000XXXXXXXX2345</td>
+                        <td th:text="${institutionUIParams.cardNumber}">4000XXXXXXXX2345</td>
                     </tr>
-                    <tr>
+                    <tr th:if="${institutionUIParams.amount != null and institutionUIParams.currency != null}">
                         <th>Total Charge</th>
-                        <td>&#8377 10000</td>
+                        <td th:text="${#numbers.formatCurrency(institutionUIParams.amount, institutionUIParams.currency, 3, 'symbol')}"></td>
                     </tr>
                 </table>
             </div>
@@ -224,7 +236,7 @@
                 <span style="font-size: x-small;"><strong>Note</strong> - Please ensure that your latest mobile number / email id is updated in the Bank records. Visit nearest Branch or call Customer Care for the same.</span>
             </div>
             <div style="text-align: center; margin-top: 10px;">
-                <span style="font-size: small;">This page will automatically timeout after <strong id="countdown" style="color: hsla(7, 72%, 40%, 1);">300</strong>.</span>
+                <span style="font-size: small;">This page will automatically timeout after <strong id="countdown" style="color: hsla(7, 72%, 40%, 1);"></strong>.</span>
             </div>
         </div>
     </div>
@@ -234,7 +246,37 @@
 <script>
     const timerMilliSeconds = 1000 * 180;
     const targetDate = new Date().getTime() + timerMilliSeconds;
+    const submitButton = document.getElementById("submit-button")
+    const cancelButton = document.getElementById("cancel-button")
+    const resendButton = document.getElementById("resend-button")
 
+    function submit(){
+        console.log("submit ")
+        //validation for empty response and length validation too
+
+        let cancel = document.getElementById("challengeCancel")
+        cancel.value = null
+        let resend = document.getElementById("resendChallenge")
+        resend.value = null
+        alert(document.getElementById("user-otp").value)
+        document.getElementById("otp-form").submit()
+    }
+    function cancel(){
+        console.log("cancel")
+        let cancel = document.getElementById("user-otp")
+        cancel.value = null
+        let resend = document.getElementById("resendChallenge")
+        resend.value = null
+        document.getElementById("otp-form").submit()
+    }
+    function resend(){
+        console.log("resend")
+        let cancel = document.getElementById("challengeCancel")
+        cancel.value = null
+        let resend = document.getElementById("user-otp")
+        resend.value = null
+        document.getElementById("otp-form").submit()
+    }
     function updateCountdown() {
         const now = new Date().getTime();
         const timeRemaining = targetDate - now;
@@ -252,6 +294,9 @@
 
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
+    submitButton.addEventListener("click", submit)
+    cancelButton.addEventListener("click", cancel)
+    resendButton.addEventListener("click", resend)
 </script>
 </body>
 </html>
