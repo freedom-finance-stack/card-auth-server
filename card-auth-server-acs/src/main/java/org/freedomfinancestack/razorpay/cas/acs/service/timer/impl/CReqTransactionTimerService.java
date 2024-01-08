@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.timer.TransactionTimerSe
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +24,7 @@ public class CReqTransactionTimerService implements TransactionTimerService {
     private final AReqTransactionTimerService aReqTransactionTimeoutService;
     private final AppConfiguration appConfiguration;
     private final TransactionTimeOutService transactionTimeOutService;
+    private final Tracer tracer;
     public static String CREQ_TIMER_TASK_IDENTIFIER_KEY = "CREQ_TIMER_TASK";
 
     @Override
@@ -36,7 +38,8 @@ public class CReqTransactionTimerService implements TransactionTimerService {
         TimerTask task =
                 new TimerTask(
                         generateTaskIdentifier(CREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                        this);
+                        this,
+                        tracer);
         try {
             timerService.scheduleTimeoutTask(
                     task.getTimerTaskId(),

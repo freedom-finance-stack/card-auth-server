@@ -1,15 +1,8 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
-import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionMessageLogService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.*;
-import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.dao.model.TransactionMessageLog;
 import org.freedomfinancestack.razorpay.cas.dao.repository.TransactionMessageLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,54 +47,5 @@ public class TransactionMessageLogServiceImpl implements TransactionMessageLogSe
     public void createAndSave(ThreeDSObject threeDSObject, String transactionId) {
         TransactionMessageLog transactionMessageLog = create(threeDSObject, transactionId);
         this.save(transactionMessageLog);
-    }
-
-    /**
-     * get all the messages for the transaction id and return a map of message for each message type
-     *
-     * @param id transaction id for which messages are to be fetched.
-     * @throws ThreeDSException
-     * @return map with
-     */
-    @Override
-    public Map<MessageType, ThreeDSObject> getTransactionMessagesByTransactionId(String id)
-            throws ThreeDSException {
-        Map<MessageType, ThreeDSObject> messageMap = new HashMap<>();
-        // todo handle multiple entry exist for same type
-        List<TransactionMessageLog> messageTypeDetails =
-                transactionMessageLogRepository.findAllByTransactionId(id);
-        if (messageTypeDetails == null || messageTypeDetails.isEmpty()) {
-            return null;
-        }
-        for (TransactionMessageLog messageTypeDetail : messageTypeDetails) {
-            String message = messageTypeDetail.getMessage();
-            MessageType messageType = messageTypeDetail.getMessageType();
-            switch (messageType) {
-                case CRes:
-                    messageMap.put(messageType, Util.fromJson(message, CRES.class));
-                    break;
-                case CReq:
-                    messageMap.put(messageType, Util.fromJson(message, CREQ.class));
-                    break;
-                case ARes:
-                    messageMap.put(messageType, Util.fromJson(message, ARES.class));
-                    break;
-                case AReq:
-                    messageMap.put(messageType, Util.fromJson(message, AREQ.class));
-                    break;
-                case RReq:
-                    messageMap.put(messageType, Util.fromJson(message, RREQ.class));
-                    break;
-                case RRes:
-                    messageMap.put(messageType, Util.fromJson(message, RRES.class));
-                    break;
-                default:
-                    throw new ThreeDSException(
-                            ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR,
-                            InternalErrorCode.INTERNAL_SERVER_ERROR,
-                            "Incorrect message data found in database");
-            }
-        }
-        return messageMap;
     }
 }

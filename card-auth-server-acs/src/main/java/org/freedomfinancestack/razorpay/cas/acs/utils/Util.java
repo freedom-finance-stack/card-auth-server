@@ -13,6 +13,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,8 +75,7 @@ public class Util {
      * @param classOfT the class of T
      * @return Object of given class
      */
-    public static <T> T fromJson(String json, Class<T> classOfT) {
-        // todo handle error
+    public static <T> T fromJson(String json, Class<T> classOfT) throws JsonSyntaxException {
         return gson.fromJson(json, classOfT);
     }
 
@@ -115,7 +115,7 @@ public class Util {
      * @param base64Data string data
      * @return decoded string
      */
-    public static String decodeBase64(String base64Data) {
+    public static String decodeBase64(String base64Data) throws IllegalArgumentException {
         if (base64Data == null) {
             return null;
         }

@@ -22,6 +22,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,12 +34,12 @@ import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskId
 public class DecoupledAuthenticationAsyncService implements TransactionTimerService {
     private final TimerService timerService;
     private final AppConfiguration appConfiguration;
-    // todo add factory method, once more than one implementation
     private final DecoupledAuthenticationService decoupledAuthenticationService;
     private final TransactionService transactionService;
     private final AuthValueGeneratorService authValueGeneratorService;
     private final ResultRequestService resultRequestService;
     private final ECommIndicatorService eCommIndicatorService;
+    private final Tracer tracer;
     private static final String[] DA_TIMEOUT_TEST_RANGE = new String[] {"R_TEST_1"};
     public static String DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY = "DECOUPLED_AUTH_TIMER_TASK";
 
@@ -51,7 +52,8 @@ public class DecoupledAuthenticationAsyncService implements TransactionTimerServ
                     new TimerTask(
                             generateTaskIdentifier(
                                     DECOUPLED_AUTH_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                            this);
+                            this,
+                            tracer);
             try {
                 timerService.scheduleTimeoutTask(
                         task.getTimerTaskId(),

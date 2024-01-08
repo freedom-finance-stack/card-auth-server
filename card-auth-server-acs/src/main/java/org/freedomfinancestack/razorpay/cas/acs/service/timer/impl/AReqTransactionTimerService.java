@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.timer.TransactionTimerSe
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +21,7 @@ import static org.freedomfinancestack.razorpay.cas.acs.utils.Util.generateTaskId
 public class AReqTransactionTimerService implements TransactionTimerService {
     private final TimerService timerService;
     private final AppConfiguration appConfiguration;
-
+    private final Tracer tracer;
     private final TransactionTimeOutService transactionTimeOutService;
     public static final String AREQ_TIMER_TASK_IDENTIFIER_KEY = "AREQ_TIMER_TASK";
 
@@ -31,7 +32,8 @@ public class AReqTransactionTimerService implements TransactionTimerService {
         TimerTask task =
                 new TimerTask(
                         generateTaskIdentifier(AREQ_TIMER_TASK_IDENTIFIER_KEY, transactionId),
-                        this);
+                        this,
+                        tracer);
         try {
             int timeout = appConfiguration.getAcs().getTimeout().getChallengeRequest();
             if (transactionStatus.equals(TransactionStatus.CHALLENGE_REQUIRED_DECOUPLED)) {

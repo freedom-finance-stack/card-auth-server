@@ -28,6 +28,7 @@ public class DecoupledAuthenticationServiceTestImpl implements DecoupledAuthenti
     // call after completing authentication,
     // meanwhile timer thread might mark transaction timeout in case of time taken is longer. 2nd
     // approach should be considered for decoupled authentication
+    // add factory method, once more than one implementation
     @Override
     public DecoupledAuthenticationResponse processAuthenticationRequest(
             Transaction transaction, DecoupledAuthenticationRequest decoupledAuthenticationRequest)
