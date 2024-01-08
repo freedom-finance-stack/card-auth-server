@@ -383,6 +383,19 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             transaction.setInteractionCount(transaction.getInteractionCount() + 1);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
             handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
+            challengeFlowDto
+                    .getInstitutionUIParams()
+                    .setChallengeInfoText(
+                            challengeFlowDto
+                                    .getInstitutionUIParams()
+                                    .getChallengeInfoText()
+                                    .replaceFirst(
+                                            InternalConstants.SENT, InternalConstants.RESENT));
+            challengeFlowDto
+                    .getInstitutionUIParams()
+                    .setResendAttemptLeft(
+                            authConfigDto.getChallengeAttemptConfig().getResendThreshold()
+                                    - transaction.getResendCount());
         }
     }
 
@@ -431,6 +444,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                                 && authResponse != null) {
                     cres.setChallengeInfoText(authResponse.getDisplayMessage());
                 }
+                challengeFlowDto
+                        .getInstitutionUIParams()
+                        .setOtpAttemptLeft(
+                                authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
+                                        - transaction.getInteractionCount());
                 challengeFlowDto.setCres(cres);
             } else {
                 transaction.setTransactionStatus(

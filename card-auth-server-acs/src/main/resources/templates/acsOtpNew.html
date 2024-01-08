@@ -183,7 +183,7 @@
                     <div class="otp-input">
                         <span class="otp-sent-message" th:text="${institutionUIParams.challengeInfoText}">OTP has been sent to mobile 871XXXX100 and email csi***********@gmail.com successfully!</span>
                         <label for="user-otp"><span th:text="${institutionUIParams.challengeInfoLabel}">Enter OTP</span></label>
-                        <input type="password" id="user-otp" name="challengeHTMLDataEntry" th:field="*{challengeHTMLDataEntry}">
+                        <input type="password" id="user-otp" name="challengeHTMLDataEntry" th:field="${cReq.challengeHTMLDataEntry}">
                         <span class="input-focus-border"></span>
                     </div>
                     <span th:if="${institutionUIParams.otpAttemptLeft != null}" class="incorrect-otp-message">
