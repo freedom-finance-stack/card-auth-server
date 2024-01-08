@@ -53,6 +53,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     private final AppUIGenerator appUIGenerator;
     private final ChallengeRequestParserFactory challengeRequestParserFactory;
     private final DecoupledAuthenticationService decoupledAuthenticationService;
+    private final InstitutionUiService institutionUiService;
 
     @Override
     public ChallengeFlowDto processChallengeRequest(
@@ -197,8 +198,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     .getTransactionSdkDetail()
                     .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
 
-            // Generating App Ui Params
-            appUIGenerator.generateAppUIParams(challengeFlowDto, transaction, authConfigDto);
+            // Populating Ui Params
+            institutionUiService.populateUiParams(challengeFlowDto, transaction, authConfigDto);
 
             // 4 flows
             // 1: if Challenge cancelled by user
@@ -256,6 +257,18 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             && InternalConstants.YES.equals(creq.getResendChallenge())
                     || creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)) {
                 handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
+            }
+
+            if (flowType.equals(DeviceChannel.APP)
+                    && transaction
+                            .getTransactionSdkDetail()
+                            .getAcsUiType()
+                            .equals(UIType.HTML_OTHER.getType())) {
+                challengeFlowDto
+                        .getCres()
+                        .setAcsHTML(
+                                institutionUiService.getEncodedHtml(
+                                        challengeFlowDto.getInstitutionUIParams()));
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
