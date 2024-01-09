@@ -1,15 +1,63 @@
 <configuration>
-      <include resource="org/springframework/boot/logging/logback/base.xml"/>
-      <appender name="mask" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                  <layout class="com.baeldung.logback.MaskingPatternLayout">
-                        <maskPattern>\"SSN\"\s*:\s*\"(.*?)\"</maskPattern> <!-- SSN JSON pattern -->
-                        <maskPattern>\"address\"\s*:\s*\"(.*?)\"</maskPattern> <!-- Address JSON pattern -->
-                        <maskPattern>(\d+\.\d+\.\d+\.\d+)</maskPattern> <!-- Ip address IPv4 pattern -->
-                        <maskPattern>(\w+@\w+\.\w+)</maskPattern> <!-- Email pattern -->
+    <springProfile name="!dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <jsonGeneratorDecorator class="net.logstash.logback.mask.MaskingJsonGeneratorDecorator">
+                    <valueMasker class="org.freedomfinancestack.razorpay.cas.acs.logger.MaskingPatternLayout">
+                        <!-- Can be used for masking information for which  regex can be defined -->
                         <maskPattern>(\w+@\w+\.\w+)</maskPattern>
-                        <pattern>%-5p [%d{ISO8601,UTC}] [%thread] %c: %m%n%rootException</pattern>
-                  </layout>
+                        <maskPattern>(\d+\.\d+\.\d+\.\d+)</maskPattern>
+                        <!-- Used for masking information printed from LoggerAspect -->
+                        <maskKey>acctNumber</maskKey>
+                        <maskKey>cardNumber</maskKey>
+                        <maskKey>pan</maskKey>
+                        <maskKey>cardholderName</maskKey>
+                        <maskKey>email</maskKey>
+                        <maskKey>subscriber</maskKey>
+                        <maskKey>name</maskKey>
+                        <maskKey>mobileNumber</maskKey>
+                        <maskKey>cardExpiry</maskKey>
+                        <maskKey>authValue</maskKey>
+                    </valueMasker>
+                </jsonGeneratorDecorator>
+                <providers>
+                    <timestamp>
+                        <fieldName>timestamp</fieldName>
+                        <pattern>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</pattern>
+                        <timeZone>UTC</timeZone>
+                    </timestamp>
+                    <pattern>
+                        <omitEmptyFields>true</omitEmptyFields>
+                        <pattern>
+                            {
+                            "level":"%level",
+                            "logger":"%logger",
+                            "thread":"%thread",
+                            "traceId":"%X{traceId:-}",
+                            "spanId":"%X{spanId:-}",
+                            "dd.trace_id":"%X{dd.trace_id:-}",
+                            "dd.span_id":"%X{dd.span_id:-}",
+                            "message":"%message",
+                            "marker":"%marker",
+                            "stacktrace":"%xEx"
+                            }
+                        </pattern>
+                    </pattern>
+                </providers>
             </encoder>
-      </appender>
+        </appender>
+    </springProfile>
+
+
+    <springProfile name="dev">
+        <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    </springProfile>
+
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+
 </configuration>

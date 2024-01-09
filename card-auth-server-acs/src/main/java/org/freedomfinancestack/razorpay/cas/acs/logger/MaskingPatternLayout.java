@@ -1,30 +1,39 @@
 package org.freedomfinancestack.razorpay.cas.acs.logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.spi.ILoggingEvent;
+import com.fasterxml.jackson.core.JsonStreamContext;
 
-public class MaskingPatternLayout extends PatternLayout {
+import net.logstash.logback.mask.ValueMasker;
 
-    private Pattern multilinePattern;
+public class MaskingPatternLayout implements ValueMasker {
+
+    static String methodParamTemplate = "%s\\s*=\\s*(.*?)\\s*[,)}\\]]";
+
     private List<String> maskPatterns = new ArrayList<>();
 
-    public void addMaskPattern(String maskPattern) {
-        maskPatterns.add(maskPattern);
-        multilinePattern =
-                Pattern.compile(
-                        maskPatterns.stream().collect(Collectors.joining("|")), Pattern.MULTILINE);
-    }
+    private Pattern multilinePattern;
 
     @Override
-    public String doLayout(ILoggingEvent event) {
-        return maskMessage(super.doLayout(event));
+    public Object mask(JsonStreamContext jsonStreamContext, Object o) {
+
+        if (o instanceof CharSequence) {
+            return transform((String) o);
+        }
+        return o;
+    }
+
+    public void addMaskPattern(final String maskPattern) {
+        maskPatterns.add(maskPattern);
+        multilinePattern = Pattern.compile(String.join("|", maskPatterns), Pattern.MULTILINE);
+    }
+
+    public void addMaskKey(final String maskKey) {
+        maskPatterns.add(String.format(methodParamTemplate, maskKey));
+        multilinePattern = Pattern.compile(String.join("|", maskPatterns), Pattern.MULTILINE);
     }
 
     private String maskMessage(String message) {
@@ -44,5 +53,9 @@ public class MaskingPatternLayout extends PatternLayout {
                             });
         }
         return sb.toString();
+    }
+
+    private String transform(final String msg) {
+        return maskMessage(msg);
     }
 }
