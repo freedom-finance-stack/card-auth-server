@@ -93,7 +93,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.THREEDS_SERVER_TRANSACTION_ID, transaction),
                         notBlank()),
-                lengthValidator(DataLengthType.VARIABLE, 36),
+                lengthValidator(DataLengthType.FIXED, 36),
                 isEqual(
                         transaction
                                 .getTransactionReferenceDetail()
@@ -103,7 +103,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                 ThreeDSDataElement.ACS_TRANS_ID.getFieldName(),
                 incomingCreq.getAcsTransID(),
                 notBlank(),
-                lengthValidator(DataLengthType.VARIABLE, 36));
+                lengthValidator(DataLengthType.FIXED, 36));
 
         Validation.validate(
                 ThreeDSDataElement.CHALLENGE_WINDOW_SIZE.getFieldName(),
