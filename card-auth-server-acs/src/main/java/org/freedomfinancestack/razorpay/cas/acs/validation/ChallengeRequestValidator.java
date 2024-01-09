@@ -135,7 +135,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                         shouldValidateThreeDSDataElement(
                                 ThreeDSDataElement.SDK_TRANS_ID, transaction),
                         notBlank()),
-                lengthValidator(DataLengthType.VARIABLE, 36),
+                lengthValidator(DataLengthType.FIXED, 36),
                 isUUID(),
                 isEqual(transaction.getTransactionSdkDetail().getSdkTransId()));
     }
