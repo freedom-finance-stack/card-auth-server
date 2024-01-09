@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.JsonStreamContext;
 
 import net.logstash.logback.mask.ValueMasker;
 
-public class MaskingPatternLayout implements ValueMasker {
+public class CustomValueMarker implements ValueMasker {
 
     static String methodParamTemplate = "%s\\s*=\\s*(.*?)\\s*[,)}\\]]";
 

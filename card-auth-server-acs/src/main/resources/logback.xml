@@ -3,7 +3,7 @@
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                 <jsonGeneratorDecorator class="net.logstash.logback.mask.MaskingJsonGeneratorDecorator">
-                    <valueMasker class="org.freedomfinancestack.razorpay.cas.acs.logger.MaskingPatternLayout">
+                    <valueMasker class="org.freedomfinancestack.razorpay.cas.acs.logger.CustomValueMarker">
                         <!-- Can be used for masking information for which  regex can be defined -->
                         <maskPattern>(\w+@\w+\.\w+)</maskPattern>
                         <maskPattern>(\d+\.\d+\.\d+\.\d+)</maskPattern>
