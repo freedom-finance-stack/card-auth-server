@@ -394,8 +394,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             challengeFlowDto
                     .getInstitutionUIParams()
                     .setResendAttemptLeft(
-                            authConfigDto.getChallengeAttemptConfig().getResendThreshold()
-                                    - transaction.getResendCount());
+                            String.valueOf(
+                                    authConfigDto.getChallengeAttemptConfig().getResendThreshold()
+                                            - transaction.getResendCount()));
         }
     }
 
@@ -442,13 +443,25 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                                         .getAcsInterface()
                                         .equals(DeviceInterface.NATIVE.getValue()))
                                 && authResponse != null) {
-                    cres.setChallengeInfoText(authResponse.getDisplayMessage());
+                    cres.setChallengeInfoText(
+                            authResponse
+                                    .getDisplayMessage()
+                                    .replaceFirst(
+                                            InternalConstants.NUMBER_OF_ATTEMPTS,
+                                            String.valueOf(
+                                                    authConfigDto
+                                                                    .getChallengeAttemptConfig()
+                                                                    .getAttemptThreshold()
+                                                            - transaction.getInteractionCount())));
                 }
                 challengeFlowDto
                         .getInstitutionUIParams()
                         .setOtpAttemptLeft(
-                                authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
-                                        - transaction.getInteractionCount());
+                                String.valueOf(
+                                        authConfigDto
+                                                        .getChallengeAttemptConfig()
+                                                        .getAttemptThreshold()
+                                                - transaction.getInteractionCount()));
                 challengeFlowDto.setCres(cres);
             } else {
                 transaction.setTransactionStatus(

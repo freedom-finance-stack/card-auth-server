@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -102,7 +101,10 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
 
         String challengeText;
         UIType uiType;
+        validInstitutionUIParams.setJSEnabled(false);
         if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())) {
+            validInstitutionUIParams.setJSEnabled(
+                    transaction.getTransactionBrowserDetail().getJavascriptEnabled());
             uiType = UIType.TEXT;
         } else {
             uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
@@ -113,8 +115,6 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
             }
         }
 
-        String transactionDate =
-                new SimpleDateFormat("dd/MM/yyyy").format(transaction.getModifiedAt());
         String cardNumber = transaction.getTransactionCardDetail().getCardNumber();
 
         MessageCategory messageCategory = transaction.getMessageCategory();
@@ -140,6 +140,9 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         transaction.getTransactionCardHolderDetail().getMobileNumber());
         String merchantName = transaction.getTransactionMerchant().getMerchantName();
 
+        validInstitutionUIParams.setDeviceChannel(transaction.getDeviceChannel());
+        // currently setting it for 3 mins need to handle this properly
+        validInstitutionUIParams.setTimeout(180);
         validInstitutionUIParams.setMerchantName(merchantName);
         validInstitutionUIParams.setCardNumber(Util.maskedCardNumber(cardNumber));
         validInstitutionUIParams.setValidationUrl(
@@ -158,21 +161,16 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                     institutionUiConfig.getWhitelistingInfoText());
         }
 
+        if (authConfigDto.getOtpConfig() != null) {
+            validInstitutionUIParams.setOtpLength(authConfigDto.getOtpConfig().getLength());
+        }
+
         switch (uiType) {
             case TEXT:
                 challengeText = institutionUiConfig.getChallengeInfoText();
                 challengeText =
                         challengeText.replaceFirst(
                                 InternalConstants.LAST_FOUR_DIGIT_MOBILE_NUMBER, mobileNumber);
-                if (messageCategory.equals(MessageCategory.PA)) {
-                    challengeText =
-                            challengeText.replaceFirst(
-                                    InternalConstants.AMOUNT_WITH_CURRENCY,
-                                    amount + InternalConstants.SPACE + currency);
-                }
-                challengeText =
-                        challengeText.replaceFirst(
-                                InternalConstants.TRANSACTION_DATE, transactionDate);
 
                 validInstitutionUIParams.setSubmitAuthenticationLabel(
                         institutionUiConfig.getSubmitAuthenticationLabel());

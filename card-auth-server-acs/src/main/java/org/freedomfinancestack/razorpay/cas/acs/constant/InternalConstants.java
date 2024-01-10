@@ -42,7 +42,8 @@ public class InternalConstants {
     public static final String CHALLENGE_INFORMATION_EMAIL_TEXT =
             "to your registered email address %s";
 
-    public static final String CHALLENGE_INCORRECT_OTP_TEXT = "You have entered incorrect OTP";
+    public static final String CHALLENGE_INCORRECT_OTP_TEXT =
+            "Incorrect OTP, you have NUMBER_OF_ATTEMPTS attempts left!";
     public static final String CHALLENGE_CORRECT_OTP_TEXT = "OTP Authentication Successful";
     public static final String MODEL_ATTRIBUTE_CRES = "cRes";
     public static final String MODEL_ATTRIBUTE_ERRO = "erro";
@@ -56,6 +57,7 @@ public class InternalConstants {
 
     // Placeholders
     public static final String LAST_FOUR_DIGIT_MOBILE_NUMBER = "LAST_FOUR_DIGIT_MOBILE_NUMBER";
+    public static final String NUMBER_OF_ATTEMPTS = "NUMBER_OF_ATTEMPTS";
     public static final String MASKED_CARD_NUMBER = "MASKED_CARD_NUMBER";
     public static final String MERCHANT_NAME = "MERCHANT_NAME";
     public static final String AMOUNT_WITH_CURRENCY = "AMOUNT_WITH_CURRENCY";
