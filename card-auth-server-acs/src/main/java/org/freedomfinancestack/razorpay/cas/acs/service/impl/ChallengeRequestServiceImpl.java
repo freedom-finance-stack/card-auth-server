@@ -437,12 +437,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 CRES cres =
                         cResMapper.toAppCres(
                                 transaction, challengeFlowDto.getInstitutionUIParams());
-                if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
-                        || (transaction
-                                        .getTransactionSdkDetail()
-                                        .getAcsInterface()
-                                        .equals(DeviceInterface.NATIVE.getValue()))
-                                && authResponse != null) {
+                if (authResponse != null) {
                     cres.setChallengeInfoText(
                             authResponse
                                     .getDisplayMessage()

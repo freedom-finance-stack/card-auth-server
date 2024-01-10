@@ -58,10 +58,7 @@ public class InternalConstants {
     // Placeholders
     public static final String LAST_FOUR_DIGIT_MOBILE_NUMBER = "LAST_FOUR_DIGIT_MOBILE_NUMBER";
     public static final String NUMBER_OF_ATTEMPTS = "NUMBER_OF_ATTEMPTS";
-    public static final String MASKED_CARD_NUMBER = "MASKED_CARD_NUMBER";
-    public static final String MERCHANT_NAME = "MERCHANT_NAME";
     public static final String AMOUNT_WITH_CURRENCY = "AMOUNT_WITH_CURRENCY";
-    public static final String TRANSACTION_DATE = "TRANSACTION_DATE";
     public static final String SENT = "sent";
     public static final String RESENT = "resent";
 
