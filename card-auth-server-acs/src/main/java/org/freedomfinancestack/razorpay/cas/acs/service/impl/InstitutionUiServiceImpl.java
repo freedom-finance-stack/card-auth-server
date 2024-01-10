@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
+import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
@@ -103,8 +104,10 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
         UIType uiType;
         validInstitutionUIParams.setJSEnabled(false);
         if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())) {
-            validInstitutionUIParams.setJSEnabled(
-                    transaction.getTransactionBrowserDetail().getJavascriptEnabled());
+            if (transaction.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
+                validInstitutionUIParams.setJSEnabled(
+                        transaction.getTransactionBrowserDetail().getJavascriptEnabled());
+            }
             uiType = UIType.TEXT;
         } else {
             uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
