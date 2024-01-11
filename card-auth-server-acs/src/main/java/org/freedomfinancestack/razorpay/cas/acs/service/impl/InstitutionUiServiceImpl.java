@@ -291,6 +291,33 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         "UI Type Implementation not available with the given option " + uiType);
         }
 
+        if (challengeFlowDto.getCurrentState().equals(InternalConstants.RESEND)) {
+            challengeText =
+                    challengeText.replaceFirst(InternalConstants.SENT, InternalConstants.RESENT);
+            challengeFlowDto
+                    .getInstitutionUIParams()
+                    .setResendAttemptLeft(
+                            String.valueOf(
+                                    authConfigDto.getChallengeAttemptConfig().getResendThreshold()
+                                            - challengeFlowDto.getTransaction().getResendCount()));
+        }
+
+        if (challengeFlowDto.getCurrentState().equals(InternalConstants.VALIDATE_OTP)) {
+            challengeText =
+                    String.format(
+                            InternalConstants.CHALLENGE_INCORRECT_OTP_TEXT,
+                            authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
+                                    - challengeFlowDto.getTransaction().getInteractionCount());
+            challengeFlowDto
+                    .getInstitutionUIParams()
+                    .setOtpAttemptLeft(
+                            String.valueOf(
+                                    authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
+                                            - challengeFlowDto
+                                                    .getTransaction()
+                                                    .getInteractionCount()));
+        }
+
         validInstitutionUIParams.setChallengeInfoText(challengeText);
 
         validInstitutionUIParams.setMessageVersion(

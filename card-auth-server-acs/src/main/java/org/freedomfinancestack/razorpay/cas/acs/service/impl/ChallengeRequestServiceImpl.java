@@ -151,6 +151,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             throws ThreeDSException, InvalidStateTransactionException {
         Transaction transaction = null;
         CREQ creq;
+        InstitutionUIParams institutionUIParams = new InstitutionUIParams();
+        challengeFlowDto.setInstitutionUIParams(institutionUIParams);
         try {
             creq =
                     challengeRequestParserFactory
@@ -196,9 +198,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             transaction
                     .getTransactionSdkDetail()
                     .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
-
-            // Populating Ui Params
-            institutionUiService.populateUiParams(challengeFlowDto, authConfigDto);
 
             // 4 flows
             // 1: if Challenge cancelled by user
@@ -256,6 +255,18 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             && InternalConstants.YES.equals(creq.getResendChallenge())
                     || creq.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_1_0)) {
                 handleReSendChallenge(transaction, authConfigDto, challengeFlowDto);
+            }
+
+            // Populating Ui Params
+            institutionUiService.populateUiParams(challengeFlowDto, authConfigDto);
+
+            if (challengeFlowDto.isSendRreq()) {
+                challengeFlowDto.setCres(cResMapper.toCres(transaction));
+            } else {
+
+                challengeFlowDto.setCres(
+                        cResMapper.toAppCres(
+                                transaction, challengeFlowDto.getInstitutionUIParams()));
             }
 
             if (flowType.equals(DeviceChannel.APP)
@@ -373,30 +384,13 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     InternalErrorCode.CHALLENGE_RESEND_THRESHOLD_EXCEEDED
                             .getTransactionStatusReason()
                             .getCode());
-            CRES cres =
-                    cResMapper.toAppCres(transaction, challengeFlowDto.getInstitutionUIParams());
-            challengeFlowDto.setCres(cres);
-            transactionMessageLogService.createAndSave(cres, transaction.getId());
             challengeFlowDto.setSendRreq(true);
         } else {
             log.info(" ReSending challenge for transaction {}", transaction.getId());
             transaction.setInteractionCount(transaction.getInteractionCount() + 1);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
-            challengeFlowDto
-                    .getInstitutionUIParams()
-                    .setChallengeInfoText(
-                            challengeFlowDto
-                                    .getInstitutionUIParams()
-                                    .getChallengeInfoText()
-                                    .replaceFirst(
-                                            InternalConstants.SENT, InternalConstants.RESENT));
-            challengeFlowDto
-                    .getInstitutionUIParams()
-                    .setResendAttemptLeft(
-                            String.valueOf(
-                                    authConfigDto.getChallengeAttemptConfig().getResendThreshold()
-                                            - transaction.getResendCount()));
             handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
+            challengeFlowDto.setCurrentState(InternalConstants.RESEND);
         }
     }
 
@@ -425,38 +419,13 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_VAL_VERIFIED);
             transactionService.updateEci(transaction);
             transaction.setAuthValue(authValueGeneratorService.getAuthValue(transaction));
-            CRES cres = cResMapper.toCres(transaction);
-            challengeFlowDto.setCres(cres);
-            transactionMessageLogService.createAndSave(cres, transaction.getId());
             challengeFlowDto.setSendRreq(true);
         } else { // If the authentication has failed, is not completed or the Cardholder has
             // selected to cancel the authentication
             if (authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
                     > transaction.getInteractionCount()) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.INVALID_AUTH_VAL);
-                if (authResponse != null) {
-                    challengeFlowDto
-                            .getInstitutionUIParams()
-                            .setChallengeInfoText(
-                                    String.format(
-                                            authResponse.getDisplayMessage(),
-                                            authConfigDto
-                                                            .getChallengeAttemptConfig()
-                                                            .getAttemptThreshold()
-                                                    - transaction.getInteractionCount()));
-                }
-                CRES cres =
-                        cResMapper.toAppCres(
-                                transaction, challengeFlowDto.getInstitutionUIParams());
-                challengeFlowDto
-                        .getInstitutionUIParams()
-                        .setOtpAttemptLeft(
-                                String.valueOf(
-                                        authConfigDto
-                                                        .getChallengeAttemptConfig()
-                                                        .getAttemptThreshold()
-                                                - transaction.getInteractionCount()));
-                challengeFlowDto.setCres(cres);
+                challengeFlowDto.setCurrentState(InternalConstants.VALIDATE_OTP);
             } else {
                 transaction.setTransactionStatus(
                         InternalErrorCode.EXCEED_MAX_ALLOWED_ATTEMPTS.getTransactionStatus());
@@ -476,9 +445,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                                     transaction.getTransactionCardDetail().getCardNumber()),
                             cardRange.getCardDetailsStore());
                 }
-                CRES cres = cResMapper.toCres(transaction);
-                challengeFlowDto.setCres(cres);
-                transactionMessageLogService.createAndSave(cres, transaction.getId());
                 challengeFlowDto.setSendRreq(true);
             }
         }
@@ -499,8 +465,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         log.info("Sent challenge for transaction {}", transaction.getId());
 
         StateMachine.Trigger(transaction, Phase.PhaseEvent.SEND_AUTH_VAL);
-        CRES cres = cResMapper.toAppCres(transaction, challengeFlowDto.getInstitutionUIParams());
-        challengeFlowDto.setCres(cres);
     }
 
     private void handleCancelChallenge(
@@ -518,8 +482,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         transaction.setChallengeCancelInd(creq.getChallengeCancel());
 
         challengeFlowDto.setSendRreq(true);
-        CRES cres = cResMapper.toCres(transaction);
-        challengeFlowDto.setCres(cres);
+        challengeFlowDto.setCurrentState(InternalConstants.CANCEL);
         log.info("challenge cancelled for transaction {}", transaction.getId());
     }
 

@@ -67,4 +67,8 @@ public class InternalConstants {
     public static final int THREE_DS_REQUESTOR_DEC_MAX_TIME_UPPER_LIMIT = 10080;
     public static final int THREE_DS_REQUESTOR_DEC_MAX_TIME_LOWER_LIMIT = 1;
     public static final String OOB_CONTINUE_LABEL = "Continue";
+
+    public static final String CANCEL = "CANCEL";
+    public static final String RESEND = "RESEND";
+    public static final String VALIDATE_OTP = "VALIDATE_OTP";
 }
