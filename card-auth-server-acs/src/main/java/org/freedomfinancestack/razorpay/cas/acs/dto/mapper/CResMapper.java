@@ -136,9 +136,21 @@ public interface CResMapper {
             expression =
                     "java(isAppBasedNativeFlow(transaction) ? institutionUIParams.getWhyInfoText()"
                             + " : null)")
-    @Mapping(target = "whitelistingInfoText", source = "institutionUIParams.whitelistingInfoText")
-    @Mapping(target = "oobContinueLabel", source = "institutionUIParams.oobContinueLabel")
-    @Mapping(target = "challengeSelectInfo", source = "institutionUIParams.challengeSelectInfo")
+    @Mapping(
+            target = "whitelistingInfoText",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getWhitelistingInfoText() : null)")
+    @Mapping(
+            target = "oobContinueLabel",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getOobContinueLabel() : null)")
+    @Mapping(
+            target = "challengeSelectInfo",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getChallengeSelectInfo() : null)")
     // messageExtension
     CRES toAppCres(Transaction transaction, InstitutionUIParams institutionUIParams);
 
