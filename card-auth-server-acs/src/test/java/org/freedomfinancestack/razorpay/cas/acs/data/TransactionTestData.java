@@ -82,7 +82,6 @@ public class TransactionTestData {
         return TransactionCardDetail.builder()
                 .cardNumber("4111111111111111")
                 .cardholderName("John Doe")
-                .cardExpiry("12/25")
                 .networkCode(Network.VISA.getValue()) // Assuming 1 represents VISA network
                 .build();
     }

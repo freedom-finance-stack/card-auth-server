@@ -198,7 +198,6 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionCardDetail buildTransactionCardDetail(AREQ areq) {
         return TransactionCardDetail.builder()
                 .cardNumber(areq.getAcctNumber())
-                .cardExpiry(areq.getCardExpiryDate())
                 .cardholderName(areq.getCardholderName())
                 .build();
     }

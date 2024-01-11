@@ -206,3 +206,8 @@ institution-ui:
       extra-high-ps: "extra_high_mc.png"
 
 
+encryption:
+  aes:
+    password: ${ENCRYPTION_AES_PASSWORD:password}
+    salt: ${ENCRYPTION_AES_SALT:salt}
+

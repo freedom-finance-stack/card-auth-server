@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.dao.model;
 
+import org.freedomfinancestack.razorpay.cas.dao.encryption.Encrypt;
 import org.hibernate.annotations.Where;
 
 import jakarta.persistence.*;
@@ -19,13 +20,12 @@ public class TransactionCardDetail extends BaseEntity<String> {
     private String id;
 
     @Column(name = "card_number", nullable = false)
+    @Convert(converter = Encrypt.class)
     private String cardNumber;
 
     @Column(name = "cardholder_name")
+    @Convert(converter = Encrypt.class)
     private String cardholderName;
-
-    @Column(name = "card_expiry")
-    private String cardExpiry;
 
     @Column(name = "network_code", nullable = false)
     private Byte networkCode;

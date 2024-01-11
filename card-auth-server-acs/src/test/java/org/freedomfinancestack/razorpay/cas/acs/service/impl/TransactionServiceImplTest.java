@@ -132,8 +132,6 @@ public class TransactionServiceImplTest {
         // Verify buildTransactionCardDetail method
         assertEquals(sampleAreq.getAcctNumber(), result.getTransactionCardDetail().getCardNumber());
         assertEquals(
-                sampleAreq.getCardExpiryDate(), result.getTransactionCardDetail().getCardExpiry());
-        assertEquals(
                 sampleAreq.getCardholderName(),
                 result.getTransactionCardDetail().getCardholderName());
 

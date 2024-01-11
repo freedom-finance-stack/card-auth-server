@@ -133,9 +133,8 @@ DROP TABLE IF EXISTS `transaction_card_detail`;
 CREATE TABLE `transaction_card_detail`
 (
     `transaction_id`  varchar(36) PRIMARY KEY,
-    `card_number`     varchar(40) NOT NULL,
+    `card_number`     varchar(256) NOT NULL,
     `cardholder_name` varchar(120),
-    `card_expiry`     varchar(10),
     `network_code`    tinyint,
     `created_at`      timestamp   NOT NULL,
     `modified_at`     timestamp   NOT NULL,
