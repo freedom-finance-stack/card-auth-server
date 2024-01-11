@@ -382,7 +382,6 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             log.info(" ReSending challenge for transaction {}", transaction.getId());
             transaction.setInteractionCount(transaction.getInteractionCount() + 1);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
-            handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
             challengeFlowDto
                     .getInstitutionUIParams()
                     .setChallengeInfoText(
@@ -397,6 +396,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                             String.valueOf(
                                     authConfigDto.getChallengeAttemptConfig().getResendThreshold()
                                             - transaction.getResendCount()));
+            handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
         }
     }
 
@@ -434,16 +434,20 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
                     > transaction.getInteractionCount()) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.INVALID_AUTH_VAL);
+                if (authResponse != null) {
+                    challengeFlowDto
+                            .getInstitutionUIParams()
+                            .setChallengeInfoText(
+                                    String.format(
+                                            authResponse.getDisplayMessage(),
+                                            authConfigDto
+                                                            .getChallengeAttemptConfig()
+                                                            .getAttemptThreshold()
+                                                    - transaction.getInteractionCount()));
+                }
                 CRES cres =
                         cResMapper.toAppCres(
                                 transaction, challengeFlowDto.getInstitutionUIParams());
-                if (authResponse != null) {
-                    cres.setChallengeInfoText(
-                            String.format(
-                                    authResponse.getDisplayMessage(),
-                                    authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
-                                            - transaction.getInteractionCount()));
-                }
                 challengeFlowDto
                         .getInstitutionUIParams()
                         .setOtpAttemptLeft(
