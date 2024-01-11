@@ -220,7 +220,7 @@
                     <div class="otp-buttons">
                         <button th:if="${institutionUIParams.deviceChannel == '01' || institutionUIParams.isJSEnabled}" class="otp-submit-button" th:text="${institutionUIParams.submitAuthenticationLabel}" onclick="return validateOTP();">Submit</button>
                         <button th:unless="${institutionUIParams.deviceChannel == '01' || institutionUIParams.isJSEnabled}" class="otp-submit-button" th:text="${institutionUIParams.submitAuthenticationLabel}">Submit</button>
-                        <form id = "cancel-form" action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
+                        <form th:if="${institutionUIParams.deviceChannel == '01'}" id = "cancel-form" action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
                             <input type="hidden" name="acsTransID" th:value="${institutionUIParams.acsTransID}" >
                             <input type="hidden" name="messageType" th:value="CReq">
                             <input type="hidden" name="messageVersion" th:value="${institutionUIParams.messageVersion}">
@@ -231,7 +231,7 @@
                         </form>
                     </div>
 
-                    <form th:if="${institutionUIParams.resendBlocked != 'true'}" id = "resend-form" action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
+                    <form th:if="${institutionUIParams.deviceChannel == '01' and institutionUIParams.resendBlocked != 'true'}" id = "resend-form" action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
                         <input type="hidden" name="acsTransID" th:value="${institutionUIParams.acsTransID}" >
                         <input type="hidden" name="messageType" th:value="CReq">
                         <input type="hidden" name="messageVersion" th:value="${institutionUIParams.messageVersion}">
