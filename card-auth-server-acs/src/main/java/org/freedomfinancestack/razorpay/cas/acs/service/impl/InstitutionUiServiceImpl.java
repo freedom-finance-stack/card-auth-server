@@ -82,22 +82,6 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                 "Institution Ui Config not found");
     }
 
-    @Override
-    public String getEncodedHtml(InstitutionUIParams institutionUIParams) throws UiConfigException {
-        String html;
-        html =
-                thymeleafService.getOtpHTMLPage(
-                        institutionUIParams, institutionUiConfiguration.getHtmlOtpTemplate());
-
-        if (html == null) {
-            throw new UiConfigException(
-                    InternalErrorCode.DISPLAY_PAGE_NOT_FOUND, "can not create html display page");
-        }
-        return Base64.getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(html.getBytes(StandardCharsets.UTF_8));
-    }
-
     // TODO: create a mapper for this to cleanly handle things
     private void populateUiParamsHandler(
             ChallengeFlowDto challengeFlowDto,
@@ -291,31 +275,40 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         "UI Type Implementation not available with the given option " + uiType);
         }
 
-        if (challengeFlowDto.getCurrentState().equals(InternalConstants.RESEND)) {
-            challengeText =
-                    challengeText.replaceFirst(InternalConstants.SENT, InternalConstants.RESENT);
-            challengeFlowDto
-                    .getInstitutionUIParams()
-                    .setResendAttemptLeft(
-                            String.valueOf(
-                                    authConfigDto.getChallengeAttemptConfig().getResendThreshold()
-                                            - challengeFlowDto.getTransaction().getResendCount()));
-        }
+        if (challengeFlowDto.getCurrentState() != null) {
+            if (challengeFlowDto.getCurrentState().equals(InternalConstants.RESEND)) {
+                challengeText =
+                        challengeText.replaceFirst(
+                                InternalConstants.SENT, InternalConstants.RESENT);
+                challengeFlowDto
+                        .getInstitutionUIParams()
+                        .setResendAttemptLeft(
+                                String.valueOf(
+                                        authConfigDto
+                                                        .getChallengeAttemptConfig()
+                                                        .getResendThreshold()
+                                                - challengeFlowDto
+                                                        .getTransaction()
+                                                        .getResendCount()));
+            }
 
-        if (challengeFlowDto.getCurrentState().equals(InternalConstants.VALIDATE_OTP)) {
-            challengeText =
-                    String.format(
-                            InternalConstants.CHALLENGE_INCORRECT_OTP_TEXT,
-                            authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
-                                    - challengeFlowDto.getTransaction().getInteractionCount());
-            challengeFlowDto
-                    .getInstitutionUIParams()
-                    .setOtpAttemptLeft(
-                            String.valueOf(
-                                    authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
-                                            - challengeFlowDto
-                                                    .getTransaction()
-                                                    .getInteractionCount()));
+            if (challengeFlowDto.getCurrentState().equals(InternalConstants.VALIDATE_OTP)) {
+                challengeText =
+                        String.format(
+                                InternalConstants.CHALLENGE_INCORRECT_OTP_TEXT,
+                                authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
+                                        - challengeFlowDto.getTransaction().getInteractionCount());
+                challengeFlowDto
+                        .getInstitutionUIParams()
+                        .setOtpAttemptLeft(
+                                String.valueOf(
+                                        authConfigDto
+                                                        .getChallengeAttemptConfig()
+                                                        .getAttemptThreshold()
+                                                - challengeFlowDto
+                                                        .getTransaction()
+                                                        .getInteractionCount()));
+            }
         }
 
         validInstitutionUIParams.setChallengeInfoText(challengeText);
@@ -328,6 +321,34 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         .getTransaction()
                         .getTransactionReferenceDetail()
                         .getThreedsServerTransactionId());
+
+        if (challengeFlowDto
+                        .getTransaction()
+                        .getDeviceChannel()
+                        .equals(DeviceChannel.APP.getChannel())
+                && challengeFlowDto
+                        .getTransaction()
+                        .getTransactionSdkDetail()
+                        .getAcsInterface()
+                        .equals(DeviceInterface.HTML.getValue())) {
+            validInstitutionUIParams.setDisplayPage(getEncodedHtml(validInstitutionUIParams));
+        }
         challengeFlowDto.setInstitutionUIParams(validInstitutionUIParams);
+    }
+
+    private String getEncodedHtml(InstitutionUIParams institutionUIParams)
+            throws UiConfigException {
+        String html;
+        html =
+                thymeleafService.getOtpHTMLPage(
+                        institutionUIParams, institutionUiConfiguration.getHtmlOtpTemplate());
+
+        if (html == null) {
+            throw new UiConfigException(
+                    InternalErrorCode.DISPLAY_PAGE_NOT_FOUND, "can not create html display page");
+        }
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(html.getBytes(StandardCharsets.UTF_8));
     }
 }

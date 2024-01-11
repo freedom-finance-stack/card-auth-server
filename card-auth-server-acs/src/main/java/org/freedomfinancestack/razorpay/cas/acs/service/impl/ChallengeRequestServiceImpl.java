@@ -263,22 +263,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (challengeFlowDto.isSendRreq()) {
                 challengeFlowDto.setCres(cResMapper.toCres(transaction));
             } else {
-
                 challengeFlowDto.setCres(
                         cResMapper.toAppCres(
                                 transaction, challengeFlowDto.getInstitutionUIParams()));
-            }
-
-            if (flowType.equals(DeviceChannel.APP)
-                    && transaction
-                            .getTransactionSdkDetail()
-                            .getAcsUiType()
-                            .equals(UIType.HTML_OTHER.getType())) {
-                challengeFlowDto
-                        .getCres()
-                        .setAcsHTML(
-                                institutionUiService.getEncodedHtml(
-                                        challengeFlowDto.getInstitutionUIParams()));
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
