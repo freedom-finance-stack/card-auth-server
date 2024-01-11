@@ -118,10 +118,14 @@ public interface CResMapper {
                             + " institutionUIParams.getExpandInfoText() : null)")
     @Mapping(
             target = "resendInformationLabel",
-            source = "institutionUIParams.resendInformationLabel")
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getResendInformationLabel() : null)")
     @Mapping(
             target = "submitAuthenticationLabel",
-            source = "institutionUIParams.submitAuthenticationLabel")
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getSubmitAuthenticationLabel() : null)")
     @Mapping(
             target = "whyInfoLabel",
             expression =

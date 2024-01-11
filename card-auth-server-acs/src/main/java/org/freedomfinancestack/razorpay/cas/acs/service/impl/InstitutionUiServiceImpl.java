@@ -275,6 +275,10 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
 
                 validInstitutionUIParams.setValidationUrl(
                         institutionUiConfiguration.getInstitutionCssUrl());
+                validInstitutionUIParams.setSubmitAuthenticationLabel(
+                        institutionUiConfig.getSubmitAuthenticationLabel());
+                validInstitutionUIParams.setResendInformationLabel(
+                        institutionUiConfig.getResendInformationLabel());
 
                 break;
 
