@@ -25,7 +25,6 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfigPK;
-import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionUiConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,31 +44,39 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
     private final ThymeleafService thymeleafService;
 
     @Override
-    public void populateUiParams(
-            ChallengeFlowDto challengeFlowDto, Transaction transaction, AuthConfigDto authConfigDto)
+    public void populateUiParams(ChallengeFlowDto challengeFlowDto, AuthConfigDto authConfigDto)
             throws UiConfigException {
 
-        AuthType authType = AuthType.getAuthType(transaction.getAuthenticationType());
+        AuthType authType =
+                AuthType.getAuthType(challengeFlowDto.getTransaction().getAuthenticationType());
 
         UIType uiType =
-                transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
+                challengeFlowDto
+                                .getTransaction()
+                                .getDeviceChannel()
+                                .equals(DeviceChannel.BRW.getChannel())
                         ? UIType.TEXT
                         : UIType.getUIType(
-                                transaction.getTransactionSdkDetail().getAcsUiTemplate());
+                                challengeFlowDto
+                                        .getTransaction()
+                                        .getTransactionSdkDetail()
+                                        .getAcsUiTemplate());
         Optional<InstitutionUiConfig> institutionUiConfig =
                 institutionUiConfigRepository.findById(
                         new InstitutionUiConfigPK(
-                                transaction.getInstitutionId(), authType, uiType));
+                                challengeFlowDto.getTransaction().getInstitutionId(),
+                                authType,
+                                uiType));
 
         if (institutionUiConfig.isPresent()) {
             populateUiParamsHandler(
-                    transaction, challengeFlowDto, institutionUiConfig.get(), authConfigDto);
+                    challengeFlowDto, institutionUiConfig.get(), authConfigDto, uiType);
             return;
         }
 
         log.error(
                 "Institution Ui Config not found for Institution ID : "
-                        + transaction.getInstitutionId());
+                        + challengeFlowDto.getTransaction().getInstitutionId());
         throw new UiConfigException(
                 InternalErrorCode.INSTITUTION_UI_CONFIG_NOT_FOUND,
                 "Institution Ui Config not found");
@@ -92,46 +99,61 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
     }
 
     private void populateUiParamsHandler(
-            Transaction transaction,
             ChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
-            AuthConfigDto authConfigDto)
+            AuthConfigDto authConfigDto,
+            UIType uiType)
             throws UiConfigException {
+
+        if (uiType == null) {
+            throw new UiConfigException(
+                    InternalErrorCode.UNSUPPORTED_UI_TYPE,
+                    InternalErrorCode.UNSUPPORTED_UI_TYPE.getDefaultErrorMessage());
+        }
 
         InstitutionUIParams validInstitutionUIParams = new InstitutionUIParams();
 
         String challengeText;
-        UIType uiType;
         validInstitutionUIParams.setJSEnabled(false);
-        if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())) {
-            if (transaction.getMessageVersion().equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
-                validInstitutionUIParams.setJSEnabled(
-                        transaction.getTransactionBrowserDetail().getJavascriptEnabled());
-            }
-            uiType = UIType.TEXT;
-        } else {
-            uiType = UIType.getUIType(transaction.getTransactionSdkDetail().getAcsUiType());
-            if (uiType == null) {
-                throw new UiConfigException(
-                        InternalErrorCode.UNSUPPORTED_UI_TYPE,
-                        InternalErrorCode.UNSUPPORTED_UI_TYPE.getDefaultErrorMessage());
-            }
+        if (challengeFlowDto
+                        .getTransaction()
+                        .getDeviceChannel()
+                        .equals(DeviceChannel.BRW.getChannel())
+                && challengeFlowDto
+                        .getTransaction()
+                        .getMessageVersion()
+                        .equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
+            validInstitutionUIParams.setJSEnabled(
+                    challengeFlowDto
+                            .getTransaction()
+                            .getTransactionBrowserDetail()
+                            .getJavascriptEnabled());
         }
 
-        String cardNumber = transaction.getTransactionCardDetail().getCardNumber();
+        String cardNumber =
+                challengeFlowDto.getTransaction().getTransactionCardDetail().getCardNumber();
 
-        MessageCategory messageCategory = transaction.getMessageCategory();
+        MessageCategory messageCategory = challengeFlowDto.getTransaction().getMessageCategory();
         String amount = null;
         String currency = null;
         if (messageCategory.equals(MessageCategory.PA)) {
-            String purchaseAmount = transaction.getTransactionPurchaseDetail().getPurchaseAmount();
+            String purchaseAmount =
+                    challengeFlowDto
+                            .getTransaction()
+                            .getTransactionPurchaseDetail()
+                            .getPurchaseAmount();
             String exponent =
-                    transaction.getTransactionPurchaseDetail().getPurchaseExponent().toString();
+                    challengeFlowDto
+                            .getTransaction()
+                            .getTransactionPurchaseDetail()
+                            .getPurchaseExponent()
+                            .toString();
             amount = Util.formatAmount(purchaseAmount, exponent);
             validInstitutionUIParams.setAmount(amount);
             currency =
                     Util.getCurrencyInstance(
-                                    transaction
+                                    challengeFlowDto
+                                            .getTransaction()
                                             .getTransactionPurchaseDetail()
                                             .getPurchaseCurrency())
                             .getCurrencyCode();
@@ -140,19 +162,64 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
 
         String mobileNumber =
                 Util.getLastFourDigit(
-                        transaction.getTransactionCardHolderDetail().getMobileNumber());
-        String merchantName = transaction.getTransactionMerchant().getMerchantName();
+                        challengeFlowDto
+                                .getTransaction()
+                                .getTransactionCardHolderDetail()
+                                .getMobileNumber());
+        String merchantName =
+                challengeFlowDto.getTransaction().getTransactionMerchant().getMerchantName();
 
-        validInstitutionUIParams.setDeviceChannel(transaction.getDeviceChannel());
+        validInstitutionUIParams.setDeviceChannel(
+                challengeFlowDto.getTransaction().getDeviceChannel());
         // currently setting it for 3 mins need to handle this properly
         validInstitutionUIParams.setTimeout(180);
         validInstitutionUIParams.setMerchantName(merchantName);
         validInstitutionUIParams.setCardNumber(Util.maskedCardNumber(cardNumber));
         validInstitutionUIParams.setValidationUrl(
                 RouteConstants.getAcsChallengeValidationUrl(
-                        appConfiguration.getHostname(), transaction.getDeviceChannel()));
+                        appConfiguration.getHostname(),
+                        challengeFlowDto.getTransaction().getDeviceChannel()));
 
-        if (transaction
+        String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
+        Image issuerLogo = new Image();
+        issuerLogo.setMedium(logoBaseUrl + institutionUiConfiguration.getMediumLogo());
+        issuerLogo.setHigh(logoBaseUrl + institutionUiConfiguration.getHighLogo());
+        issuerLogo.setExtraHigh(logoBaseUrl + institutionUiConfiguration.getExtraHighLogo());
+
+        Image psImage = new Image();
+        Network network =
+                Network.getNetwork(
+                        challengeFlowDto
+                                .getTransaction()
+                                .getTransactionCardDetail()
+                                .getNetworkCode());
+        psImage.setMedium(
+                logoBaseUrl
+                        + institutionUiConfiguration
+                                .getNetworkUiConfig()
+                                .get(network)
+                                .getMediumPs());
+        psImage.setHigh(
+                logoBaseUrl
+                        + institutionUiConfiguration.getNetworkUiConfig().get(network).getHighPs());
+        psImage.setExtraHigh(
+                logoBaseUrl
+                        + institutionUiConfiguration
+                                .getNetworkUiConfig()
+                                .get(network)
+                                .getExtraHighPs());
+        validInstitutionUIParams.setIssuerImage(issuerLogo);
+        validInstitutionUIParams.setPsImage(psImage);
+        validInstitutionUIParams.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
+        validInstitutionUIParams.setExpandInfoText(institutionUiConfig.getExpandInfoText());
+        validInstitutionUIParams.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
+        validInstitutionUIParams.setWhyInfoText(institutionUiConfig.getWhyInfoText());
+        validInstitutionUIParams.setChallengeInfoHeader(
+                institutionUiConfig.getChallengeInfoHeader());
+        validInstitutionUIParams.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
+
+        if (challengeFlowDto
+                        .getTransaction()
                         .getTransactionReferenceDetail()
                         .getThreeDSRequestorChallengeInd()
                         .equals(
@@ -217,51 +284,16 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         "UI Type Implementation not available with the given option " + uiType);
         }
 
-        if (!uiType.equals(UIType.HTML_OTHER)) {
-            String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
-            Image issuerLogo = new Image();
-            issuerLogo.setMedium(logoBaseUrl + institutionUiConfiguration.getMediumLogo());
-            issuerLogo.setHigh(logoBaseUrl + institutionUiConfiguration.getHighLogo());
-            issuerLogo.setExtraHigh(logoBaseUrl + institutionUiConfiguration.getExtraHighLogo());
+        validInstitutionUIParams.setChallengeInfoText(challengeText);
 
-            Image psImage = new Image();
-            Network network =
-                    Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
-            psImage.setMedium(
-                    logoBaseUrl
-                            + institutionUiConfiguration
-                                    .getNetworkUiConfig()
-                                    .get(network)
-                                    .getMediumPs());
-            psImage.setHigh(
-                    logoBaseUrl
-                            + institutionUiConfiguration
-                                    .getNetworkUiConfig()
-                                    .get(network)
-                                    .getHighPs());
-            psImage.setExtraHigh(
-                    logoBaseUrl
-                            + institutionUiConfiguration
-                                    .getNetworkUiConfig()
-                                    .get(network)
-                                    .getExtraHighPs());
-            validInstitutionUIParams.setIssuerImage(issuerLogo);
-            validInstitutionUIParams.setPsImage(psImage);
-            validInstitutionUIParams.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
-            validInstitutionUIParams.setExpandInfoText(institutionUiConfig.getExpandInfoText());
-            validInstitutionUIParams.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
-            validInstitutionUIParams.setWhyInfoText(institutionUiConfig.getWhyInfoText());
-            validInstitutionUIParams.setChallengeInfoHeader(
-                    institutionUiConfig.getChallengeInfoHeader());
-            validInstitutionUIParams.setChallengeInfoLabel(
-                    institutionUiConfig.getChallengeInfoLabel());
-            validInstitutionUIParams.setChallengeInfoText(challengeText);
-        }
-
-        validInstitutionUIParams.setMessageVersion(transaction.getMessageVersion());
-        validInstitutionUIParams.setAcsTransID(transaction.getId());
+        validInstitutionUIParams.setMessageVersion(
+                challengeFlowDto.getTransaction().getMessageVersion());
+        validInstitutionUIParams.setAcsTransID(challengeFlowDto.getTransaction().getId());
         validInstitutionUIParams.setThreeDSServerTransID(
-                transaction.getTransactionReferenceDetail().getThreedsServerTransactionId());
+                challengeFlowDto
+                        .getTransaction()
+                        .getTransactionReferenceDetail()
+                        .getThreedsServerTransactionId());
         challengeFlowDto.setInstitutionUIParams(validInstitutionUIParams);
     }
 }

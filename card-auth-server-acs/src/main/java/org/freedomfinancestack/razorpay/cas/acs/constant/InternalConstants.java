@@ -43,7 +43,7 @@ public class InternalConstants {
             "to your registered email address %s";
 
     public static final String CHALLENGE_INCORRECT_OTP_TEXT =
-            "Incorrect OTP, you have NUMBER_OF_ATTEMPTS attempts left!";
+            "Incorrect OTP, you have %s attempts left!";
     public static final String CHALLENGE_CORRECT_OTP_TEXT = "OTP Authentication Successful";
     public static final String MODEL_ATTRIBUTE_CRES = "cRes";
     public static final String MODEL_ATTRIBUTE_ERRO = "erro";

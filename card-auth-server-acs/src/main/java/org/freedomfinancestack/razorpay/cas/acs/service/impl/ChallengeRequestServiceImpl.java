@@ -198,7 +198,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
 
             // Populating Ui Params
-            institutionUiService.populateUiParams(challengeFlowDto, transaction, authConfigDto);
+            institutionUiService.populateUiParams(challengeFlowDto, authConfigDto);
 
             // 4 flows
             // 1: if Challenge cancelled by user
@@ -439,15 +439,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                                 transaction, challengeFlowDto.getInstitutionUIParams());
                 if (authResponse != null) {
                     cres.setChallengeInfoText(
-                            authResponse
-                                    .getDisplayMessage()
-                                    .replaceFirst(
-                                            InternalConstants.NUMBER_OF_ATTEMPTS,
-                                            String.valueOf(
-                                                    authConfigDto
-                                                                    .getChallengeAttemptConfig()
-                                                                    .getAttemptThreshold()
-                                                            - transaction.getInteractionCount())));
+                            String.format(
+                                    authResponse.getDisplayMessage(),
+                                    authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
+                                            - transaction.getInteractionCount()));
                 }
                 challengeFlowDto
                         .getInstitutionUIParams()
