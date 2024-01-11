@@ -98,6 +98,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                 .encodeToString(html.getBytes(StandardCharsets.UTF_8));
     }
 
+    // TODO: create a mapper for this to cleanly handle things
     private void populateUiParamsHandler(
             ChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
@@ -171,14 +172,27 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
 
         validInstitutionUIParams.setDeviceChannel(
                 challengeFlowDto.getTransaction().getDeviceChannel());
-        // currently setting it for 3 mins need to handle this properly
+        // TODO: temp; currently setting it for 3 mins need to handle this properly
         validInstitutionUIParams.setTimeout(180);
         validInstitutionUIParams.setMerchantName(merchantName);
         validInstitutionUIParams.setCardNumber(Util.maskedCardNumber(cardNumber));
-        validInstitutionUIParams.setValidationUrl(
-                RouteConstants.getAcsChallengeValidationUrl(
-                        appConfiguration.getHostname(),
-                        challengeFlowDto.getTransaction().getDeviceChannel()));
+        if (challengeFlowDto
+                        .getTransaction()
+                        .getDeviceChannel()
+                        .equals(DeviceChannel.BRW.getChannel())
+                || challengeFlowDto
+                        .getTransaction()
+                        .getTransactionSdkDetail()
+                        .getAcsInterface()
+                        .equals(DeviceInterface.NATIVE.getValue())) {
+            validInstitutionUIParams.setValidationUrl(
+                    RouteConstants.getAcsChallengeValidationUrl(
+                            appConfiguration.getHostname(),
+                            challengeFlowDto.getTransaction().getDeviceChannel()));
+        } else {
+            validInstitutionUIParams.setValidationUrl(
+                    institutionUiConfiguration.getInstitutionCssUrl());
+        }
 
         String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
         Image issuerLogo = new Image();
@@ -236,7 +250,8 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
         }
 
         switch (uiType) {
-            case TEXT:
+                // TODO: temp; Separate this flow
+            case TEXT, HTML_OTHER:
                 challengeText = institutionUiConfig.getChallengeInfoText();
                 challengeText =
                         challengeText.replaceFirst(
@@ -267,18 +282,6 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                 challengeText = institutionUiConfig.getChallengeInfoText();
 
                 validInstitutionUIParams.setOobContinueLabel(InternalConstants.OOB_CONTINUE_LABEL);
-
-                break;
-
-            case HTML_OTHER:
-                challengeText = institutionUiConfig.getChallengeInfoText();
-
-                validInstitutionUIParams.setValidationUrl(
-                        institutionUiConfiguration.getInstitutionCssUrl());
-                validInstitutionUIParams.setSubmitAuthenticationLabel(
-                        institutionUiConfig.getSubmitAuthenticationLabel());
-                validInstitutionUIParams.setResendInformationLabel(
-                        institutionUiConfig.getResendInformationLabel());
 
                 break;
 

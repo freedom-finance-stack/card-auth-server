@@ -231,7 +231,7 @@
                         </form>
                     </div>
 
-                    <form th:if="${institutionUIParams.resendAttemptLeft != null and institutionUIParams.resendBlocked != 'true'}" id = "resend-form" action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
+                    <form th:if="${institutionUIParams.resendBlocked != 'true'}" id = "resend-form" action="#" th:action="${institutionUIParams.validationUrl}" method="post" th:object="${cReq}">
                         <input type="hidden" name="acsTransID" th:value="${institutionUIParams.acsTransID}" >
                         <input type="hidden" name="messageType" th:value="CReq">
                         <input type="hidden" name="messageVersion" th:value="${institutionUIParams.messageVersion}">
@@ -239,7 +239,7 @@
                         <input type="hidden" name="resendChallenge" th:value="Y">
 
                         <div class="resend-otp">
-                            <button type="submit" style="cursor: pointer;border:0;background-color:inherit;text-decoration: underline;" th:text="${institutionUIParams.resendInformationLabel}" th:disabled="${institutionUIParams.resendAttemptLeft == '0'}">Resend OTP</button>
+                            <button type="submit" style="cursor: pointer;border:0;background-color:inherit;text-decoration: underline;" th:text="${institutionUIParams.resendInformationLabel}" th:disabled="${institutionUIParams.resendAttemptLeft != null and institutionUIParams.resendAttemptLeft == '0'}">Resend OTP</button>
                         </div>
                     </form>
 

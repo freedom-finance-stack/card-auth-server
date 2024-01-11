@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      color: hsla(216, 44%, 23%, 1);
+    }
+    .otp-page-container {
+      width: 820px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: auto;
+    }
+    .branding-zone {
+      margin: 10px 0 30px 0;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .branding-zone img {
+      height: 30px;
+    }
+    .main {
+      display: flex;
+      gap: 20px;
+    }
+    @media screen and (max-width: 900px) {
+      .main {
+        flex-direction: column;
+      }
+      .otp-page-container {
+        width: 400px;
+      }
+    }
+    @media screen and (max-width: 400px) {
+      .branding-zone {
+        padding: 0 10px 0 10px;
+      }
+      .resend-otp {
+        display: flex;
+      }
+    }
+    @media screen and (max-width: 350px) {
+      .otp-buttons {
+        flex-direction: column;
+      }
+    }
+    .authenticate-transaction {
+      box-shadow: 0 0 10px hsl(0, 0%, 85%);
+      border-radius: 5px;
+      width: 400px;
+      padding: 20px 15px;
+    }
+    .otp-sent-message, .otp-resent-message {
+      font-size: small;
+      display: block;
+      background-color: hsla(107, 100%, 96%, 1);
+      color: hsla(163, 100%, 22%, 1);
+      margin-bottom: 10px;
+      padding: 5px 0;
+      text-align: center;
+    }
+    .otp-input {
+      position: relative;
+    }
+    .otp-input label {
+      display: block;
+      font-size: small;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+    .otp-input input {
+      width: 100%;
+      padding: 10px 10px;
+      border: none;
+      background-color: hsla(222, 100%, 96%, 1);
+      letter-spacing: 10px;
+      font-weight: 900;
+      outline: none;
+    }
+    .input-focus-border {
+      height: 2px;
+      background-color: hsla(223, 95%, 48%, 1);
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      transition: 0.4s;
+    }
+    .otp-input input:focus ~ .input-focus-border {
+      width: 100%;
+    }
+    .incorrect-otp {
+      background-color: hsla(0, 100%, 97%, 1);
+    }
+    .otp-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      gap: 10px;
+    }
+    .otp-buttons button {
+      padding: 9px 0;
+      width: 100%;
+      border: 1px solid hsla(223, 95%, 48%, 1);
+      border-radius: 3px;
+      font-size: small;
+      transition: 0.4s;
+    }
+    .otp-buttons button:hover {
+      cursor: pointer;
+    }
+    .otp-submit-button {
+      background-color: hsla(223, 95%, 48%, 1);
+      color: hsla(222, 100%, 96%, 1);
+    }
+    .otp-submit-button:hover {
+      background-color: hsla(218, 89%, 51%, 1);
+    }
+    .otp-cancel-button {
+      background-color: hsla(222, 100%, 96%, 1);
+      color: hsla(223, 95%, 48%, 1);
+    }
+    .otp-cancel-button:hover {
+      background-color: hsla(218, 93%, 88%, 1)
+    }
+    .resend-otp {
+      text-align: end;
+      margin-top: 3px;
+    }
+    .incorrect-otp-message {
+      font-size: small;
+      display: block;
+      background-color: hsla(7, 100%, 96%, 1);
+      color: hsla(7, 72%, 40%, 1);
+      margin-bottom: 10px;
+      padding: 5px 0;
+      text-align: center;
+    }
+    .otp-validation-message {
+      font-size: small;
+      color: hsla(7, 72%, 40%, 1);
+    }
+    .merchant-details {
+      width: 400px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px hsl(0, 0%, 85%);
+      padding: 20px 15px;
+    }
+    .merchant-details table {
+      font-size: smaller;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .merchant-details table th {
+      text-align: left;
+      padding: 10px 10px;
+    }
+    .merchant-details table td {
+      text-align: right;
+      padding: 10px 10px;
+    }
+    .merchant-details table tr:first-child {
+      background-color: hsla(222, 100%, 96%, 1);
+    }
+    .so-called-footer {
+      margin-top: 30px;
+    }
+    details {
+      margin: 5px 0;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    p {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="otp-page-container">
+  <div class="header"></div>
+  <div class="branding-zone">
+    <img src="data:image/png;base64,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" alt="">
+    <img src="data:image/png;base64,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" alt="">
+  </div>
+  <hr style="width: 100%; margin-bottom: 30px; border: 0.5px solid hsl(0, 0%, 80%);">
+  <div class="challenge-zone">
+    <div class="main">
+      <div class="authenticate-transaction">
+        <h4 style="text-align: center; margin-bottom: 20px;"><span>Purchase Authentication</span></h4>
+
+
+        <span class="otp-sent-message">We have sent you an text message with a code to your registered mobile number ending with 9999. You are paying Merchant MERCHANT_NAME the amount of AMOUNT_WITH_CURRENCY</span>
+        <form id = "submit-form" action="https://ec2-3-109-185-127.ap-south-1.compute.amazonaws.com/v2/transaction/challenge/app" method="post">
+          <div class="otp-input">
+            <label for="user-otp"><span>Enter your OTP below</span></label>
+            <input type="password" id="user-otp" name="challengeHTMLDataEntry">
+            <span class="input-focus-border"></span>
+          </div>
+
+          <div id="otp-validation-message" class="otp-validation-message"></div>
+
+          <input type="hidden" name="acsTransID" value="553e9406-8df4-4928-8609-61b38a7be08b" >
+          <input type="hidden" name="messageType" value="CReq">
+          <input type="hidden" name="messageVersion" value="2.2.0">
+          <input type="hidden" name="threeDSServerTransID" value="9ce27f98-e531-4e15-9c8e-b234d8a14939">
+
+          <div class="otp-buttons">
+            <button class="otp-submit-button" onclick="return validateOTP();">Submit</button>
+
+            <form id = "cancel-form" action="https://ec2-3-109-185-127.ap-south-1.compute.amazonaws.com/v2/transaction/challenge/app" method="post">
+              <input type="hidden" name="acsTransID" value="553e9406-8df4-4928-8609-61b38a7be08b" >
+              <input type="hidden" name="messageType" value="CReq">
+              <input type="hidden" name="messageVersion" value="2.2.0">
+              <input type="hidden" name="threeDSServerTransID" value="9ce27f98-e531-4e15-9c8e-b234d8a14939">
+              <input type="hidden" name="challengeCancel" value="1">
+
+              <button type = submit class="otp-cancel-button">Cancel</button>
+            </form>
+          </div>
+
+
+
+        </form>
+      </div>
+      <div class="merchant-details">
+        <h4 style="text-align: center; margin-bottom: 20px;">Merchant Details</h4>
+        <table>
+          <tr>
+            <th>Merchant Name</th>
+            <td>Ticket Service</td>
+          </tr>
+          <tr>
+            <th>Date</th>
+            <td>Jan 11, 2024</td>
+          </tr>
+          <tr>
+            <th>Card Number</th>
+            <td>876543XXXXXX7319</td>
+          </tr>
+          <tr>
+            <th>Total Charge</th>
+            <td>USD 63.66</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="so-called-footer">
+      <div style="text-align: center; margin-top: 10px;">
+        <span style="font-size: small;">This page will automatically timeout after <strong id="countdown" style="color: hsla(7, 72%, 40%, 1);">3</strong> minutes.</span>
+      </div>
+
+      <div style="text-align: center;">
+        <details>
+          <summary>Need some help?</summary>
+          <p>About OTP, OTP (One Time Passcode).</p>
+        </details>
+        <details>
+          <summary>expand_info_label</summary>
+          <p>expand_info_text</p>
+        </details>
+      </div>
+    </div>
+  </div>
+  <div class="information-zone">
+  </div>
+</div>
+
+<script>
+  /*<![CDATA[*/
+
+  // Function to validate OTP
+  function validateOTP() {
+    var otpInput = document.getElementById('user-otp').value;
+    var otpLength = 4;
+    var validationMessage = document.getElementById('otp-validation-message');
+
+    if (otpInput.trim() === '') {
+      validationMessage.innerHTML = 'OTP cannot be empty!';
+      return false;
+    }
+    if (otpInput.length !== otpLength) {
+      validationMessage.innerHTML = 'OTP length must be ' + otpLength + "!";
+      return false;
+    }
+
+    // If validations pass, clear the message and submit the form
+    validationMessage.innerHTML = '';
+    return true;
+  }
+
+  const timerMilliSeconds = 1000 * 180;
+  const targetDate = new Date().getTime() + timerMilliSeconds;
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const timeRemaining = targetDate - now;
+
+    const minutes = Math.floor(timeRemaining / (1000 * 60));
+    const seconds = Math.floor((timeRemaining % (1000 * 60)) / (1000));
+
+    const countdownElement = document.getElementById("countdown");
+    countdownElement.innerHTML = `${minutes}m ${seconds}s`;
+
+    if(timeRemaining <= 0) {
+      clearInterval(interval);
+    }
+  }
+
+  updateCountdown();
+  const interval = setInterval(updateCountdown, 1000);
+  /*]]>*/
+</script>
+</body>
+</html>
