@@ -1,12 +1,25 @@
 package org.freedomfinancestack.razorpay.cas.acs.data;
 
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
+import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.OOBType;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
 
+import java.math.BigDecimal;
+
 public class AuthConfigDtoData {
-    public static AuthConfigDto createAuthConfigDto(OOBType oobType){
-        AuthConfigDto authConfigDto= new AuthConfigDto();
+    public static AuthenticationDto createAuthenticationDto(
+            AuthConfigDto authConfigDto, Transaction transaction, String authValue) {
+        return AuthenticationDto.builder()
+                .authConfigDto(authConfigDto)
+                .transaction(transaction)
+                .authValue(authValue)
+                .build();
+    }
+
+    public static AuthConfigDto createAuthConfigDto(OOBType oobType) {
+        AuthConfigDto authConfigDto = new AuthConfigDto();
         authConfigDto.setOobConfig(createOOBConfig(oobType));
         authConfigDto.setOtpConfig(new OtpConfig(4));
         authConfigDto.setPasswordConfig(new PasswordConfig());
@@ -26,8 +39,11 @@ public class AuthConfigDtoData {
 
     private static ChallengeAuthTypeConfig createChallengeAuthType() {
         ChallengeAuthTypeConfig challengeAuthTypeConfig = new ChallengeAuthTypeConfig();
-//        challengeAuthTypeConfig.setDefaultAuthType();
-        return null;
+        challengeAuthTypeConfig.setThreshold(BigDecimal.valueOf(2000));
+        challengeAuthTypeConfig.setDefaultAuthType(AuthType.OTP);
+        challengeAuthTypeConfig.setThresholdAuthType(AuthType.UNKNOWN);
+
+        return challengeAuthTypeConfig;
     }
 
     private static OOBConfig createOOBConfig(OOBType oobType) {
