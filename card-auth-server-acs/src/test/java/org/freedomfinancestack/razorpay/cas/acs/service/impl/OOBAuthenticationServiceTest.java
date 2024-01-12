@@ -35,7 +35,7 @@ class OOBAuthenticationServiceTest {
     @InjectMocks OOBAuthenticationService oobAuthenticationService;
 
     @Test
-    void authenticate_Failure_isNull() throws ThreeDSException{
+    void authenticate_Failure_isNull() throws ThreeDSException {
 
         Transaction transaction = Transaction.builder().id("1").build();
         AuthenticationDto authenticationDto1 =
