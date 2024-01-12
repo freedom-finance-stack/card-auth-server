@@ -1,7 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
@@ -23,18 +22,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.freedomfinancestack.razorpay.cas.acs.data.AuthConfigDtoData.createAuthConfigDto;
-import static org.freedomfinancestack.razorpay.cas.acs.data.AuthConfigDtoData.createAuthenticationDto;
+import static org.freedomfinancestack.razorpay.cas.acs.data.AuthConfigTestData.createAuthConfigDto;
+import static org.freedomfinancestack.razorpay.cas.acs.data.AuthConfigTestData.createAuthenticationDto;
 import static org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData.createSampleAppTransaction;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OOBAuthenticationServiceTest {
     @Mock OOBServiceLocator oobServiceLocator;
     @InjectMocks OOBAuthenticationService oobAuthenticationService;
-    @Mock ULTestOOBService ulTestOOBService;
-    @Mock MockOOBService mockOOBService;
 
     /**
      * Check the case if condition case
@@ -42,7 +40,7 @@ class OOBAuthenticationServiceTest {
      * @throws ThreeDSException
      */
     @Test
-    void authenticate_Failure_isNull() throws ThreeDSException {
+    void authenticate_Failure_isNull() {
 
         Transaction transaction = Transaction.builder().id("1").build();
         AuthenticationDto authenticationDto1 =
@@ -89,7 +87,6 @@ class OOBAuthenticationServiceTest {
     @CsvSource({"1", "2"})
     void authenticateSuccessTest(String oob) throws ThreeDSException {
 
-        Transaction transaction = TransactionTestData.createSampleAppTransaction();
         OOBType oobType = OOBType.getOOBType(Integer.parseInt(oob));
 
         AuthConfigDto authConfigDto1 =
@@ -102,7 +99,8 @@ class OOBAuthenticationServiceTest {
         authResponse.setAuthenticated(Boolean.TRUE);
         authResponse.setDisplayMessage(InternalConstants.CHALLENGE_CORRECT_OTP_TEXT);
 
-        OOBService oobService = oobType.getValue() == 1 ? ulTestOOBService : mockOOBService;
+        OOBService oobService =
+                oobType.getValue() == 1 ? mock(ULTestOOBService.class) : mock(MockOOBService.class);
         when(oobServiceLocator.locateOOBService(oobType)).thenReturn(oobService);
         when(oobService.authenticate(authenticationDto)).thenReturn(authResponse);
         AuthResponse actualAuthResponse = oobAuthenticationService.authenticate(authenticationDto);

@@ -8,7 +8,7 @@ import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.OOBType;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
 
-public class AuthConfigDtoData {
+public class AuthConfigTestData {
     public static AuthenticationDto createAuthenticationDto(
             AuthConfigDto authConfigDto, Transaction transaction, String authValue) {
         return AuthenticationDto.builder()
