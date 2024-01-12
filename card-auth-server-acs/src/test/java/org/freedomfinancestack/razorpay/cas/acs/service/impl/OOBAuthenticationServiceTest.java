@@ -11,6 +11,7 @@ import org.freedomfinancestack.razorpay.cas.acs.service.oob.OOBService;
 import org.freedomfinancestack.razorpay.cas.acs.service.oob.OOBServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.service.oob.impl.MockOOBService;
 import org.freedomfinancestack.razorpay.cas.acs.service.oob.impl.ULTestOOBService;
+import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.OOBType;
 import org.freedomfinancestack.razorpay.cas.dao.model.OOBConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
@@ -80,7 +81,7 @@ class OOBAuthenticationServiceTest {
     }
 
     /**
-     * checks the authenticate function when OOB Type is UL_TEST;
+     * checks the authenticate function when OOB Type is UL_TEST or MOCk;
      *
      * @throws ThreeDSException
      */
@@ -91,7 +92,8 @@ class OOBAuthenticationServiceTest {
         Transaction transaction = TransactionTestData.createSampleAppTransaction();
         OOBType oobType = OOBType.getOOBType(Integer.parseInt(oob));
 
-        AuthConfigDto authConfigDto1 = createAuthConfigDto(oobType);
+        AuthConfigDto authConfigDto1 =
+                createAuthConfigDto(oobType, true, true, AuthType.OTP, AuthType.UNKNOWN);
         AuthenticationDto authenticationDto =
                 createAuthenticationDto(authConfigDto1, createSampleAppTransaction(), "");
         authenticationDto.setAuthConfigDto(authConfigDto1);
@@ -106,5 +108,6 @@ class OOBAuthenticationServiceTest {
         AuthResponse actualAuthResponse = oobAuthenticationService.authenticate(authenticationDto);
         assertNotNull(actualAuthResponse);
         assertEquals(authResponse.getDisplayMessage(), actualAuthResponse.getDisplayMessage());
+        assertTrue(authResponse.isAuthenticated());
     }
 }

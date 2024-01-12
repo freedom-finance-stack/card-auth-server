@@ -18,35 +18,44 @@ public class AuthConfigDtoData {
                 .build();
     }
 
-    public static AuthConfigDto createAuthConfigDto(OOBType oobType) {
+    public static AuthConfigDto createAuthConfigDto(
+            OOBType oobType,
+            boolean blockOnExceedAttempt,
+            boolean whitelistingAllowed,
+            AuthType defaultAuthType,
+            AuthType thresholdAuthType) {
         AuthConfigDto authConfigDto = new AuthConfigDto();
         authConfigDto.setOobConfig(createOOBConfig(oobType));
         authConfigDto.setOtpConfig(new OtpConfig(4));
         authConfigDto.setPasswordConfig(new PasswordConfig());
-        authConfigDto.setChallengeAuthTypeConfig(createChallengeAuthType());
-        authConfigDto.setChallengeAttemptConfig(createChallengeAttemptConfig());
+        authConfigDto.setChallengeAuthTypeConfig(
+                createChallengeAuthType(defaultAuthType, thresholdAuthType));
+        authConfigDto.setChallengeAttemptConfig(
+                createChallengeAttemptConfig(blockOnExceedAttempt, whitelistingAllowed));
         return authConfigDto;
     }
 
-    private static ChallengeAttemptConfig createChallengeAttemptConfig() {
+    public static ChallengeAttemptConfig createChallengeAttemptConfig(
+            boolean blockOnExceedAttempt, boolean whitelistingAllowed) {
         ChallengeAttemptConfig challengeAttemptConfig = new ChallengeAttemptConfig();
         challengeAttemptConfig.setAttemptThreshold(3);
         challengeAttemptConfig.setResendThreshold(3);
-        challengeAttemptConfig.setBlockOnExceedAttempt(true);
-        challengeAttemptConfig.setWhitelistingAllowed(true);
+        challengeAttemptConfig.setBlockOnExceedAttempt(blockOnExceedAttempt);
+        challengeAttemptConfig.setWhitelistingAllowed(whitelistingAllowed);
         return challengeAttemptConfig;
     }
 
-    private static ChallengeAuthTypeConfig createChallengeAuthType() {
+    public static ChallengeAuthTypeConfig createChallengeAuthType(
+            AuthType defaultAuthType, AuthType thresholdAuthType) {
         ChallengeAuthTypeConfig challengeAuthTypeConfig = new ChallengeAuthTypeConfig();
         challengeAuthTypeConfig.setThreshold(BigDecimal.valueOf(2000));
-        challengeAuthTypeConfig.setDefaultAuthType(AuthType.OTP);
-        challengeAuthTypeConfig.setThresholdAuthType(AuthType.UNKNOWN);
+        challengeAuthTypeConfig.setDefaultAuthType(defaultAuthType);
+        challengeAuthTypeConfig.setThresholdAuthType(thresholdAuthType);
 
         return challengeAuthTypeConfig;
     }
 
-    private static OOBConfig createOOBConfig(OOBType oobType) {
+    public static OOBConfig createOOBConfig(OOBType oobType) {
         OOBConfig oobConfig = new OOBConfig();
         oobConfig.setOobType(oobType);
         return oobConfig;
