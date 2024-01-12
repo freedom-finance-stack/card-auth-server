@@ -1,12 +1,12 @@
 package org.freedomfinancestack.razorpay.cas.acs.data;
 
+import java.math.BigDecimal;
+
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.OOBType;
 import org.freedomfinancestack.razorpay.cas.dao.model.*;
-
-import java.math.BigDecimal;
 
 public class AuthConfigDtoData {
     public static AuthenticationDto createAuthenticationDto(
