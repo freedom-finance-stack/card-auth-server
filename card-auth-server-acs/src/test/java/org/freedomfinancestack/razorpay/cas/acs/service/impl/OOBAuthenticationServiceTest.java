@@ -34,13 +34,8 @@ class OOBAuthenticationServiceTest {
     @Mock OOBServiceLocator oobServiceLocator;
     @InjectMocks OOBAuthenticationService oobAuthenticationService;
 
-    /**
-     * Check the case if condition case
-     *
-     * @throws ThreeDSException
-     */
     @Test
-    void authenticate_Failure_isNull() {
+    void authenticate_Failure_isNull() throws ThreeDSException{
 
         Transaction transaction = Transaction.builder().id("1").build();
         AuthenticationDto authenticationDto1 =
