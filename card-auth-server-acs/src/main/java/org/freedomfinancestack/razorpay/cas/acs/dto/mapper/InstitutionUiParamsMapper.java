@@ -163,10 +163,11 @@ public interface InstitutionUiParamsMapper {
             Transaction transaction, InstitutionUiConfiguration institutionUiConfiguration) {
 
         Image issuerLogo = new Image();
-        if (transaction
-                .getTransactionSdkDetail()
-                .getAcsUiType()
-                .equals(UIType.HTML_OTHER.getType())) {
+        if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
+                || transaction
+                        .getTransactionSdkDetail()
+                        .getAcsUiTemplate()
+                        .equals(UIType.HTML_OTHER.getType())) {
             issuerLogo.setMedium(Util.getBase64Image(institutionUiConfiguration.getMediumLogo()));
             issuerLogo.setHigh(Util.getBase64Image(institutionUiConfiguration.getHighLogo()));
             issuerLogo.setExtraHigh(
@@ -185,10 +186,11 @@ public interface InstitutionUiParamsMapper {
         Network network =
                 Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
 
-        if (transaction
-                .getTransactionSdkDetail()
-                .getAcsUiType()
-                .equals(UIType.HTML_OTHER.getType())) {
+        if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
+                || transaction
+                        .getTransactionSdkDetail()
+                        .getAcsUiTemplate()
+                        .equals(UIType.HTML_OTHER.getType())) {
             psImage.setMedium(
                     Util.getBase64Image(
                             institutionUiConfiguration
