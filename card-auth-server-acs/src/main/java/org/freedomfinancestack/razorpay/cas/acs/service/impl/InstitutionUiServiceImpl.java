@@ -4,12 +4,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
-import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
-import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
-import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
+import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.InstitutionUiParamsMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.UiConfigException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
@@ -17,12 +15,8 @@ import org.freedomfinancestack.razorpay.cas.acs.module.configuration.Institution
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
 import org.freedomfinancestack.razorpay.cas.acs.service.InstitutionUiService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ThymeleafService;
-import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
-import org.freedomfinancestack.razorpay.cas.contract.ChallengeSelectInfo;
-import org.freedomfinancestack.razorpay.cas.contract.Image;
 import org.freedomfinancestack.razorpay.cas.contract.enums.*;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
-import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfigPK;
 import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionUiConfigRepository;
@@ -42,6 +36,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
     private final InstitutionUiConfiguration institutionUiConfiguration;
     private final TestConfigProperties testConfigProperties;
     private final ThymeleafService thymeleafService;
+    private final InstitutionUiParamsMapper institutionUiParamsMapper;
 
     @Override
     public void populateUiParams(ChallengeFlowDto challengeFlowDto, AuthConfigDto authConfigDto)
@@ -96,231 +91,16 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                     InternalErrorCode.UNSUPPORTED_UI_TYPE.getDefaultErrorMessage());
         }
 
-        InstitutionUIParams validInstitutionUIParams = new InstitutionUIParams();
-
-        String challengeText;
-        validInstitutionUIParams.setJSEnabled(false);
-        if (challengeFlowDto
-                        .getTransaction()
-                        .getDeviceChannel()
-                        .equals(DeviceChannel.BRW.getChannel())
-                && challengeFlowDto
-                        .getTransaction()
-                        .getMessageVersion()
-                        .equals(ThreeDSConstant.MESSAGE_VERSION_2_2_0)) {
-            validInstitutionUIParams.setJSEnabled(
-                    challengeFlowDto
-                            .getTransaction()
-                            .getTransactionBrowserDetail()
-                            .getJavascriptEnabled());
-        }
-
-        String cardNumber =
-                challengeFlowDto.getTransaction().getTransactionCardDetail().getCardNumber();
-
-        MessageCategory messageCategory = challengeFlowDto.getTransaction().getMessageCategory();
-        String amount = null;
-        String currency = null;
-        if (messageCategory.equals(MessageCategory.PA)) {
-            String purchaseAmount =
-                    challengeFlowDto
-                            .getTransaction()
-                            .getTransactionPurchaseDetail()
-                            .getPurchaseAmount();
-            String exponent =
-                    challengeFlowDto
-                            .getTransaction()
-                            .getTransactionPurchaseDetail()
-                            .getPurchaseExponent()
-                            .toString();
-            amount = Util.formatAmount(purchaseAmount, exponent);
-            validInstitutionUIParams.setAmount(amount);
-            currency =
-                    Util.getCurrencyInstance(
-                                    challengeFlowDto
-                                            .getTransaction()
-                                            .getTransactionPurchaseDetail()
-                                            .getPurchaseCurrency())
-                            .getCurrencyCode();
-            validInstitutionUIParams.setCurrency(currency);
-        }
-
-        String mobileNumber =
-                Util.getLastFourDigit(
-                        challengeFlowDto
-                                .getTransaction()
-                                .getTransactionCardHolderDetail()
-                                .getMobileNumber());
-        String merchantName =
-                challengeFlowDto.getTransaction().getTransactionMerchant().getMerchantName();
-
-        validInstitutionUIParams.setDeviceChannel(
-                challengeFlowDto.getTransaction().getDeviceChannel());
-        // TODO: temp; currently setting it for 3 mins need to handle this properly
-        validInstitutionUIParams.setTimeout(180);
-        validInstitutionUIParams.setMerchantName(merchantName);
-        validInstitutionUIParams.setCardNumber(Util.maskedCardNumber(cardNumber));
-        if (challengeFlowDto
-                        .getTransaction()
-                        .getDeviceChannel()
-                        .equals(DeviceChannel.BRW.getChannel())
-                || challengeFlowDto
-                        .getTransaction()
-                        .getTransactionSdkDetail()
-                        .getAcsInterface()
-                        .equals(DeviceInterface.NATIVE.getValue())) {
-            validInstitutionUIParams.setValidationUrl(
-                    RouteConstants.getAcsChallengeValidationUrl(
-                            appConfiguration.getHostname(),
-                            challengeFlowDto.getTransaction().getDeviceChannel()));
-        } else {
-            validInstitutionUIParams.setValidationUrl(
-                    institutionUiConfiguration.getInstitutionCssUrl());
-        }
-
-        String logoBaseUrl = institutionUiConfiguration.getInstitutionUrl();
-        Image issuerLogo = new Image();
-        issuerLogo.setMedium(logoBaseUrl + institutionUiConfiguration.getMediumLogo());
-        issuerLogo.setHigh(logoBaseUrl + institutionUiConfiguration.getHighLogo());
-        issuerLogo.setExtraHigh(logoBaseUrl + institutionUiConfiguration.getExtraHighLogo());
-
-        Image psImage = new Image();
-        Network network =
-                Network.getNetwork(
-                        challengeFlowDto
-                                .getTransaction()
-                                .getTransactionCardDetail()
-                                .getNetworkCode());
-        psImage.setMedium(
-                logoBaseUrl
-                        + institutionUiConfiguration
-                                .getNetworkUiConfig()
-                                .get(network)
-                                .getMediumPs());
-        psImage.setHigh(
-                logoBaseUrl
-                        + institutionUiConfiguration.getNetworkUiConfig().get(network).getHighPs());
-        psImage.setExtraHigh(
-                logoBaseUrl
-                        + institutionUiConfiguration
-                                .getNetworkUiConfig()
-                                .get(network)
-                                .getExtraHighPs());
-        validInstitutionUIParams.setIssuerImage(issuerLogo);
-        validInstitutionUIParams.setPsImage(psImage);
-        validInstitutionUIParams.setExpandInfoLabel(institutionUiConfig.getExpandInfoLabel());
-        validInstitutionUIParams.setExpandInfoText(institutionUiConfig.getExpandInfoText());
-        validInstitutionUIParams.setWhyInfoLabel(institutionUiConfig.getWhyInfoLabel());
-        validInstitutionUIParams.setWhyInfoText(institutionUiConfig.getWhyInfoText());
-        validInstitutionUIParams.setChallengeInfoHeader(
-                institutionUiConfig.getChallengeInfoHeader());
-        validInstitutionUIParams.setChallengeInfoLabel(institutionUiConfig.getChallengeInfoLabel());
-
-        if (challengeFlowDto
-                        .getTransaction()
-                        .getTransactionReferenceDetail()
-                        .getThreeDSRequestorChallengeInd()
-                        .equals(
-                                ThreeDSRequestorChallengeInd
-                                        .WHITELIST_PROMPT_REQUESTED_IF_CHALLENGE_REQUIRED
-                                        .getValue())
-                && authConfigDto.getChallengeAttemptConfig().isWhitelistingAllowed()) {
-            validInstitutionUIParams.setWhitelistingInfoText(
-                    institutionUiConfig.getWhitelistingInfoText());
-        }
-
-        if (authConfigDto.getOtpConfig() != null) {
-            validInstitutionUIParams.setOtpLength(authConfigDto.getOtpConfig().getLength());
-        }
-
-        switch (uiType) {
-                // TODO: temp; Separate this flow
-            case TEXT, HTML_OTHER:
-                challengeText = institutionUiConfig.getChallengeInfoText();
-                challengeText =
-                        challengeText.replaceFirst(
-                                InternalConstants.LAST_FOUR_DIGIT_MOBILE_NUMBER, mobileNumber);
-
-                validInstitutionUIParams.setSubmitAuthenticationLabel(
-                        institutionUiConfig.getSubmitAuthenticationLabel());
-                validInstitutionUIParams.setResendInformationLabel(
-                        institutionUiConfig.getResendInformationLabel());
-
-                break;
-            case SINGLE_SELECT:
-            case MULTI_SELECT:
-                challengeText = institutionUiConfig.getChallengeInfoText();
-
-                validInstitutionUIParams.setSubmitAuthenticationLabel(
-                        institutionUiConfig.getSubmitAuthenticationLabel());
-                if (testConfigProperties.isEnable()) {
-                    validInstitutionUIParams.setChallengeSelectInfo(
-                            new ChallengeSelectInfo[] {
-                                ChallengeSelectInfo.builder().yes("yes").build(),
-                                ChallengeSelectInfo.builder().yes("no").build()
-                            });
-                }
-                break;
-
-            case OOB:
-                challengeText = institutionUiConfig.getChallengeInfoText();
-
-                validInstitutionUIParams.setOobContinueLabel(InternalConstants.OOB_CONTINUE_LABEL);
-
-                break;
-
-            default:
-                throw new UiConfigException(
-                        InternalErrorCode.UNSUPPORTED_UI_TYPE,
-                        "UI Type Implementation not available with the given option " + uiType);
-        }
-
-        if (challengeFlowDto.getCurrentState() != null) {
-            if (challengeFlowDto.getCurrentState().equals(InternalConstants.RESEND)) {
-                challengeText =
-                        challengeText.replaceFirst(
-                                InternalConstants.SENT, InternalConstants.RESENT);
-                challengeFlowDto
-                        .getInstitutionUIParams()
-                        .setResendAttemptLeft(
-                                String.valueOf(
-                                        authConfigDto
-                                                        .getChallengeAttemptConfig()
-                                                        .getResendThreshold()
-                                                - challengeFlowDto
-                                                        .getTransaction()
-                                                        .getResendCount()));
-            }
-
-            if (challengeFlowDto.getCurrentState().equals(InternalConstants.VALIDATE_OTP)) {
-                challengeText =
-                        String.format(
-                                InternalConstants.CHALLENGE_INCORRECT_OTP_TEXT,
-                                authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
-                                        - challengeFlowDto.getTransaction().getInteractionCount());
-                challengeFlowDto
-                        .getInstitutionUIParams()
-                        .setOtpAttemptLeft(
-                                String.valueOf(
-                                        authConfigDto
-                                                        .getChallengeAttemptConfig()
-                                                        .getAttemptThreshold()
-                                                - challengeFlowDto
-                                                        .getTransaction()
-                                                        .getInteractionCount()));
-            }
-        }
-
-        validInstitutionUIParams.setChallengeInfoText(challengeText);
-
-        validInstitutionUIParams.setMessageVersion(
-                challengeFlowDto.getTransaction().getMessageVersion());
-        validInstitutionUIParams.setAcsTransID(challengeFlowDto.getTransaction().getId());
-        validInstitutionUIParams.setThreeDSServerTransID(
-                challengeFlowDto
-                        .getTransaction()
-                        .getTransactionReferenceDetail()
-                        .getThreedsServerTransactionId());
+        InstitutionUIParams validInstitutionUIParams =
+                institutionUiParamsMapper.toInstitutionUiParams(
+                        challengeFlowDto.getTransaction(),
+                        institutionUiConfig,
+                        authConfigDto,
+                        uiType,
+                        challengeFlowDto.getCurrentState(),
+                        appConfiguration,
+                        institutionUiConfiguration,
+                        testConfigProperties);
 
         if (challengeFlowDto
                         .getTransaction()
@@ -351,4 +131,18 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                 .withoutPadding()
                 .encodeToString(html.getBytes(StandardCharsets.UTF_8));
     }
+
+    //    public static void main(String[] args) {
+    //        try {
+    //            URL url = new
+    // URL("https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO");
+    //            InputStream in = url.openStream();
+    //            byte[] imageBytes = in.readAllBytes();
+    //            String img = Base64.getEncoder().encodeToString(imageBytes);
+    //            System.out.println(img);
+    //
+    //        } catch (Exception e) {
+    //            //
+    //        }
+    //    }
 }
