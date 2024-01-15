@@ -41,6 +41,7 @@ public class InstitutionUIParams {
     private String currency;
     private String deviceChannel;
     private boolean isJSEnabled;
+    private boolean isTest;
     private int timeout;
     private int otpLength;
 }

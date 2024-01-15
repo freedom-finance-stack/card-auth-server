@@ -114,6 +114,7 @@ public interface InstitutionUiParamsMapper {
             target = "threeDSServerTransID",
             source = "transaction.transactionReferenceDetail.threedsServerTransactionId")
     @Mapping(target = "displayPage", expression = "java(null)")
+    @Mapping(target = "isTest", source = "testConfigProperties.enable")
     InstitutionUIParams toInstitutionUiParams(
             Transaction transaction,
             InstitutionUiConfig institutionUiConfig,
@@ -160,11 +161,21 @@ public interface InstitutionUiParamsMapper {
 
     default Image getIssuerImage(
             Transaction transaction, InstitutionUiConfiguration institutionUiConfiguration) {
-        Image issuerLogo = new Image();
-        issuerLogo.setMedium(institutionUiConfiguration.getMediumLogo());
-        issuerLogo.setHigh(institutionUiConfiguration.getHighLogo());
-        issuerLogo.setExtraHigh(institutionUiConfiguration.getExtraHighLogo());
 
+        Image issuerLogo = new Image();
+        if (transaction
+                .getTransactionSdkDetail()
+                .getAcsUiType()
+                .equals(UIType.HTML_OTHER.getType())) {
+            issuerLogo.setMedium(Util.getBase64Image(institutionUiConfiguration.getMediumLogo()));
+            issuerLogo.setHigh(Util.getBase64Image(institutionUiConfiguration.getHighLogo()));
+            issuerLogo.setExtraHigh(
+                    Util.getBase64Image(institutionUiConfiguration.getExtraHighLogo()));
+        } else {
+            issuerLogo.setMedium(institutionUiConfiguration.getMediumLogo());
+            issuerLogo.setHigh(institutionUiConfiguration.getHighLogo());
+            issuerLogo.setExtraHigh(institutionUiConfiguration.getExtraHighLogo());
+        }
         return issuerLogo;
     }
 
@@ -173,11 +184,37 @@ public interface InstitutionUiParamsMapper {
         Image psImage = new Image();
         Network network =
                 Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
-        psImage.setMedium(
-                institutionUiConfiguration.getNetworkUiConfig().get(network).getMediumPs());
-        psImage.setHigh(institutionUiConfiguration.getNetworkUiConfig().get(network).getHighPs());
-        psImage.setExtraHigh(
-                institutionUiConfiguration.getNetworkUiConfig().get(network).getExtraHighPs());
+
+        if (transaction
+                .getTransactionSdkDetail()
+                .getAcsUiType()
+                .equals(UIType.HTML_OTHER.getType())) {
+            psImage.setMedium(
+                    Util.getBase64Image(
+                            institutionUiConfiguration
+                                    .getNetworkUiConfig()
+                                    .get(network)
+                                    .getMediumPs()));
+            psImage.setHigh(
+                    Util.getBase64Image(
+                            institutionUiConfiguration
+                                    .getNetworkUiConfig()
+                                    .get(network)
+                                    .getHighPs()));
+            psImage.setExtraHigh(
+                    Util.getBase64Image(
+                            institutionUiConfiguration
+                                    .getNetworkUiConfig()
+                                    .get(network)
+                                    .getExtraHighPs()));
+        } else {
+            psImage.setMedium(
+                    institutionUiConfiguration.getNetworkUiConfig().get(network).getMediumPs());
+            psImage.setHigh(
+                    institutionUiConfiguration.getNetworkUiConfig().get(network).getHighPs());
+            psImage.setExtraHigh(
+                    institutionUiConfiguration.getNetworkUiConfig().get(network).getExtraHighPs());
+        }
 
         return psImage;
     }

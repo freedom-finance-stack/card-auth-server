@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.utils;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
@@ -344,5 +346,14 @@ public class Util {
         }
         throw new IllegalArgumentException(
                 "Currency with numeric code " + numericCode + " not found");
+    }
+
+    public static String getBase64Image(String imgUrl) {
+        try {
+            return Base64.getEncoder().encodeToString(new URL(imgUrl).openStream().readAllBytes());
+        } catch (IOException ex) {
+            log.error("Error Occurred while fetching image: ", ex);
+        }
+        return null;
     }
 }

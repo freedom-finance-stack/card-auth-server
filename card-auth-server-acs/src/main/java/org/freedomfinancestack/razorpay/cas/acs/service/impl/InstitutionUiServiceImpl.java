@@ -131,18 +131,4 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                 .withoutPadding()
                 .encodeToString(html.getBytes(StandardCharsets.UTF_8));
     }
-
-    //    public static void main(String[] args) {
-    //        try {
-    //            URL url = new
-    // URL("https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO");
-    //            InputStream in = url.openStream();
-    //            byte[] imageBytes = in.readAllBytes();
-    //            String img = Base64.getEncoder().encodeToString(imageBytes);
-    //            System.out.println(img);
-    //
-    //        } catch (Exception e) {
-    //            //
-    //        }
-    //    }
 }
