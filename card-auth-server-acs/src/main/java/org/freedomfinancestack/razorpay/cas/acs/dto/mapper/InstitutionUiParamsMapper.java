@@ -113,6 +113,7 @@ public interface InstitutionUiParamsMapper {
     @Mapping(
             target = "threeDSServerTransID",
             source = "transaction.transactionReferenceDetail.threedsServerTransactionId")
+    @Mapping(target = "displayPage", expression = "java(null)")
     InstitutionUIParams toInstitutionUiParams(
             Transaction transaction,
             InstitutionUiConfig institutionUiConfig,
