@@ -79,7 +79,7 @@ public interface InstitutionUiParamsMapper {
             target = "otpLength",
             expression =
                     "java(authConfigDto.getOtpConfig() != null ?"
-                            + " authConfigDto.getOtpConfig().getLength() : null)")
+                            + " authConfigDto.getOtpConfig().getLength() : 0)")
     @Mapping(
             target = "challengeInfoText",
             expression =
