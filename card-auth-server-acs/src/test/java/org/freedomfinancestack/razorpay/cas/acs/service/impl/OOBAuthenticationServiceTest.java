@@ -73,9 +73,7 @@ class OOBAuthenticationServiceTest {
         assertEquals("Missing OOB Type", exception3.getMessage());
     }
 
-    /**
-     * checks the authenticate function when OOB Type is UL_TEST or MOCK;
-     */
+    /** checks the authenticate function when OOB Type is UL_TEST or MOCK; */
     @ParameterizedTest
     @CsvSource({"1", "2"})
     void authenticateSuccessTest(String oob) throws ThreeDSException {
