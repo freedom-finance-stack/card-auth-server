@@ -56,25 +56,28 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     @Override
     public ChallengeFlowDto processChallengeRequest(
-            final DeviceChannel flowType, final String strCReq, final String threeDSSessionData)
+            final DeviceChannel deviceChannel,
+            final String strCReq,
+            final String threeDSSessionData)
             throws ThreeDSException {
-        if (flowType.equals(DeviceChannel.APP)) {
-            return processAppChallengeRequestHandler(flowType, strCReq, threeDSSessionData);
+        if (deviceChannel.equals(DeviceChannel.APP)) {
+            return processAppChallengeRequestHandler(deviceChannel, strCReq, threeDSSessionData);
         }
-        return processBrwChallengeRequestHandler(flowType, strCReq, threeDSSessionData);
+        return processBrwChallengeRequestHandler(deviceChannel, strCReq, threeDSSessionData);
     }
 
     public ChallengeFlowDto processAppChallengeRequestHandler(
-            DeviceChannel flowType, String strCReq, String threeDSSessionData)
+            DeviceChannel deviceChannel, String strCReq, String threeDSSessionData)
             throws ThreeDSException {
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         try {
-            processChallengeRequestHandler(challengeFlowDto, flowType, strCReq, threeDSSessionData);
+            processChallengeRequestHandler(
+                    challengeFlowDto, deviceChannel, strCReq, threeDSSessionData);
             String cres;
             try {
                 cres =
                         challengeRequestParserFactory
-                                .getService(flowType)
+                                .getService(deviceChannel)
                                 .generateEncryptedResponse(
                                         challengeFlowDto, challengeFlowDto.getTransaction());
             } catch (ACSException ex) {
@@ -102,10 +105,13 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
     }
 
     public ChallengeFlowDto processBrwChallengeRequestHandler(
-            final DeviceChannel flowType, final String strCReq, final String threeDSSessionData) {
+            final DeviceChannel deviceChannel,
+            final String strCReq,
+            final String threeDSSessionData) {
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
         try {
-            processChallengeRequestHandler(challengeFlowDto, flowType, strCReq, threeDSSessionData);
+            processChallengeRequestHandler(
+                    challengeFlowDto, deviceChannel, strCReq, threeDSSessionData);
             // 3 things
             // UI
             // Final Output
@@ -130,7 +136,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         challengeFlowDto.getTransaction())) {
                     challengeFlowDto.setEncryptedResponse(
                             challengeRequestParserFactory
-                                    .getService(flowType)
+                                    .getService(deviceChannel)
                                     .generateEncryptedResponse(
                                             challengeFlowDto, challengeFlowDto.getTransaction()));
                 }
@@ -145,7 +151,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
 
     private void processChallengeRequestHandler(
             final ChallengeFlowDto challengeFlowDto,
-            final DeviceChannel flowType,
+            final DeviceChannel deviceChannel,
             final String strCReq,
             final String threeDSSessionData)
             throws ThreeDSException, InvalidStateTransactionException {
@@ -156,7 +162,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         try {
             creq =
                     challengeRequestParserFactory
-                            .getService(flowType)
+                            .getService(deviceChannel)
                             .parseEncryptedRequest(strCReq);
             //  find Transaction and previous request, response
             transaction = transactionService.findById(creq.getAcsTransID());
@@ -209,7 +215,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 if (transaction
                         .getTransactionStatusReason()
                         .equals(TransactionStatusReason.TRANSACTION_TIMEOUT.getCode())) {
-                    if (flowType.equals(DeviceChannel.BRW)
+                    if (deviceChannel.equals(DeviceChannel.BRW)
                             && transaction
                                     .getChallengeCancelInd()
                                     .equals(
@@ -241,7 +247,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     || !Util.isNullorBlank(creq.getChallengeDataEntry())
                     || !Util.isNullorBlank(creq.getOobContinue())
                     || !Util.isNullorBlank(creq.getChallengeNoEntry())) {
-                if (flowType.equals(DeviceChannel.BRW)
+                if (deviceChannel.equals(DeviceChannel.BRW)
                         || transaction
                                 .getTransactionSdkDetail()
                                 .getAcsInterface()
@@ -261,11 +267,10 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             institutionUiService.populateUiParams(challengeFlowDto, authConfigDto);
 
             if (challengeFlowDto.isSendRreq()) {
-                challengeFlowDto.setCres(cResMapper.toCres(transaction));
+                challengeFlowDto.setCres(cResMapper.toFinalCRes(transaction));
             } else {
                 challengeFlowDto.setCres(
-                        cResMapper.toAppCres(
-                                transaction, challengeFlowDto.getInstitutionUIParams()));
+                        cResMapper.toCRes(transaction, challengeFlowDto.getInstitutionUIParams()));
             }
 
         } catch (ParseException | TransactionDataNotValidException ex) {
@@ -302,7 +307,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         } catch (ACSException ex) {
             log.error("Exception occurred", ex);
             updateTransactionWithError(ex.getErrorCode(), transaction);
-            challengeFlowDto.setCres(cResMapper.toCres(transaction));
+            challengeFlowDto.setCres(cResMapper.toFinalCRes(transaction));
             if (!ex.getErrorCode()
                     .equals(InternalErrorCode.TRANSACTION_TIMED_OUT_CHALLENGE_COMPLETION)) {
                 challengeFlowDto.setSendRreq(true);
@@ -330,8 +335,8 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     try {
                         resultRequestService.handleRreq(transaction);
                     } catch (ThreeDSException ex) {
-                        if (DeviceChannel.BRW.equals(flowType)) {
-                            CRES cres = cResMapper.toCres(transaction);
+                        if (DeviceChannel.BRW.equals(deviceChannel)) {
+                            CRES cres = cResMapper.toFinalCRes(transaction);
                             challengeFlowDto.setCres(cres);
                         } else {
                             throw new ThreeDSException(
@@ -343,7 +348,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                     }
                 }
                 // TODO handle these in case above exception is thrown
-                if (flowType.equals(DeviceChannel.APP)) {
+                if (deviceChannel.equals(DeviceChannel.APP)) {
                     transaction.getTransactionSdkDetail().setIncrementedAcsCounterAtoS(1);
                 }
                 transactionService.saveOrUpdate(transaction);

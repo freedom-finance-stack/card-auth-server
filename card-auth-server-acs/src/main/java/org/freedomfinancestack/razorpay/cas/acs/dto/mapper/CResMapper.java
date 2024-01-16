@@ -64,7 +64,7 @@ public interface CResMapper {
                             + " transaction.getTransactionSdkDetail().getAcsCounterAtoS() : null)")
     @Mapping(target = "psImage", expression = "java(null)")
     @Mapping(target = "issuerImage", expression = "java(null)")
-    CRES toCres(Transaction transaction);
+    CRES toFinalCRes(Transaction transaction);
 
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(
@@ -152,7 +152,7 @@ public interface CResMapper {
                     "java(isAppBasedNativeFlow(transaction) ?"
                             + " institutionUIParams.getChallengeSelectInfo() : null)")
     // messageExtension
-    CRES toAppCres(Transaction transaction, InstitutionUIParams institutionUIParams);
+    CRES toCRes(Transaction transaction, InstitutionUIParams institutionUIParams);
 
     default String getChallengeCompletionInd(Transaction transaction) {
         return ChallengeRequestService.isChallengeCompleted(transaction)

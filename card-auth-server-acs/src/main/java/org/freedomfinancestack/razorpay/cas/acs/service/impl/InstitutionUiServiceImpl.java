@@ -9,6 +9,7 @@ import org.freedomfinancestack.razorpay.cas.acs.dto.ChallengeFlowDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.dto.mapper.InstitutionUiParamsMapper;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ImageProcessingException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.UiConfigException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
@@ -40,7 +41,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
 
     @Override
     public void populateUiParams(ChallengeFlowDto challengeFlowDto, AuthConfigDto authConfigDto)
-            throws UiConfigException {
+            throws UiConfigException, ImageProcessingException {
 
         AuthType authType =
                 AuthType.getAuthType(challengeFlowDto.getTransaction().getAuthenticationType());
@@ -83,7 +84,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto,
             UIType uiType)
-            throws UiConfigException {
+            throws UiConfigException, ImageProcessingException {
 
         if (uiType == null) {
             throw new UiConfigException(

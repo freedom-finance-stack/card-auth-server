@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ImageProcessingException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -348,12 +350,15 @@ public class Util {
                 "Currency with numeric code " + numericCode + " not found");
     }
 
-    public static String getBase64Image(String imgUrl) {
+    public static String getBase64Image(String imgUrl) throws ImageProcessingException {
         try {
             return Base64.getEncoder().encodeToString(new URL(imgUrl).openStream().readAllBytes());
         } catch (IOException ex) {
-            log.error("Error Occurred while fetching image: ", ex);
+            log.error("Error occurred while processing image: ", ex);
+            throw new ImageProcessingException(
+                    InternalErrorCode.IMAGE_PARSING_ERROR,
+                    "Error occurred while processing image",
+                    ex);
         }
-        return null;
     }
 }

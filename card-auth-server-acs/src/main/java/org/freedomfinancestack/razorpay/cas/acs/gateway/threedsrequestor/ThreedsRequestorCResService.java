@@ -53,7 +53,7 @@ public class ThreedsRequestorCResService extends HttpsGatewayService {
 
         this.serviceConfig.setUrl(transaction.getTransactionReferenceDetail().getNotificationUrl());
 
-        CRES cres = cResMapper.toCres(transaction);
+        CRES cres = cResMapper.toFinalCRes(transaction);
         cres.setAcsCounterAtoS(InternalConstants.INITIAL_ACS_SDK_COUNTER);
         try {
             log.info("Sending CRes: " + Util.toJson(cres));

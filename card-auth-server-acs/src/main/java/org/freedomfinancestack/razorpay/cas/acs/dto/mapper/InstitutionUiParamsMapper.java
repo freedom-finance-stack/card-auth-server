@@ -5,6 +5,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.RouteConstants;
 import org.freedomfinancestack.razorpay.cas.acs.constant.ThreeDSConstant;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ImageProcessingException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.TestConfigProperties;
@@ -123,7 +124,8 @@ public interface InstitutionUiParamsMapper {
             String currentState,
             AppConfiguration appConfiguration,
             InstitutionUiConfiguration institutionUiConfiguration,
-            TestConfigProperties testConfigProperties);
+            TestConfigProperties testConfigProperties)
+            throws ImageProcessingException;
 
     default String getAmount(Transaction transaction) {
         if (transaction.getMessageCategory().equals(MessageCategory.PA)) {
@@ -160,7 +162,8 @@ public interface InstitutionUiParamsMapper {
     }
 
     default Image getIssuerImage(
-            Transaction transaction, InstitutionUiConfiguration institutionUiConfiguration) {
+            Transaction transaction, InstitutionUiConfiguration institutionUiConfiguration)
+            throws ImageProcessingException {
 
         Image issuerLogo = new Image();
         if (transaction.getDeviceChannel().equals(DeviceChannel.BRW.getChannel())
@@ -181,7 +184,8 @@ public interface InstitutionUiParamsMapper {
     }
 
     default Image getPsImage(
-            Transaction transaction, InstitutionUiConfiguration institutionUiConfiguration) {
+            Transaction transaction, InstitutionUiConfiguration institutionUiConfiguration)
+            throws ImageProcessingException {
         Image psImage = new Image();
         Network network =
                 Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
