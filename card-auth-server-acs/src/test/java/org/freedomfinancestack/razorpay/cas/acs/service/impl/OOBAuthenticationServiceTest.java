@@ -74,9 +74,7 @@ class OOBAuthenticationServiceTest {
     }
 
     /**
-     * checks the authenticate function when OOB Type is UL_TEST or MOCk;
-     *
-     * @throws ThreeDSException
+     * checks the authenticate function when OOB Type is UL_TEST or MOCK;
      */
     @ParameterizedTest
     @CsvSource({"1", "2"})
