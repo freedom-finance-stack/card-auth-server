@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.utils;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.Timestamp;
@@ -10,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
+import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ImageProcessingException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -333,5 +337,28 @@ public class Util {
         Matcher base64urlMatcher = base64urlPattern.matcher(encodedString);
 
         return base64urlMatcher.matches();
+    }
+
+    public static Currency getCurrencyInstance(String numericCode) {
+        Set<Currency> currencies = Currency.getAvailableCurrencies();
+        for (Currency currency : currencies) {
+            if (currency.getNumericCodeAsString().equals(numericCode)) {
+                return currency;
+            }
+        }
+        throw new IllegalArgumentException(
+                "Currency with numeric code " + numericCode + " not found");
+    }
+
+    public static String getBase64Image(String imgUrl) throws ImageProcessingException {
+        try {
+            return Base64.getEncoder().encodeToString(new URL(imgUrl).openStream().readAllBytes());
+        } catch (IOException ex) {
+            log.error("Error occurred while processing image: ", ex);
+            throw new ImageProcessingException(
+                    InternalErrorCode.IMAGE_PARSING_ERROR,
+                    "Error occurred while processing image",
+                    ex);
+        }
     }
 }

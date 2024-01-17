@@ -64,7 +64,7 @@ public interface CResMapper {
                             + " transaction.getTransactionSdkDetail().getAcsCounterAtoS() : null)")
     @Mapping(target = "psImage", expression = "java(null)")
     @Mapping(target = "issuerImage", expression = "java(null)")
-    CRES toCres(Transaction transaction);
+    CRES toFinalCRes(Transaction transaction);
 
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(
@@ -81,30 +81,90 @@ public interface CResMapper {
             expression = "java(transaction.getTransactionSdkDetail().getAcsUiType())")
     @Mapping(target = "sdkTransID", source = "transaction.transactionSdkDetail.sdkTransId")
     @Mapping(target = "acsHTML", source = "institutionUIParams.displayPage")
-    @Mapping(target = "psImage", source = "institutionUIParams.psImage")
-    @Mapping(target = "issuerImage", source = "institutionUIParams.issuerImage")
-    @Mapping(target = "challengeInfoHeader", source = "institutionUIParams.challengeInfoHeader")
-    @Mapping(target = "challengeInfoLabel", source = "institutionUIParams.challengeInfoLabel")
-    @Mapping(target = "challengeInfoText", source = "institutionUIParams.challengeInfoText")
-    @Mapping(target = "expandInfoLabel", source = "institutionUIParams.expandInfoLabel")
-    @Mapping(target = "expandInfoText", source = "institutionUIParams.expandInfoText")
+    @Mapping(
+            target = "psImage",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ? institutionUIParams.getPsImage() :"
+                            + " null)")
+    @Mapping(
+            target = "issuerImage",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ? institutionUIParams.getIssuerImage()"
+                            + " : null)")
+    @Mapping(
+            target = "challengeInfoHeader",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getChallengeInfoHeader() : null)")
+    @Mapping(
+            target = "challengeInfoLabel",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getChallengeInfoLabel() : null)")
+    @Mapping(
+            target = "challengeInfoText",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getChallengeInfoText() : null)")
+    @Mapping(
+            target = "expandInfoLabel",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getExpandInfoLabel() : null)")
+    @Mapping(
+            target = "expandInfoText",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getExpandInfoText() : null)")
     @Mapping(
             target = "resendInformationLabel",
-            source = "institutionUIParams.resendInformationLabel")
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getResendInformationLabel() : null)")
     @Mapping(
             target = "submitAuthenticationLabel",
-            source = "institutionUIParams.submitAuthenticationLabel")
-    @Mapping(target = "whyInfoLabel", source = "institutionUIParams.whyInfoLabel")
-    @Mapping(target = "whyInfoText", source = "institutionUIParams.whyInfoText")
-    @Mapping(target = "whitelistingInfoText", source = "institutionUIParams.whitelistingInfoText")
-    @Mapping(target = "oobContinueLabel", source = "institutionUIParams.oobContinueLabel")
-    @Mapping(target = "challengeSelectInfo", source = "institutionUIParams.challengeSelectInfo")
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getSubmitAuthenticationLabel() : null)")
+    @Mapping(
+            target = "whyInfoLabel",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ? institutionUIParams.getWhyInfoLabel()"
+                            + " : null)")
+    @Mapping(
+            target = "whyInfoText",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ? institutionUIParams.getWhyInfoText()"
+                            + " : null)")
+    @Mapping(
+            target = "whitelistingInfoText",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getWhitelistingInfoText() : null)")
+    @Mapping(
+            target = "oobContinueLabel",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getOobContinueLabel() : null)")
+    @Mapping(
+            target = "challengeSelectInfo",
+            expression =
+                    "java(isAppBasedNativeFlow(transaction) ?"
+                            + " institutionUIParams.getChallengeSelectInfo() : null)")
     // messageExtension
-    CRES toAppCres(Transaction transaction, InstitutionUIParams institutionUIParams);
+    CRES toCRes(Transaction transaction, InstitutionUIParams institutionUIParams);
 
     default String getChallengeCompletionInd(Transaction transaction) {
         return ChallengeRequestService.isChallengeCompleted(transaction)
                 ? InternalConstants.YES
                 : InternalConstants.NO;
+    }
+
+    default boolean isAppBasedNativeFlow(Transaction transaction) {
+        return transaction.getDeviceChannel().equals(DeviceChannel.APP.getChannel())
+                && transaction
+                        .getTransactionSdkDetail()
+                        .getAcsInterface()
+                        .equals(DeviceInterface.NATIVE.getValue());
     }
 }

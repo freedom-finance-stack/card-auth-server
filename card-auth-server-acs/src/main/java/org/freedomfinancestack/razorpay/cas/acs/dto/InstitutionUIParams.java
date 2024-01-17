@@ -33,4 +33,15 @@ public class InstitutionUIParams {
     private String acsTransID;
     private String messageVersion;
     private String threeDSServerTransID;
+    private String otpAttemptLeft;
+    private String resendAttemptLeft;
+    private String merchantName;
+    private String cardNumber;
+    private String amount;
+    private String currency;
+    private String deviceChannel;
+    private boolean isJSEnabled;
+    private boolean isTest;
+    private int timeout;
+    private int otpLength;
 }

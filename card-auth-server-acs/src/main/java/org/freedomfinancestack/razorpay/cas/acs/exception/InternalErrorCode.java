@@ -286,6 +286,12 @@ public enum InternalErrorCode {
             TransactionStatus.FAILED,
             TransactionStatusReason.INVALID_TRANSACTION),
 
+    IMAGE_PARSING_ERROR(
+            "6005",
+            "Error while processing image",
+            TransactionStatus.UNABLE_TO_AUTHENTICATE,
+            TransactionStatusReason.ACS_TECHNICAL_ISSUE),
+
     // timeout
     TRANSACTION_TIMED_OUT_WAITING_FOR_CREQ(
             "7000",
