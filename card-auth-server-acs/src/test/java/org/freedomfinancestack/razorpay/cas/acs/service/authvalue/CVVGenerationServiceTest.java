@@ -1,20 +1,24 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.authvalue;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
 import org.freedomfinancestack.extensions.hsm.cvv.CVVFacade;
 import org.freedomfinancestack.extensions.hsm.exception.HSMException;
 import org.freedomfinancestack.extensions.hsm.message.HSMMessage;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class CVVGenerationServiceTest {
 
     @Mock private CVVFacade cvvFacade;
@@ -23,7 +27,7 @@ public class CVVGenerationServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
     }
 
     @Test

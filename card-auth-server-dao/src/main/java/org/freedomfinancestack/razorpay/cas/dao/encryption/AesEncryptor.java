@@ -11,7 +11,7 @@ public class AesEncryptor {
 
     @Autowired
     public AesEncryptor(@Qualifier("aes256Encryption") EncryptionUtils encryptionUtil) {
-        this.encryptionUtil = encryptionUtil;
+        AesEncryptor.encryptionUtil = encryptionUtil;
     }
 
     static String encrypt(String textToEncrypt) {

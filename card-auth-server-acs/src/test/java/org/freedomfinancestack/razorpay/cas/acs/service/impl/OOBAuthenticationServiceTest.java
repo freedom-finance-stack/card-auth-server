@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
@@ -10,10 +11,12 @@ import org.freedomfinancestack.razorpay.cas.acs.service.oob.OOBService;
 import org.freedomfinancestack.razorpay.cas.acs.service.oob.OOBServiceLocator;
 import org.freedomfinancestack.razorpay.cas.acs.service.oob.impl.MockOOBService;
 import org.freedomfinancestack.razorpay.cas.acs.service.oob.impl.ULTestOOBService;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.OOBType;
 import org.freedomfinancestack.razorpay.cas.dao.model.OOBConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,6 +36,11 @@ import static org.mockito.Mockito.when;
 class OOBAuthenticationServiceTest {
     @Mock OOBServiceLocator oobServiceLocator;
     @InjectMocks OOBAuthenticationService oobAuthenticationService;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+    }
 
     @Test
     void authenticate_Failure_isNull() throws ThreeDSException {

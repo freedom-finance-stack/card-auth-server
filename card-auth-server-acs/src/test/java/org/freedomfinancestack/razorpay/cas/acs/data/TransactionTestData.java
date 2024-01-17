@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.SecureWrapper;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -80,8 +81,8 @@ public class TransactionTestData {
 
     public static TransactionCardDetail createSampleTransactionCardDetail() {
         return TransactionCardDetail.builder()
-                .cardNumber("4111111111111111")
-                .cardholderName("John Doe")
+                .cardNumber(SecureWrapper.parseDecrypted("4111111111111111"))
+                .cardholderName(SecureWrapper.parseDecrypted("John Doe"))
                 .networkCode(Network.VISA.getValue()) // Assuming 1 represents VISA network
                 .build();
     }
@@ -92,8 +93,8 @@ public class TransactionTestData {
                 .threedsServerTransactionId(SAMPLE_THREE_DS_SERVER_TRANS_ID)
                 .threedsServerReferenceNumber("serverReferenceNumber")
                 .dsTransactionId(SAMPLE_DS_TRANS_ID)
-                .dsUrl("http://dsUrl.com")
-                .notificationUrl("http://notificationUrl.com")
+                .dsUrl("https://dsUrl.com")
+                .notificationUrl("https://notificationUrl.com")
                 .threeDSRequestorChallengeInd("challengeInd")
                 .build();
     }

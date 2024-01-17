@@ -1,13 +1,16 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.threedsrequestor.ThreedsRequestorCResService;
 import org.freedomfinancestack.razorpay.cas.acs.service.ResultRequestService;
 import org.freedomfinancestack.razorpay.cas.acs.service.TransactionService;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +30,11 @@ class TransactionTimeOutServiceTest {
     @Mock private ThreedsRequestorCResService threedsRequestorCResService;
 
     @InjectMocks private TransactionTimeOutService timeoutService;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+    }
 
     @Test
     void testPerformTimeOutWaitingForCreq() throws Exception {
