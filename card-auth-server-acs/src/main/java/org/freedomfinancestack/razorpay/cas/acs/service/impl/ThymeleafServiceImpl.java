@@ -2,8 +2,9 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.nio.charset.StandardCharsets;
 
-import org.freedomfinancestack.razorpay.cas.acs.dto.AppOtpHtmlParams;
+import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.service.ThymeleafService;
+import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -40,11 +41,14 @@ public class ThymeleafServiceImpl implements ThymeleafService {
     }
 
     @Override
-    public String getAppOtpHTML(AppOtpHtmlParams appOtpHtmlParams, String templateName) {
+    public String getOtpHTMLPage(InstitutionUIParams institutionUIParams, String templateName) {
+
+        CREQ creq = new CREQ();
 
         // Create Thymeleaf context
         Context context = new Context();
-        context.setVariable("appOtpHtmlParams", appOtpHtmlParams);
+        context.setVariable("institutionUIParams", institutionUIParams);
+        context.setVariable("cReq", creq);
 
         // Process Thymeleaf template
         return templateEngine.process(templateName, context);

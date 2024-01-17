@@ -107,7 +107,7 @@ spring:
     password: ${ACS_MYSQL_PASSWORD:password}
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
-    showSql: true
+    showSql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -191,19 +191,19 @@ institution-ui:
   institution-url: https://ffs.acs.com/acs/resources/images/
   institution-css-url: ${INSTITUTION_CSS_URL:https://EMV3DS/challenge}
   html-page-timer: 180 #seconds
-  medium-logo: "medium_image.png"
-  high-logo: "high_image.png"
-  extra-high-logo: "extra_high_image.png"
-  html-otp-template: "appAcsOtp"
+  medium-logo: "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM"
+  high-logo: "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM"
+  extra-high-logo: "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM"
+  html-otp-template: "acsOtpNew"
   network-ui-config:
     VISA:
-      medium-ps: "medium_visa.png"
-      high-ps: "high_visa.png"
-      extra-high-ps: "extra_high_visa.png"
+      medium-ps: "https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO"
+      high-ps: "https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO"
+      extra-high-ps: "https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO"
     MASTERCARD:
-      medium-ps: "medium_mc.png"
-      high-ps: "high_mc.png"
-      extra-high-ps: "extra_high_mc.png"
+      medium-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
+      high-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
+      extra-high-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
 
 
 encryption:
