@@ -429,12 +429,18 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.AUTH_ATTEMPT_EXHAUSTED);
                 CardRange cardRange =
                         cardRangeService.findByPan(
-                                transaction.getTransactionCardDetail().getCardNumber());
+                                transaction
+                                        .getTransactionCardDetail()
+                                        .getCardNumber()
+                                        .getDecrypted());
                 if (authConfigDto.getChallengeAttemptConfig().isBlockOnExceedAttempt()) {
                     cardDetailService.blockCard(
                             new CardDetailsRequest(
                                     transaction.getInstitutionId(),
-                                    transaction.getTransactionCardDetail().getCardNumber()),
+                                    transaction
+                                            .getTransactionCardDetail()
+                                            .getCardNumber()
+                                            .getDecrypted()),
                             cardRange.getCardDetailsStore());
                 }
                 challengeFlowDto.setSendRreq(true);

@@ -14,11 +14,11 @@ public class SecureWrapper {
         return AesEncryptor.decrypt(this.encryptedData);
     }
 
-    //    public void setEncryptedData(String data) {
-    //        this.encryptedData = AesEncryptor.encrypt(data);
-    //    }
-
-    public static SecureWrapper parse(String data) {
+    public static SecureWrapper parseEncrypted(String data) {
         return new SecureWrapper(data);
+    }
+
+    public static SecureWrapper parseDecrypted(String data) {
+        return new SecureWrapper(AesEncryptor.encrypt(data));
     }
 }

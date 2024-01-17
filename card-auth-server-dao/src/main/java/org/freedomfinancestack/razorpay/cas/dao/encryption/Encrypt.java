@@ -14,6 +14,6 @@ public class Encrypt implements AttributeConverter<SecureWrapper, String> {
 
     @Override
     public SecureWrapper convertToEntityAttribute(String s) {
-        return SecureWrapper.parse(s);
+        return SecureWrapper.parseEncrypted(s);
     }
 }

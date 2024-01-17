@@ -225,7 +225,10 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
              */
             if (transaction.getTransactionStatus().equals(TransactionStatus.SUCCESS)
                     && isAttemptedTestRange(
-                            transaction.getTransactionCardDetail().getCardNumber())) {
+                            transaction
+                                    .getTransactionCardDetail()
+                                    .getCardNumber()
+                                    .getDecrypted())) {
                 transaction.setTransactionStatus(TransactionStatus.ATTEMPT);
                 // todo not raising Attempt actual anywhere in code, check if attempt scenario is
                 // possible
