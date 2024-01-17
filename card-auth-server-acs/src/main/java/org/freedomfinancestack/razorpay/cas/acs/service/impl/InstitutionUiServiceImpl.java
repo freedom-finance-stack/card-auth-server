@@ -98,7 +98,7 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                         institutionUiConfig,
                         authConfigDto,
                         uiType,
-                        challengeFlowDto.getCurrentState(),
+                        challengeFlowDto.getCurrentFlowType(),
                         appConfiguration,
                         institutionUiConfiguration,
                         testConfigProperties);

@@ -22,5 +22,5 @@ public class ChallengeFlowDto {
 
     private InstitutionUIParams institutionUIParams;
     private Transaction transaction;
-    private String currentState;
+    private String currentFlowType;
 }

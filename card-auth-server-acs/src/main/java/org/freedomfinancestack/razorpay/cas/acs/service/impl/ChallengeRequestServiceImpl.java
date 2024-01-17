@@ -382,7 +382,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             transaction.setInteractionCount(transaction.getInteractionCount() + 1);
             StateMachine.Trigger(transaction, Phase.PhaseEvent.RESEND_CHALLENGE);
             handleSendChallenge(transaction, authConfigDto, challengeFlowDto);
-            challengeFlowDto.setCurrentState(InternalConstants.RESEND);
+            challengeFlowDto.setCurrentFlowType(InternalConstants.RESEND);
         }
     }
 
@@ -417,7 +417,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
             if (authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
                     > transaction.getInteractionCount()) {
                 StateMachine.Trigger(transaction, Phase.PhaseEvent.INVALID_AUTH_VAL);
-                challengeFlowDto.setCurrentState(InternalConstants.VALIDATE_OTP);
+                challengeFlowDto.setCurrentFlowType(InternalConstants.VALIDATE_OTP);
             } else {
                 transaction.setTransactionStatus(
                         InternalErrorCode.EXCEED_MAX_ALLOWED_ATTEMPTS.getTransactionStatus());
@@ -474,7 +474,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         transaction.setChallengeCancelInd(creq.getChallengeCancel());
 
         challengeFlowDto.setSendRreq(true);
-        challengeFlowDto.setCurrentState(InternalConstants.CANCEL);
+        challengeFlowDto.setCurrentFlowType(InternalConstants.CANCEL);
         log.info("challenge cancelled for transaction {}", transaction.getId());
     }
 

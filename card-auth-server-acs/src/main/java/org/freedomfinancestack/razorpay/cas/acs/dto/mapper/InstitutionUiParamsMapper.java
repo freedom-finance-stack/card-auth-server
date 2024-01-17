@@ -85,7 +85,7 @@ public interface InstitutionUiParamsMapper {
             target = "challengeInfoText",
             expression =
                     "java(getChallengeInfoText(transaction, institutionUiConfig, authConfigDto,"
-                            + " uiType, currentState))")
+                            + " uiType, currentFlowType))")
     @Mapping(
             target = "submitAuthenticationLabel",
             expression =
@@ -105,10 +105,10 @@ public interface InstitutionUiParamsMapper {
                     "java(uiType.equals(UIType.OOB) ? InternalConstants.OOB_CONTINUE_LABEL : null)")
     @Mapping(
             target = "resendAttemptLeft",
-            expression = "java(getResendAttemptLeft(transaction, authConfigDto, currentState))")
+            expression = "java(getResendAttemptLeft(transaction, authConfigDto, currentFlowType))")
     @Mapping(
             target = "otpAttemptLeft",
-            expression = "java(getOtpAttemptLeft(transaction, authConfigDto, currentState))")
+            expression = "java(getOtpAttemptLeft(transaction, authConfigDto, currentFlowType))")
     @Mapping(target = "messageVersion", source = "transaction.messageVersion")
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(
@@ -121,7 +121,7 @@ public interface InstitutionUiParamsMapper {
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto,
             UIType uiType,
-            String currentState,
+            String currentFlowType,
             AppConfiguration appConfiguration,
             InstitutionUiConfiguration institutionUiConfiguration,
             TestConfigProperties testConfigProperties)
@@ -246,7 +246,7 @@ public interface InstitutionUiParamsMapper {
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto,
             UIType uiType,
-            String currentState) {
+            String currentFlowType) {
         String challengeText = institutionUiConfig.getChallengeInfoText();
 
         if (uiType.equals(UIType.TEXT) || uiType.equals(UIType.HTML_OTHER)) {
@@ -258,12 +258,12 @@ public interface InstitutionUiParamsMapper {
                             InternalConstants.LAST_FOUR_DIGIT_MOBILE_NUMBER, mobileNumber);
         }
 
-        if (currentState != null) {
-            if (currentState.equals(InternalConstants.RESEND)) {
+        if (currentFlowType != null) {
+            if (currentFlowType.equals(InternalConstants.RESEND)) {
                 challengeText =
                         challengeText.replaceFirst(
                                 InternalConstants.SENT, InternalConstants.RESENT);
-            } else if (currentState.equals(InternalConstants.VALIDATE_OTP)) {
+            } else if (currentFlowType.equals(InternalConstants.VALIDATE_OTP)) {
                 challengeText =
                         String.format(
                                 InternalConstants.CHALLENGE_INCORRECT_OTP_TEXT,
@@ -287,8 +287,8 @@ public interface InstitutionUiParamsMapper {
     }
 
     default String getResendAttemptLeft(
-            Transaction transaction, AuthConfigDto authConfigDto, String currentState) {
-        if (currentState != null && currentState.equals(InternalConstants.RESEND)) {
+            Transaction transaction, AuthConfigDto authConfigDto, String currentFlowType) {
+        if (currentFlowType != null && currentFlowType.equals(InternalConstants.RESEND)) {
             return String.valueOf(
                     authConfigDto.getChallengeAttemptConfig().getResendThreshold()
                             - transaction.getResendCount());
@@ -297,8 +297,8 @@ public interface InstitutionUiParamsMapper {
     }
 
     default String getOtpAttemptLeft(
-            Transaction transaction, AuthConfigDto authConfigDto, String currentState) {
-        if (currentState != null && currentState.equals(InternalConstants.VALIDATE_OTP)) {
+            Transaction transaction, AuthConfigDto authConfigDto, String currentFlowType) {
+        if (currentFlowType != null && currentFlowType.equals(InternalConstants.VALIDATE_OTP)) {
             return String.valueOf(
                     authConfigDto.getChallengeAttemptConfig().getAttemptThreshold()
                             - transaction.getInteractionCount());
