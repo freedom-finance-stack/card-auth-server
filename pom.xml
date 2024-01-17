@@ -35,7 +35,7 @@
         <openapi-swagger.version>2.2.0</openapi-swagger.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <mysql.version>8.0.32</mysql.version>
-        <logback.version>1.4.12</logback.version>
+        <logback.version>7.4</logback.version>
         <slf4j.version>2.0.9</slf4j.version>
         <spotless.version>2.37.0</spotless.version>
         <micrometer.version>1.11.5</micrometer.version>
@@ -126,8 +126,8 @@
             </dependency>
 
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logback.version}</version>
             </dependency>
 
