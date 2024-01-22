@@ -10,7 +10,6 @@ import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
-import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.NotificationSentException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.PlrqService;
@@ -28,7 +27,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 import static org.freedomfinancestack.extensions.notification.exception.NotificationErrorCode.INVALID_NOTIFICATION_DTO;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.CHALLENGE_CORRECT_OTP_TEXT;
@@ -134,8 +132,12 @@ class OTPAuthenticationServiceTest {
         NotificationResponseDto notificationResponseDto = new NotificationResponseDto();
         notificationResponseDto.setSuccess(true);
 
-        doThrow( new NotificationException(INVALID_NOTIFICATION_DTO, "Unable to generate OTP due to some technical glitch"))
-                .when(notificationService).send(any(), any());
+        doThrow(
+                        new NotificationException(
+                                INVALID_NOTIFICATION_DTO,
+                                "Unable to generate OTP due to some technical glitch"))
+                .when(notificationService)
+                .send(any(), any());
 
         NotificationSentException notificationSentException =
                 assertThrows(
@@ -143,8 +145,7 @@ class OTPAuthenticationServiceTest {
                         () -> otpAuthenticationService.preAuthenticate(authenticationDto));
         assertEquals(
                 ThreeDSecureErrorCode.SYSTEM_CONNECTION_FAILURE,
-                notificationSentException.getThreeDSecureErrorCode()
-        );
+                notificationSentException.getThreeDSecureErrorCode());
     }
 
     @ParameterizedTest
