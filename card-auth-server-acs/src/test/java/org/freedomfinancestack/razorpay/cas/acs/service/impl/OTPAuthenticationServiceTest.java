@@ -36,23 +36,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OTPAuthenticationServiceTest {
     @Mock OtpService otpService;
-    //            = mock(OtpService.class);
     @Mock OtpCommunicationConfiguration otpCommunicationConfiguration;
     @Mock private PlrqService plrqService;
     @Mock private NotificationService notificationService;
 
     @InjectMocks OTPAuthenticationService otpAuthenticationService;
-    //     public OTPAuthenticationService otpAuthenticationService =
-    //             new OTPAuthenticationService(otpService, otpCommunicationConfiguration,
-    //                     plrqService, notificationService);
-
-    AuthConfigDto authConfigDto =
-            createAuthConfigDto(OOBType.UL_TEST, true, true, AuthType.OTP, AuthType.UNKNOWN);
-    AuthenticationDto authenticationDto =
-            AuthConfigTestData.createAuthenticationDto(
-                    authConfigDto,
-                    TransactionTestData.createSampleAppTransaction(),
-                    String.valueOf(AuthType.OTP));
 
     /**
      * This test cover the case when OTP is Successfully Send or not send Also takes into
@@ -65,15 +53,24 @@ class OTPAuthenticationServiceTest {
     @CsvSource({"true", "false"})
     void preAuthenticate(String success) throws ThreeDSException, NotificationException {
 
+        AuthConfigDto authConfigDto =
+                createAuthConfigDto(OOBType.UL_TEST, true, true, AuthType.OTP, AuthType.UNKNOWN);
+        AuthenticationDto authenticationDto =
+                AuthConfigTestData.createAuthenticationDto(
+                        authConfigDto,
+                        TransactionTestData.createSampleAppTransaction(),
+                        String.valueOf(AuthType.OTP));
+
         OtpTransactionDetail otpTransactionDetail =
                 new OtpTransactionDetail("1", "1209", OtpVerificationStatus.CREATED, "2000");
         when(otpService.generateOTP(any(), any())).thenReturn(otpTransactionDetail);
-        when(otpCommunicationConfiguration.getEmail())
-                .thenReturn(mock(OtpCommunicationConfiguration.EmailProperties.class));
-        when(otpCommunicationConfiguration.getEmail().getFrom()).thenReturn("v@gmail.com");
-        when(otpCommunicationConfiguration.getEmail().getSubjectText()).thenReturn("Dummy Subject");
-        when(otpCommunicationConfiguration.getEmail().getTemplateName())
-                .thenReturn("Dummy template");
+
+        OtpCommunicationConfiguration.EmailProperties emailProperties =
+                new OtpCommunicationConfiguration.EmailProperties();
+        emailProperties.setFrom("v@gmail.com");
+        emailProperties.setTemplateName("Dummy Template");
+        emailProperties.setSubjectText("Dummy Subject");
+        when(otpCommunicationConfiguration.getEmail()).thenReturn(emailProperties);
 
         NotificationResponseDto notificationResponseDto = new NotificationResponseDto();
         notificationResponseDto.setSuccess(Boolean.parseBoolean(success));
@@ -108,6 +105,15 @@ class OTPAuthenticationServiceTest {
     @Test
     public void preAuthenticate_NotificationNotSendException()
             throws RuntimeException, NotificationException {
+
+        AuthConfigDto authConfigDto =
+                createAuthConfigDto(OOBType.UL_TEST, true, true, AuthType.OTP, AuthType.UNKNOWN);
+        AuthenticationDto authenticationDto =
+                AuthConfigTestData.createAuthenticationDto(
+                        authConfigDto,
+                        TransactionTestData.createSampleAppTransaction(),
+                        String.valueOf(AuthType.OTP));
+
         OtpTransactionDetail otpTransactionDetail =
                 new OtpTransactionDetail("1", "1209", OtpVerificationStatus.CREATED, "2000");
         when(otpService.generateOTP(any(), any())).thenReturn(otpTransactionDetail);
@@ -135,6 +141,15 @@ class OTPAuthenticationServiceTest {
     @ParameterizedTest
     @CsvSource({"true", "false"})
     void authenticate(String authenticated) throws ThreeDSException {
+
+        AuthConfigDto authConfigDto =
+                createAuthConfigDto(OOBType.UL_TEST, true, true, AuthType.OTP, AuthType.UNKNOWN);
+        AuthenticationDto authenticationDto =
+                AuthConfigTestData.createAuthenticationDto(
+                        authConfigDto,
+                        TransactionTestData.createSampleAppTransaction(),
+                        String.valueOf(AuthType.OTP));
+
         AuthResponse authResponseExpected = new AuthResponse();
         authResponseExpected.setAuthenticated(Boolean.parseBoolean(authenticated));
 
