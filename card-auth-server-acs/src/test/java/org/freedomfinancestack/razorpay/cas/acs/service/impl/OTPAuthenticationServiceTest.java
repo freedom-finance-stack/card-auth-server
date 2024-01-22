@@ -1,18 +1,22 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import org.freedomfinancestack.extensions.notification.NotificationService;
+import org.freedomfinancestack.extensions.notification.dto.NotificationDto;
 import org.freedomfinancestack.extensions.notification.dto.NotificationResponseDto;
+import org.freedomfinancestack.extensions.notification.enums.NotificationChannelType;
 import org.freedomfinancestack.extensions.notification.exception.NotificationException;
 import org.freedomfinancestack.razorpay.cas.acs.data.AuthConfigTestData;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthenticationDto;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.NotificationSentException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.PlrqService;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.OtpCommunicationConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.OtpService;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.OOBType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.OtpVerificationStatus;
@@ -24,7 +28,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
+import static org.freedomfinancestack.extensions.notification.exception.NotificationErrorCode.INVALID_NOTIFICATION_DTO;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.CHALLENGE_CORRECT_OTP_TEXT;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.CHALLENGE_INCORRECT_OTP_TEXT;
 import static org.freedomfinancestack.razorpay.cas.acs.data.AuthConfigTestData.createAuthConfigDto;
@@ -74,7 +80,9 @@ class OTPAuthenticationServiceTest {
 
         NotificationResponseDto notificationResponseDto = new NotificationResponseDto();
         notificationResponseDto.setSuccess(Boolean.parseBoolean(success));
-        when(notificationService.send(any(), any())).thenReturn(notificationResponseDto);
+        when(notificationService.send(
+                        any(NotificationChannelType.class), any(NotificationDto.class)))
+                .thenReturn(notificationResponseDto);
         when(otpCommunicationConfiguration.getSms())
                 .thenReturn(mock(OtpCommunicationConfiguration.SmsProperties.class));
         when(otpCommunicationConfiguration.getSms().getTemplateName()).thenReturn("templateName");
@@ -103,8 +111,7 @@ class OTPAuthenticationServiceTest {
 
     /** Considers the test case where service is unable to send OTP due to some internal error. */
     @Test
-    public void preAuthenticate_NotificationNotSendException()
-            throws RuntimeException, NotificationException {
+    public void preAuthenticate_NotificationNotSendException() throws NotificationException {
 
         AuthConfigDto authConfigDto =
                 createAuthConfigDto(OOBType.UL_TEST, true, true, AuthType.OTP, AuthType.UNKNOWN);
@@ -126,16 +133,18 @@ class OTPAuthenticationServiceTest {
 
         NotificationResponseDto notificationResponseDto = new NotificationResponseDto();
         notificationResponseDto.setSuccess(true);
-        when(notificationService.send(any(), any()))
-                .thenThrow(new RuntimeException("Unable to send OTP due to some technical glitch"));
 
-        RuntimeException notificationSentException =
+        doThrow( new NotificationException(INVALID_NOTIFICATION_DTO, "Unable to generate OTP due to some technical glitch"))
+                .when(notificationService).send(any(), any());
+
+        NotificationSentException notificationSentException =
                 assertThrows(
-                        RuntimeException.class,
+                        NotificationSentException.class,
                         () -> otpAuthenticationService.preAuthenticate(authenticationDto));
         assertEquals(
-                "Unable to send OTP due to some technical glitch",
-                notificationSentException.getMessage());
+                ThreeDSecureErrorCode.SYSTEM_CONNECTION_FAILURE,
+                notificationSentException.getThreeDSecureErrorCode()
+        );
     }
 
     @ParameterizedTest
@@ -149,9 +158,6 @@ class OTPAuthenticationServiceTest {
                         authConfigDto,
                         TransactionTestData.createSampleAppTransaction(),
                         String.valueOf(AuthType.OTP));
-
-        AuthResponse authResponseExpected = new AuthResponse();
-        authResponseExpected.setAuthenticated(Boolean.parseBoolean(authenticated));
 
         when(otpService.validateOTP(any(), any())).thenReturn(Boolean.parseBoolean(authenticated));
         AuthResponse authResponseActual = otpAuthenticationService.authenticate(authenticationDto);
