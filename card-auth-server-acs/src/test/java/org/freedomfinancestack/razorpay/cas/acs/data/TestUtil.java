@@ -22,4 +22,16 @@ public class TestUtil {
             e.printStackTrace();
         }
     }
+
+    public static void setPrivateField(Object targetObject, String fieldName, Object newValue)
+            throws NoSuchFieldException, IllegalAccessException {
+        // Get the field from the target object's class
+        Field field = targetObject.getClass().getDeclaredField(fieldName);
+
+        // Make the field accessible, even if it's private or final
+        field.setAccessible(true);
+
+        // Set the new value for the field
+        field.set(targetObject, newValue);
+    }
 }
