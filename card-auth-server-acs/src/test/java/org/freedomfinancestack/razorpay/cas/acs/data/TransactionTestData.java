@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.data;
 import java.sql.Timestamp;
 
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
+import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
@@ -50,6 +51,7 @@ public class TransactionTestData {
                 .transactionCardDetail(createSampleTransactionCardDetail())
                 .transactionBrowserDetail(createSampleTransactionBrowserDetail())
                 .transactionMerchant(createSampleTransactionMerchant())
+                .transactionSdkDetail(new TransactionSdkDetail())
                 .transactionCardHolderDetail(createSampleTransactionCardHolderDetail())
                 .build();
     }
@@ -149,5 +151,24 @@ public class TransactionTestData {
                 .emailId("john.doe@example.com")
                 .mobileNumber("1234567890")
                 .build();
+    }
+
+    public static CardRange createSampleCardRange() {
+        return CardRange.builder().institution(Institution.builder().id("I1").build()).build();
+    }
+
+    public static AppConfiguration createSampleAcsConfig() {
+        AppConfiguration acsConfig = new AppConfiguration();
+        AppConfiguration.AcsProperties acsProperties = new AppConfiguration.AcsProperties();
+        AppConfiguration.AcsProperties.OperatorIdProperties properties =
+                new AppConfiguration.AcsProperties.OperatorIdProperties();
+        properties.setMastercard("MASTERCARD");
+        properties.setVisa("VISA");
+        properties.setAmex("AMEX");
+        acsProperties.setOperatorId(properties);
+        acsConfig.setHostname("www.test.com");
+        acsProperties.setReferenceNumber("referenceNumber");
+        acsConfig.setAcs(acsProperties);
+        return acsConfig;
     }
 }
