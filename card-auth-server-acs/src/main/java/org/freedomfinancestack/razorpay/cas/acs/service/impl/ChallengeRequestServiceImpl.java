@@ -66,7 +66,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         return processBrwChallengeRequestHandler(deviceChannel, strCReq, threeDSSessionData);
     }
 
-    public ChallengeFlowDto processAppChallengeRequestHandler(
+    private ChallengeFlowDto processAppChallengeRequestHandler(
             DeviceChannel deviceChannel, String strCReq, String threeDSSessionData)
             throws ThreeDSException {
         ChallengeFlowDto challengeFlowDto = new ChallengeFlowDto();
@@ -104,7 +104,7 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
         }
     }
 
-    public ChallengeFlowDto processBrwChallengeRequestHandler(
+    private ChallengeFlowDto processBrwChallengeRequestHandler(
             final DeviceChannel deviceChannel,
             final String strCReq,
             final String threeDSSessionData) {
@@ -201,9 +201,11 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
             }
 
-            transaction
-                    .getTransactionSdkDetail()
-                    .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
+            if (deviceChannel.equals(DeviceChannel.APP)) {
+                transaction
+                        .getTransactionSdkDetail()
+                        .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
+            }
 
             // 4 flows
             // 1: if Challenge cancelled by user
