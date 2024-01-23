@@ -14,18 +14,21 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AReqTransactionTimerServiceTest {
+class CReqTransactionTimerServiceTest {
 
     @Mock private TimerService timerService;
+
+    @Mock private AReqTransactionTimerService aReqTransactionTimeoutService;
 
     @Mock private AppConfiguration appConfiguration;
 
     @Mock private TransactionTimeOutService transactionTimeOutService;
 
-    @InjectMocks private AReqTransactionTimerService aReqTransactionTimerService;
+    @InjectMocks private CReqTransactionTimerService cReqTransactionTimerService;
 
     @Test
     void testScheduleTask() throws TaskAlreadyExistException {
@@ -37,19 +40,80 @@ class AReqTransactionTimerServiceTest {
                 .thenReturn(mock(ScheduledFuture.class));
 
         // Act
-        aReqTransactionTimerService.scheduleTask(transactionId, transactionStatus, null);
+        cReqTransactionTimerService.scheduleTask(transactionId, transactionStatus, null);
 
         // Assert
+        verify(aReqTransactionTimeoutService, times(1))
+                .cancelTask(
+                        AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY
+                                + "["
+                                + transactionId
+                                + "]");
         verify(timerService, times(1))
                 .scheduleTimeoutTask(
                         eq(
-                                AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY
+                                CReqTransactionTimerService.CREQ_TIMER_TASK_IDENTIFIER_KEY
                                         + "["
                                         + transactionId
                                         + "]"),
                         any(TimerTask.class),
                         eq(50L),
                         eq(TimeUnit.SECONDS));
+    }
+
+    @Test
+    void testCancelTask() {
+        // Arrange
+        String transactionId = "sampleTransactionId";
+        when(timerService.removeTimeoutTask(any())).thenReturn(true);
+
+        // Act
+        cReqTransactionTimerService.cancelTask(transactionId);
+
+        // Assert
+        verify(timerService, times(1)).removeTimeoutTask(any());
+    }
+
+    @Test
+    void testCancelTaskWithNonExistingTask() {
+        // Arrange
+        String transactionId = "nonExistingTransactionId";
+        when(timerService.removeTimeoutTask(any())).thenReturn(false);
+
+        // Act
+        cReqTransactionTimerService.cancelTask(transactionId);
+
+        // Assert
+        verify(timerService, times(1)).removeTimeoutTask(any());
+        // Add assertions for the log statements or other behavior
+    }
+
+    @Test
+    void testPerformTask() {
+        // Arrange
+        String timerTaskId = "CREQ_TIMER_TASK[sampleTimerTaskId]";
+        doNothing()
+                .when(transactionTimeOutService)
+                .performTimeOutWaitingForChallengeCompletion(any());
+
+        // Act
+        cReqTransactionTimerService.performTask(timerTaskId);
+
+        // Assert
+        verify(transactionTimeOutService, times(1))
+                .performTimeOutWaitingForChallengeCompletion(eq("sampleTimerTaskId"));
+    }
+
+    @Test
+    void testPerformTaskWithException() {
+        // Arrange
+        String timerTaskId = "CREQ_TIMER_TASK[exceptionTimerTaskId]";
+        doThrow(new RuntimeException("Test exception"))
+                .when(transactionTimeOutService)
+                .performTimeOutWaitingForChallengeCompletion(any());
+
+        // Act and Assert
+        cReqTransactionTimerService.performTask(timerTaskId);
     }
 
     @Test
@@ -62,18 +126,24 @@ class AReqTransactionTimerServiceTest {
                 .thenReturn(mock(ScheduledFuture.class));
 
         // Act
-        aReqTransactionTimerService.scheduleTask(transactionId, transactionStatus, "5");
+        cReqTransactionTimerService.scheduleTask(transactionId, transactionStatus, "5");
 
         // Assert
+        verify(aReqTransactionTimeoutService, times(1))
+                .cancelTask(
+                        AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY
+                                + "["
+                                + transactionId
+                                + "]");
         verify(timerService, times(1))
                 .scheduleTimeoutTask(
                         eq(
-                                AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY
+                                CReqTransactionTimerService.CREQ_TIMER_TASK_IDENTIFIER_KEY
                                         + "["
                                         + transactionId
                                         + "]"),
                         any(TimerTask.class),
-                        eq(300L),
+                        eq(50L),
                         eq(TimeUnit.SECONDS));
     }
 
@@ -87,13 +157,19 @@ class AReqTransactionTimerServiceTest {
                 .thenReturn(mock(ScheduledFuture.class));
 
         // Act
-        aReqTransactionTimerService.scheduleTask(transactionId, transactionStatus, null);
+        cReqTransactionTimerService.scheduleTask(transactionId, transactionStatus, null);
 
         // Assert
+        verify(aReqTransactionTimeoutService, times(1))
+                .cancelTask(
+                        AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY
+                                + "["
+                                + transactionId
+                                + "]");
         verify(timerService, times(1))
                 .scheduleTimeoutTask(
                         eq(
-                                AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY
+                                CReqTransactionTimerService.CREQ_TIMER_TASK_IDENTIFIER_KEY
                                         + "["
                                         + transactionId
                                         + "]"),
@@ -112,13 +188,19 @@ class AReqTransactionTimerServiceTest {
                 .thenThrow(TaskAlreadyExistException.class);
 
         // Act
-        aReqTransactionTimerService.scheduleTask(transactionId, transactionStatus, null);
+        cReqTransactionTimerService.scheduleTask(transactionId, transactionStatus, null);
 
         // Assert
+        verify(aReqTransactionTimeoutService, times(1))
+                .cancelTask(
+                        AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY
+                                + "["
+                                + transactionId
+                                + "]");
         verify(timerService, times(1))
                 .scheduleTimeoutTask(
                         eq(
-                                AReqTransactionTimerService.AREQ_TIMER_TASK_IDENTIFIER_KEY
+                                CReqTransactionTimerService.CREQ_TIMER_TASK_IDENTIFIER_KEY
                                         + "["
                                         + transactionId
                                         + "]"),
@@ -128,66 +210,12 @@ class AReqTransactionTimerServiceTest {
         // Add assertions for the log statements or other behavior
     }
 
-    public void getAppConfiguration() {
+    private void getAppConfiguration() {
         AppConfiguration.AcsProperties acsProperties = new AppConfiguration.AcsProperties();
         AppConfiguration.AcsProperties.TimeoutConfig timeoutConfig =
                 new AppConfiguration.AcsProperties.TimeoutConfig();
-        timeoutConfig.setDecoupledChallengeCompletion(50);
-        timeoutConfig.setChallengeRequest(50);
+        timeoutConfig.setChallengeCompletion(50);
         acsProperties.setTimeout(timeoutConfig);
         when(appConfiguration.getAcs()).thenReturn(acsProperties);
-    }
-
-    @Test
-    void testCancelTask() {
-        // Arrange
-        String transactionId = "sampleTransactionId";
-        when(timerService.removeTimeoutTask(any())).thenReturn(true);
-
-        // Act
-        aReqTransactionTimerService.cancelTask(transactionId);
-
-        // Assert
-        verify(timerService, times(1)).removeTimeoutTask(any());
-    }
-
-    @Test
-    void testCancelTaskWithNonExistingTask() {
-        // Arrange
-        String transactionId = "nonExistingTransactionId";
-        when(timerService.removeTimeoutTask(any())).thenReturn(false);
-
-        // Act
-        aReqTransactionTimerService.cancelTask(transactionId);
-
-        // Assert
-        verify(timerService, times(1)).removeTimeoutTask(any());
-        // Add assertions for the log statements or other behavior
-    }
-
-    @Test
-    void testPerformTask() throws Exception {
-        // Arrange
-        String timerTaskId = "AREQ_TIMER_TASK[sampleTimerTaskId]";
-        doNothing().when(transactionTimeOutService).performTimeOutWaitingForCreq(any());
-
-        // Act
-        aReqTransactionTimerService.performTask(timerTaskId);
-
-        // Assert
-        verify(transactionTimeOutService, times(1))
-                .performTimeOutWaitingForCreq(eq("sampleTimerTaskId"));
-    }
-
-    @Test
-    void testPerformTaskWithException() throws Exception {
-        // Arrange
-        String timerTaskId = "AREQ_TIMER_TASK[exceptionTimerTaskId]";
-        doThrow(new RuntimeException("Test exception"))
-                .when(transactionTimeOutService)
-                .performTimeOutWaitingForCreq(any());
-
-        // Act and Assert
-        aReqTransactionTimerService.performTask(timerTaskId);
     }
 }

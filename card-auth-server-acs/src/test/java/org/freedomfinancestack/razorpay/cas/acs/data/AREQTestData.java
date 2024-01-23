@@ -3,15 +3,17 @@ package org.freedomfinancestack.razorpay.cas.acs.data;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.freedomfinancestack.razorpay.cas.contract.*;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ACSRenderingType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ECI;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 
+import static org.freedomfinancestack.razorpay.cas.acs.data.TestUtil.replaceData;
+
 public class AREQTestData {
-    public static final String SAMPLE_THREE_DS_SERVER_TRANS_ID =
-            "2ddc9891-d085-411d-b068-933e30de8231";
+    public static final String SAMPLE_THREE_DS_SERVER_TRANS_ID = "threeDSRequestorID_UTSB";
     public static final String SAMPLE_ACS_REFERENCE_NUMBER = "sampleAcsReferenceNumber";
     public static final String SAMPLE_ACS_TRANS_ID = "279301f0-b090-4dfe-b7dc-c7861ea5c1cc";
     public static final String SAMPLE_DS_REFERENCE_NUMBER = "2bbfe3a7-d8af-4675-8e77-4bbab80d197a";
@@ -28,21 +30,21 @@ public class AREQTestData {
         areq.setThreeDSServerRefNumber("serverRefNumber");
         areq.setThreeDSServerTransID(SAMPLE_THREE_DS_SERVER_TRANS_ID);
         areq.setThreeDSServerURL("https://example.com/3ds-server-url");
-        areq.setThreeRIInd("Y");
+        areq.setThreeRIInd("02");
         areq.setAcquirerBIN("123456");
-        areq.setAcquirerMerchantID("exampleMerchantID");
+        areq.setAcquirerMerchantID("9876543210001");
         areq.setBrowserAcceptHeader("text/html");
-        areq.setBrowserJavaEnabled("N");
+        areq.setBrowserJavaEnabled("true");
         areq.setBrowserLanguage("en-US");
         areq.setBrowserColorDepth("24");
         areq.setBrowserScreenHeight("1080");
         areq.setBrowserScreenWidth("1920");
-        areq.setBrowserTZ("UTC+02:00");
+        areq.setBrowserTZ("0");
         areq.setBrowserUserAgent(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
                         + " Chrome/58.0.3029.110 Safari/537.3");
         areq.setAcctNumber("4111111111111111");
-        areq.setDeviceChannel("01");
+        areq.setDeviceChannel("02");
 
         areq.setThreeDSRequestorChallengeInd("01");
         areq.setThreeDSRequestorAuthenticationInfo(
@@ -54,10 +56,11 @@ public class AREQTestData {
         areq.setAcctID("exampleAcctID");
         areq.setMerchantRiskIndicator(createSampleThreeDSMerchantFields());
         areq.setMerchantCountryCode("840");
+        areq.setNotificationURL("https://simulator/");
         // Set values for conditional fields
         areq.setThreeDSServerOperatorID("sampleOperatorID");
         areq.setThreeDSServerOperatorID("exampleServerOperatorID");
-        areq.setAcctType("05");
+        areq.setAcctType("02");
         areq.setBroadInfo(createSampleBrodInfo());
         areq.setBrowserIP("192.168.0.1");
         areq.setCardExpiryDate("2212");
@@ -67,7 +70,7 @@ public class AREQTestData {
         areq.setBillAddrLine2("ExampleLine2");
         areq.setBillAddrLine3("ExampleLine3");
         areq.setBillAddrPostCode("12345");
-        areq.setBillAddrState("ExampleState");
+        areq.setBillAddrState("AZ");
         areq.setEmail("example@example.com");
         areq.setHomePhone(createSamplePhone("1234567890"));
         areq.setMobilePhone(createSamplePhone("9876543210"));
@@ -78,21 +81,27 @@ public class AREQTestData {
         areq.setShipAddrLine2("ShippingLine2");
         areq.setShipAddrLine3("ShippingLine3");
         areq.setShipAddrPostCode("54321");
-        areq.setShipAddrState("ShippingState");
+        areq.setShipAddrState("AZ");
         areq.setWorkPhone(createSamplePhone("5551234567"));
         areq.setDeviceInfo("exampleDeviceInfo");
         areq.setDsReferenceNumber("exampleDsReferenceNumber");
-        areq.setDsTransID("exampleDsTransID");
+        areq.setDsTransID(SAMPLE_DS_TRANS_ID);
         areq.setDsURL("http://example.com/3ds");
-        areq.setPayTokenInd("Y");
-        areq.setPurchaseInstalData("exampleInstalData");
+        areq.setPayTokenInd("true");
+        areq.setMcc("7922");
         areq.setPurchaseDate("20231121113432");
         areq.setPurchaseExponent("2");
+        areq.setPurchaseAmount("5628");
+        areq.setPurchaseCurrency("840");
         areq.setMessageExtension(List.of(createSampleMessageExtension()));
+        areq.setMessageVersion("2.1.0");
+        areq.setMessageCategory("01");
+        areq.setMessageType("AReq");
         areq.setRecurringExpiry("202512");
         areq.setRecurringFrequency("02");
         areq.setSdkEncData("exampleSdkEncData");
         areq.setTransType("01");
+        areq.setMerchantName("test");
 
         return areq;
     }
@@ -132,7 +141,7 @@ public class AREQTestData {
         accountInformation.setTxnActivityYear("2022");
         accountInformation.setProvisionAttemptsDay("02");
         accountInformation.setNbPurchaseAccount("5");
-        accountInformation.setSuspiciousAccActivity("N");
+        accountInformation.setSuspiciousAccActivity("01");
         accountInformation.setShipNameIndicator("01");
         accountInformation.setPaymentAccInd("02");
         accountInformation.setPaymentAccAge("20200801");
@@ -200,7 +209,7 @@ public class AREQTestData {
         MessageExtension messageExtension = new MessageExtension();
         messageExtension.setName("SampleName");
         messageExtension.setId("SampleID");
-        messageExtension.setCriticalityIndicator(true);
+        messageExtension.setCriticalityIndicator(false);
 
         // Sample data map
         HashMap<String, Object> data = new HashMap<>();
@@ -214,15 +223,15 @@ public class AREQTestData {
 
     public static ThreeDSMerchantFeilds createSampleThreeDSMerchantFields() {
         ThreeDSMerchantFeilds merchantFields = new ThreeDSMerchantFeilds();
-        merchantFields.setShipIndicator("Y");
-        merchantFields.setDeliveryTimeframe("01");
+        merchantFields.setShipIndicator("01");
+        merchantFields.setDeliveryTimeframe("02");
         merchantFields.setDeliveryEmailAddress("sample@example.com");
-        merchantFields.setReorderItemsInd("Y");
-        merchantFields.setPreOrderPurchaseInd("Y");
-        merchantFields.setPreOrderDate("20231231");
-        merchantFields.setGiftCardAmount("100.00");
-        merchantFields.setGiftCardCurr("USD");
-        merchantFields.setGiftCardCount("2");
+        merchantFields.setReorderItemsInd("01");
+        merchantFields.setPreOrderPurchaseInd("02");
+        merchantFields.setPreOrderDate("20300101");
+        merchantFields.setGiftCardAmount("100");
+        merchantFields.setGiftCardCurr("840");
+        merchantFields.setGiftCardCount("01");
         return merchantFields;
     }
 
@@ -234,5 +243,9 @@ public class AREQTestData {
 
     public static ACSRenderingType createMockACSRenderingType() {
         return new ACSRenderingType("sampleAcsInterface", "sampleAcsUiTemplate");
+    }
+
+    public static AREQ getAReq(Map<String, Object> areqTestData) {
+        return replaceData(createSampleAREQ(), areqTestData);
     }
 }
