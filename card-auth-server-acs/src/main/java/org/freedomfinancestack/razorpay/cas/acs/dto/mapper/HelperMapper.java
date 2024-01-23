@@ -5,6 +5,9 @@ import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The {@code HelperMapper} class is a MapStruct component used as a helper for the {@link
  * AResMapper} interface. It provides utility methods to map specific attributes during the mapping
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Component;
  */
 @Mapper
 @Component
+@Getter
+@Setter
 public class HelperMapper {
 
     /**
