@@ -28,12 +28,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.freedomfinancestack.razorpay.cas.acs.data.AuthConfigTestData.createAuthConfigDto;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class InstitutionUiParamsMapperTest {
@@ -63,9 +64,6 @@ public class InstitutionUiParamsMapperTest {
         InstitutionUiConfig institutionUiConfig = UiParamsTestData.createInstitutionUiConfig();
         AuthConfigDto authConfigDto =
                 createAuthConfigDto(null, true, false, AuthType.OTP, AuthType.UNKNOWN);
-
-        InstitutionUiParamsMapperImpl institutionUiParamsMapper =
-                mock(InstitutionUiParamsMapperImpl.class);
 
         when(testConfigProperties.isEnable()).thenReturn(true);
         when(appConfiguration.getHostname()).thenReturn("http://localhost:8080");
@@ -189,21 +187,25 @@ public class InstitutionUiParamsMapperTest {
 
     @Test
     void getIssuerImage_Success_Image() throws ImageProcessingException {
-        Transaction transaction = TransactionTestData.createSampleBrwTransaction();
+        try (MockedStatic<Util> utilities = mockStatic(Util.class)) {
+            Transaction transaction = TransactionTestData.createSampleBrwTransaction();
 
-        String logoUrl = "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM";
-        when(institutionUiConfiguration.getMediumLogo()).thenReturn(logoUrl);
-        when(institutionUiConfiguration.getHighLogo()).thenReturn(logoUrl);
-        when(institutionUiConfiguration.getExtraHighLogo()).thenReturn(logoUrl);
+            String logoUrl = "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM";
+            when(institutionUiConfiguration.getMediumLogo()).thenReturn(logoUrl);
+            when(institutionUiConfiguration.getHighLogo()).thenReturn(logoUrl);
+            when(institutionUiConfiguration.getExtraHighLogo()).thenReturn(logoUrl);
 
-        Image issuerImage =
-                institutionUiParamsMapperImpl.getIssuerImage(
-                        transaction, institutionUiConfiguration);
+            utilities.when(() -> Util.getBase64Image(anyString())).thenReturn("MockedBase64Image");
 
-        assertNotNull(issuerImage);
-        assertEquals(Util.getBase64Image(logoUrl), issuerImage.getMedium());
-        assertEquals(Util.getBase64Image(logoUrl), issuerImage.getHigh());
-        assertEquals(Util.getBase64Image(logoUrl), issuerImage.getExtraHigh());
+            Image issuerImage =
+                    institutionUiParamsMapperImpl.getIssuerImage(
+                            transaction, institutionUiConfiguration);
+
+            assertNotNull(issuerImage);
+            assertEquals("MockedBase64Image", issuerImage.getMedium());
+            assertEquals("MockedBase64Image", issuerImage.getHigh());
+            assertEquals("MockedBase64Image", issuerImage.getExtraHigh());
+        }
     }
 
     @Test
@@ -235,29 +237,35 @@ public class InstitutionUiParamsMapperTest {
 
     @Test
     void getPsImage_Success_Image() throws ImageProcessingException {
-        Transaction transaction = TransactionTestData.createSampleBrwTransaction();
+        try (MockedStatic<Util> utilities = mockStatic(Util.class)) {
+            Transaction transaction = TransactionTestData.createSampleBrwTransaction();
 
-        Network network =
-                Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
+            Network network =
+                    Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
 
-        String logoUrl = "https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO";
+            String logoUrl = "https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO";
 
-        InstitutionUiConfiguration.UiConfig uiConfig = new InstitutionUiConfiguration.UiConfig();
-        uiConfig.setMediumPs(logoUrl);
-        uiConfig.setHighPs(logoUrl);
-        uiConfig.setExtraHighPs(logoUrl);
-        Map<Network, InstitutionUiConfiguration.UiConfig> networkUiConfigMap =
-                new EnumMap<>(Network.class);
-        networkUiConfigMap.put(network, uiConfig);
-        when(institutionUiConfiguration.getNetworkUiConfig()).thenReturn(networkUiConfigMap);
+            InstitutionUiConfiguration.UiConfig uiConfig =
+                    new InstitutionUiConfiguration.UiConfig();
+            uiConfig.setMediumPs(logoUrl);
+            uiConfig.setHighPs(logoUrl);
+            uiConfig.setExtraHighPs(logoUrl);
+            Map<Network, InstitutionUiConfiguration.UiConfig> networkUiConfigMap =
+                    new EnumMap<>(Network.class);
+            networkUiConfigMap.put(network, uiConfig);
+            when(institutionUiConfiguration.getNetworkUiConfig()).thenReturn(networkUiConfigMap);
 
-        Image psImage =
-                institutionUiParamsMapperImpl.getPsImage(transaction, institutionUiConfiguration);
+            utilities.when(() -> Util.getBase64Image(anyString())).thenReturn("MockedBase64Image");
 
-        assertNotNull(psImage);
-        assertEquals(Util.getBase64Image(logoUrl), psImage.getMedium());
-        assertEquals(Util.getBase64Image(logoUrl), psImage.getHigh());
-        assertEquals(Util.getBase64Image(logoUrl), psImage.getExtraHigh());
+            Image psImage =
+                    institutionUiParamsMapperImpl.getPsImage(
+                            transaction, institutionUiConfiguration);
+
+            assertNotNull(psImage);
+            assertEquals("MockedBase64Image", psImage.getMedium());
+            assertEquals("MockedBase64Image", psImage.getHigh());
+            assertEquals("MockedBase64Image", psImage.getExtraHigh());
+        }
     }
 
     @Test
