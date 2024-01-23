@@ -178,7 +178,8 @@ public class InstitutionUiParamsMapperTest {
         when(institutionUiConfiguration.getExtraHighLogo()).thenReturn(logoUrl);
 
         Image issuerImage =
-                institutionUiParamsMapperImpl.getIssuerImage(transaction, institutionUiConfiguration);
+                institutionUiParamsMapperImpl.getIssuerImage(
+                        transaction, institutionUiConfiguration);
 
         assertNotNull(issuerImage);
         assertEquals(logoUrl, issuerImage.getMedium());
@@ -196,7 +197,8 @@ public class InstitutionUiParamsMapperTest {
         when(institutionUiConfiguration.getExtraHighLogo()).thenReturn(logoUrl);
 
         Image issuerImage =
-                institutionUiParamsMapperImpl.getIssuerImage(transaction, institutionUiConfiguration);
+                institutionUiParamsMapperImpl.getIssuerImage(
+                        transaction, institutionUiConfiguration);
 
         assertNotNull(issuerImage);
         assertEquals(Util.getBase64Image(logoUrl), issuerImage.getMedium());

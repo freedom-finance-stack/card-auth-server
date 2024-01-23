@@ -201,11 +201,9 @@ public class ChallengeRequestServiceImpl implements ChallengeRequestService {
                         .setWhitelistingDataEntry(creq.getWhitelistingDataEntry());
             }
 
-            if (deviceChannel.equals(DeviceChannel.APP)) {
-                transaction
-                        .getTransactionSdkDetail()
-                        .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
-            }
+            transaction
+                    .getTransactionSdkDetail()
+                    .setThreeDSRequestorAppURL(creq.getThreeDSRequestorAppURL());
 
             // 4 flows
             // 1: if Challenge cancelled by user
