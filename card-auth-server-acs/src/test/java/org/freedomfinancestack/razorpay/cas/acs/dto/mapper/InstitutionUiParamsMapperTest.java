@@ -7,6 +7,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.data.UiParamsTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
+import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ImageProcessingException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
@@ -31,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.freedomfinancestack.razorpay.cas.acs.data.AuthConfigTestData.createAuthConfigDto;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,14 +44,76 @@ public class InstitutionUiParamsMapperTest {
 
     @Mock private TestConfigProperties testConfigProperties;
 
-    @InjectMocks private InstitutionUiParamsMapperImpl institutionUiParamsMapper;
+    @InjectMocks private InstitutionUiParamsMapperImpl institutionUiParamsMapperImpl;
+
+    @Test
+    void toInstitutionUiParams_Transaction_Null() throws ImageProcessingException {
+
+        InstitutionUIParams institutionUIParams =
+                institutionUiParamsMapperImpl.toInstitutionUiParams(
+                        null, null, null, null, null, null, null, null);
+
+        assertNull(institutionUIParams);
+    }
+
+    @Test
+    void toInstitutionUiParams_Success() throws ImageProcessingException {
+
+        Transaction transaction = TransactionTestData.createSampleAppTransaction();
+        InstitutionUiConfig institutionUiConfig = UiParamsTestData.createInstitutionUiConfig();
+        AuthConfigDto authConfigDto =
+                createAuthConfigDto(null, true, false, AuthType.OTP, AuthType.UNKNOWN);
+
+        InstitutionUiParamsMapperImpl institutionUiParamsMapper =
+                mock(InstitutionUiParamsMapperImpl.class);
+
+        when(testConfigProperties.isEnable()).thenReturn(true);
+        when(appConfiguration.getHostname()).thenReturn("http://localhost:8080");
+
+        String logoUrl = "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM";
+        when(institutionUiConfiguration.getMediumLogo()).thenReturn(logoUrl);
+        when(institutionUiConfiguration.getHighLogo()).thenReturn(logoUrl);
+        when(institutionUiConfiguration.getExtraHighLogo()).thenReturn(logoUrl);
+
+        Network network =
+                Network.getNetwork(transaction.getTransactionCardDetail().getNetworkCode());
+        InstitutionUiConfiguration.UiConfig uiConfig = new InstitutionUiConfiguration.UiConfig();
+        uiConfig.setMediumPs(logoUrl);
+        uiConfig.setHighPs(logoUrl);
+        uiConfig.setExtraHighPs(logoUrl);
+        Map<Network, InstitutionUiConfiguration.UiConfig> networkUiConfigMap =
+                new EnumMap<>(Network.class);
+        networkUiConfigMap.put(network, uiConfig);
+        when(institutionUiConfiguration.getNetworkUiConfig()).thenReturn(networkUiConfigMap);
+
+        InstitutionUIParams institutionUIParams =
+                institutionUiParamsMapperImpl.toInstitutionUiParams(
+                        transaction,
+                        institutionUiConfig,
+                        authConfigDto,
+                        UIType.TEXT,
+                        InternalConstants.RESEND,
+                        appConfiguration,
+                        institutionUiConfiguration,
+                        testConfigProperties);
+
+        assertNotNull(institutionUIParams);
+        assertNotNull(institutionUIParams.getAcsTransID());
+        assertEquals(
+                "An OTP has been resent to mobile number ending with 7890 successfully!",
+                institutionUIParams.getChallengeInfoText());
+        assertEquals(
+                "http://localhost:8080/v2/transaction/challenge/app",
+                institutionUIParams.getValidationUrl());
+        assertTrue(institutionUIParams.isTest());
+    }
 
     @ParameterizedTest
     @CsvSource({"01", "02"})
     void getAmount(String messageCategory) {
         Transaction transaction = TransactionTestData.createSampleAppTransaction();
         transaction.setMessageCategory(MessageCategory.getMessageCategory(messageCategory));
-        String amount = institutionUiParamsMapper.getAmount(transaction);
+        String amount = institutionUiParamsMapperImpl.getAmount(transaction);
 
         if (messageCategory.equals(MessageCategory.PA.getCategory())) {
             assertNotNull(amount);
@@ -64,7 +128,7 @@ public class InstitutionUiParamsMapperTest {
     void getCurrency(String messageCategory) {
         Transaction transaction = TransactionTestData.createSampleAppTransaction();
         transaction.setMessageCategory(MessageCategory.getMessageCategory(messageCategory));
-        String currency = institutionUiParamsMapper.getCurrency(transaction);
+        String currency = institutionUiParamsMapperImpl.getCurrency(transaction);
 
         if (messageCategory.equals(MessageCategory.PA.getCategory())) {
             assertNotNull(currency);
@@ -81,7 +145,7 @@ public class InstitutionUiParamsMapperTest {
         when(appConfiguration.getHostname()).thenReturn("http://localhost:8080");
 
         String validationUrl =
-                institutionUiParamsMapper.getValidationUrl(
+                institutionUiParamsMapperImpl.getValidationUrl(
                         transaction, institutionUiConfiguration, appConfiguration);
 
         assertNotNull(validationUrl);
@@ -97,7 +161,7 @@ public class InstitutionUiParamsMapperTest {
         when(institutionUiConfiguration.getInstitutionCssUrl()).thenReturn("http://localhost:8080");
 
         String validationUrl =
-                institutionUiParamsMapper.getValidationUrl(
+                institutionUiParamsMapperImpl.getValidationUrl(
                         transaction, institutionUiConfiguration, appConfiguration);
 
         assertNotNull(validationUrl);
@@ -114,7 +178,7 @@ public class InstitutionUiParamsMapperTest {
         when(institutionUiConfiguration.getExtraHighLogo()).thenReturn(logoUrl);
 
         Image issuerImage =
-                institutionUiParamsMapper.getIssuerImage(transaction, institutionUiConfiguration);
+                institutionUiParamsMapperImpl.getIssuerImage(transaction, institutionUiConfiguration);
 
         assertNotNull(issuerImage);
         assertEquals(logoUrl, issuerImage.getMedium());
@@ -132,7 +196,7 @@ public class InstitutionUiParamsMapperTest {
         when(institutionUiConfiguration.getExtraHighLogo()).thenReturn(logoUrl);
 
         Image issuerImage =
-                institutionUiParamsMapper.getIssuerImage(transaction, institutionUiConfiguration);
+                institutionUiParamsMapperImpl.getIssuerImage(transaction, institutionUiConfiguration);
 
         assertNotNull(issuerImage);
         assertEquals(Util.getBase64Image(logoUrl), issuerImage.getMedium());
@@ -159,7 +223,7 @@ public class InstitutionUiParamsMapperTest {
         when(institutionUiConfiguration.getNetworkUiConfig()).thenReturn(networkUiConfigMap);
 
         Image psImage =
-                institutionUiParamsMapper.getPsImage(transaction, institutionUiConfiguration);
+                institutionUiParamsMapperImpl.getPsImage(transaction, institutionUiConfiguration);
 
         assertNotNull(psImage);
         assertEquals(logoUrl, psImage.getMedium());
@@ -186,7 +250,7 @@ public class InstitutionUiParamsMapperTest {
         when(institutionUiConfiguration.getNetworkUiConfig()).thenReturn(networkUiConfigMap);
 
         Image psImage =
-                institutionUiParamsMapper.getPsImage(transaction, institutionUiConfiguration);
+                institutionUiParamsMapperImpl.getPsImage(transaction, institutionUiConfiguration);
 
         assertNotNull(psImage);
         assertEquals(Util.getBase64Image(logoUrl), psImage.getMedium());
@@ -208,7 +272,7 @@ public class InstitutionUiParamsMapperTest {
         InstitutionUiConfig institutionUiConfig = UiParamsTestData.createInstitutionUiConfig();
 
         String whitelistingInfoText =
-                institutionUiParamsMapper.getWhitelistingInfoText(
+                institutionUiParamsMapperImpl.getWhitelistingInfoText(
                         transaction, authConfigDto, institutionUiConfig);
 
         assertNotNull(whitelistingInfoText);
@@ -229,7 +293,7 @@ public class InstitutionUiParamsMapperTest {
         InstitutionUiConfig institutionUiConfig = UiParamsTestData.createInstitutionUiConfig();
 
         String whitelistingInfoText =
-                institutionUiParamsMapper.getWhitelistingInfoText(
+                institutionUiParamsMapperImpl.getWhitelistingInfoText(
                         transaction, authConfigDto, institutionUiConfig);
 
         assertNull(whitelistingInfoText);
@@ -243,7 +307,7 @@ public class InstitutionUiParamsMapperTest {
         InstitutionUiConfig institutionUiConfig = UiParamsTestData.createInstitutionUiConfig();
 
         String challengeInfoText =
-                institutionUiParamsMapper.getChallengeInfoText(
+                institutionUiParamsMapperImpl.getChallengeInfoText(
                         transaction, institutionUiConfig, authConfigDto, UIType.TEXT, null);
 
         assertNotNull(challengeInfoText);
@@ -260,7 +324,7 @@ public class InstitutionUiParamsMapperTest {
         InstitutionUiConfig institutionUiConfig = UiParamsTestData.createInstitutionUiConfig();
 
         String challengeInfoText =
-                institutionUiParamsMapper.getChallengeInfoText(
+                institutionUiParamsMapperImpl.getChallengeInfoText(
                         transaction,
                         institutionUiConfig,
                         authConfigDto,
@@ -281,7 +345,7 @@ public class InstitutionUiParamsMapperTest {
         InstitutionUiConfig institutionUiConfig = UiParamsTestData.createInstitutionUiConfig();
 
         String challengeInfoText =
-                institutionUiParamsMapper.getChallengeInfoText(
+                institutionUiParamsMapperImpl.getChallengeInfoText(
                         transaction,
                         institutionUiConfig,
                         authConfigDto,
@@ -299,7 +363,7 @@ public class InstitutionUiParamsMapperTest {
         when(testConfigProperties.isEnable()).thenReturn(true);
 
         ChallengeSelectInfo[] challengeSelectInfos =
-                institutionUiParamsMapper.getChallengeSelectInfo(
+                institutionUiParamsMapperImpl.getChallengeSelectInfo(
                         testConfigProperties, UIType.getUIType(uiType));
 
         if (uiType.equals(UIType.TEXT.getType())) {
@@ -320,7 +384,7 @@ public class InstitutionUiParamsMapperTest {
                 createAuthConfigDto(null, true, false, AuthType.OTP, AuthType.UNKNOWN);
 
         String resendAttemptLeft =
-                institutionUiParamsMapper.getResendAttemptLeft(
+                institutionUiParamsMapperImpl.getResendAttemptLeft(
                         transaction, authConfigDto, currentFlowType);
 
         if (currentFlowType.equals(InternalConstants.VALIDATE_OTP)) {
@@ -340,7 +404,7 @@ public class InstitutionUiParamsMapperTest {
                 createAuthConfigDto(null, true, false, AuthType.OTP, AuthType.UNKNOWN);
 
         String otpAttemptLeft =
-                institutionUiParamsMapper.getOtpAttemptLeft(
+                institutionUiParamsMapperImpl.getOtpAttemptLeft(
                         transaction, authConfigDto, currentFlowType);
 
         if (currentFlowType.equals(InternalConstants.RESEND)) {

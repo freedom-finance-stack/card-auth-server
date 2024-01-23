@@ -73,6 +73,7 @@ public class ChallengeRequestServiceImplTest {
         CREQ creq;
         Transaction transaction = TransactionTestData.createSampleTransaction(deviceChannelStr);
         transaction.setPhase(Phase.ARES);
+        transaction.setChallengeMandated(true);
 
         if (deviceChannel.equals(DeviceChannel.APP)) {
             creq =
@@ -204,6 +205,7 @@ public class ChallengeRequestServiceImplTest {
         CREQ creq;
         Transaction transaction = TransactionTestData.createSampleTransaction(deviceChannelStr);
         transaction.setPhase(Phase.CDRES);
+        transaction.setChallengeMandated(true);
 
         if (deviceChannel.equals(DeviceChannel.APP)) {
             creq =
@@ -339,6 +341,7 @@ public class ChallengeRequestServiceImplTest {
         Transaction transaction = TransactionTestData.createSampleTransaction(deviceChannelStr);
         transaction.setPhase(Phase.CDRES);
         transaction.setMessageCategory(MessageCategory.NPA);
+        transaction.setChallengeMandated(true);
 
         if (deviceChannel.equals(DeviceChannel.APP)) {
             creq =
@@ -473,6 +476,7 @@ public class ChallengeRequestServiceImplTest {
         CREQ creq;
         Transaction transaction = TransactionTestData.createSampleTransaction(deviceChannelStr);
         transaction.setPhase(Phase.CDRES);
+        transaction.setChallengeMandated(true);
 
         if (deviceChannel.equals(DeviceChannel.APP)) {
             transaction.getTransactionSdkDetail().setAcsInterface(DeviceInterface.HTML.getValue());
@@ -628,6 +632,7 @@ public class ChallengeRequestServiceImplTest {
         CREQ creq;
         Transaction transaction = TransactionTestData.createSampleTransaction(deviceChannelStr);
         transaction.setPhase(Phase.CDRES);
+        transaction.setChallengeMandated(true);
 
         if (deviceChannel.equals(DeviceChannel.APP)) {
             transaction.getTransactionSdkDetail().setAcsInterface(DeviceInterface.HTML.getValue());
@@ -787,7 +792,6 @@ public class ChallengeRequestServiceImplTest {
         DeviceChannel deviceChannel = DeviceChannel.getDeviceChannel(deviceChannelStr);
         CREQ creq;
         Transaction transaction = TransactionTestData.createSampleTransaction(deviceChannelStr);
-        transaction.setChallengeMandated(false);
         transaction.setPhase(Phase.ARES);
 
         if (deviceChannel.equals(DeviceChannel.APP)) {
