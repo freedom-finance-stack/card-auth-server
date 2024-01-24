@@ -271,6 +271,15 @@ class UtilTest {
     }
 
     @Test
+    public void getHashValue_null() {
+        String hashData = null;
+        String expectedHashValue = null;
+
+        String actualHashValue = Util.getHashValue(hashData);
+        assertEquals(expectedHashValue, actualHashValue);
+    }
+
+    @Test
     public void get16DigitNumericValue_Success() {
         String hashedValue = "abc123def456ghi789123abc456abc789";
         String expected = "1234567891234567";
@@ -281,6 +290,20 @@ class UtilTest {
     @Test
     public void get16DigitNumericValue_Exception() {
         String hashedValue = "abc123def456ghi789";
+        String actual = Util.get16DigitNumericValue(hashedValue);
+        assertNull(Util.get16DigitNumericValue(hashedValue));
+    }
+
+    @Test
+    public void get16DigitNumericValue_Exception_outofRegexPattern() {
+        String hashedValue = "abc123def456ghi789!!";
+        String actual = Util.get16DigitNumericValue(hashedValue);
+        assertNull(Util.get16DigitNumericValue(hashedValue));
+    }
+
+    @Test
+    public void get16DigitNumericValue_Exception_noNumeric() {
+        String hashedValue = "abcddefghijkdl";
         String actual = Util.get16DigitNumericValue(hashedValue);
         assertNull(Util.get16DigitNumericValue(hashedValue));
     }
@@ -379,6 +402,15 @@ class UtilTest {
     }
 
     @Test
+    public void removeBase64Padding_null() {
+        String base64String = null;
+
+        String result = Util.removeBase64Padding(base64String);
+
+        assertNull(result);
+    }
+
+    @Test
     public void concatenated_string_with_key_and_id() {
         String key = "key";
         String id = "id";
@@ -437,11 +469,24 @@ class UtilTest {
         assertEquals(expectedOutput, actualOutput);
     }
 
+    @Test
+    public void getLastFourDigit_Exception_OutofBoundException() {
+        String input = "he";
+        assertThrows(StringIndexOutOfBoundsException.class, () -> Util.getLastFourDigit(input));
+    }
+
     @ParameterizedTest
     @CsvSource({"ABC", "_.-", "abc123_.-", "ABC123_.-", "abc123_.-"})
     public void validateIEFTRFC7571Base64UrlEncodedStringPattern(String encodedString) {
         boolean result = Util.validateIEFTRFC7571Base64UrlEncodedStringPattern(encodedString);
         assertTrue(result);
+    }
+
+    @Test
+    public void validateIEFTRFC7571Base64UrlEncodedStringPattern_Nullcase() {
+        assertThrows(
+                NullPointerException.class,
+                () -> Util.validateIEFTRFC7571Base64UrlEncodedStringPattern(null));
     }
 
     @Test
