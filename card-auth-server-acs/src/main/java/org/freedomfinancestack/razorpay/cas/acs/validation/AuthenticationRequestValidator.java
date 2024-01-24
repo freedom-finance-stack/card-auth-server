@@ -12,6 +12,7 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationE
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.MessageExtension;
+import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.constants.EMVCOConstant;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
@@ -62,6 +63,10 @@ public class AuthenticationRequestValidator implements ThreeDSValidator<AREQ> {
      */
     @Override
     public void validateRequest(AREQ request) throws ACSValidationException {
+        if (request == null) {
+            throw new ACSValidationException(
+                    ThreeDSecureErrorCode.ACS_TECHNICAL_ERROR, "Transaction data missing");
+        }
         validateAuthenticationRequest(request);
     }
 

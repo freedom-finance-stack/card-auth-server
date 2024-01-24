@@ -68,6 +68,7 @@ public interface RReqMapper {
             target = "acsRenderingType",
             expression =
                     "java((DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) &&"
+                        + " transaction.getTransactionSdkDetail() != null &&"
                         + " transaction.getTransactionSdkDetail().getAcsUiTemplate() != null )? new"
                         + " ACSRenderingType(transaction.getTransactionSdkDetail().getAcsInterface(),"
                         + " transaction.getTransactionSdkDetail().getAcsUiTemplate()) : null)")
@@ -102,13 +103,16 @@ public interface RReqMapper {
     }
 
     default String getWhiteListStatus(Transaction transaction) {
-        if (!Util.isNullorBlank(transaction.getTransactionSdkDetail().getWhitelistingDataEntry())
+        if (transaction.getTransactionSdkDetail() != null
+                && !Util.isNullorBlank(
+                        transaction.getTransactionSdkDetail().getWhitelistingDataEntry())
                 && transaction
                         .getTransactionSdkDetail()
                         .getWhitelistingDataEntry()
                         .equals(InternalConstants.YES)) {
             return InternalConstants.YES;
-        } else if (!Util.isNullorBlank(
+        } else if (transaction.getTransactionSdkDetail() != null
+                && !Util.isNullorBlank(
                         transaction.getTransactionSdkDetail().getWhitelistingDataEntry())
                 && transaction
                         .getTransactionSdkDetail()

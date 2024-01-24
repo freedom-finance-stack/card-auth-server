@@ -19,9 +19,9 @@ import org.mapstruct.Mapping;
  * The {@code AResMapper} interface is responsible for mapping data from the {@link Transaction}
  * entity and the {@link AREQ} request to the Authentication Response {@link ARES} DTO.
  *
+ * @author jaydeepRadadiya
  * @version 1.0.0
  * @since 1.0.0
- * @author jaydeepRadadiya
  */
 @Mapper(
         uses = {HelperMapper.class},
@@ -54,10 +54,12 @@ public interface AResMapper {
     @Mapping(target = "acsDecConInd", expression = "java(getAcsDecConInd(transaction))")
     @Mapping(
             target = "acsOperatorID",
-            expression = "java(getOperatorId(transaction, this.helperMapper.appConfiguration))")
+            expression =
+                    "java(getOperatorId(transaction, this.helperMapper.getAppConfiguration()))")
     @Mapping(
             target = "acsReferenceNumber",
-            expression = "java(this.helperMapper.appConfiguration.getAcs().getReferenceNumber())")
+            expression =
+                    "java(this.helperMapper.getAppConfiguration().getAcs().getReferenceNumber())")
     @Mapping(target = "acsTransID", source = "transaction.id")
     @Mapping(target = "eci", source = "transaction.eci")
     @Mapping(
@@ -65,7 +67,7 @@ public interface AResMapper {
             expression =
                     "java(DeviceChannel.APP.getChannel().equals(transaction.getDeviceChannel()) ?"
                         + " null :"
-                        + " (RouteConstants.getAcsChallengeUrl(this.helperMapper.appConfiguration.getHostname(),transaction.getDeviceChannel())))")
+                        + " (RouteConstants.getAcsChallengeUrl(this.helperMapper.getAppConfiguration().getHostname(),transaction.getDeviceChannel())))")
     @Mapping(
             target = "transStatus",
             expression = "java(transaction.getTransactionStatus().getStatus())")
@@ -135,14 +137,9 @@ public interface AResMapper {
             if (transaction.getTransactionCardDetail() != null
                     && transaction.getTransactionCardDetail().getNetworkCode() != null
                     && Network.AMEX.getValue()
-                            == transaction.getTransactionCardDetail().getNetworkCode()) {
-                if (TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
-                    transaction.setTransactionStatusReason(
-                            TransactionStatusReason.MEDIUM_CONFIDENCE.getCode());
-                    transStatusReason = transaction.getTransactionStatusReason();
-                } else {
-                    transStatusReason = transaction.getTransactionStatusReason();
-                }
+                            == transaction.getTransactionCardDetail().getNetworkCode()
+                    && TransactionStatus.SUCCESS.equals(transaction.getTransactionStatus())) {
+                transStatusReason = TransactionStatusReason.MEDIUM_CONFIDENCE.getCode();
             } else {
                 transStatusReason = transaction.getTransactionStatusReason();
             }
