@@ -1,8 +1,11 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailDto;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardDetail;
 import org.freedomfinancestack.razorpay.cas.dao.model.Cardholder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,6 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class CardDetailsMapperTest {
 
     private final CardDetailsMapper cardDetailsMapper = new CardDetailsMapperImpl();
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @Test
     void testToCardDetailModel() {

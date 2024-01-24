@@ -7,6 +7,7 @@ import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfigur
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.SecureWrapper;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -100,9 +101,8 @@ public class TransactionTestData {
 
     public static TransactionCardDetail createSampleTransactionCardDetail() {
         return TransactionCardDetail.builder()
-                .cardNumber("4111111111111111")
-                .cardholderName("John Doe")
-                .cardExpiry("12/25")
+                .cardNumber(SecureWrapper.parseDecrypted("4111111111111111"))
+                .cardholderName(SecureWrapper.parseDecrypted("John Doe"))
                 .networkCode(Network.VISA.getValue()) // Assuming 1 represents VISA network
                 .build();
     }

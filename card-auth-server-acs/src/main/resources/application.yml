@@ -206,3 +206,8 @@ institution-ui:
       extra-high-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
 
 
+encryption:
+  aes:
+    password: ${ENCRYPTION_AES_PASSWORD:password}
+    salt: ${ENCRYPTION_AES_SALT:salt}
+

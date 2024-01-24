@@ -42,8 +42,6 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
     public String createAuthValue(Transaction transaction)
             throws ACSException, ACSValidationException {
 
-        String pan = transaction.getTransactionCardDetail().getCardNumber();
-
         String strAuthenticationResultCode =
                 getAuthenticationResultCode(transaction.getTransactionStatus());
 
@@ -57,6 +55,7 @@ public class VisaAuthValueGeneratorImpl implements AuthValueGenerator {
         // Extract the PAN sent in the AReq message and replace the last digit of the PAN with
         // the non-zero value (rightmost digit) of the ECI applicable for the current authentication
         // request.
+        String pan = transaction.getTransactionCardDetail().getCardNumber().getDecrypted();
         String nonConvertedPan = pan.substring(0, pan.length() - 1);
         String nonEci = eci.substring(eci.length() - 1);
         String convertedPan = nonConvertedPan + nonEci;

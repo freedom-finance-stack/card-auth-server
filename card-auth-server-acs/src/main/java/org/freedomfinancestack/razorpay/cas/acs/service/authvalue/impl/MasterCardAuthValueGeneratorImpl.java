@@ -39,11 +39,12 @@ public class MasterCardAuthValueGeneratorImpl implements AuthValueGenerator {
 
             dsTransId = dsTransId.replace("-", "");
 
-            String PAN = transaction.getTransactionCardDetail().getCardNumber();
-
             String extendedPAN =
                     Util.padString(
-                            PAN, 20, InternalConstants.SYMBOL_F, InternalConstants.PAD_RIGHT);
+                            transaction.getTransactionCardDetail().getCardNumber().getDecrypted(),
+                            20,
+                            InternalConstants.SYMBOL_F,
+                            InternalConstants.PAD_RIGHT);
 
             String data = extendedPAN + dsTransId;
 

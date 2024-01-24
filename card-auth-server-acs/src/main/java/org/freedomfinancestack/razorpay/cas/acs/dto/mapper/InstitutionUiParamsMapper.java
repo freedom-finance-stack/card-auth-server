@@ -45,7 +45,7 @@ public interface InstitutionUiParamsMapper {
     @Mapping(
             target = "cardNumber",
             expression =
-                    "java(Util.maskedCardNumber(transaction.getTransactionCardDetail().getCardNumber()))")
+                    "java(Util.maskedCardNumber(transaction.getTransactionCardDetail().getCardNumber().getDecrypted()))")
     @Mapping(target = "amount", expression = "java(getAmount(transaction))")
     @Mapping(target = "currency", expression = "java(getCurrency(transaction))")
     @Mapping(
