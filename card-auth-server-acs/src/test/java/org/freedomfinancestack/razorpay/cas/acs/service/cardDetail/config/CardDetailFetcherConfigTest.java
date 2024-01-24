@@ -10,7 +10,7 @@ class CardDetailFetcherConfigTest {
     CardDetailFetcherConfig cardDetailFetcherConfig = new CardDetailFetcherConfig();
 
     @Test
-    public void test_creates_new_instance() { // TODO
+    public void serviceLocatorFactoryBean() {
         FactoryBean factoryBean = cardDetailFetcherConfig.serviceLocatorFactoryBean();
         assertNotNull(factoryBean);
     }
