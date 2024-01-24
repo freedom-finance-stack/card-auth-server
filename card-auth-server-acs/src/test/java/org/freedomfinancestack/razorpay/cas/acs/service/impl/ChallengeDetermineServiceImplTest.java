@@ -1,13 +1,16 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.CardholderAccountInformation;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSReqAuthMethodInd;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.RiskFlag;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +26,11 @@ class ChallengeDetermineServiceImplTest {
     @Mock private AREQ mockAREQ;
 
     @InjectMocks private ChallengeDetermineServiceImpl challengeDetermineService;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @Test
     void determineChallenge_shouldSetChallengeMandatedAndStatusForChallengeRequestedMandate() {

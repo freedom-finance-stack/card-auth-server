@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 import java.text.ParseException;
 import java.util.Optional;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.AREQTestData;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -13,11 +14,13 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.TransactionDat
 import org.freedomfinancestack.razorpay.cas.acs.service.ECommIndicatorService;
 import org.freedomfinancestack.razorpay.cas.acs.utils.Util;
 import org.freedomfinancestack.razorpay.cas.contract.AREQ;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.freedomfinancestack.razorpay.cas.dao.repository.TransactionRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +40,11 @@ public class TransactionServiceImplTest {
     @Mock private ECommIndicatorService eCommIndicatorService;
 
     @InjectMocks private TransactionServiceImpl transactionService;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @Test
     public void testSaveOrUpdate() throws ACSDataAccessException {
@@ -130,12 +138,12 @@ public class TransactionServiceImplTest {
         assertEquals(TransactionStatus.CREATED, result.getTransactionStatus());
 
         // Verify buildTransactionCardDetail method
-        assertEquals(sampleAreq.getAcctNumber(), result.getTransactionCardDetail().getCardNumber());
         assertEquals(
-                sampleAreq.getCardExpiryDate(), result.getTransactionCardDetail().getCardExpiry());
+                sampleAreq.getAcctNumber(),
+                result.getTransactionCardDetail().getCardNumber().getDecrypted());
         assertEquals(
                 sampleAreq.getCardholderName(),
-                result.getTransactionCardDetail().getCardholderName());
+                result.getTransactionCardDetail().getCardholderName().getDecrypted());
 
         // Verify buildTransactionBrowserDetail method
         assertEquals(

@@ -1,13 +1,16 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.CVVGenerationService;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ECI;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +28,11 @@ class VisaAuthValueGeneratorImplTest {
     @Mock private CVVGenerationService cvvGenerationService;
 
     @InjectMocks private VisaAuthValueGeneratorImpl visaAuthValueGenerator;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @ParameterizedTest
     @CsvSource({"SUCCESS", "UNABLE_TO_AUTHENTICATE", "FAILED", "INFORMATIONAL", "REJECTED"})

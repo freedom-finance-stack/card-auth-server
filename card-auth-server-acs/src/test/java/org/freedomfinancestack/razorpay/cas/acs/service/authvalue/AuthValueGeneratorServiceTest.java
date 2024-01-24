@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.authvalue;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
@@ -7,17 +8,20 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSExcepti
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl.MasterCardAuthValueGeneratorImpl;
 import org.freedomfinancestack.razorpay.cas.acs.service.authvalue.impl.VisaAuthValueGeneratorImpl;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class AuthValueGeneratorServiceTest {
 
     @Mock private ApplicationContext applicationContext;
@@ -26,7 +30,7 @@ class AuthValueGeneratorServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        new AesEncryptor(NoOpEncryption.INSTANCE);
     }
 
     @Test

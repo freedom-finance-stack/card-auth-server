@@ -1,5 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.dto.mapper;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.InstitutionUIParams;
@@ -10,8 +11,10 @@ import org.freedomfinancestack.razorpay.cas.contract.Image;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,6 +22,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class CResMapperTest {
 
     private final CResMapper cResMapper = new CResMapperImpl();
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @Test
     void testToFinalCRes() {

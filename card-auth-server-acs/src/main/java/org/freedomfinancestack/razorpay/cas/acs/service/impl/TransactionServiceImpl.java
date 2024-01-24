@@ -21,6 +21,7 @@ import org.freedomfinancestack.razorpay.cas.contract.AREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.SecureWrapper;
 import org.freedomfinancestack.razorpay.cas.dao.enums.ChallengeCancelIndicator;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -197,9 +198,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TransactionCardDetail buildTransactionCardDetail(AREQ areq) {
         return TransactionCardDetail.builder()
-                .cardNumber(areq.getAcctNumber())
-                .cardExpiry(areq.getCardExpiryDate())
-                .cardholderName(areq.getCardholderName())
+                .cardNumber(SecureWrapper.parseDecrypted(areq.getAcctNumber()))
+                .cardholderName(SecureWrapper.parseDecrypted(areq.getCardholderName()))
                 .build();
     }
 

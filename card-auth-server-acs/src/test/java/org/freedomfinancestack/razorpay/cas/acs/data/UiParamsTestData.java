@@ -60,7 +60,10 @@ public class UiParamsTestData {
                 .merchantName(transaction.getTransactionMerchant().getMerchantName())
                 .cardNumber(
                         Util.maskedCardNumber(
-                                transaction.getTransactionCardDetail().getCardNumber()))
+                                transaction
+                                        .getTransactionCardDetail()
+                                        .getCardNumber()
+                                        .getDecrypted()))
                 .otpAttemptLeft("2")
                 .resendAttemptLeft("2")
                 .psImage(null)

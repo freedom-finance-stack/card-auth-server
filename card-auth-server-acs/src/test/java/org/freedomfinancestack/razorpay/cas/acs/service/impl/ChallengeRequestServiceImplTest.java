@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.util.Map;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.data.*;
 import org.freedomfinancestack.razorpay.cas.acs.dto.*;
@@ -25,9 +26,11 @@ import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceInterface;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -64,6 +67,11 @@ public class ChallengeRequestServiceImplTest {
     @Mock private InstitutionUiService institutionUiService;
 
     @InjectMocks private ChallengeRequestServiceImpl challengeRequestService;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @ParameterizedTest
     @CsvSource({"01", "02"})

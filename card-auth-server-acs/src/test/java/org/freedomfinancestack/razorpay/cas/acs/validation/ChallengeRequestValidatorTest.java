@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.validation;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.CREQTestData;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
@@ -12,8 +13,10 @@ import org.freedomfinancestack.razorpay.cas.contract.CREQ;
 import org.freedomfinancestack.razorpay.cas.contract.ThreeDSecureErrorCode;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageType;
 import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +34,11 @@ public class ChallengeRequestValidatorTest {
 
     // TODO: add message Extension
     @InjectMocks private ChallengeRequestValidator challengeRequestValidator;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @Test
     void validateRequest_IncomingCReq_Null() {
@@ -152,6 +160,7 @@ public class ChallengeRequestValidatorTest {
     }
 
     private static Stream<Arguments> provideSuccessData() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
         return Stream.of(
                 Arguments.of(
                         "OOB UiType",
@@ -206,6 +215,7 @@ public class ChallengeRequestValidatorTest {
     }
 
     private static Stream<Arguments> provideFailureData() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
         return Stream.of(
                 Arguments.of(
                         "messageType incorrect",

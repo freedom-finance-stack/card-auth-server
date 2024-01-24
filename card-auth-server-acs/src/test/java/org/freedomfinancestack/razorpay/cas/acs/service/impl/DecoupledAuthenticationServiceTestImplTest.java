@@ -1,12 +1,15 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.DecoupledAuthenticationRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.DecoupledAuthenticationResponse;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ThreeDSException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.POrqService;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul.POrs;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +25,11 @@ public class DecoupledAuthenticationServiceTestImplTest {
     @Mock private POrqService porqService;
 
     @InjectMocks private DecoupledAuthenticationServiceTestImpl decoupledAuthenticationService;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @Test
     void testProcessAuthenticationRequest_Successful() throws ThreeDSException {
