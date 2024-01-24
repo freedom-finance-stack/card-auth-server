@@ -31,13 +31,13 @@ class HexDumpTest {
     }
 
     @Test
-    void byteArrayToHexString_nullcase() {
+    void byteArrayToHexString_inputIsEmpty() {
         byte[] input = {};
         assertNull(HexDump.byteArrayToHexString(input));
     }
 
     @Test
-    void byteArrayToHexString_null() {
+    void byteArrayToHexString_InputIsnull() {
         byte[] input = null;
         assertNull(HexDump.byteArrayToHexString(input));
     }
@@ -58,7 +58,7 @@ class HexDumpTest {
     }
 
     @Test
-    public void getHexDump_Exception() {
+    public void getHexDump_NullPointerException() {
         byte[] byteArray = null;
         String expected = "";
         String result = HexDump.getHexDump(byteArray);
@@ -78,7 +78,7 @@ class HexDumpTest {
     }
 
     @Test
-    public void writeASCII_Exception_indexOutofBound() {
+    public void writeASCII_Exception_indexOutOfBound() {
         byte[] in = {1, 2};
         assertThrows(
                 ArrayIndexOutOfBoundsException.class,
