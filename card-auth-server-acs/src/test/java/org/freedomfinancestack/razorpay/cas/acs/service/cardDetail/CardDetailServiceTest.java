@@ -87,7 +87,7 @@ class CardDetailServiceTest {
     }
 
     @Test
-    public void test_fetches_card_details()
+    public void validateAndUpdateCardDetails()
             throws CardDetailsNotFoundException,
                     CardBlockedException,
                     DataNotFoundException,

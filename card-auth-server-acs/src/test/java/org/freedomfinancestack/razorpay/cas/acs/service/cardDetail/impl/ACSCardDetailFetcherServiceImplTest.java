@@ -3,6 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.cardDetail.impl;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailResponse;
 import org.freedomfinancestack.razorpay.cas.acs.dto.CardDetailsRequest;
+import org.freedomfinancestack.razorpay.cas.acs.exception.InternalErrorCode;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardBlockedException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.CardDetailsNotFoundException;
 import org.freedomfinancestack.razorpay.cas.dao.model.CardDetail;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataAccessException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -18,7 +20,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ACSCardDetailFetcherServiceImplTest {
-    //    new CardDetailsRequest("I1", "4016000000000018");
     @Test
     public void getCardDetails() throws CardDetailsNotFoundException {
         // Arrange
@@ -59,6 +60,25 @@ class ACSCardDetailFetcherServiceImplTest {
     }
 
     @Test
+    public void getCardDetails_exception_DataAccessException() throws CardDetailsNotFoundException {
+        CardDetailRepository cardDetailRepository = mock(CardDetailRepository.class);
+        ACSCardDetailFetcherServiceImpl cardDetailFetcherService =
+                new ACSCardDetailFetcherServiceImpl(cardDetailRepository);
+        when(cardDetailRepository.findByCardNumber(anyString()))
+                .thenThrow(new DataAccessException("Mocked Exception") {});
+        CardDetailsRequest cardDetailsRequest = new CardDetailsRequest("123", "1234567890");
+
+        CardDetailsNotFoundException cardDetailsNotFoundException =
+                assertThrows(
+                        CardDetailsNotFoundException.class,
+                        () -> cardDetailFetcherService.getCardDetails(cardDetailsRequest));
+
+        assertEquals(
+                InternalErrorCode.CARD_USER_FETCH_EXCEPTION,
+                cardDetailsNotFoundException.getErrorCode());
+    }
+
+    @Test
     public void blockCard_success_case() throws CardDetailsNotFoundException {
         CardDetailRepository cardDetailRepositoryMock = Mockito.mock(CardDetailRepository.class);
 
@@ -70,6 +90,26 @@ class ACSCardDetailFetcherServiceImplTest {
         cardDetailFetcherService.blockCard(cardDetailsRequest);
 
         Mockito.verify(cardDetailRepositoryMock).blockCard(anyString(), anyString());
+    }
+
+    @Test
+    public void blockCard_Exception_DataAccessException() {
+        CardDetailRepository cardDetailRepository = mock(CardDetailRepository.class);
+        ACSCardDetailFetcherServiceImpl cardDetailFetcherService =
+                new ACSCardDetailFetcherServiceImpl(cardDetailRepository);
+        doThrow(new DataAccessException("Mocked Exception") {})
+                .when(cardDetailRepository)
+                .blockCard(anyString(), anyString());
+        CardDetailsRequest cardDetailsRequest = new CardDetailsRequest("123", "1234567890");
+
+        CardDetailsNotFoundException cardDetailsNotFoundException =
+                assertThrows(
+                        CardDetailsNotFoundException.class,
+                        () -> cardDetailFetcherService.blockCard(cardDetailsRequest));
+
+        assertEquals(
+                InternalErrorCode.CARD_USER_FETCH_EXCEPTION,
+                cardDetailsNotFoundException.getErrorCode());
     }
 
     @Test

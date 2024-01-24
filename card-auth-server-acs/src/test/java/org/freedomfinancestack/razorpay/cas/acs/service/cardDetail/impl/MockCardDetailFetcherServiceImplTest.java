@@ -123,4 +123,12 @@ class MockCardDetailFetcherServiceImplTest {
                         () -> mockCardDetailFetcherService.validateCardDetails(cardDetailResponse));
         assertEquals(InternalErrorCode.CARD_USER_BLOCKED, exception.getErrorCode());
     }
+
+    @Test
+    public void blockCard() throws CardDetailsNotFoundException {
+        MockCardDetailFetcherServiceImpl mockCardDetailFetcherService =
+                new MockCardDetailFetcherServiceImpl();
+        CardDetailsRequest cardDetailsRequest = new CardDetailsRequest("institutionId", "12");
+        mockCardDetailFetcherService.blockCard(cardDetailsRequest);
+    }
 }
