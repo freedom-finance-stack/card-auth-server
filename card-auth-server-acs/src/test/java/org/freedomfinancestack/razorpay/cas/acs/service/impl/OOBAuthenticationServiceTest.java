@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthConfigDto;
 import org.freedomfinancestack.razorpay.cas.acs.dto.AuthResponse;
@@ -39,7 +39,7 @@ class OOBAuthenticationServiceTest {
 
     @BeforeEach
     void setUp() {
-        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+        new AesEncryptor(NoOpEncryption.INSTANCE);
     }
 
     @Test

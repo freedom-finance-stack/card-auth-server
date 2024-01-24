@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.timer.impl;
 
-import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSDataAccessException;
 import org.freedomfinancestack.razorpay.cas.acs.gateway.threedsrequestor.ThreedsRequestorCResService;
@@ -33,7 +33,7 @@ class TransactionTimeOutServiceTest {
 
     @BeforeEach
     void setUp() {
-        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+        new AesEncryptor(NoOpEncryption.INSTANCE);
     }
 
     @Test

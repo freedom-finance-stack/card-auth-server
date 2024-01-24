@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.authvalue;
 
-import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.exception.acs.ACSException;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
@@ -30,7 +30,7 @@ class AuthValueGeneratorServiceTest {
 
     @BeforeEach
     void setUp() {
-        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+        new AesEncryptor(NoOpEncryption.INSTANCE);
     }
 
     @Test

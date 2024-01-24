@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.DecoupledAuthenticationRequest;
 import org.freedomfinancestack.razorpay.cas.acs.dto.DecoupledAuthenticationResponse;
@@ -28,7 +28,7 @@ public class DecoupledAuthenticationServiceTestImplTest {
 
     @BeforeEach
     void setUp() {
-        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+        new AesEncryptor(NoOpEncryption.INSTANCE);
     }
 
     @Test

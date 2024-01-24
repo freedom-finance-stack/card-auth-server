@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.authvalue;
 
-import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.extensions.hsm.cvv.CVVFacade;
 import org.freedomfinancestack.extensions.hsm.exception.HSMException;
 import org.freedomfinancestack.extensions.hsm.message.HSMMessage;
@@ -27,7 +27,7 @@ public class CVVGenerationServiceTest {
 
     @BeforeEach
     void setUp() {
-        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+        new AesEncryptor(NoOpEncryption.INSTANCE);
     }
 
     @Test

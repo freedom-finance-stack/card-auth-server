@@ -2,6 +2,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
 import java.util.Optional;
 
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.ChallengeFlowDtoTestData;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.data.UiParamsTestData;
@@ -15,10 +16,12 @@ import org.freedomfinancestack.razorpay.cas.acs.exception.acs.UiConfigException;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.InstitutionUiConfiguration;
 import org.freedomfinancestack.razorpay.cas.acs.service.ThymeleafService;
 import org.freedomfinancestack.razorpay.cas.contract.CRES;
+import org.freedomfinancestack.razorpay.cas.dao.encryption.AesEncryptor;
 import org.freedomfinancestack.razorpay.cas.dao.enums.AuthType;
 import org.freedomfinancestack.razorpay.cas.dao.model.InstitutionUiConfig;
 import org.freedomfinancestack.razorpay.cas.dao.model.Transaction;
 import org.freedomfinancestack.razorpay.cas.dao.repository.InstitutionUiConfigRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,6 +44,11 @@ public class InstitutionUiServiceImplTest {
     @Mock private InstitutionUiParamsMapper institutionUiParamsMapper;
 
     @InjectMocks private InstitutionUiServiceImpl institutionUiService;
+
+    @BeforeEach
+    void setUp() {
+        new AesEncryptor(NoOpEncryption.INSTANCE);
+    }
 
     @Test
     void testPopulateUiParams_Failure_Ui_Config_Not_Found()

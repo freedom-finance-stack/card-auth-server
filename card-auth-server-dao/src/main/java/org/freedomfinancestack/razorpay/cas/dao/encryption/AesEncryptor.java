@@ -1,24 +1,24 @@
 package org.freedomfinancestack.razorpay.cas.dao.encryption;
 
-import org.freedomfinancestack.extensions.crypto.EncryptionUtils;
+import org.freedomfinancestack.extensions.crypto.IEncryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AesEncryptor {
-    private static EncryptionUtils encryptionUtil;
+    private static IEncryption encryptionService;
 
     @Autowired
-    public AesEncryptor(@Qualifier("aes256Encryption") EncryptionUtils encryptionUtil) {
-        AesEncryptor.encryptionUtil = encryptionUtil;
+    public AesEncryptor(@Qualifier("aes256Encryption") IEncryption encryptionUtil) {
+        AesEncryptor.encryptionService = encryptionUtil;
     }
 
     static String encrypt(String textToEncrypt) {
-        return encryptionUtil.encrypt(textToEncrypt);
+        return encryptionService.encrypt(textToEncrypt);
     }
 
     static String decrypt(String textToDecrypt) {
-        return encryptionUtil.decrypt(textToDecrypt);
+        return encryptionService.decrypt(textToDecrypt);
     }
 }

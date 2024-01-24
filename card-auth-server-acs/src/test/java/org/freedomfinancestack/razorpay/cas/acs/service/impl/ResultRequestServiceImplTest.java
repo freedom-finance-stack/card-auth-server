@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 
-import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.extensions.stateMachine.InvalidStateTransactionException;
 import org.freedomfinancestack.razorpay.cas.acs.data.RREQTestData;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
@@ -50,7 +50,7 @@ public class ResultRequestServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+        new AesEncryptor(NoOpEncryption.INSTANCE);
     }
 
     @Test

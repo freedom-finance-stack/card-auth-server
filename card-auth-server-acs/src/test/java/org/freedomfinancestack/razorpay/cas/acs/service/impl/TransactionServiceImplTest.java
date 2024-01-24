@@ -3,7 +3,7 @@ package org.freedomfinancestack.razorpay.cas.acs.service.impl;
 import java.text.ParseException;
 import java.util.Optional;
 
-import org.freedomfinancestack.extensions.crypto.NoOpEncryptionUtils;
+import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.AREQTestData;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.dto.GenerateECIRequest;
@@ -43,7 +43,7 @@ public class TransactionServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        new AesEncryptor(NoOpEncryptionUtils.INSTANCE);
+        new AesEncryptor(NoOpEncryption.INSTANCE);
     }
 
     @Test

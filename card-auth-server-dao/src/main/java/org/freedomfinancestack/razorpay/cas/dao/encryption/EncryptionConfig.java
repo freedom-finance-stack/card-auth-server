@@ -1,7 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.dao.encryption;
 
+import org.freedomfinancestack.extensions.crypto.AES256Encryption;
 import org.freedomfinancestack.extensions.crypto.AES256EncryptionConfig;
-import org.freedomfinancestack.extensions.crypto.AES256EncryptionUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class EncryptionConfig {
     private String salt;
 
     @Bean(name = "aes256Encryption")
-    AES256EncryptionUtils aes256Encryption() {
-        return new AES256EncryptionUtils(new AES256EncryptionConfig(password, salt));
+    AES256Encryption aes256Encryption() {
+        return new AES256Encryption(new AES256EncryptionConfig(password, salt));
     }
 }
