@@ -78,19 +78,12 @@ public class InstitutionUiServiceImpl implements InstitutionUiService {
                 "Institution Ui Config not found");
     }
 
-    // TODO: create a mapper for this to cleanly handle things
     private void populateUiParamsHandler(
             ChallengeFlowDto challengeFlowDto,
             InstitutionUiConfig institutionUiConfig,
             AuthConfigDto authConfigDto,
             UIType uiType)
             throws UiConfigException, ImageProcessingException {
-
-        if (uiType == null) {
-            throw new UiConfigException(
-                    InternalErrorCode.UNSUPPORTED_UI_TYPE,
-                    InternalErrorCode.UNSUPPORTED_UI_TYPE.getDefaultErrorMessage());
-        }
 
         InstitutionUIParams validInstitutionUIParams =
                 institutionUiParamsMapper.toInstitutionUiParams(

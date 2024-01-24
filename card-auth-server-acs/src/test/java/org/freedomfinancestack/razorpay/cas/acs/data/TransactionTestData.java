@@ -6,6 +6,7 @@ import org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants;
 import org.freedomfinancestack.razorpay.cas.acs.module.configuration.AppConfiguration;
 import org.freedomfinancestack.razorpay.cas.contract.enums.DeviceChannel;
 import org.freedomfinancestack.razorpay.cas.contract.enums.MessageCategory;
+import org.freedomfinancestack.razorpay.cas.contract.enums.ThreeDSRequestorChallengeInd;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Network;
 import org.freedomfinancestack.razorpay.cas.dao.enums.Phase;
 import org.freedomfinancestack.razorpay.cas.dao.enums.TransactionStatus;
@@ -20,6 +21,15 @@ public class TransactionTestData {
     public static final String SAMPLE_DS_TRANS_ID = "2c0f40ad-ca51-47ab-8da9-348b162673aa";
     public static final String SAMPLE_SDK_TRANS_ID = "2cd28420-fa5c-4d11-8073-735c79b3da93";
 
+    public static final String SAMPLE_THREEDS_REQUESTOR_APP_URL =
+            "http://localhost:8080/threeDSRequestorAppURL";
+
+    public static Transaction createSampleTransaction(String deviceChannel) {
+        return deviceChannel.equals(DeviceChannel.APP.getChannel())
+                ? createSampleAppTransaction()
+                : createSampleBrwTransaction();
+    }
+
     public static Transaction createSampleBrwTransaction() {
         // Create a unique ID for the transaction
         // Create the main Transaction
@@ -32,6 +42,10 @@ public class TransactionTestData {
                 .deviceChannel(DeviceChannel.BRW.getChannel())
                 .phase(Phase.AREQ)
                 .transactionStatus(TransactionStatus.CREATED)
+                .authenticationType(2)
+                .interactionCount(1)
+                .resendCount(1)
+                .challengeMandated(false)
                 .transactionReferenceDetail(createSampleTransactionReferenceDetail())
                 .transactionPurchaseDetail(createSampleTransactionPurchaseDetail())
                 .transactionCardDetail(createSampleTransactionCardDetail())
@@ -54,6 +68,10 @@ public class TransactionTestData {
                 .deviceChannel(DeviceChannel.APP.getChannel())
                 .deviceName(InternalConstants.ANDROID)
                 .phase(Phase.AREQ)
+                .authenticationType(2)
+                .interactionCount(1)
+                .resendCount(1)
+                .challengeMandated(false)
                 .transactionStatus(TransactionStatus.CREATED)
                 .transactionReferenceDetail(createSampleTransactionReferenceDetail())
                 .transactionPurchaseDetail(createSampleTransactionPurchaseDetail())
@@ -97,7 +115,7 @@ public class TransactionTestData {
                 .dsTransactionId(SAMPLE_DS_TRANS_ID)
                 .dsUrl("http://dsUrl.com")
                 .notificationUrl("http://notificationUrl.com")
-                .threeDSRequestorChallengeInd("challengeInd")
+                .threeDSRequestorChallengeInd(ThreeDSRequestorChallengeInd.NO_PREFERENCE.getValue())
                 .build();
     }
 
@@ -116,12 +134,13 @@ public class TransactionTestData {
                 .sdkAppID("sampleAppID")
                 .sdkTransId(SAMPLE_SDK_TRANS_ID)
                 .sdkReferenceNumber("sampleRefNumber")
-                .acsInterface("sampleAcsInterface")
-                .acsUiTemplate("sampleAcsUiTemplate")
+                .threeDSRequestorAppURL(SAMPLE_THREEDS_REQUESTOR_APP_URL)
+                .acsInterface("01")
+                .acsUiTemplate("01")
                 .deviceInfo("sampleDeviceInfo")
                 .acsSecretKey("sampleSecretKey")
                 .encryptionMethod("sampleEncryptionMethod")
-                .acsCounterAtoS("sampleCounterAtoS")
+                .acsCounterAtoS("001")
                 .whitelistingDataEntry("sampleDataEntry")
                 .build();
     }
