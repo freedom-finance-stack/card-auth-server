@@ -17,6 +17,12 @@ class HexUtilTest {
     }
 
     @Test
+    public void byteArrayToHexString_Exception() {
+        byte[] input = null;
+        assertThrows(NullPointerException.class, () -> HexUtil.byteArrayToHexString(input));
+    }
+
+    @Test
     public void hexStringToByteArray() {
         // Arrange
         String hexString = "48656C6C6F20576F726C64";
@@ -27,6 +33,25 @@ class HexUtilTest {
 
         // Assert
         assertArrayEquals(expectedByteArray, actualByteArray);
+    }
+
+    @Test
+    public void hexStringToByteArray_Exception() {
+        assertThrows(NullPointerException.class, () -> HexUtil.hexStringToByteArray(null));
+    }
+
+    @Test
+    public void hexValue_Exception_NullPointer() {
+        byte[] input = null;
+        assertThrows(NullPointerException.class, () -> HexUtil.hexValue(input, 1, 10));
+    }
+
+    @Test
+    public void hexValue_Exception_OutOfBound() {
+        byte[] input = {1, 2, 3, 4, 4};
+        assertThrows(
+                ArrayIndexOutOfBoundsException.class,
+                () -> HexUtil.hexValue(input, -10, input.length));
     }
 
     @Test
