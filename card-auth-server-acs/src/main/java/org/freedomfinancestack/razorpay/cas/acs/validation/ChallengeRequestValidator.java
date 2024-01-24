@@ -34,7 +34,6 @@ import static org.freedomfinancestack.extensions.validation.validator.enriched.i
 import static org.freedomfinancestack.extensions.validation.validator.rule.IsListValid.isListValid;
 import static org.freedomfinancestack.extensions.validation.validator.rule.When.when;
 import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.NO;
-import static org.freedomfinancestack.razorpay.cas.acs.constant.InternalConstants.YES;
 
 /**
  * Validates the challenge request {@link CREQ}.
@@ -272,8 +271,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                         ThreeDSDataElement.CHALLENGE_DATA_ENTRY, transaction)
                                 && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                                 && Arrays.asList("01", "02", "03").contains(acsUiType)
-                                && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                        || !YES.equals(incomingCreq.getChallengeNoEntry()))
+                                && Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
                                 && Util.isNullorBlank(incomingCreq.getChallengeCancel())
                                 && (incomingCreq.getResendChallenge() == null
                                         || NO.equals(incomingCreq.getResendChallenge()));
@@ -315,8 +313,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                 && acsInterface.equals(DeviceInterface.NATIVE.getValue())
                                 && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                                 && Util.isNullorBlank(incomingCreq.getChallengeCancel())
-                                && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                        || !YES.equals(incomingCreq.getChallengeNoEntry()));
+                                && Util.isNullorBlank(incomingCreq.getChallengeNoEntry());
 
                 Validation.validate(
                         ThreeDSDataElement.RESEND_CHALLENGE.getFieldName(),
@@ -330,8 +327,7 @@ public class ChallengeRequestValidator implements ThreeDSValidator<CREQ> {
                                 && Util.isNullorBlank(incomingCreq.getChallengeDataEntry())
                                 && Util.isNullorBlank(incomingCreq.getChallengeHTMLDataEntry())
                                 && Util.isNullorBlank(incomingCreq.getResendChallenge())
-                                && (Util.isNullorBlank(incomingCreq.getChallengeNoEntry())
-                                        || !YES.equals(incomingCreq.getChallengeNoEntry()));
+                                && Util.isNullorBlank(incomingCreq.getChallengeNoEntry());
 
                 Validation.validate(
                         ThreeDSDataElement.CHALLENGE_CANCEL.getFieldName(),

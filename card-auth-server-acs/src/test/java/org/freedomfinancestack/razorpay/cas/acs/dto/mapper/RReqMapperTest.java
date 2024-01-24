@@ -32,10 +32,10 @@ class RReqMapperTest {
                 transaction.getTransactionReferenceDetail().getThreedsServerTransactionId(),
                 result.getThreeDSServerTransID());
         assertEquals(transaction.getAuthValue(), result.getAuthenticationValue());
-        assertEquals("", result.getAuthenticationType());
+        assertEquals("02", result.getAuthenticationType());
         assertEquals(transaction.getTransactionStatusReason(), result.getTransStatusReason());
         assertEquals(transaction.getTransactionStatus().getStatus(), result.getTransStatus());
-        assertEquals("00", result.getInteractionCounter());
+        assertEquals("01", result.getInteractionCounter());
         assertEquals("02", result.getAuthenticationMethod());
         assertEquals(transaction.getChallengeCancelInd(), result.getChallengeCancel());
         assertEquals(
