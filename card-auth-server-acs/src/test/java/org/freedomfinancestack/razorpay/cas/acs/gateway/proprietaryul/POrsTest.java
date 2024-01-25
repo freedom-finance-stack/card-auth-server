@@ -1,6 +1,6 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,5 +16,4 @@ public class POrsTest {
         assertEquals("messageVersion", pOrs.getMessageVersion());
         assertEquals("p_messageVersion", pOrs.getP_messageVersion());
     }
-
 }

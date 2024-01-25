@@ -35,10 +35,13 @@ class PlrqTest {
         assertEquals("incorrectFormData", plrq.getP_formValues_BRW().getIncorrectFormData());
         assertEquals("cancelFormData", plrq.getP_formValues_BRW().getCancelFormData());
         assertEquals("correctChallengeData", plrq.getP_formValues_APP().getCorrectChallengeData());
-        assertEquals("incorrectChallengeData", plrq.getP_formValues_APP().getIncorrectChallengeData());
-        assertEquals("correctChallengeData2", plrq.getP_formValues_APP().getCorrectChallengeData2());
-        assertEquals("incorrectChallengeData2", plrq.getP_formValues_APP().getIncorrectChallengeData2());
-        assertEquals("correctInfoContinueHTML", plrq.getP_formValues_APP().getCorrectInfoContinueHTML());
+        assertEquals(
+                "incorrectChallengeData", plrq.getP_formValues_APP().getIncorrectChallengeData());
+        assertEquals(
+                "correctChallengeData2", plrq.getP_formValues_APP().getCorrectChallengeData2());
+        assertEquals(
+                "incorrectChallengeData2", plrq.getP_formValues_APP().getIncorrectChallengeData2());
+        assertEquals(
+                "correctInfoContinueHTML", plrq.getP_formValues_APP().getCorrectInfoContinueHTML());
     }
-
 }

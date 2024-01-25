@@ -1,5 +1,7 @@
 package org.freedomfinancestack.razorpay.cas.acs.gateway.proprietaryul;
 
+import java.util.Map;
+
 import org.freedomfinancestack.extensions.crypto.NoOpEncryption;
 import org.freedomfinancestack.razorpay.cas.acs.data.TransactionTestData;
 import org.freedomfinancestack.razorpay.cas.acs.exception.threeds.ACSValidationException;
@@ -14,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
 import static org.freedomfinancestack.razorpay.cas.acs.data.Gateway.ServiceConfigTestData.createServiceConfig;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -24,8 +24,8 @@ class POrqServiceTest {
     @Mock RestTemplate restTemplate;
 
     @Test
-    void sendPOrq_Happy_path(){
-        //todo (send request() )
+    void sendPOrq_Happy_path() {
+        // todo (send request() )
     }
 
     @Test
@@ -49,10 +49,10 @@ class POrqServiceTest {
         POrqService pOrqService = new POrqService(restTemplate, gatewayConfig);
         GatewayConfig.ServiceConfig actualServiceConfig = pOrqService.getServiceConfig();
         assertNotNull(actualServiceConfig);
-        assertEquals(gatewayConfig.getServices().get(ClientType.UL_TEST_PORTAL).getUrl(),
+        assertEquals(
+                gatewayConfig.getServices().get(ClientType.UL_TEST_PORTAL).getUrl(),
                 actualServiceConfig.getUrl());
     }
-
 
     @Test
     void getRestTemplate() {
@@ -81,7 +81,6 @@ class POrqServiceTest {
                         .withHttpStatus(HttpStatus.GATEWAY_TIMEOUT)
                         .withHttpStatus(HttpStatus.SERVICE_UNAVAILABLE)
                         .build();
-
 
         RetryTemplate actualRetryTemplateBuilder = pOrqService.getRetryTemplate();
         assertNotNull(actualRetryTemplateBuilder);
