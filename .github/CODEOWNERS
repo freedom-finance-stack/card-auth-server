@@ -1,5 +1,5 @@
-These owners will be the default owners for everything in
+# These owners will be the default owners for everything in
 # the repo. Unless a later match takes precedence,
 # @ankitchoudhary2209 and @jaydeepRadadiya will be requested for
 # review when someone opens a pull request.
-*       @ankitchoudhary2209 @jaydeepRadadiya
+      @ankitchoudhary2209 @jaydeepRadadiya
