@@ -67,20 +67,11 @@ class DsGatewayServiceImplTest {
         serviceConfig1.setMock(false);
         when(visaDsHttpsGatewayService.getServiceConfig()).thenReturn(serviceConfig1);
 
-        String RREQTestData =
-                "{\n"
-                        + "        \"threeDSServerTransID\":"
-                        + " \"b3c9516d-47ab-41b5-8e6e-401d3cae691a\",\n"
-                        + "        \"acsTransID\": \"d8ac9cd2-e72f-4918-93d0-24a684826394\",\n"
-                        + "        \"dsTransID\": \"f52253dd-3a06-4fbc-afe7-688e426dd26c\",\n"
-                        + "        \"messageType\": \"RRes\",\n"
-                        + "        \"messageVersion\": \"2.2.0\",\n"
-                        + "        \"resultsStatus\": \"01\"\n"
-                        + "      }";
+        String rresTestData = validRRes;
         RRES expectedRRES = getValidRRes();
 
         when(visaDsHttpsGatewayService.sendRequestWithRetry(any(), any(), any(), any()))
-                .thenReturn(RREQTestData);
+                .thenReturn(rresTestData);
         RRES actualRRES = dsGatewayService.sendRReq(network, rreq);
         assertEquals(expectedRRES.getResultsStatus(), actualRRES.getResultsStatus());
     }
