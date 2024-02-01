@@ -142,7 +142,7 @@ logging:
     org.hibernate.SQL: DEBUG
     org.springframework: INFO
     org.freedomfinancestack: INFO
-  #    org.hibernate.type.descriptor.sql: TRACE
+#    org.hibernate.type.descriptor.sql: TRACE
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
