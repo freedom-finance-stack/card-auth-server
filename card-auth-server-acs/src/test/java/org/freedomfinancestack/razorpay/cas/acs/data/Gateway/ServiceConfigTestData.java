@@ -7,17 +7,17 @@ public class ServiceConfigTestData {
 
         GatewayConfig.ServiceConfig serviceConfig = new GatewayConfig.ServiceConfig();
         serviceConfig.setMock(false);
-        serviceConfig.setUrl("dummy");
+        serviceConfig.setUrl("SampleUrl");
         serviceConfig.setUseSSL(false);
         serviceConfig.setConnectTimeout(1);
         serviceConfig.setResponseTimeout(1);
         GatewayConfig.TrustStoreConfig trustStoreConfig = new GatewayConfig.TrustStoreConfig();
-        trustStoreConfig.setPassword("dummy");
-        trustStoreConfig.setPath("dummy");
+        trustStoreConfig.setPassword("SamplePassword");
+        trustStoreConfig.setPath("Sample Path");
         serviceConfig.setTrustStore(trustStoreConfig);
         GatewayConfig.KeyStoreConfig keyStoreConfig = new GatewayConfig.KeyStoreConfig();
-        keyStoreConfig.setPath("duumy");
-        keyStoreConfig.setPassword("dummy");
+        keyStoreConfig.setPath("Sample Path");
+        keyStoreConfig.setPassword("Sample Password");
         serviceConfig.setKeyStore(keyStoreConfig);
         GatewayConfig.RetryConfig retryConfig = new GatewayConfig.RetryConfig();
         retryConfig.setBackOffPeriod(1L);
