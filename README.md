@@ -69,7 +69,7 @@ We need to install below libraries
        ```
 
 [//]: # (//todo add link to swagger page )
-  * Check out the [guide]() for a more comprehensive setup, which includes detailed description about the API endpoints.
+  * Check out the [guide]() for a more comprehensive setup, which includes detailed description about the API endpoints exposed.
 
 
 
