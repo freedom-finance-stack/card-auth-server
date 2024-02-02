@@ -11,6 +11,7 @@ Card Auth Server ACS
 `POST` `/v2/transaction/challenge/browser`
 #### Generated server url: http://127.0.0.1:8080/v2/transaction/challenge/browser
 
+[//]: # (//todo add description for the endpoint)
 <details >
   <summary >Request</summary>
     
