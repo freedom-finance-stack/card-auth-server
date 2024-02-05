@@ -87,11 +87,9 @@ For information related to documents of this project, refer to [Docs Readme](doc
 
 ## How to contribute to the project
 For contribution guidelines, see [CONTRIBUTING](CONTRIBUTING.md).
-<<<<<<< Updated upstream
-=======
+
 
 ## Our Pledge
 We take participation in our community as a harassment-free experience for everyone and we pledge to act in ways to contribute to an open, welcoming, diverse and inclusive community.
 
 If you have experienced or been made aware of unacceptable behaviour, please remember that you can report this. Read our [Code of Conduct](CODE_OF_CONDUCT).
->>>>>>> Stashed changes

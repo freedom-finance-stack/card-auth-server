@@ -69,25 +69,16 @@ Following these tips prior to raising a pull request will speed up the review cy
 
 Once your changes and tests are ready to submit for review:
 1. Test your changes
-<<<<<<< Updated upstream
-2. Sign the Contributor License Agreement
-3. Rebase your changes
-4. Submit a pull request
-***
-
-#### Formatting
-Sevure Auth Server code is automatically formatted with [spotless](https://github.com/diffplug/spotless).
-=======
 2. Take the latest pull from master
 3. Create new branch and checkout to the new branch
 4. Commit your changes on the new branch
 5. Submit a pull request
 6. > IMP: Before pushing your changes please check [formatting plugin](#formatting) otherwise build can fail.
 
-### Formatting
-Card Auth Server code is automatically formatted with [spotless](https://github.com/diffplug/spotless).
->>>>>>> Stashed changes
+***
 
+#### Formatting
+Card Auth Server code is automatically formatted with [spotless](https://github.com/diffplug/spotless).
 Alternative manual steps for IntelliJ.
 
 1. Install Google-Java-Format Plugin
