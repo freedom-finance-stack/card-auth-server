@@ -68,11 +68,7 @@ We need to install below libraries
        driverClassName: com.mysql.cj.jdbc.Driver 
        ```
 
-[//]: # (//todo add link to swagger page )
-  * Check out the [guide]() for a more comprehensive setup, which includes detailed description about the API endpoints exposed.
-
-
-
+  * Check out the [guide](Endpoint%20Description.md) for a more comprehensive setup, which includes detailed description about the API endpoints exposed.
 
 ---
 ####  The simplest way to set up Card Auth Server is to create a managed deployment with Dockerfile provided and deploy on VM or k8s.
@@ -80,10 +76,22 @@ We need to install below libraries
 Docker Compose dev is located [here](https://github.com/razorpay/card-auth-server/blob/master/scripts/deployment/dockerconf/card-auth-server-acs/docker-compose-dev.yaml).
 
 
-#### [Find out more on deployment](docs/README_DEPLOY.md)
+## Deployment and Configuration
+1. To learn more about the bank deployment and configuration read the comprehensive guide here
+[Find out more on deployment and configuration](docs/README_DEPLOY.md).
+
+2. Use [DDL](card-auth-server-dao/src/main/resources/sql/DDL.sql) SQL Script for data dump while starting ACS server on production.
 
 ## Documentation
 For information related to documents of this project, refer to [Docs Readme](docs/README.md)
 
 ## How to contribute to the project
 For contribution guidelines, see [CONTRIBUTING](CONTRIBUTING.md).
+<<<<<<< Updated upstream
+=======
+
+## Our Pledge
+We take participation in our community as a harassment-free experience for everyone and we pledge to act in ways to contribute to an open, welcoming, diverse and inclusive community.
+
+If you have experienced or been made aware of unacceptable behaviour, please remember that you can report this. Read our [Code of Conduct](CODE_OF_CONDUCT).
+>>>>>>> Stashed changes

@@ -130,6 +130,139 @@ acs:
     - `mastercard`: The operator ID for Mastercard card network.
     - `amex`: The operator ID for American Express card network.
 
+### Test Configuration
+
+The `test` section allows you to configure test-related settings, including encryption and decryption parameters.
+
+Example Configuration
+```yaml
+test:
+  enable-decryption-encryption: true
+  enable : false
+  attemptedRange:
+    start: 4016000000000010
+    end: 4016000000000020
+```
+
+* `test.enable-decryption-encryption`: A boolean flag indicating whether encryption and decryption are enabled during testing.
+* `test.enable`: A boolean flag indicating whether testing is enabled, it can be set to false in case of local testing.
+
+#### Notification Configuration
+The notification section configures notification settings, including SMS and email channels.
+
+Example Configuration
+```yaml
+notification:
+  sms:
+    enabledChannel: "dummy-sms-server"
+  email:
+    enabledChannel: "dummy-email-server"
+    simpleSMTP:
+      host: your-smtp-server.com
+      port: 587
+```
+* `notification.sms.enabledChannel`: Defines the SMS channel to be used for notifications
+* `notification.email.enabledChannel`: Specifies the email channel for notifications, utilizing a dummy email server.
+* `notification.email.simpleSMTP`: Configures the Simple Mail Transfer Protocol (SMTP) settings, including the host and port for sending emails.
+
+> You need to specify the Qualified bean for Channel providing SMS and Email notification for OTP which can be found in [card-auth-server-extensions](../card-auth-server-dao).  
+
+### OTP (One-Time Password) Configuration
+The otp section configures settings related to one-time passwords for authentication.
+
+Example Configuration
+```yaml
+otp:
+  sms:
+    templateName: acs.sms.otp.sample
+  email:
+    from: acs@bank.com
+    templateName: acs.email.otp.sample
+    subjectText: "Verification code"
+```
+* `otp.sms.templateName`: The template name for SMS one-time passwords.
+* `otp.email.from`: The email address from which one-time password emails will be sent.
+* `otp.email.templateName`: The template name for email one-time passwords.
+* `otp.email.subjectText`: The subject text for email one-time passwords.
+
+### Gateway Configuration
+The gateway section encompasses configurations for various gateway services utilized within the ACS, such as VISA, MASTERCARD, UL_TEST_PORTAL, and THREEDS_REQUESTOR_SERVER.
+
+Example Configuration
+```yaml
+gateway:
+  services:
+    VISA_DS:
+      mock: true
+      url: https://sample-ds.com
+      useSSL: false
+      connectTimeout: 5000
+      responseTimeout: 5000
+      keyStore:
+        path: ${VISA_DS_KEYSTORE_PATH:}
+        password: ${VISA_DS_KEYSTORE_PASSWORD:}
+      trustStore:
+        path: ${VISA_DS_TRUSTSTORE_PATH:}
+        password: ${VISA_DS_TRUSTSTORE_PASSWORD:changeit}
+      retryable:
+        maxAttempts: 2
+        backOffPeriod: 1000   #ms
+```
+
+
+* `mock`:
+  * **Description**: Specifies whether the service should operate in mock mode.
+  * **Value**: `true` if mock mode is enabled; `false` otherwise.
+  * **Purpose**: When set to `true`, the service operates in a simulated/mock mode, useful for testing and development scenarios.
+
+
+* `url`:
+  * **Description**: The URL of the service.
+  * **Value**: A valid URL, e.g., https://sample-ds.com.
+  * **Purpose**: Defines the endpoint URL where the ACS communicates with the service for processing card transactions.
+
+
+* `useSSL`:
+  * **Description**: Specifies whether SSL (Secure Socket Layer) should be used for communication.
+  * **Value**: true if SSL is enabled; false otherwise.
+  * **Purpose**: Determines whether the communication with the service is encrypted using SSL. 
+
+
+* `connectTimeout`:
+  * **Description**: The maximum time (in milliseconds) the ACS will wait for a connection to be established with the service.
+  * **Value**: An integer representing the timeout duration, e.g., 5000 for 5 seconds.
+  * **Purpose**: Sets the timeout for establishing a connection with the service.
+
+
+* `responseTimeout:`
+  * **Description**: The maximum time (in milliseconds) the ACS will wait for a response from the service.
+  * **Value**: An integer representing the timeout duration, e.g., 5000 for 5 seconds.
+  * **Purpose**: Sets the timeout for receiving a response from the service.
+
+
+* `keyStore`:
+  * **Description**: Configures the keystore properties for secure communication.
+  * **Properties**:
+    * **path**: The path to the keystore file. It can be specified using environment variables, e.g., ${<SERVICE_NAME>_KEYSTORE_PATH:}.
+    * **password**: The password for accessing the keystore. It can be specified using environment variables, e.g., ${<SERVICE_NAME>_KEYSTORE_PASSWORD:}.
+  * **Purpose**: Ensures secure communication by providing the path and password for the keystore.
+
+
+* `trustStore`:
+  * **Description**: Configures the truststore properties for secure communication.
+  * **Properties**:
+    * **path**: The path to the truststore file. It can be specified using environment variables, e.g., ${<SERVICE_NAME>_TRUSTSTORE_PATH:}.
+    * **password**: The password for accessing the truststore. It can be specified using environment variables, e.g., ${<SERVICE_NAME>_TRUSTSTORE_PASSWORD:<PASSWORD>}.
+  * **Purpose**: Ensures secure communication by providing the path and password for the truststore.
+  
+
+* `retryable`:
+  * **Description**: Configures retry settings in case of failures during communication.
+  * **Properties**:
+    * **maxAttempts**: The maximum number of retry attempts.
+    * **backOffPeriod**: The time (in milliseconds) to wait between consecutive retry attempts.
+  * **Purpose**: Defines how the ACS should handle communication failures with the VISA_DS service, including the maximum number of retry attempts and the wait time between retries.
+
 ### Micrometer Metrics Configuration for Monitoring
 
 Micrometer is a powerful library for application monitoring and metrics collection. It provides a flexible way to export
@@ -141,7 +274,6 @@ metrics:
   export:
     graphite:
       enabled: true
-
 ```
 
 The above configuration snippet allows you to export metrics to a Graphite monitoring system. Graphite is a popular
