@@ -31,7 +31,7 @@ public class DsGatewayServiceImpl implements DsGatewayService {
         HttpsGatewayService httpsGatewayService = getHttpsGatewayService(network);
         if (httpsGatewayService
                 .getServiceConfig()
-                .isMock()) { // todo dynemic injections on mock bean
+                .isMock()) { // todo dynamic injections on mock bean
             return dsGatewayServiceMock.sendRReq(network, rReq);
         }
         Map<String, String> headerMap = new HashMap<>();

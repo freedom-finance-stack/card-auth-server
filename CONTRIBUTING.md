@@ -29,6 +29,12 @@ Following these tips prior to raising a pull request will speed up the review cy
 * Lines that are not part of your change should not be edited (e.g. don't format unchanged lines, don't reorder existing imports)
 * Add the appropriate license headers to any new files
 
+### Contributing to the Card Auth Server codebase
+- Select the project to contribute.
+- Fork the repo into your GitHub account.
+- Clone th repo which you forked.
+- Make the changes.
+- Push and create a PR for the issue/feature.
 ### Submitting your changes
 
 Once your changes and tests are ready to submit for review:
@@ -37,12 +43,7 @@ Once your changes and tests are ready to submit for review:
 2. Sign the Contributor License Agreement
 3. Rebase your changes
 4. Submit a pull request
-
-### Contributing to the Card Auth Server codebase
-
-#### Prerequisites
-
-#### Importing the project into IntelliJ IDEA
+***
 
 #### Formatting
 Sevure Auth Server code is automatically formatted with [spotless](https://github.com/diffplug/spotless).
