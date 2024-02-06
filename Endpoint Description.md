@@ -1,4 +1,4 @@
-# Card Auth Server ACS (1.0.0)
+# Card Auth Server ACS 
 
 Freedom Finance Stack: [Contact Us](contact@freedomfinancestack.org) | 
 License: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)

@@ -7,29 +7,31 @@ and feature requests or writing code which can be incorporated into Card Auth Se
 If you are excited and want to make contributions, sign up for the 
 [Freedom Finance Stack Contributor Program](https://razorpay.com/).
 
+
 ### Fork and clone the repository
-You will need to fork the main Card Auth Server code repository and clone it to your local machine.
+* You will need to fork the main Card Auth Server code repository and clone it to your local machine.
 See [github help page](https://docs.github.com/en/get-started/quickstart/fork-a-repo) for help.
+  * Follow the [steps](README.md#dev-setup) for local setup.
 
 ### Creating an Issue
 
 Before **creating** an Issue for `features`/`bugs`/`improvements` please follow these steps:
 
-1. search existing Issues before creating a new issue (has someone raised this already)
-1. all Issues are automatically given the label status: waiting for triage and are automatically locked so no comments can be made
-1. if you wish to work on the Issue once it has been triaged and label changed to status: ready for dev, please include this in your Issue description
+1. Search existing Issues before creating a new issue (has someone raised this already).
+2. All Issues are automatically given the label status: waiting for triage and are automatically locked so no comments can be made
+3. If you wish to work on the Issue once it has been triaged and label changed to status: ready for dev, please include this in your Issue description.
 
 ### Working on an Issue (get it assigned to you)
 Before working on an existing Issue please follow these steps:
-1. only ask to be assigned 1 **open** issue at a time
-2. comment asking for the issue to be assigned to you (do not tag maintainers on GitHub as all maintainers receive your comment notifications)
-3. after the Issue is assigned to you, you can start working on it
-4. **only** start working on this Issue (and open a Pull Request) when it has been assigned to you - this will prevent confusion, multiple people working on the same issue and work not being used
-5. reference the Issue in your Pull Request (for example `closes #123`)
-6. please do **not** force push to your PR branch, this makes it very difficult to re-review - commits will be squashed when merged
+1. Only ask to be assigned 1 **open** issue at a time
+2. Comment asking for the issue to be assigned to you (reviewers/maintainers are auto assigned and we recommend not to tag do not tag all maintainers on GitHub as all maintainers receive your comment notifications)
+3. After the Issue is assigned to you, you can start working on it
+4. **Only** start working on this Issue (and open a Pull Request) when it has been assigned to you - this will prevent confusion, multiple people working on the same issue and work not being used
+5. Reference the Issue in your Pull Request (for example `closes #<ISSUE NUMBER> `)
+6. Please do **not** force push to your PR branch, this makes it very difficult to re-review - commits will be squashed when merged
 
 ## Submitting Bug/Feature Reports
-When initiating a new issue in the ACS issue tracker, you'll encounter a template designed to streamline the reporting process. If you suspect you've identified a bug, please complete the form following the template to the best of your ability. Don't worry if you can't address every detail; provide information where possible.
+When initiating a new issue in the card-auth-server issue tracker, you'll encounter a template designed to streamline the reporting process. If you suspect you've identified a bug, please complete the form following the template to the best of your ability. Don't worry if you can't address every detail; provide information where possible.
 
 For a comprehensive evaluation of the report, we primarily need a description of the observed behavior and a straightforward test case that allows us to replicate the problem independently. The ability to recreate the issue is crucial for us to effectively diagnose and address it. Your cooperation in providing these details greatly assists our debugging efforts.
 
