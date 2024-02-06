@@ -1,0 +1,79 @@
+name: Bug report
+description: Submit a bug report to help us improve
+title: "[BUG] "
+labels: ["bug", "awaiting-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We Thank you for taking the time to report this potential issue. Before submitting your bug report, kindly review the following checklist to ensure the most efficient handling:
+        1. Make sure you're on the latest release of the app.
+        2. Explore both open and closed issues to see if your bug has been previously reported: https://github.com/freedom-finance-stack/card-auth-server/issues .
+        3. Please try to fill this template completely as much as possible. A well-documented report speeds up our troubleshooting process..
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug Description
+      description: Provide a clear and concise description of the encountered bug.
+      placeholder: Detail the circumstances when the bug occurs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: Describe the anticipated outcome, and include request-response bodies if relevant.
+      placeholder: It should ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: Detail what actually comes out, accompanied by request-response bodies or screenshots if pertinent.
+      placeholder: It actually ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps To Reproduce
+      description: Can you guide us through the steps to reproduce this bug? Please provide a detailed, step-by-step description of the actions you took to encounter this issue.
+      value: |
+        Present a step-by-step guide to reproduce the bug, supplying code or configuration if applicable.
+        1. Navigate to '...'
+        2.Click on '....'
+        3.Scroll down to '....'
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context For The Bug
+      description: How has this issue affected you? What are you trying to accomplish?
+      placeholder: Providing context (e.g. request-response bodies, stack trace or log data) helps us come up with a solution that is most useful in the real world.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: no-duplicate-issues
+    attributes:
+      label: I invested some time in ensuring this bug hasn't been raised before.
+      options:
+        - label: I checked and didn't find a similar issue
+          required: true
+
+  - type: dropdown
+    id: willing-to-submit-pr
+    attributes:
+      label: Indicate your willingness to submit a Pull Request (PR) or collaborate with others on a PR.
+      description: Although not mandatory, we're delighted to assist you in the contribution process.
+      options:
+        - Yes, I am willing to submit a PR!
+        - No, but I'm happy to collaborate on a PR with someone else
+        - No, I'm unable to allocate time for this presently
