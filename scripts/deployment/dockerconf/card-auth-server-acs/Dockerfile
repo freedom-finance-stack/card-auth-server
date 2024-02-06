@@ -20,7 +20,7 @@ RUN  apk update \
   && update-ca-certificates \
   && apk add --update coreutils
 
-#Install Java 11 JDK
+#Install Java 17 JDK
 RUN wget -O /etc/apk/keys/amazoncorretto.rsa.pub  https://apk.corretto.aws/amazoncorretto.rsa.pub \
     && echo "https://apk.corretto.aws/" >> /etc/apk/repositories \
     && apk update

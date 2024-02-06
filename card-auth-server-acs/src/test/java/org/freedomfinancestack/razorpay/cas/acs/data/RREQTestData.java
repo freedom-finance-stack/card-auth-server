@@ -24,7 +24,7 @@ public class RREQTestData {
                 + "        \"eci\": \"07\",\n"
                 + "        \"transStatusReason\": \"07\"\n"
                 + "      }";
-    static String validRRes =
+    public static String validRRes =
             "{\n"
                 + "        \"threeDSServerTransID\": \"b3c9516d-47ab-41b5-8e6e-401d3cae691a\",\n"
                 + "        \"acsTransID\": \"d8ac9cd2-e72f-4918-93d0-24a684826394\",\n"
