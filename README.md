@@ -86,7 +86,7 @@ Docker Compose dev is located [here](https://github.com/razorpay/card-auth-serve
 For information related to documents of this project, refer to [Docs Readme](docs/README.md)
 
 ## How to contribute to the project
-For contribution guidelines, see [CONTRIBUTING](CONTRIBUTING.md).
+For contribution guidelines, see [CONTRIBUTING](docs/CONTRIBUTING.md).
 
 
 ## Our Pledge

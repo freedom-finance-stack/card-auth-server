@@ -143,6 +143,8 @@ test:
 * `test.enable-decryption-encryption`: 
   * A boolean flag indicating to avoid encryption and decryption for challenge flow to run service in lower env.
   * Make sure it is always set to true in production.
+
+
 * `test.enable`: 
   * A boolean flag indicating whether testing is enabled, it can be set to false in case of local testing.
   * Always keep this flag set to false in prod.
@@ -157,7 +159,7 @@ notification:
     enabledChannel: "dummy-sms-server"
   email:
     enabledChannel: "dummy-email-server"
-    <sampleSMTP>:
+    simpleSMTP:
       host: your-smtp-server.com
       port: 587
 ```
@@ -165,13 +167,16 @@ notification:
 
   * Defines the SMS channel to be used for sending notification such as OTP, It has to be one a value mentioned in [SMS channel type](https://github.com/freedom-finance-stack/card-auth-server-extensions/blob/master/src/main/java/org/freedomfinancestack/extensions/notification/enums/SMSChannelType.java) in extension repo. 
   * Currently, we only have mock implementation. Make sure to implement [SMS notification service interface](https://github.com/freedom-finance-stack/card-auth-server-extensions/blob/master/src/main/java/org/freedomfinancestack/extensions/notification/SMSNotificationService.java) and configure it in [SMS factory](https://github.com/freedom-finance-stack/card-auth-server-extensions/blob/master/src/main/java/org/freedomfinancestack/extensions/notification/factory/SMSNotificationFactory.java) method
+
+
 * `notification.email.enabledChannel`: 
   * Defines the Email channel to be used for sending notification such as OTP, It has to be one a value mentioned in [email channel type](https://github.com/freedom-finance-stack/card-auth-server-extensions/blob/master/src/main/java/org/freedomfinancestack/extensions/notification/enums/EmailChannelType.java) in extension repo. 
   * Currently, we only have mock implementation. Make sure to implement [email notification service interface](https://github.com/freedom-finance-stack/card-auth-server-extensions/blob/master/src/main/java/org/freedomfinancestack/extensions/notification/EmailNotificationService.java) and configure it in [Email factory](https://github.com/freedom-finance-stack/card-auth-server-extensions/blob/master/src/main/java/org/freedomfinancestack/extensions/notification/factory/EmailNotificationFactory.java) method
-* `notification.email.<sampleSMTP>`: 
-    * Configures the Simple Mail Transfer Protocol (SMTP) settings, including the host and port for sending emails.
-    * Replace <SampleSMTP> with you SMTP server and put the host and port number accordingly.   
 
+
+* `notification.email.simpleSMTP`: 
+    *  this was added as placeholder to explain that we can add more configuration here to support our active notification channels. Right we only have mock implementation, you need to implement as per your use case
+  
 > You need to specify the Qualified bean for Channel providing SMS and Email notification for OTP which can be found in [card-auth-server-extensions](https://github.com/freedom-finance-stack/card-auth-server-extensions/blob/master/src/main/java/org/freedomfinancestack/extensions/notification/NotificationConfiguration.java).  
 
 ### OTP (One-Time Password) Configuration
@@ -193,7 +198,7 @@ otp:
 * `otp.email.subjectText`: The subject text for email one-time passwords.
 
 ### Gateway Configuration
-The gateway section encompasses configurations for various gateway services utilized within the ACS, such as VISA, MASTERCARD and THREEDS_REQUESTOR_SERVER.
+The gateway section encompasses configurations for various gateway services utilized within the ACS, such as DS Connection configuration and Three DS requester server connection configuration.
 
 Example Configuration
 ```yaml
@@ -303,6 +308,18 @@ parameters. Currently, two types of HSM gateways are supported: "LunaHSM" and "N
 
 #### Configuration Options
 
+#### Example Usage
+
+```yaml
+hsm:
+  enabled_gateway: "NoOpHSM"
+  gateway:
+    luna:
+      ip: "127.0.0.1"
+      port: 8080
+      timeout: 1
+```
+
 `enabled_gateway` (string)
 
 - Description: Specifies the type of HSM gateway to enable.
@@ -323,17 +340,6 @@ For "LunaHSM" enabled_gateway:
     - port (integer): The port number to connect to the Luna HSM.
     - timeout (integer): The timeout (in seconds) for the connection to the Luna HSM.
 
-#### Example Usage
-
-```yaml
-hsm:
-  enabled_gateway: "NoOpHSM"
-  gateway:
-    luna:
-      ip: "127.0.0.1"
-      port: 8080
-      timeout: 1
-```
 
 In the above example, the "LunaHSM" gateway is enabled, and the Luna HSM is configured with the IP address "127.0.0.1,"
 port "8080," and a connection timeout of "1" second.
@@ -346,10 +352,16 @@ your use case and requirements. If you have any further questions or need assist
 support team.
 
 ### Spring Configuration
-* `application.name`:
 
-  * **Description**: Specifies the name of the Card Auth Server ACS application.
-  * **Purpose**: Identifies the application with a meaningful name.
+#### Example Usage
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_db}
+    username: ${ACS_MYSQL_USER:root}
+    password: ${ACS_MYSQL_PASSWORD:password}
+    driverClassName: com.mysql.cj.jdbc.Driver
+```
 
 * `datasource`:
   * **Description**: Configures the data source properties for connecting to a MySQL database.
@@ -360,93 +372,19 @@ support team.
     * `driverClassName`: The JDBC driver class for MySQL.
   * **Purpose**: Defines the connection details for accessing the MySQL database.
 
-
-* `jpa`:
-
-  * **Description**: Configures Java Persistence API (JPA) properties for Hibernate.
-  * **Properties**:
-    * `showSql`: Determines whether SQL statements should be logged.
-    * `properties.hibernate.dialect`: Specifies the Hibernate dialect for MySQL 8.
-  * **Purpose**: Customizes JPA behavior, allowing control over SQL statement logging and Hibernate dialect.
-
-#### Example Usage
-```yaml
-spring:
-  application:
-    name: Card Auth Server ACS
-  datasource:
-    url: jdbc:mysql://${ACS_MYSQL_HOST:localhost}:${ACS_MYSQL_PORT:3306}/${ACS_MYSQL_DATABASE:cas_db}
-    username: ${ACS_MYSQL_USER:root}
-    password: ${ACS_MYSQL_PASSWORD:password}
-    driverClassName: com.mysql.cj.jdbc.Driver
-  jpa:
-    showSql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-```
-
-### Management Configuration
-    
-* `endpoints`:
-
-  * **Description**: Configures various management endpoints.
-  * **Properties**:
-    * `web.base-path`: Defines the base path for management endpoints.
-    * `web.exposure.include`: Lists endpoints to be exposed (e.g., health, prometheus, metrics, info).
-  * **Purpose**: Provides control over the base path and exposed endpoints for management operations.
-
-
-* `endpoint.health`:
-
-  * Description: Configures health endpoint settings.
-  * Properties:
-    * `show-details`: Determines whether to display detailed health information.
-  * Purpose: Customizes the behavior of the health endpoint, specifying whether to show detailed information.
-
-* `metrics`:
-* **Description**: Configures metrics-related settings.
-* **Properties**:
-  * `enabled`: Controls whether metrics are enabled.
-* **Purpose**: Enables or disables metrics for monitoring purposes.
-
-* prometheus:
-
-* **Description**: Configures Prometheus metrics.
-* **Properties**:
-  * enabled: Enables or disables the export of metrics for Prometheus.
-* **Purpose**: Controls the export of metrics for Prometheus monitoring.
-
-#### Example Usage
-```yaml
-management:
-  endpoints:
-    web:
-      base-path: /actuator
-      exposure:
-        include: [ "health","prometheus", "metrics", "info" ]
-  endpoint:
-    health:
-      show-details: always
-    metrics:
-      enabled: true         # needs security review, secure end point
-    prometheus:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-  prometheus:
-    metrics:
-      export:
-        enabled: false
-  graphite:
-    metrics:
-      export:
-        enabled: false
-
-```
-
 ### Logging Configuration
+#### Example Usage
+```yaml
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.springframework: INFO
+    org.freedomfinancestack: INFO
+    org.hibernate.type.descriptor.sql: TRACE
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+```
+
 * `level`:
   * **Description**: Configures logging levels for specific packages.
   * **Properties**:
@@ -458,68 +396,19 @@ management:
 * `pattern.level`:
   * **Description**: Configures the log pattern to include the application name, trace ID, and span ID.
   * **Purpose**: Enhances log readability by including relevant information like application name, trace ID, and span ID.
-#### Example Usage
-  ```yaml
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.springframework: INFO
-    org.freedomfinancestack: INFO
-#    org.hibernate.type.descriptor.sql: TRACE
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
-
-```
-
-### Swagger and Springdoc Configuration
-`swagger`:
-
-* **Description**: Configures Swagger settings for API documentation.
-* **Properties**:
-  * `contact-name`: Sets the contact name for Swagger documentation.
-  * `contact-mail`: Sets the contact email for Swagger documentation.
-  * `app-name`: Defines the name of the Card Auth Server ACS application.
-  * `app-description`: Provides a description for the Card Auth Server ACS application.
-  * `app-version`: Specifies the version of the Card Auth Server ACS application.
-  * `app-license-url`: Specifies the URL for the application's license.
-  * `app-license`: Specifies the license type for the application.
-* `springdoc`:
-  * **Description**: Configures Springdoc settings for API documentation.
-  * **Properties**:
-    * `show-actuator`: Controls whether to include actuator endpoints in API documentation.
-    * `paths-to-match`: Specifies the paths to match for API documentation.
-    * `packages-to-scan`: Specifies the packages to scan for API documentation.
-
-#### Example Usage
-```yaml
-swagger:
-  contact-name: Freedom Finance Stack
-  contact-mail: contact@freedomfinancestack.org
-  app-name: Card Auth Server ACS
-  app-description: "Card Auth Server ACS"
-  app-version: 1.0.0
-  app-license-url: https://www.apache.org/licenses/LICENSE-2.0.html
-  app-license: Apache 2.0
-```
 
 ### Auth-Value Configuration
-* `auth-value.master-card-acs-key`:
-  * **Description**: Specifies the Mastercard ACS key used for authentication.
-  * **Purpose**: Provides the authentication key required for Mastercard ACS.
-
 #### Example Usage
 ```yaml
 auth-value:
   master-card-acs-key: ${MC_ACS_KEY:B039878C1F96D212F509B2DC4CC8CD1BB039878C1F96D212F509B2DC4CC8CD1B}
 ```
+* `auth-value.master-card-acs-key`:
+  * **Description**: Specifies the Mastercard ACS key used for authentication.
+  * **Purpose**: Provides the authentication key required for Mastercard ACS.
+
 
 ### Task Configuration
-  `task.scheduler`:
-  * **Description**: Configures the scheduler settings for background tasks.
-  * **Properties**:
-    * `corePoolSize`: Sets the core pool size for the scheduler.
-    * `maxPoolSize`: Sets the maximum pool size for the scheduler.
-    * `keepAliveTime`: Sets the keep-alive time for idle threads.
 #### Example Usage
 ```yaml
 task:
@@ -528,14 +417,14 @@ task:
     maxPoolSize: 10
     keepAliveTime: 60000 #mili
 ```
+  * `task.scheduler`:
+    * **Description**: Configures the scheduler settings for background tasks.
+    * **Properties**:
+      * `corePoolSize`: Sets the core pool size for the scheduler.
+      * `maxPoolSize`: Sets the maximum pool size for the scheduler.
+      * `keepAliveTime`: Sets the keep-alive time for idle threads.
 
 ### External-Libs Configuration
-* `external-libs`:
-  * **Description**: Configures external libraries and modules.
-  * **Properties**:
-    * `security.SecurityModuleAWS.enabled`: Controls whether the AWS Security Module is enabled.
-    * `security.SecurityModuleAzure.enabled`: Controls whether the Azure Security Module is enabled.
-    * `request-parsing.RequestParsingModuleAWS.enabled`: Controls whether the AWS Request Parsing Module is enabled. 
 #### Example Usage
 ```yaml
 external-libs:
@@ -547,18 +436,16 @@ external-libs:
   request-parsing:
     RequestParsingModuleAWS:
       enabled: false
-
 ```
 
+* `external-libs`:
+  * **Description**: Configures external libraries and modules.
+  * **Properties**:
+    * `security.SecurityModuleAWS.enabled`: Controls whether the AWS Security Module is enabled.
+    * `security.SecurityModuleAzure.enabled`: Controls whether the Azure Security Module is enabled.
+    * `request-parsing.RequestParsingModuleAWS.enabled`: Controls whether the AWS Request Parsing Module is enabled. 
+
 ### Institution-UI Configuration
-*  `institution-ui`:
-*  **Description**: Configures settings related to the institution's user interface.
-*  **Properties**:
-  * `institution-url`: Specifies the URL for institution (Bank) images.
-  * `institution-css-url`: Specifies the URL for institution (Bank) CSS.
-  * `html-page-timer`: Sets the timer duration for HTML pages.
-  * `medium-logo`, `high-logo`, `extra-high-logo`: URLs for different-sized institution (Bank) logos.
-  * `html-otp-template`: Specifies the HTML template for OTP (One-Time Password) emails. 
 #### Example Usage
 ```yaml
 institution-ui:
@@ -578,16 +465,17 @@ institution-ui:
       medium-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
       high-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
       extra-high-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
-
 ```
+*  `institution-ui`:
+*  **Description**: Configures settings related to the institution's user interface.
+*  **Properties**:
+  * `institution-url`: Specifies the URL for institution (Bank) images.
+  * `institution-css-url`: Specifies the URL for institution (Bank) CSS.
+  * `html-page-timer`: Sets the timer duration for HTML pages.
+  * `medium-logo`, `high-logo`, `extra-high-logo`: URLs for different-sized institution (Bank) logos.
+  * `html-otp-template`: Specifies the HTML template for OTP (One-Time Password) emails. 
 
 ### Encryption Configuration
-*  `encryption`:
-*  **Description**: Configures encryption settings using Advanced Encryption Standard (AES).
-*  **Properties**: 
-*  * `aes.password`: Specifies the password for AES encryption.
-    * `aes.salt`: Specifies the salt for AES encryption.
-* **Purpose**: Sets up parameters for AES encryption used within the application.
 #### Example Usage
 ```yaml
 encryption:
@@ -595,6 +483,13 @@ encryption:
     password: ${ENCRYPTION_AES_PASSWORD:password}
     salt: ${ENCRYPTION_AES_SALT:salt}
 ```
+*  `encryption`:
+*  **Description**: Configures encryption settings using Advanced Encryption Standard (AES).
+*  **Properties**: 
+*  * `aes.password`: Specifies the password for AES encryption.
+    * `aes.salt`: Specifies the salt for AES encryption.
+* **Purpose**: Sets up parameters for AES encryption used within the application.
+* > This is CRITICAL information, it must be kept secure according to PCI DSS standards and not expose here
 
 Feel free to customize these configuration attributes according to your specific ACS deployment requirements. The
 acs.yml file allows you to fine-tune the ACS behavior and settings based on your needs.

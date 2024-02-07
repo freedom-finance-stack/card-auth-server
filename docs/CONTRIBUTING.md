@@ -11,7 +11,7 @@ If you are excited and want to make contributions, sign up for the
 ### Fork and clone the repository
 * You will need to fork the main Card Auth Server code repository and clone it to your local machine.
 See [github help page](https://docs.github.com/en/get-started/quickstart/fork-a-repo) for help.
-  * Follow the [steps](README.md#dev-setup) for local setup.
+  * Follow the [steps](../README.md#dev-setup) for local setup.
 
 ### Creating an Issue
 
