@@ -401,7 +401,7 @@ logging:
 #### Example Usage
 ```yaml
 auth-value:
-  master-card-acs-key: ${MC_ACS_KEY:B039878C1F96D212F509B2DC4CC8CD1BB039878C1F96D212F509B2DC4CC8CD1B}
+  master-card-acs-key: ${MC_ACS_KEY:mastercard-key}
 ```
 * `auth-value.master-card-acs-key`:
   * **Description**: Specifies the Mastercard ACS key used for authentication.
