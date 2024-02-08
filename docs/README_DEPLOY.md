@@ -320,25 +320,25 @@ hsm:
       timeout: 1
 ```
 
-`enabled_gateway` (string)
+* `enabled_gateway` (string)
 
-- Description: Specifies the type of HSM gateway to enable.
-- Possible Values:
-    - "LunaHSM": Enable the Luna HSM gateway.
-    - "NoOpHSM": Enable the NoOp HSM gateway (No operation, a mock HSM for testing).
+  - Description: Specifies the type of HSM gateway to enable.
+  - Possible Values:
+      - "LunaHSM": Enable the Luna HSM gateway.
+      - "NoOpHSM": Enable the NoOp HSM gateway (No operation, a mock HSM for testing).
 
-`gateway` (object)
+* `gateway` (object)
 
-- Description: Additional configuration options specific to the enabled HSM gateway.
+  - Description: Additional configuration options specific to the enabled HSM gateway.
 
 For "LunaHSM" enabled_gateway:
 
 - Description: If you have chosen to enable the "LunaHSM" gateway, you can further configure the Luna HSM connection
   parameters.
-- Properties:
-    - ip (string): The IP address of the Luna HSM.
-    - port (integer): The port number to connect to the Luna HSM.
-    - timeout (integer): The timeout (in seconds) for the connection to the Luna HSM.
+  - Properties:
+      - ip (string): The IP address of the Luna HSM.
+      - port (integer): The port number to connect to the Luna HSM.
+      - timeout (integer): The timeout (in seconds) for the connection to the Luna HSM.
 
 
 In the above example, the "LunaHSM" gateway is enabled, and the Luna HSM is configured with the IP address "127.0.0.1,"
@@ -452,19 +452,19 @@ institution-ui:
   institution-url: https://ffs.acs.com/acs/resources/images/
   institution-css-url: ${INSTITUTION_CSS_URL:https://EMV3DS/challenge}
   html-page-timer: 180 #seconds
-  medium-logo: "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM"
-  high-logo: "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM"
-  extra-high-logo: "https://drive.google.com/uc?id=1lYxWs3uk_PpV7TAL2MGEwQ1uFAEaxqLM"
+  medium-logo: "https://dummylink.com"
+  high-logo: "https://dummylink.com"
+  extra-high-logo: "https://dummylink.com"
   html-otp-template: "acsOtpNew"
   network-ui-config:
     VISA:
-      medium-ps: "https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO"
-      high-ps: "https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO"
-      extra-high-ps: "https://drive.google.com/uc?id=1jgUdDudqRTjB8Q36u0vMBakxpGWAwIdO"
+      medium-ps: "https://dummylink.com"
+      high-ps: "https://dummylink.com"
+      extra-high-ps: "https://dummylink.com"
     MASTERCARD:
-      medium-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
-      high-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
-      extra-high-ps: "https://drive.google.com/uc?id=1pSa-4wQ5Mdrjis4y9YKCydCE6tIhB0UN"
+      medium-ps: "https://dummylink.com"
+      high-ps: "https://dummylink.com"
+      extra-high-ps: "https://dummylink.com"
 ```
 *  `institution-ui`:
 *  **Description**: Configures settings related to the institution's user interface.
