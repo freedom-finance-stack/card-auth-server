@@ -5,127 +5,14 @@ License: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 Card Auth Server ACS
 
-# Challenge-Request-Controller
-## Handles browser Challenge Request generating user's browser
-This endpoint orchestrates the generation of a Challenge Request, a crucial step in the user authentication flow. When a request is made to this endpoint, it triggers the creation of challenges specifically tailored for the user's browser, enhancing the security of the authentication process.
-
-`POST` `/v2/transaction/challenge/browser`
-#### Generated server url: http://127.0.0.1:8080/v2/transaction/challenge/browser
-
-
-<details >
-  <summary >Request</summary>
-    
-| Query Params       | Type   | Description                                                                                                                                                                                             |
-|--------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| creq (required)    | string | The Challenge Request parameter is required for initiating the generation of the user's browser Challenge Request. It contains essential information needed to execute the authentication challenge.    |
-| threeDSSessionData | string | The ThreeDS Session Data provides additional context for the authentication process. It may include session-related information to enhance the processing of the Challenge Request.                     |
-</details>
-
-<details>
-  <summary>Responses</summary>
-
-| StatusCode | Response Message                                   | Response Schema         | Response Type |
-|------------|----------------------------------------------------|-------------------------|---------------|
-| 200        | Request Successfully handled and validated         | html/text;charset=utf-8 | string        | 
-| 400        | Bad Request or Request not according to Areq Schema | html/text;charset=utf-8 | string        |
-| 500        | Server Exception Occurred during request handling  | html/text;charset=utf-8 | string        |
-
-</details>
-
-## Handles browser validation Challenge Request generating user's browser
-
-This endpoint plays a crucial role in the authentication process by validating Challenge Requests generated for the user's browser. Upon receiving a request, it verifies the authenticity and correctness of the challenge, adding an additional layer of security to the user authentication flow.
-
-`POST` `/v2/transaction/challenge/browser/validate`
-#### Generated server url: http://127.0.0.1:8080/v2/transaction/challenge/browser/validate
-
-<details>
-  <summary >Request</summary>
-<br>
-<b>REQUEST BODY SCHEMA</b>: application/x-www-form-urlencoded;charset=UTF-8
-<br>
-
-| Query Params           | Type                                                                                         |
-|------------------------|----------------------------------------------------------------------------------------------|
-| threeDSServerTransID   | string                                                                                       |
-| threeDSRequestorAppURL | string                                                                                       |
-| acsTransID             | string                                                                                       |
-| challengeWindowSize    | string                                                                                       |
-| messageType            | string                                                                                       |
-| messageVersion         | string                                                                                       |
-| sdkCounterStoA         | string                                                                                       |
-| sdkTransID             | string                                                                                       |
-| challengeCancel        | string                                                                                       |
-| challengeDataEntry     | string                                                                                       |
-| challengeHTMLDataEntry | string                                                                                       |
-| messageExtension       | Array [name,string, id, string, criticalityIndicator, boolean, data, object, valid, boolean] | 
-| resendChallenge        | string                                                                                       |
-| challengeNoEntry       | string                                                                                       | 
-| whitelistingDataEntry  | string                                                                                       | 
-| oobContinue            | string                                                                                       | 
-| threeDSMessageType     | string <br> Enum: "AReq" "ARes" "CReq" "CRes" "Erro" "RReq" "RRes"                           | 
-
-</details>
-
-<details>
-  <summary>Responses</summary>
-
-| StatusCode | Response Message                                   | Response Schema         | Response Type |
-|------------|----------------------------------------------------|-------------------------|---------------|
-| 200        | Request Successfully handled and validated         | html/text;charset=utf-8 | string        | 
-| 400        | Bad Request or Request not according to Areq Schema | html/text;charset=utf-8 | string        |
-| 500        | Server Exception Occurred during request handling  | html/text;charset=utf-8 | string        |
-
-</details>
-
-## Handles App Based Challenge Request
-This endpoint facilitates the initiation and handling of App-Based Challenge Requests, 
-allowing users to trigger authentication challenges within the application. 
-It ensures a secure and user-friendly experience, managing the flow of challenges for enhanced authentication and security measures.
-`POST` `/v2/transaction/challenge/app`
-#### Generated server url: http://127.0.0.1:8080/v2/transaction/challenge/app
-
-<details >
-  <summary >Request</summary>
-<br>
-<b>REQUEST BODY SCHEMA</b>: application/x-www-form-urlencoded;charset=UTF-8
-<br>
-
-| <b>REQUEST BODY SCHEMA</b>     | Type   |
-|--------------------------------|--------|
-| application/json;charset=UTF-8 | string |
-</details>
-
-<details>
-  <summary>Responses</summary>
-
-| StatusCode | Response Message                                    | Response Schema                | Response Type |
-|------------|-----------------------------------------------------|--------------------------------|---------------|
-| 200        | Request Successfully handled and validated          | application/jose;charset=UTF-8 | string        | 
-| 400        | Bad Request or Request not according to Areq Schema | application/jose;charset=UTF-8 | string        |
-| 500        | Server Exception Occurred during request handling   | application/jose;charset=UTF-8 | string        |
-
-</details>
-
-<details>
-  <summary>Request samples</summary>
-
-|Payload| Type     |
-|-------|----------|
-|application/jose;charset=utf-8| "string" |
-
-</details>
-
-
-# authentication-request-controller
+# Authentication-request-controller
 ## Handles Authentication Request generating from 3DS Server
 
 `POST` `/v2/transaction/authentication
 `
 #### Generated server url: http://127.0.0.1:8080/v2/transaction/authentication
-This endpoint plays a crucial role in the authentication flow, handling requests generated by the 3DS Server. 
-It ensures the secure exchange of authentication data, facilitating a seamless and robust authentication process for enhanced security measures. 
+This endpoint plays a crucial role in the authentication flow, handling requests generated by the 3DS Server.
+It ensures the secure exchange of authentication data, facilitating a seamless and robust authentication process for enhanced security measures.
 The endpoint manages the validation and processing of authentication requests to guarantee a smooth user experience.
 <details >
   <summary >Request</summary>
@@ -482,5 +369,118 @@ The endpoint manages the validation and processing of authentication requests to
 <li>400</li>
 <li>500</li>
 </ul>
+
+</details>
+
+
+# Challenge-Request-Controller
+## Handles browser Challenge Request generating user's browser
+This endpoint orchestrates the generation of a Challenge Request, a crucial step in the user authentication flow. When a request is made to this endpoint, it triggers the creation of challenges specifically tailored for the user's browser, enhancing the security of the authentication process.
+
+`POST` `/v2/transaction/challenge/browser`
+#### Generated server url: http://127.0.0.1:8080/v2/transaction/challenge/browser
+
+
+<details >
+  <summary >Request</summary>
+    
+| Query Params       | Type   | Description                                                                                                                                                                                             |
+|--------------------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| creq (required)    | string | The Challenge Request parameter is required for initiating the generation of the user's browser Challenge Request. It contains essential information needed to execute the authentication challenge.    |
+| threeDSSessionData | string | The ThreeDS Session Data provides additional context for the authentication process. It may include session-related information to enhance the processing of the Challenge Request.                     |
+</details>
+
+<details>
+  <summary>Responses</summary>
+
+| StatusCode | Response Message                                   | Response Schema         | Response Type |
+|------------|----------------------------------------------------|-------------------------|---------------|
+| 200        | Request Successfully handled and validated         | html/text;charset=utf-8 | string        | 
+| 400        | Bad Request or Request not according to Areq Schema | html/text;charset=utf-8 | string        |
+| 500        | Server Exception Occurred during request handling  | html/text;charset=utf-8 | string        |
+
+</details>
+
+## Handles browser validation Challenge Request generating user's browser
+
+This endpoint plays a crucial role in the authentication process by validating Challenge Requests generated for the user's browser. Upon receiving a request, it verifies the authenticity and correctness of the challenge, adding an additional layer of security to the user authentication flow.
+
+`POST` `/v2/transaction/challenge/browser/validate`
+#### Generated server url: http://127.0.0.1:8080/v2/transaction/challenge/browser/validate
+
+<details>
+  <summary >Request</summary>
+<br>
+<b>REQUEST BODY SCHEMA</b>: application/x-www-form-urlencoded;charset=UTF-8
+<br>
+
+| Query Params           | Type                                                                                         |
+|------------------------|----------------------------------------------------------------------------------------------|
+| threeDSServerTransID   | string                                                                                       |
+| threeDSRequestorAppURL | string                                                                                       |
+| acsTransID             | string                                                                                       |
+| challengeWindowSize    | string                                                                                       |
+| messageType            | string                                                                                       |
+| messageVersion         | string                                                                                       |
+| sdkCounterStoA         | string                                                                                       |
+| sdkTransID             | string                                                                                       |
+| challengeCancel        | string                                                                                       |
+| challengeDataEntry     | string                                                                                       |
+| challengeHTMLDataEntry | string                                                                                       |
+| messageExtension       | Array [name,string, id, string, criticalityIndicator, boolean, data, object, valid, boolean] | 
+| resendChallenge        | string                                                                                       |
+| challengeNoEntry       | string                                                                                       | 
+| whitelistingDataEntry  | string                                                                                       | 
+| oobContinue            | string                                                                                       | 
+| threeDSMessageType     | string <br> Enum: "AReq" "ARes" "CReq" "CRes" "Erro" "RReq" "RRes"                           | 
+
+</details>
+
+<details>
+  <summary>Responses</summary>
+
+| StatusCode | Response Message                                   | Response Schema         | Response Type |
+|------------|----------------------------------------------------|-------------------------|---------------|
+| 200        | Request Successfully handled and validated         | html/text;charset=utf-8 | string        | 
+| 400        | Bad Request or Request not according to Areq Schema | html/text;charset=utf-8 | string        |
+| 500        | Server Exception Occurred during request handling  | html/text;charset=utf-8 | string        |
+
+</details>
+
+## Handles App Based Challenge Request
+This endpoint facilitates the initiation and handling of App-Based Challenge Requests, 
+allowing users to trigger authentication challenges within the application. 
+It ensures a secure and user-friendly experience, managing the flow of challenges for enhanced authentication and security measures.
+`POST` `/v2/transaction/challenge/app`
+#### Generated server url: http://127.0.0.1:8080/v2/transaction/challenge/app
+
+<details >
+  <summary >Request</summary>
+<br>
+<b>REQUEST BODY SCHEMA</b>: application/x-www-form-urlencoded;charset=UTF-8
+<br>
+
+| <b>REQUEST BODY SCHEMA</b>     | Type   |
+|--------------------------------|--------|
+| application/json;charset=UTF-8 | string |
+</details>
+
+<details>
+  <summary>Responses</summary>
+
+| StatusCode | Response Message                                    | Response Schema                | Response Type |
+|------------|-----------------------------------------------------|--------------------------------|---------------|
+| 200        | Request Successfully handled and validated          | application/jose;charset=UTF-8 | string        | 
+| 400        | Bad Request or Request not according to Areq Schema | application/jose;charset=UTF-8 | string        |
+| 500        | Server Exception Occurred during request handling   | application/jose;charset=UTF-8 | string        |
+
+</details>
+
+<details>
+  <summary>Request samples</summary>
+
+|Payload| Type     |
+|-------|----------|
+|application/jose;charset=utf-8| "string" |
 
 </details>
