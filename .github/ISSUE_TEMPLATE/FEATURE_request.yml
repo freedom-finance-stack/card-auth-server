@@ -1,0 +1,47 @@
+name: Feature request
+description: Submit a proposal for a new feature
+title: "[FEATURE] "
+labels: ["C-feature", "S-awaiting-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We Thank you for taking the time to report this potential feature. Before submitting your feature request report, kindly review the following checklist to ensure the most efficient handling: :)
+        1. You are using the latest release. Features are being added all the time, and it is entirely possible what you're requesting has already been added.
+        2. Please try to fill this template completely as much as possible. A well-documented report speeds up the process... .
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Provide a clear and concise description of feature.
+      placeholder: In my use-case, ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Possible Implementation
+      description: Clearly and concisely outline your expectations for the desired outcome.
+      placeholder: While not mandatory, any insights or suggestions regarding the implementation of the proposed addition or modification would be appreciated.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: no-duplicate-issues
+    attributes:
+      label: Prior to submitting this feature request, have you verified whether a similar request has been previously raised?
+      options:
+        - label: I checked and didn't find a similar issue in both open and closed issues.
+          required: true
+
+  - type: dropdown
+    id: willing-to-submit-pr
+    attributes:
+      label: Are you willing to submit a PR?
+      description: This is absolutely not required, but we are happy to guide you in the contribution process.
+      options:
+        - Yes, I am willing to submit a PR!
+        - No, but I'm happy to collaborate on a PR with someone else
+        - No, I don't have time to work on this right now
