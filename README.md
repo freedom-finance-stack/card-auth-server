@@ -18,8 +18,6 @@ Here are some features of a 3D Secure Access Control Server:
   2. It functions as oxygen to the 3D Secure protocol, allowing merchants to validate a cardholder’s credentials for payment authentication.
 * **Accounting**: The ACS provides centralized access to network resources across devices, users, and groups . It stores the access control system’s data and permissions, decides to unlock a door for a specific user, and tracks data for who enters and when.
 * **Access Control**: The ACS limits access to your protected data, systems, and locations by regulating who can log on/enter (locally, remotely, or physically), which devices are authorized to connect and to which locations, what can they do once they gain access to a system or to a location, who has privileges to access what resources, and what can they do with their level of access, etc.
-
-[//]: # (todo remove after approval)
 * CNP(Card Not Present) transactions in India.
 * Logs
 * Application Monitoring Module - Integrate and add multiple monitoring providers
@@ -27,7 +25,7 @@ Here are some features of a 3D Secure Access Control Server:
 
 \... and more!
 
-To learn more about Card Auth Server’s features and capabilities, see our [product page](https://razorpay.com/).
+To learn more about Card Auth Server’s features and capabilities, see our [product page](https://freedomfinancestack.org/).
 
 ## Get started 
 #### Prerequisites/Dependencies Required
@@ -68,7 +66,7 @@ We need to install below libraries
        driverClassName: com.mysql.cj.jdbc.Driver 
        ```
 
-  * Check out the [guide](Endpoint%20Description.md) for a more comprehensive setup, which includes detailed description about the API endpoints exposed.
+  * Check out the [guide](docs/Endpoint%20Description.md) for a more comprehensive setup, which includes detailed description about the API endpoints exposed.
 
 ---
 ####  The simplest way to set up Card Auth Server is to create a managed deployment with Dockerfile provided and deploy on VM or k8s.
@@ -92,4 +90,4 @@ For contribution guidelines, see [CONTRIBUTING](docs/CONTRIBUTING.md).
 ## Our Pledge
 We take participation in our community as a harassment-free experience for everyone and we pledge to act in ways to contribute to an open, welcoming, diverse and inclusive community.
 
-If you have experienced or been made aware of unacceptable behaviour, please remember that you can report this. Read our [Code of Conduct](CODE_OF_CONDUCT).
+If you have experienced or been made aware of unacceptable behaviour, please remember that you can report this. Read our **Code of Conduct**.
