@@ -371,6 +371,7 @@ The endpoint manages the validation and processing of authentication requests to
 </ul>
 
 </details>
+
 # Challenge-Request-Controller
 ## Handles browser Challenge Request generating user's browser
 This endpoint orchestrates the generation of a Challenge Request, a crucial step in the user authentication flow. When a request is made to this endpoint, it triggers the creation of challenges specifically tailored for the user's browser, enhancing the security of the authentication process.
@@ -449,7 +450,9 @@ This endpoint plays a crucial role in the authentication process by validating C
 This endpoint facilitates the initiation and handling of App-Based Challenge Requests, 
 allowing users to trigger authentication challenges within the application. 
 It ensures a secure and user-friendly experience, managing the flow of challenges for enhanced authentication and security measures.
+
 `POST` `/v2/transaction/challenge/app`
+
 #### Generated server url: http://127.0.0.1:8080/v2/transaction/challenge/app
 
 <details >
