@@ -19,8 +19,8 @@ app:
       decoupledAuthDelay : 5 #sec
 
 test:
-  enable-decryption-encryption: true #todo rename this variable
-  enable : false
+  enable-decryption-encryption: false #todo rename this variable
+  enable : true
   attemptedRange:
     start: 4016000000000010
     end: 4016000000000020
@@ -139,7 +139,7 @@ management:
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG
+#    org.hibernate.SQL: DEBUG
     org.springframework: INFO
     org.freedomfinancestack: INFO
 #    org.hibernate.type.descriptor.sql: TRACE
