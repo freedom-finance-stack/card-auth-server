@@ -1,31 +1,31 @@
-![GitHub release (latest SemVer)](https://img.shields.io/badge/release-v1.0.0-blue)
+w![GitHub release (latest SemVer)](https://img.shields.io/badge/release-v1.0.0-blue)
 
 # Card Auth Server
-A **3D Secure Access Control Server** is an authentication protocol designed to add an additional layer of security to online credit and debit card transactions . It is an **authentication, authorization, and accounting (AAA) platform** that enables centralized access to network resources across devices, users, and groups.
+A **3D Secure Access Control Server** is an authentication protocol designed to add an additional layer of security to online credit and debit card transactions.
 
 The 3D Secure protocol is used by major credit card companies such as Visa, Mastercard, and American Express to provide an additional layer of security for online transactions. The protocol is designed to combat the rising threat of card-not-present (CNP) fraud.
 
-The Access Control Server (ACS) is a software module that enables issuing banks to participate in Verified by Visa, MasterCard SecureCode, JCB J/Secure, and American Express Safekey 3D Secure programs. The ACS functions as oxygen to the 3D Secure protocol, allowing merchants to validate a cardholder's credentials for payment authentication.
+The Access Control Server (ACS) is a software module that enables issuing banks to participate in Verified by Visa, MasterCard SecureCode etc. programs. The ACS functions as oxygen to the 3D Secure protocol, allowing merchants to validate a cardholder's credentials for payment authentication.
 
 EMVCo also plays a role in the 3D Secure Access Control Server (ACS) ecosystem. EMVCo provides test requirements for ACS as a system under test (For detailed information refer official [EMVCo_3DS_Spec_v220](https://docs.3dsecure.io/3dsv2/_downloads/b412903d6e2c99b7828246fa10db5b3e/EMVCo_3DS_Spec_v220.pdf) document).
 
 ## Features of ACS
 
 Here are some features of a 3D Secure Access Control Server:
-* **Authentication**: The ACS provides an additional layer of authentication for online credit and debit card transactions, which helps to combat the rising threat of card-not-present (CNP) fraud.
-* **Authorization**: 
-  1. The ACS enables issuing banks to participate in Verified by Visa, MasterCard SecureCode, JCB J/Secure, and American Express Safekey 3D Secure programs 
-  2. It functions as oxygen to the 3D Secure protocol, allowing merchants to validate a cardholder’s credentials for payment authentication.
-* **Accounting**: The ACS provides centralized access to network resources across devices, users, and groups . It stores the access control system’s data and permissions, decides to unlock a door for a specific user, and tracks data for who enters and when.
-* **Access Control**: The ACS limits access to your protected data, systems, and locations by regulating who can log on/enter (locally, remotely, or physically), which devices are authorized to connect and to which locations, what can they do once they gain access to a system or to a location, who has privileges to access what resources, and what can they do with their level of access, etc.
-* CNP(Card Not Present) transactions in India.
-* Logs
-* Application Monitoring Module - Integrate and add multiple monitoring providers
-* Deployment using Docker Containers
 
-\... and more!
+* **Authentication**: Service offers a wide range of features aimed at streamlining authentication and facilitating seamless online transactions. Our 3DS ACS (Authentication Server) supports both 3DS 2.1.0 and 3DS 2.2.0 protocols, ensuring a smooth authentication process.
 
-To learn more about Card Auth Server’s features and capabilities, see our [product page](https://freedomfinancestack.org/).
+
+* **Extensibilty**: Easily pluggable to support advance cardholder verification methods such as Out of Band, OTP (One-Time Password), risk-based authentication, decoupled authentication, and non-payment authentication, you can rest assured that you required minimum code change to enhance security measures during transactions.
+
+* **Ease of deployment**: 
+  * Ease of Deployment: Our open-source project prioritizes ease of deployment, ensuring that users can quickly and effortlessly set up the solution in their environment.
+
+  * Versatile Deployment Methods: We support a wide variety of deployment methods to accommodate diverse user preferences and infrastructure requirements.
+
+  * Configurable Docker Image: We have developed a highly configurable Docker image, available in our repository, enabling seamless deployment across different containerized environments.
+
+  * AWS Terraform Script: To further streamline deployment on AWS, we have meticulously crafted Terraform scripts. These scripts facilitate one-click deployment on AWS, provisioning all necessary resources and configuring the architecture for optimal performance and scalability.
 
 ## Get started 
 #### Prerequisites/Dependencies Required
