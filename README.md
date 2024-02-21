@@ -1,11 +1,11 @@
-![GitHub release (latest SemVer)](https://img.shields.io/badge/release-v1.0.0-blue)
+w![GitHub release (latest SemVer)](https://img.shields.io/badge/release-v1.0.0-blue)
 
 # Card Auth Server
 A **3D Secure Access Control Server** is an authentication protocol designed to add an additional layer of security to online credit and debit card transactions.
 
 The 3D Secure protocol is used by major credit card companies such as Visa, Mastercard, and American Express to provide an additional layer of security for online transactions. The protocol is designed to combat the rising threat of card-not-present (CNP) fraud.
 
-The Access Control Server (ACS) is a software module that enables issuing banks to participate in Verified by Visa, MasterCard SecureCode etc Secure programs. The ACS functions as oxygen to the 3D Secure protocol, allowing merchants to validate a cardholder's credentials for payment authentication.
+The Access Control Server (ACS) is a software module that enables issuing banks to participate in Verified by Visa, MasterCard SecureCode etc. programs. The ACS functions as oxygen to the 3D Secure protocol, allowing merchants to validate a cardholder's credentials for payment authentication.
 
 EMVCo also plays a role in the 3D Secure Access Control Server (ACS) ecosystem. EMVCo provides test requirements for ACS as a system under test (For detailed information refer official [EMVCo_3DS_Spec_v220](https://docs.3dsecure.io/3dsv2/_downloads/b412903d6e2c99b7828246fa10db5b3e/EMVCo_3DS_Spec_v220.pdf) document).
 
