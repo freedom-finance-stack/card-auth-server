@@ -19,13 +19,13 @@ Here are some features of a 3D Secure Access Control Server:
 * **Extensibilty**: Easily pluggable to support advance cardholder verification methods such as Out of Band, OTP (One-Time Password), risk-based authentication, decoupled authentication, and non-payment authentication, you can rest assured that you required minimum code change to enhance security measures during transactions.
 
 * **Ease of deployment**: 
- - Ease of Deployment: Our open-source project prioritizes ease of deployment, ensuring that users can quickly and effortlessly set up the solution in their environment.
+  * Ease of Deployment: Our open-source project prioritizes ease of deployment, ensuring that users can quickly and effortlessly set up the solution in their environment.
 
- - Versatile Deployment Methods: We support a wide variety of deployment methods to accommodate diverse user preferences and infrastructure requirements.
+  * Versatile Deployment Methods: We support a wide variety of deployment methods to accommodate diverse user preferences and infrastructure requirements.
 
- - Configurable Docker Image: We have developed a highly configurable Docker image, available in our repository, enabling seamless deployment across different containerized environments.
+  * Configurable Docker Image: We have developed a highly configurable Docker image, available in our repository, enabling seamless deployment across different containerized environments.
 
- - AWS Terraform Script: To further streamline deployment on AWS, we have meticulously crafted Terraform scripts. These scripts facilitate one-click deployment on AWS, provisioning all necessary resources and configuring the architecture for optimal performance and scalability.
+  * AWS Terraform Script: To further streamline deployment on AWS, we have meticulously crafted Terraform scripts. These scripts facilitate one-click deployment on AWS, provisioning all necessary resources and configuring the architecture for optimal performance and scalability.
 
 ## Get started 
 #### Prerequisites/Dependencies Required
