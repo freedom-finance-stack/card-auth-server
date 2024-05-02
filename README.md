@@ -1,4 +1,4 @@
-w![GitHub release (latest SemVer)](https://img.shields.io/badge/release-v1.0.0-blue)
+![GitHub release (latest SemVer)](https://img.shields.io/badge/release-v1.0.0-blue)
 
 # Card Auth Server
 A **3D Secure Access Control Server** is an authentication protocol designed to add an additional layer of security to online credit and debit card transactions.
