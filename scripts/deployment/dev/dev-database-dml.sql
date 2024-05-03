@@ -114,8 +114,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `card_range` WRITE;
 INSERT INTO `card_range` VALUES ('R1', 'I1', 4016000000000000, 4016000000000100, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R_PERF_1', 'I1', 401700000000000, 4018000000000000, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'FR Perf Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
-INSERT INTO `card_range` VALUES ('R_PERF_2', 'I1', 401900000000000, 4020000000000000, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'CH Perf Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R_PERF_1', 'I1', 4017000000000000, 4018000000000000, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'FR Perf Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
+INSERT INTO `card_range` VALUES ('R_PERF_2', 'I1', 4019000000000000, 4020000000000000, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'CH Perf Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R7', 'I1', 4030000000000000, 4030000000000100, 'ACTIVE', 'CREDIT', 'CHALLENGE', 'Visa Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R5', 'I1', 7654360800000000, 7654360899999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', 'MasterCard Testing', 'MOCK', 2, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
 INSERT INTO `card_range` VALUES ('R2', 'I1', 7654310400000000, 7654310499999999, 'ACTIVE', 'CREDIT', 'NO_CHALLENGE', '3DS Portal Frictionless Testing', 'MOCK', 1, NOW(), NOW(), NULL, 'dev-user', 'dev-user', NULL);
