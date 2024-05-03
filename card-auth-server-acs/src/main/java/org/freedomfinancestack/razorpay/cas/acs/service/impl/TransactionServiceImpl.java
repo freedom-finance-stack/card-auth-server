@@ -67,8 +67,8 @@ public class TransactionServiceImpl implements TransactionService {
         }
         try {
             transactionRepository.save(transaction);
-            return findById(transaction.getId());
-        } catch (DataAccessException | TransactionDataNotValidException ex) {
+            return transaction;
+        } catch (DataAccessException ex) {
             log.error("Error while saving transaction", ex);
             throw new ACSDataAccessException(
                     ThreeDSecureErrorCode.TRANSIENT_SYSTEM_FAILURE,
