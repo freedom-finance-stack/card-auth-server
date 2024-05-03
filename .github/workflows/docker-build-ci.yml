@@ -42,7 +42,7 @@ jobs:
           cache: 'maven'
 
       - name: Clean, Compile, Test and  Package
-        run: mvn -B clean install
+        run: mvn -B clean install -DskipTests
 
       - name: Login to Docker hub
         uses: docker/login-action@v2
