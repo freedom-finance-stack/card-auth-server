@@ -3,9 +3,10 @@ package org.freedomfinancestack.razorpay.cas.acs.module.configuration;
 import javax.sql.DataSource;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,7 @@ public class DataSourceConfig {
     private String username;
     private String password;
     private String driverClassName;
+    private int maximumPoolSize;
 
     /**
      * Creates and configures the DataSource bean using the specified properties for database
@@ -41,11 +43,12 @@ public class DataSourceConfig {
      */
     @Bean
     public DataSource getDataSource() {
-        return DataSourceBuilder.create()
-                .driverClassName(driverClassName)
-                .url(url)
-                .username(username)
-                .password(password)
-                .build();
+        HikariDataSource ds = new HikariDataSource();
+        ds.setDriverClassName(driverClassName);
+        ds.setJdbcUrl(url);
+        ds.setUsername(username);
+        ds.setPassword(password);
+        ds.setMaximumPoolSize(maximumPoolSize);
+        return ds;
     }
 }

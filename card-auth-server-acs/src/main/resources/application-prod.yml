@@ -7,6 +7,8 @@ spring:
     username: ${ACS_MYSQL_USER}
     password: ${ACS_MYSQL_PASSWORD}
     driverClassName: com.mysql.cj.jdbc.Driver
+    maximum-pool-size: 2000
+
   jpa:
     showSql: false
     properties:
