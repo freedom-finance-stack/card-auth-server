@@ -19,8 +19,8 @@ spring:
     username: ${ACS_MYSQL_USER:root}
     password: ${ACS_MYSQL_PASSWORD:password}
     driverClassName: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 100
+    maximum-pool-size: 2000
+
   jpa:
     showSql: false
     properties:
