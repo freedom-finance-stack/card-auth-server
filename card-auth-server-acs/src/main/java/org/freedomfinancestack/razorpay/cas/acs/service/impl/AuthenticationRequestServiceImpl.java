@@ -133,7 +133,7 @@ public class AuthenticationRequestServiceImpl implements AuthenticationRequestSe
                 featureService.getACSRenderingType(transaction, areq.getDeviceRenderOptions());
             }
 
-            ulPortalTestingValidations(transaction, areq);
+            //            ulPortalTestingValidations(transaction, areq);
 
             // Determine if challenge is required and update transaction accordingly
             challengeDetermineService.determineChallenge(
