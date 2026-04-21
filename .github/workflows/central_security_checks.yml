@@ -7,5 +7,5 @@ on:
     - cron: "0 17 * * *"
 jobs:
   Security-Scan:
-    uses: razorpay/security-action/.github/workflows/central_security_checks_prod.yml@master
+    uses: freedom-finance-stack/security-action/.github/workflows/central_security_checks_prod.yml@master
     secrets: inherit
